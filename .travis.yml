@@ -1,0 +1,13 @@
+language: python
+env:
+  global:
+    secure: "qn1eGzbR2K5TRaWgkJLfaCtuaYSsgdQTulHk74d+GQZr3YzAVB/zYW9QSrzWAuk7eS8yfRou47WR6jUiSucdQIc61geCWavsG/sC6XEAp8kQoAt5WnHoXfcEkRwrS+f1C3V9+no0LUlvWLa9xbeGIbsTT9Vx+cSwRbOtUYdmfDE="
+branches:
+  only:
+    - src
+install:
+  - pip install pelican markdown ghp-import
+script:
+  - PCO='pelican_content_output' && pelican content -o ${PCO} -s pelicanconf.py && ghp-import ${PCO} && cp .travis.yml ${PCO}
+after_success:
+  - bash -c 'if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then git push --quiet --force https://${GH_TOKEN}@${TRAVIS_REPO_SLUG}.git gh-pages:master > /dev/null 2>&1; fi'
