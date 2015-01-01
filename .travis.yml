@@ -8,6 +8,6 @@ branches:
 install:
   - pip install pelican markdown ghp-import
 script:
-  - PCO='pelican_content_output' && pelican content -o ${PCO} -s pelicanconf.py && ghp-import ${PCO} && cp .travis.yml ${PCO}
+  - PCO='pelican_content_output' && pelican content -o ${PCO} -s pelicanconf.py && ghp-import -b master ${PCO} && cp .travis.yml ${PCO}
 after_success:
-  - bash -c 'if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then git push --quiet --force https://${GH_TOKEN}@${TRAVIS_REPO_SLUG}.git gh-pages:master > /dev/null 2>&1 || exit $?; else echo "skip git push"; fi'
+  - bash -c 'if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then git push --quiet --force https://${GH_TOKEN}@${TRAVIS_REPO_SLUG}.git master > /dev/null 2>&1 || exit $?; else echo "skip git push"; fi'
