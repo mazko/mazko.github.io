@@ -1,4 +1,4 @@
-# iKevinY.github.io [![1]][2]
+# mazko.github.io [![1]][2]
 
 Pelican blog...
 
