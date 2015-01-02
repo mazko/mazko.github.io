@@ -86,7 +86,7 @@ tags: NLP, GreaseMonkey, Tika
 	~$ java -cp .:tika-app-1.2.jar org.apache.tika.cli.TikaCLI -l \
 	http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
 
-Вывод: ```tr```. Ура ! Мы с Вами только что обучили [Tika](http://tika.apache.org/){:rel="nofollow"} новому языку ! Теперь ещё одна затея - преобразовать *tr.ngp* в *javascript*, который отработает в [Greasemonkey](/javascript/2013/01/18/universal-language-identifier-for-every-modern-browser/). 
+Вывод: ```tr```. Ура ! Мы с Вами только что обучили [Tika](http://tika.apache.org/){:rel="nofollow"} новому языку ! Теперь ещё одна затея - преобразовать *tr.ngp* в *javascript*, который отработает в [GreaseMonkey]({filename}../../javascript/2013-01-18-universal-language-identifier-for-every-modern-browser/2013-01-18-universal-language-identifier-for-every-modern-browser.md). 
 
 	:::bash
 	LNG=`basename $1 .ngp`
