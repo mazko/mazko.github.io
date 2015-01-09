@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = u'Oleg Mazko'
 SITENAME = u'&#9996; Все Буде Добре &#9825;'
 SITEURL = ''
+DISQUS_SITENAME = 'mazko'
 
 PATH = 'content'
 
