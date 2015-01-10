@@ -254,7 +254,6 @@ tags: MK802, SoC, Torrent, Avahi, Debian
 	--allowed "127.0.0.*,192.168.1.*,192.168.0.*,10.0.0.*"
 	~$ sed -ie 's/\("start-added-torrents\s*":\).*/\1 false,/' \
 	/etc/transmission-daemon/settings.json
-	~$ chmod a+rw /etc/transmission-daemon/settings.json
 
 Записываем SD-карточку, не забывая добавить новый раздел */torrents*, оставив для файловой системы Debian ~1GB. Для этого придётся немножко ручками подпилитиь *sunxi-media-create.sh*:
 
@@ -297,6 +296,38 @@ tags: MK802, SoC, Torrent, Avahi, Debian
 	~$ /etc/init.d/transmission-daemon start
 	<ctrl-d>
 	~$ scp -r torrents@torrents.local:/torrents .
+
+###Дисковое пространство
+
+В MK802 имеется один *USB-хост* разьём, со временем туда захочется вставить что-то полезное вроде флешки. Или хаб, а в него уже нескольео флешек. С помощью [LVM2](http://ru.wikipedia.org/wiki/LVM){:rel="nofollow"} можно склеить диски в один. Понадобится специальный модкуль ядра ```dm-mod```:
+
+	:::bash
+	~$ make linux-config
+
+![LVM2 драйвер Скриншот]({attach}lvm_module.png){:style="width:100%; border:1px solid grey;"}
+
+![LVM2 инфа о драйвере Скриншот]({attach}lvm_info.png){:style="width:100%; border:1px solid grey;"}
+
+В юзерспейсе:
+
+	:::bash
+	~$ ssh root@torrents.local
+	~$ apt-get install lvm2
+	~$ fdisk -l /dev/sd?
+	~$ ls /dev/sd? | while read i; do sfdisk "$i" << EOT
+	,,L
+	EOT
+	done
+	~$ ls /dev/sd?1 | xargs pvcreate /dev/mmcblk0p3
+	# pvdisplay
+	~$ ls /dev/sd?1 | xargs vgcreate torrents /dev/mmcblk0p3
+	# pvdisplay | grep 'VG Name'
+	# vgdisplay | grep 'VG Size'
+	~$ lvcreate -l 100%FREE torrents
+	~$ mkfs.ext4 /dev/torrents/lvol0
+	~$ sed -i s/\\/dev\\/mmcblk0p3/\\/dev\\/torrents\\/lvol0/ \
+	/etc/fstab
+	# reboot
 
 [Далее]({filename}2014-02-08-wifi-acces-point-for-linux-mk802.md) рассмотрим случай настройки WI-FI в режиме точки доступа.
 
