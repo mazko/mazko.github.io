@@ -1,6 +1,6 @@
 title: Автономный торрент-насос на MK802
 category: Embedded
-tags: MK802, SoC, Torrent, Avahi, uBoot, Debian, Zeroconf
+tags: MK802, SoC, Torrent, Avahi, Debian
 
 
 Что такое торрент думаю знает каждый школьник :) Попался мне в руки одноплатный компьютер [MK802](http://ru.wikipedia.org/wiki/Android_Mini_PC_MK802){:rel="nofollow"}, который отличается очень маленькими габаритами. Под капотом сего девайса одна большая [SoC](http://ru.wikipedia.org/wiki/SoC){:rel="nofollow"} - микросхема, параметры впечатляют - ARM V7 Cortex A8 1 GHz, 1GB ОЗУ, графических процессор Mali-400 и ОС *Android* на борту. Самое замечательное что разработчики заложили возможность вместо *Android* запустить любой линукс - достаточно точно так же как например в [Raspberry Pi](http://ru.wikipedia.org/wiki/Raspberry_Pi){:rel="nofollow"} и ей подобных девайсах просто вставить созданную должным образом *micro-SD*-карту в соответствующий разъём (он там один такой) и включить. На *MK802* будем ставить *Debian* а работать в Ubuntu 12.04. Первым делом поставим в Ubuntu 12.04 необходимые для кросскомпиляции инструменты:
@@ -28,6 +28,7 @@ tags: MK802, SoC, Torrent, Avahi, uBoot, Debian, Zeroconf
 
 	:::bash
 	~$ export LC_ALL="POSIX"
+	~$ export LANG="POSIX"
 	~$ debootstrap --verbose --arch armhf --variant=minbase \
 	--foreign stable debfs_armhf http://ftp.debian.org/debian
 
