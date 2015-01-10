@@ -123,6 +123,7 @@ tags: MK802,кросскомпиляция,hostapd,udhcpd
 	      sleep 3
 	   else
 	      echo "\`date\`: Network connection down! Reconnection..."
+	      killall -9 ifup > /dev/null 2>&1
 	      ifup --force wlan0
 	      sleep 33
 	   fi

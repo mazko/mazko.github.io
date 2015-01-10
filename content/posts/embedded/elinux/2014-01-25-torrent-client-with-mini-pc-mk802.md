@@ -27,6 +27,7 @@ tags: MK802, SoC, Torrent, Avahi, uBoot, Debian, Zeroconf
 Туда скачивается минимальная файловая система:
 
 	:::bash
+	~$ export LC_ALL="POSIX"
 	~$ debootstrap --verbose --arch armhf --variant=minbase \
 	--foreign stable debfs_armhf http://ftp.debian.org/debian
 
@@ -108,7 +109,7 @@ tags: MK802, SoC, Torrent, Avahi, uBoot, Debian, Zeroconf
 	    wpa-psk 30967eef..4436f865
 	EOT
 
-Выйти из *chroot* окружения можно \<ctrl-d\>, перед этим не помешает убедиться что все файлы записались на диск командой ```sync```:
+Выйти из *chroot* окружения можно ```ctrl-d```, перед этим не помешает убедиться что все файлы записались на диск командой ```sync```:
 
 	:::bash
 	~$ sync
@@ -123,6 +124,7 @@ tags: MK802, SoC, Torrent, Avahi, uBoot, Debian, Zeroconf
 Тут много способов прострелить себе ногу, поэтому все действия лучше свести к минимуму:
 
 	:::bash
+	# cd sunxi-bsp && git pull && git submodule update --init --recursive
 	~$ git clone --recursive git://github.com/linux-sunxi/sunxi-bsp.git
 
 Перед сборкой необходимо задать цель и не помешает переключиться на последний стабильный бранч ядра Linux:
@@ -214,6 +216,7 @@ tags: MK802, SoC, Torrent, Avahi, uBoot, Debian, Zeroconf
 	      sleep 3
 	   else
 	      echo "\`date\`: Network connection down! Reconnection..."
+	      killall -9 ifup > /dev/null 2>&1
 	      ifup --force wlan0
 	      sleep 33
 	   fi
