@@ -318,6 +318,7 @@ tags: MK802, SoC, Torrent, Avahi, Debian
 	,,L
 	EOT
 	done
+	# umount /dev/mmcblk0p3
 	~$ ls /dev/sd?1 | xargs pvcreate /dev/mmcblk0p3
 	# pvdisplay
 	~$ ls /dev/sd?1 | xargs vgcreate torrents /dev/mmcblk0p3
