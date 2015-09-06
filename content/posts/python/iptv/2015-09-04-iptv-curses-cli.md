@@ -35,7 +35,7 @@ tags: MK802, adb, iptv, chroot, hls
     ~$ cat /dev/urandom | pv | nc $ADB_IP 7777
        26,3MB 0:02:07 [ 243kB/s] [                         <=>                        ]
 
-И кстати в данном случае скорость прямо скажем слабенькая, похоже соседи опять загадили WIFI частоты :( Но не всё так плохо - мы тут не первые, есть поле для экспериментов с каналами WIFI на своём роутере, а на Android довольно много штуковин наподобие *com.farproc.wifi.analyzer*, хватает такого добра и под Linux:
+И кстати в данном случае скорость прямо скажем слабенькая, похоже соседи опять чего-то намутили с *WIFI* частотами :( Но не всё так плохо - мы тут не первые, есть поле для экспериментов с каналами *WIFI* на своём роутере, а на Android довольно много штуковин наподобие *com.farproc.wifi.analyzer*, хватает такого добра и под *Linux*:
 
     :::bash
     ~$ sudo add-apt-repository ppa:wseverin/ppa
@@ -44,7 +44,7 @@ tags: MK802, adb, iptv, chroot, hls
 
 ![LinSSID]({attach}wifi-channels.png){:style="width:100%; border:1px solid #ddd;"}
 
-Итак android от [производителя](https://ru.wikipedia.org/wiki/Smart_TV){:rel="nofollow"} поддерживает аппаратное декодирование видео потока, поэтому даже несмотря на слабенькие показатели CPU и ОЗУ можно побороться за HD качество 1080x720. 
+Итак android от [производителя](https://ru.wikipedia.org/wiki/Android_Mini_PC_MK802){:rel="nofollow"} поддерживает аппаратное декодирование видео потока, поэтому даже несмотря на слабенькие показатели CPU и ОЗУ можно побороться за HD качество 1080x720. 
 
 Попытка номер раз - [BubbleUPnP UPnP/DLNA](https://play.google.com/store/apps/details?id=com.bubblesoft.android.bubbleupnp&hl=ru){:rel="nofollow"} рендерер + [MX Player](https://play.google.com/store/apps/details?id=com.mxtech.videoplayer.ad&hl=ru){:rel="nofollow"} + [MX Player кодек (ARMv7 NEON)](https://play.google.com/store/apps/details?id=com.mxtech.ffmpeg.v7_neon&hl=ru){:rel="nofollow"} на стороне *MK802* ну и контроллер (control point) типа [gupnp-av-cp](https://wiki.gnome.org/Projects/GUPnP){:rel="nofollow"} на стороне ПК. Работает нестабильно причём намертво подвисают что *BubbleUPnP* что *MX Player* и вернуть девайс к жизни можно только присоединив мышку/adb kill/передёрнув питание. Вобщем приятного мало :(
 
