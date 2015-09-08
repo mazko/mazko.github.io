@@ -29,7 +29,8 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 
 # Social widget
 SOCIAL = (('github', 'http://github.com/mazko'),
-		  ('linkedin', 'http://linkedin.com/in/mazko'),)
+          ('linkedin', 'http://linkedin.com/in/mazko'),
+          ('stackoverflow', 'http://stackoverflow.com/users/281102/oleg-mazko'),)
 
 GITHUB_URL = 'http://github.com/mazko'
 
