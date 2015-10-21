@@ -8,6 +8,7 @@ SITEURL = 'http://mazko.github.io'
 DISQUS_SITENAME = 'mazko'
 
 PATH = 'content'
+READERS = {'html': None}
 
 TIMEZONE = 'Europe/Paris'
 
