@@ -4,7 +4,8 @@
   "description": "Port from Apache Lucene",
   "main": "lucene-tokenizers.babel.js",
   "scripts": {
-    "prepublish": "cp ../src/out/lucene-tokenizers.babel.js ."
+    "prepublish": "cp -f ../src/out/lucene-tokenizers.babel.js .",
+    "postpublish": "rm lucene-tokenizers.babel.js"
   },
   "keywords": [
     "Lucene",
