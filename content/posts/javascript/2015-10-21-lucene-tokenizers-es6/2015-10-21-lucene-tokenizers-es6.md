@@ -210,7 +210,8 @@ tags: NLP, Lucene, ES6
 
 <!-- find . -type f -not -path '*/\.*' | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dsrc/{}"></a>' | xclip -selection clipboard -->
 
-<!-- <a href="{attach}src/./lucene-tokenizers.java"></a>
+<!-- 
+<a href="{attach}src/./lucene-tokenizers.java"></a>
 <a href="{attach}src/./src/Test.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/StandardTokenizer.java"></a>
@@ -244,4 +245,11 @@ tags: NLP, Lucene, ES6
 <a href="{attach}src/./out/tests/WordBreakTestUnicode_6_3_0.js"></a>
 <a href="{attach}src/./out/lucene-tokenizers.es6"></a>
 <a href="{attach}src/./merge.sh"></a>
+ -->
+
+<!-- find . -type f -not -path '*/\.*' | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dnpm/{}"></a>' | xclip -selection clipboard -->
+
+<!--
+<a href="{attach}npm/./readme"></a>
+<a href="{attach}npm/./package.json"></a>
  -->
