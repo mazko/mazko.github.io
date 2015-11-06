@@ -208,7 +208,7 @@ tags: NLP, Lucene, ES6
 
 <!-- Pelican Attach hack -->
 
-<!-- find . -type f -not -path '*/\.*' | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dsrc/{}"></a>' | xclip -selection clipboard -->
+<!-- find . -type f | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dsrc/{}"></a>' | xclip -selection clipboard -->
 
 <!-- 
 <a href="{attach}src/./lucene-tokenizers.java"></a>
@@ -247,9 +247,10 @@ tags: NLP, Lucene, ES6
 <a href="{attach}src/./merge.sh"></a>
  -->
 
-<!-- find . -type f -not -path '*/\.*' | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dnpm/{}"></a>' | xclip -selection clipboard -->
+<!-- find . -type f | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dnpm/{}"></a>' | xclip -selection clipboard -->
 
 <!--
 <a href="{attach}npm/./readme"></a>
+<a href="{attach}npm/./.gitignore"></a>
 <a href="{attach}npm/./package.json"></a>
  -->
