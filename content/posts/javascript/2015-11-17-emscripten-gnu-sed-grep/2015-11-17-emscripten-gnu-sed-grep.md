@@ -30,7 +30,8 @@ tags: Emscripten, sed, grep
         var input = id("text-input").value;
         var args = id("current-exec-args").value;
         var exec = id("current-exec").value;
-        id("out-result").value = window[exec](input, args);
+        var output = window[exec](input, args);
+        id("out-result").value = output.replace(/\n$/, "");
       }, delay || 555);
   }
   window.onload = function () {
@@ -223,27 +224,25 @@ var fn_parse_argc = require('shell-quote').parse;
 
 module.exports = function(input_str, args_str) {
 
-  var Module = {};
+  var Module = {}, window = {};
+
+  window.prompt = (function() {
+    var input = input_str;
+    return function() {
+      var value = input;
+      input = null;
+      return value;
+    };
+  })();
 
   Module['thisProgram'] = 'sed';
 
   Module['arguments'] = fn_parse_argc(args_str);
 
-  Module['stdin'] = (function () {
-      var i = 0;
-      return function() {
-        if (i < input_str.length) {
-          return input_str.charCodeAt(i++);
-        } else {
-          return null;
-        }
-      }
-  })();
-
   Module['return'] = '';
 
-  Module['stdout'] = Module['stderr'] = function (code) {
-      Module['return'] += String.fromCharCode(code);
+  Module['print'] = Module['printErr'] = function (text) {
+      Module['return'] += text + '\n';
   };
 
   /* SED.RAW.JS */
