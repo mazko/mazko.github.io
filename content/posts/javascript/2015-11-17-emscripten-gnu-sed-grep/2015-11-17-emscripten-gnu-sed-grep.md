@@ -50,14 +50,14 @@ tags: Emscripten, sed, grep
 })();
 </script>
 
-<select id="current-exec" style="float:left; margin-right:5px;">
+<!-- http://stackoverflow.com/q/5825861/ -->
+<p style="display: flex;">
+<select id="current-exec" style="margin-right:5px;">
     <option value="fn_gnu_sed">sed</option>
     <option value="fn_gnu_grep">grep</option>
 </select>
-<span style="display: block; overflow: hidden;">
-<input id="current-exec-args" type="text" style="width: 99%;">
-<span>
-<div style="clear:both;"></div>
+<input id="current-exec-args" type="text" style="flex: 1;">
+</p>
 
 <div>
 <!-- http://www.freeformatter.com/html-escape.html -->
