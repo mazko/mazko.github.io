@@ -225,6 +225,8 @@ module.exports = function(input_str, args_str) {
 
   var Module = {};
 
+  Module['thisProgram'] = 'sed';
+
   Module['arguments'] = fn_parse_argc(args_str);
 
   Module['stdin'] = (function () {
