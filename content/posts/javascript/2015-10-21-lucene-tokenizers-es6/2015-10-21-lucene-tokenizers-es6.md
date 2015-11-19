@@ -46,7 +46,7 @@ tags: NLP, Lucene, ES6
           res.push(token);
         }
         id("tokenize-result").value = JSON.stringify(res, null, 2);
-      }, delay || 1984);
+      }, delay || 555);
   }
   window.onload = function () {
       var update = function() { parse(); };

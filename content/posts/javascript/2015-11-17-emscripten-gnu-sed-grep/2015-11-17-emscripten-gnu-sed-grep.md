@@ -31,7 +31,7 @@ tags: Emscripten, sed, grep
         var args = id("current-exec-args").value;
         var exec = id("current-exec").value;
         id("out-result").value = window[exec](input, args);
-      }, delay || 1984);
+      }, delay || 555);
   }
   window.onload = function () {
       var update = function() { parse(); };
