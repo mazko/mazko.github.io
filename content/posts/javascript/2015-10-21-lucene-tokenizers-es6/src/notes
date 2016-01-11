@@ -1,5 +1,0 @@
-awk '/\:es6\:/,/\:end\:/' lucene-tokenizers.java
-
-sudo apt-get install openjdk-7-source
-
-Any reason to declare [ArrayIndexOutOfBoundsException, IOException, IndexOutOfBoundsException] ?

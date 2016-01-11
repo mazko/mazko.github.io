@@ -753,8 +753,9 @@ public final class StandardTokenizerImpl {
 	private int zzEndRead;
 
 	/** the number of characters up to the start of the matched text */
-	private int yychar;
-
+	// :es6:
+	private int yychar1;
+	// :end:
 	/** zzAtEOF == true <=> the scanner is at the EOF */
 	private boolean zzAtEOF;
 
@@ -793,7 +794,9 @@ public final class StandardTokenizerImpl {
 	public static final int HANGUL_TYPE = StandardTokenizer.HANGUL;
 
 	public final int yychar() {
-		return yychar;
+		// :es6:
+		return yychar1;
+		// :end:
 	}
 
 	/**
@@ -928,7 +931,9 @@ public final class StandardTokenizerImpl {
 		zzEndRead = zzStartRead = 0;
 		zzCurrentPos = zzMarkedPos = 0;
 		zzFinalHighSurrogate = 0;
-		yychar = 0;
+		// :es6:
+		yychar1 = 0;
+		// :end:
 		zzLexicalState = YYINITIAL;
 		if (zzBuffer.length > ZZ_BUFFERSIZE)
 			zzBuffer = new char[ZZ_BUFFERSIZE];
@@ -1048,7 +1053,9 @@ public final class StandardTokenizerImpl {
 		while (true) {
 			zzMarkedPosL = zzMarkedPos;
 
-			yychar += zzMarkedPosL - zzStartRead;
+			// :es6:
+			yychar1 += zzMarkedPosL - zzStartRead;
+			// :end:
 
 			zzAction = -1;
 
@@ -1262,9 +1269,7 @@ public class StandardTokenizer implements Tokenizer {
 			if (scanner.yylength() <= maxTokenLength) {
 				scanner.getText(termAtt);
 				// :es6:
-				// esjava is not smart enough yet :(
-				// scanner.yychar$fixed()
-				return new TokenModel(termAtt.toString(), TOKEN_TYPES[tokenType], scanner.yychar$fixed(),
+				return new TokenModel(termAtt.toString(), TOKEN_TYPES[tokenType], scanner.yychar(),
 						skippedPositions + 1);
 				// :end:
 			} else
@@ -6218,7 +6223,9 @@ public final class UAX29URLEmailTokenizerImpl {
 	private int zzEndRead;
 
 	/** the number of characters up to the start of the matched text */
-	private int yychar;
+	// :es6:
+	private int yychar1;
+	// :end:
 
 	/** zzAtEOF == true <=> the scanner is at the EOF */
 	private boolean zzAtEOF;
@@ -6262,7 +6269,9 @@ public final class UAX29URLEmailTokenizerImpl {
 	public static final int URL_TYPE = UAX29URLEmailTokenizer.URL;
 
 	public final int yychar() {
-		return yychar;
+		// :es6:
+		return yychar1;
+		// :end:
 	}
 
 	/**
@@ -6397,7 +6406,9 @@ public final class UAX29URLEmailTokenizerImpl {
 		zzEndRead = zzStartRead = 0;
 		zzCurrentPos = zzMarkedPos = 0;
 		zzFinalHighSurrogate = 0;
-		yychar = 0;
+		// :es6:
+		yychar1 = 0;
+		// :end:
 		zzLexicalState = YYINITIAL;
 		if (zzBuffer.length > ZZ_BUFFERSIZE)
 			zzBuffer = new char[ZZ_BUFFERSIZE];
@@ -6517,7 +6528,9 @@ public final class UAX29URLEmailTokenizerImpl {
 		while (true) {
 			zzMarkedPosL = zzMarkedPos;
 
-			yychar += zzMarkedPosL - zzStartRead;
+			// :es6:
+			yychar1 += zzMarkedPosL - zzStartRead;
+			// :end:
 
 			zzAction = -1;
 
@@ -6795,9 +6808,7 @@ public final class UAX29URLEmailTokenizer implements Tokenizer {
 			if (scanner.yylength() <= maxTokenLength) {
 				scanner.getText(termAtt);
 				// :es6:
-				// esjava is not smart enough yet :(
-				// scanner.yychar$fixed()
-				return new TokenModel(termAtt.toString(), TOKEN_TYPES[tokenType], scanner.yychar$fixed(),
+				return new TokenModel(termAtt.toString(), TOKEN_TYPES[tokenType], scanner.yychar(),
 						skippedPositions + 1);
 				// :end:
 			} else

@@ -1,5 +1,3 @@
-[![npm version](https://badge.fury.io/js/lucene-tokenizers.svg)](http://badge.fury.io/js/lucene-tokenizers)
-
 [Online Demo](http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/)
 
 Install:
@@ -14,7 +12,13 @@ Install:
     ts.setReader(new lt.StringReader("Hello World!"));
     var res = [], token = null;
     while ((token = ts.incrementToken()) !== null) {
-      res.push(token);
+      var pretty_token = {};
+      for (var prop in token) {
+        if(token.hasOwnProperty(prop)) {
+          pretty_token[prop.substring('_$esjava$'.length)] = token[prop];
+        } 
+      }
+      res.push(pretty_token);
     }
 
     console.log(JSON.stringify(res, null, 2));
@@ -35,3 +39,5 @@ Install:
         "positionIncrement": 1
       }
     ]
+
+[More about ESJava](https://github.com/mazko/esjava)

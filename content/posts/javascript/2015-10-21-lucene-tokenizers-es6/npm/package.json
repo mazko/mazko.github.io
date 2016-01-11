@@ -1,6 +1,6 @@
 {
   "name": "lucene-tokenizers",
-  "version": "5.3.1",
+  "version": "5.3.3",
   "description": "Port from Apache Lucene",
   "main": "lucene-tokenizers.babel.js",
   "scripts": {

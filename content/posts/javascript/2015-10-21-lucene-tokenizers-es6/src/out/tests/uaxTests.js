@@ -1,32 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>QUnit TestUAX29URLEmailTokenizer</title>
-  <link rel="stylesheet" href="qunit/qunit-1.19.0.css">
-</head>
-<body>
-  <div id="qunit"></div>
-  <div id="qunit-fixture"></div>
-  <script src="qunit/qunit-1.19.0.js"></script>
+(function() {
 
-<!--
-  <script src="../traceur/traceur.bin.js"></script>
-  <script src="../traceur/lucene-tokenizers.traceour.js"></script>
--->
-
-  <script src="../lucene-tokenizers.babel.js"></script>
-  <script src="BaseTokenStreamTestCase.js"></script>
-  <script src="WordBreakTestUnicode_6_3_0.js"></script>
-
-  <script>
-    // traceur: var lucene = System.get("../lucene-tokenizers.es6"),
-    var lucene = luceneTokenizers,
-        UAX29URLEmailTokenizer=lucene.UAX29URLEmailTokenizer,
-        StringReader=lucene.StringReader;
+    function newAnalizer() {
+      return new luceneTokenizers.UAX29URLEmailTokenizer();
+    }
 
     QUnit.test( "Bounds", function( assert ) {
-      checkBounds(new UAX29URLEmailTokenizer());
+      checkBounds(newAnalizer());
     });
 
     QUnit.test( "LongEMAILatomText", function( assert ) {
@@ -39,7 +18,7 @@
       var emailAtomChars = "!#$%&'*+,-./" + 
         "0123456789=?ABCDEFGHIJKLMNOPQRSTUVWXYZ^_" + 
         "`abcdefghijklmnopqrstuvwxyz{|}~";
-      var numChars = getRandomInt(100 * 1024, 3 * 1024 * 1024);
+      var numChars = getRandomInt(22 * 1024, 333 * 1024);
       var buff = [];
       for( var i=0; i < numChars; i++ ){
         buff.push(
@@ -49,8 +28,8 @@
       }
       var text = buff.join('');
       var tokenCount = 0;
-      var ts = new UAX29URLEmailTokenizer();
-      ts.setReader(new StringReader(text));
+      var ts = newAnalizer();
+      ts.setReader(new luceneTokenizers.StringReader(text));
       ts.reset();
       while (ts.incrementToken() != null) {
         tokenCount++;
@@ -61,7 +40,7 @@
 
       tokenCount = 0;
       ts.setMaxTokenLength(getRandomInt(200, 8192));
-      ts.setReader(new StringReader(text));
+      ts.setReader(new luceneTokenizers.StringReader(text));
       ts.reset();
       while (ts.incrementToken() != null) {
         tokenCount++;
@@ -71,24 +50,8 @@
       assert.ok(tokenCount > 0);
     });
 
-    QUnit.module( "group a", {
-      beforeEach: function() {
-        this.a = new UAX29URLEmailTokenizer();
-      },
-      afterEach: function() {
-        this.a = null;
-      }
-    });
-
-    QUnit.test( "HugeDoc", function( assert ) {
-      assertAnalyzesTo(this.a, 
-        makeStrOfChrs(' ', 4094) + "testing 1234",
-        ["testing", "1234"]
-      );
-    });
-
     QUnit.test( "Armenian", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "Վիքիպեդիայի 13 միլիոն հոդվածները (4,600` հայերեն վիքիպեդիայում) գրվել են կամավորների կողմից ու համարյա բոլոր հոդվածները կարող է խմբագրել ցանկաց մարդ ով կարող է բացել Վիքիպեդիայի կայքը։",
           ["Վիքիպեդիայի", "13", "միլիոն", "հոդվածները", 
            "4,600", "հայերեն", "վիքիպեդիայում", "գրվել", 
@@ -99,14 +62,14 @@
     });
 
     QUnit.test( "Amharic", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "ዊኪፔድያ የባለ ብዙ ቋንቋ የተሟላ ትክክለኛና ነጻ መዝገበ ዕውቀት (ኢንሳይክሎፒዲያ) ነው። ማንኛውም",
           ["ዊኪፔድያ", "የባለ", "ብዙ", "ቋንቋ", "የተሟላ", "ትክክለኛና", "ነጻ", "መዝገበ", "ዕውቀት", "ኢንሳይክሎፒዲያ", "ነው",
             "ማንኛውም" ]);
     });
 
     QUnit.test( "Arabic", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
           "الفيلم الوثائقي الأول عن ويكيبيديا يسمى \"الحقيقة بالأرقام: قصة ويكيبيديا\" (بالإنجليزية: Truth in Numbers: The Wikipedia Story)، سيتم إطلاقه في 2008.",
           ["الفيلم", "الوثائقي", "الأول", "عن", "ويكيبيديا", "يسمى", "الحقيقة", "بالأرقام", "قصة",
             "ويكيبيديا", "بالإنجليزية", "Truth", "in", "Numbers", "The", "Wikipedia", "Story", "سيتم",
@@ -114,14 +77,14 @@
     });
 
     QUnit.test( "Aramaic", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "ܘܝܩܝܦܕܝܐ (ܐܢܓܠܝܐ: Wikipedia) ܗܘ ܐܝܢܣܩܠܘܦܕܝܐ ܚܐܪܬܐ ܕܐܢܛܪܢܛ ܒܠܫܢ̈ܐ ܣܓܝܐ̈ܐ܂ ܫܡܗ ܐܬܐ ܡܢ ܡ̈ܠܬܐ ܕ\"ܘܝܩܝ\" ܘ\"ܐܝܢܣܩܠܘܦܕܝܐ\"܀",
           [ "ܘܝܩܝܦܕܝܐ", "ܐܢܓܠܝܐ", "Wikipedia", "ܗܘ", "ܐܝܢܣܩܠܘܦܕܝܐ", "ܚܐܪܬܐ", "ܕܐܢܛܪܢܛ", "ܒܠܫܢ̈ܐ",
             "ܣܓܝܐ̈ܐ", "ܫܡܗ", "ܐܬܐ", "ܡܢ", "ܡ̈ܠܬܐ", "ܕ", "ܘܝܩܝ", "ܘ", "ܐܝܢܣܩܠܘܦܕܝܐ" ]);
     });
 
     QUnit.test( "Bengali", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "এই বিশ্বকোষ পরিচালনা করে উইকিমিডিয়া ফাউন্ডেশন (একটি অলাভজনক সংস্থা)। উইকিপিডিয়ার শুরু ১৫ জানুয়ারি, ২০০১ সালে। এখন পর্যন্ত ২০০টিরও বেশী ভাষায় উইকিপিডিয়া রয়েছে।",
           [ "এই", "বিশ্বকোষ", "পরিচালনা", "করে", "উইকিমিডিয়া", "ফাউন্ডেশন", "একটি", "অলাভজনক",
             "সংস্থা", "উইকিপিডিয়ার", "শুরু", "১৫", "জানুয়ারি", "২০০১", "সালে", "এখন", "পর্যন্ত",
@@ -129,14 +92,14 @@
     });
 
     QUnit.test( "Farsi", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "ویکی پدیای انگلیسی در تاریخ ۲۵ دی ۱۳۷۹ به صورت مکملی برای دانشنامهٔ تخصصی نوپدیا نوشته شد.",
           [ "ویکی", "پدیای", "انگلیسی", "در", "تاریخ", "۲۵", "دی", "۱۳۷۹", "به", "صورت", "مکملی",
             "برای", "دانشنامهٔ", "تخصصی", "نوپدیا", "نوشته", "شد" ]);
     });
 
     QUnit.test( "Greek", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "Γράφεται σε συνεργασία από εθελοντές με το λογισμικό wiki, κάτι που σημαίνει ότι άρθρα μπορεί να προστεθούν ή να αλλάξουν από τον καθένα.",
           [ "Γράφεται", "σε", "συνεργασία", "από", "εθελοντές", "με", "το", "λογισμικό", "wiki",
             "κάτι", "που", "σημαίνει", "ότι", "άρθρα", "μπορεί", "να", "προστεθούν", "ή", "να", "αλλάξουν",
@@ -144,19 +107,19 @@
     });
 
     QUnit.test( "Thai", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
           "การที่ได้ต้องแสดงว่างานดี. แล้วเธอจะไปไหน? ๑๒๓๔",
           [ "การที่ได้ต้องแสดงว่างานดี", "แล้วเธอจะไปไหน", "๑๒๓๔" ]);
     });
 
     QUnit.test( "Lao", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
           "ສາທາລະນະລັດ ປະຊາທິປະໄຕ ປະຊາຊົນລາວ",
           [ "ສາທາລະນະລັດ", "ປະຊາທິປະໄຕ", "ປະຊາຊົນລາວ" ]);
     });
 
     QUnit.test( "Tibetan", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
           "སྣོན་མཛོད་དང་ལས་འདིས་བོད་ཡིག་མི་ཉམས་གོང་འཕེལ་དུ་གཏོང་བར་ཧ་ཅང་དགེ་མཚན་མཆིས་སོ། །",
           [ "སྣོན", "མཛོད", "དང", "ལས", "འདིས", "བོད", "ཡིག", "མི", "ཉམས", "གོང", "འཕེལ", "དུ",
             "གཏོང", "བར", "ཧ", "ཅང", "དགེ", "མཚན", "མཆིས", "སོ" ]);
@@ -167,7 +130,7 @@
      */
 
     QUnit.test( "Chinese", function( assert ) {
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
           "我是中国人。 １２３４ Ｔｅｓｔｓ ",
           [ "我", "是", "中", "国", "人", "１２３４", "Ｔｅｓｔｓ" ]);
     });
@@ -179,71 +142,71 @@
        * incorrectly tokenized into "mo" "chte", the combining character is
        * lost. Expected result is only on token "moͤchte".
        */
-      assertAnalyzesTo(this.a, "moͤchte", [ "moͤchte" ]);
+      assertAnalyzesTo(newAnalizer(), "moͤchte", [ "moͤchte" ]);
     });
 
     /* Tests from StandardAnalyzer, just to show behavior is similar */
 
     QUnit.test( "AlphanumericSA", function( assert ) {
       // alphanumeric tokens
-      assertAnalyzesTo(this.a, "B2B", [ "B2B" ]);
-      assertAnalyzesTo(this.a, "2B", [ "2B" ]);
+      assertAnalyzesTo(newAnalizer(), "B2B", [ "B2B" ]);
+      assertAnalyzesTo(newAnalizer(), "2B", [ "2B" ]);
     });
 
     QUnit.test( "DelimitersSA", function( assert ) {
       // other delimiters: "-", "/", ","
-      assertAnalyzesTo(this.a, "some-dashed-phrase", [ "some", "dashed", "phrase" ]);
-      assertAnalyzesTo(this.a, "dogs,chase,cats", [ "dogs", "chase", "cats" ]);
-      assertAnalyzesTo(this.a, "ac/dc", [ "ac", "dc" ]);
+      assertAnalyzesTo(newAnalizer(), "some-dashed-phrase", [ "some", "dashed", "phrase" ]);
+      assertAnalyzesTo(newAnalizer(), "dogs,chase,cats", [ "dogs", "chase", "cats" ]);
+      assertAnalyzesTo(newAnalizer(), "ac/dc", [ "ac", "dc" ]);
     });
 
     QUnit.test( "ApostrophesSA", function( assert ) {
       // internal apostrophes: O'Reilly, you're, O'Reilly's
-      assertAnalyzesTo(this.a, "O'Reilly", [ "O'Reilly" ]);
-      assertAnalyzesTo(this.a, "you're", [ "you're" ]);
-      assertAnalyzesTo(this.a, "she's", [ "she's" ]);
-      assertAnalyzesTo(this.a, "Jim's", [ "Jim's" ]);
-      assertAnalyzesTo(this.a, "don't", [ "don't" ]);
-      assertAnalyzesTo(this.a, "O'Reilly's", [ "O'Reilly's" ]);
+      assertAnalyzesTo(newAnalizer(), "O'Reilly", [ "O'Reilly" ]);
+      assertAnalyzesTo(newAnalizer(), "you're", [ "you're" ]);
+      assertAnalyzesTo(newAnalizer(), "she's", [ "she's" ]);
+      assertAnalyzesTo(newAnalizer(), "Jim's", [ "Jim's" ]);
+      assertAnalyzesTo(newAnalizer(), "don't", [ "don't" ]);
+      assertAnalyzesTo(newAnalizer(), "O'Reilly's", [ "O'Reilly's" ]);
     });
 
     QUnit.test( "NumericSA", function( assert ) {
       // floating point, serial, model numbers, ip addresses, etc.
-      assertAnalyzesTo(this.a, "21.35", [ "21.35" ]);
-      assertAnalyzesTo(this.a, "R2D2 C3PO", [ "R2D2", "C3PO" ]);
-      assertAnalyzesTo(this.a, "216.239.63.104", [ "216.239.63.104" ]);
+      assertAnalyzesTo(newAnalizer(), "21.35", [ "21.35" ]);
+      assertAnalyzesTo(newAnalizer(), "R2D2 C3PO", [ "R2D2", "C3PO" ]);
+      assertAnalyzesTo(newAnalizer(), "216.239.63.104", [ "216.239.63.104" ]);
     });
 
     QUnit.test( "TextWithNumbersSA", function( assert ) {
       // numbers
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "David has 5000 bones", 
         [ "David", "has", "5000", "bones" ]);
     });
 
     QUnit.test( "VariousTextSA", function( assert ) {
       // various
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "C embedded developers wanted", 
         [ "C", "embedded", "developers", "wanted" ]);
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "foo bar FOO BAR", 
         [ "foo", "bar", "FOO", "BAR" ]);
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "foo      bar .  FOO <> BAR", 
         [ "foo", "bar", "FOO", "BAR" ]);
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "\"QUOTED\" word", 
         [ "QUOTED", "word" ]);
     });
 
     QUnit.test( "KoreanSA", function( assert ) {
       // Korean words
-      assertAnalyzesTo(this.a, "안녕하세요 한글입니다", [ "안녕하세요", "한글입니다" ]);
+      assertAnalyzesTo(newAnalizer(), "안녕하세요 한글입니다", [ "안녕하세요", "한글입니다" ]);
     });
 
     QUnit.test( "Offsets", function( assert ) {
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "David has 5000 bones",
         [ "David", "has", "5000", "bones" ],
         null,
@@ -252,20 +215,20 @@
     });
 
     QUnit.test( "Types", function( assert ) {
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "David has 5000 bones",
         [ "David", "has", "5000", "bones" ],
         [ "<ALPHANUM>", "<ALPHANUM>", "<NUM>", "<ALPHANUM>" ]);
     });
 
     QUnit.test( "MailtoSchemeEmails", function( assert ) {
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "mailto:test@example.org",
         [ "mailto", "test@example.org" ],
         [ "<ALPHANUM>", "<EMAIL>" ]);
       // TODO: Support full mailto: scheme URIs. See RFC 6068:
       // http://tools.ietf.org/html/rfc6068
-      assertAnalyzesTo(this.a,
+      assertAnalyzesTo(newAnalizer(),
         "mailto:personA@example.com,personB@example.com?cc=personC@example.com"
             + "&subject=Subjectivity&body=Corpusivity%20or%20something%20like%20that",
         ["mailto", "personA@example.com",
@@ -288,32 +251,32 @@
     });
 
     QUnit.test( "UnicodeWordBreaks", function( assert ) {
-      WordBreakTestUnicode_6_3_0(this.a);
+      WordBreakTestUnicode_6_3_0(newAnalizer());
     });
 
     QUnit.test( "Supplementary", function( assert ) {
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "𩬅艱鍟䇹愯瀛",
         [ "𩬅", "艱", "鍟", "䇹", "愯", "瀛" ],
         [ "<IDEOGRAPHIC>", "<IDEOGRAPHIC>", "<IDEOGRAPHIC>", "<IDEOGRAPHIC>", "<IDEOGRAPHIC>", "<IDEOGRAPHIC>" ]);
     });
 
     QUnit.test( "Korean", function( assert ) {
-      assertAnalyzesTo(this.a, "훈민정음", [ "훈민정음" ], [ "<HANGUL>" ]);
+      assertAnalyzesTo(newAnalizer(), "훈민정음", [ "훈민정음" ], [ "<HANGUL>" ]);
     });
 
     QUnit.test( "Japanese", function( assert ) {
-      assertAnalyzesTo(this.a, 
+      assertAnalyzesTo(newAnalizer(), 
         "仮名遣い カタカナ", 
         [ "仮", "名", "遣", "い", "カタカナ" ], 
         [ "<IDEOGRAPHIC>", "<IDEOGRAPHIC>", "<IDEOGRAPHIC>", "<HIRAGANA>", "<KATAKANA>" ]);
     });
 
     QUnit.test( "CombiningMarks", function( assert ) {
-      checkOneTerm(this.a, "ざ", "ざ"); // hiragana
-      checkOneTerm(this.a, "ザ", "ザ"); // katakana
-      checkOneTerm(this.a, "壹゙", "壹゙"); // ideographic
-      checkOneTerm(this.a, "아゙", "아゙"); // hangul
+      checkOneTerm(newAnalizer(), "ざ", "ざ"); // hiragana
+      checkOneTerm(newAnalizer(), "ザ", "ザ"); // katakana
+      checkOneTerm(newAnalizer(), "壹゙", "壹゙"); // ideographic
+      checkOneTerm(newAnalizer(), "아゙", "아゙"); // hangul
     });
 
     /**
@@ -325,52 +288,49 @@
  
       // ':' is in \p{WB:MidLetter}, which should trigger a split unless there
       // is a Letter char on both sides
-      assertAnalyzesTo(this.a, "A:B", ["A:B" ]);
-      assertAnalyzesTo(this.a, "A::B", ["A", "B"]);
+      assertAnalyzesTo(newAnalizer(), "A:B", ["A:B" ]);
+      assertAnalyzesTo(newAnalizer(), "A::B", ["A", "B"]);
 
       // '.' is in \p{WB:MidNumLet}, which should trigger a split unless there
       // is a Letter or Numeric char on both sides
-      assertAnalyzesTo(this.a, "1.2", [ "1.2" ]);
-      assertAnalyzesTo(this.a, "A.B", [ "A.B" ]);
-      assertAnalyzesTo(this.a, "1..2", [ "1", "2" ]);
-      assertAnalyzesTo(this.a, "A..B", [ "A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "1.2", [ "1.2" ]);
+      assertAnalyzesTo(newAnalizer(), "A.B", [ "A.B" ]);
+      assertAnalyzesTo(newAnalizer(), "1..2", [ "1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "A..B", [ "A", "B" ]);
 
       // ',' is in \p{WB:MidNum}, which should trigger a split unless there is
       // a Numeric char on both sides
-      assertAnalyzesTo(this.a, "1,2", [ "1,2" ]);
-      assertAnalyzesTo(this.a, "1,,2", [ "1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "1,2", [ "1,2" ]);
+      assertAnalyzesTo(newAnalizer(), "1,,2", [ "1", "2" ]);
 
       // Mixed consecutive \p{WB:MidLetter} and \p{WB:MidNumLet} should
       // trigger a split
-      assertAnalyzesTo(this.a, "A.:B", [ "A", "B" ]);
-      assertAnalyzesTo(this.a, "A:.B", [ "A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "A.:B", [ "A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "A:.B", [ "A", "B" ]);
 
       // Mixed consecutive \p{WB:MidNum} and \p{WB:MidNumLet} should trigger a
       // split
-      assertAnalyzesTo(this.a, "1,.2", [ "1", "2" ]);
-      assertAnalyzesTo(this.a, "1.,2", [ "1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "1,.2", [ "1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "1.,2", [ "1", "2" ]);
 
       // '_' is in \p{WB:ExtendNumLet}
 
-      assertAnalyzesTo(this.a, "A:B_A:B", [ "A:B_A:B" ]);
-      assertAnalyzesTo(this.a, "A:B_A::B", [ "A:B_A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "A:B_A:B", [ "A:B_A:B" ]);
+      assertAnalyzesTo(newAnalizer(), "A:B_A::B", [ "A:B_A", "B" ]);
 
-      assertAnalyzesTo(this.a, "1.2_1.2", [ "1.2_1.2" ]);
-      assertAnalyzesTo(this.a, "A.B_A.B", [ "A.B_A.B" ]);
-      assertAnalyzesTo(this.a, "1.2_1..2", [ "1.2_1", "2" ]);
-      assertAnalyzesTo(this.a, "A.B_A..B", [ "A.B_A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "1.2_1.2", [ "1.2_1.2" ]);
+      assertAnalyzesTo(newAnalizer(), "A.B_A.B", [ "A.B_A.B" ]);
+      assertAnalyzesTo(newAnalizer(), "1.2_1..2", [ "1.2_1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "A.B_A..B", [ "A.B_A", "B" ]);
 
-      assertAnalyzesTo(this.a, "1,2_1,2", [ "1,2_1,2" ]);
-      assertAnalyzesTo(this.a, "1,2_1,,2", [ "1,2_1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "1,2_1,2", [ "1,2_1,2" ]);
+      assertAnalyzesTo(newAnalizer(), "1,2_1,,2", [ "1,2_1", "2" ]);
 
-      assertAnalyzesTo(this.a, "C_A.:B", [ "C_A", "B" ]);
-      assertAnalyzesTo(this.a, "C_A:.B", [ "C_A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "C_A.:B", [ "C_A", "B" ]);
+      assertAnalyzesTo(newAnalizer(), "C_A:.B", [ "C_A", "B" ]);
 
-      assertAnalyzesTo(this.a, "3_1,.2", [ "3_1", "2" ]);
-      assertAnalyzesTo(this.a, "3_1.,2", [ "3_1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "3_1,.2", [ "3_1", "2" ]);
+      assertAnalyzesTo(newAnalizer(), "3_1.,2", [ "3_1", "2" ]);
 
     });
-
-  </script>
-</body>
-</html>
+})();

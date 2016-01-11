@@ -3,7 +3,9 @@ category: JavaScript
 tags: NLP, Lucene, ES6
 
 
-Пример портирования **Java** => **JavaScript** на примере токенизаторов из [Lucene]({filename}../../java/lucene/2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md). [Исходники](https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src).
+Пример портирования **Java** => **JavaScript** на примере токенизаторов из [Lucene]({filename}../../java/lucene/2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md). 
+
+[lucene-tokenizers.es6]({attach}src/out/lucene-tokenizers.es6) | [lucene-tokenizers.babel.js]({attach}src/out/lucene-tokenizers.babel.js) | [Тесты]({attach}src/out/tests/Coverage.html) | [Исходники](https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src)
 
 ##TL;DR
 
@@ -43,8 +45,15 @@ tags: NLP, Lucene, ES6
         );
         var res = [];
         for (var token, i=0; (token = ts.incrementToken()) !== null; i++) {
-          res.push(token);
+          var pretty_token = {};
+          for (var prop in token) {
+            if(token.hasOwnProperty(prop)) {
+              pretty_token[prop.substring('_$esjava$'.length)] = token[prop];
+            } 
+          }
+          res.push(pretty_token);
         }
+
         id("tokenize-result").value = JSON.stringify(res, null, 2);
       }, delay || 555);
   }
@@ -194,63 +203,65 @@ tags: NLP, Lucene, ES6
     for cls in 'StringReader' 'StandardTokenizer' 'UAX29URLEmailTokenizer'; do
       sed -i "s/^class\s\+${cls}\s\+/export class ${cls} /" ${ES6FILE}
     done
-
+    
     sed 's/\\u/\\\\u/g' "$ES6FILE" |                     \
     node --stack-size=10000                              \
     "`which babel`"                                      \
     --compact=false                                      \
-    --modules umdStrict --module-id luceneTokenizers |   \
+    --presets es2015                                     \
+    --plugins transform-es2015-modules-umd               \
+    --module-id luceneTokenizers |                       \
     sed 's/\\\\u/\\u/g' > lucene-tokenizers.babel.js
 
 Скрипт на выходе *lucene-tokenizers.babel.js* крутится в демке.
 
-Юнит тесты: [StandardTokenizer]({attach}src/out/tests/TestStandardTokenizer.html), [UAX29URLEmailTokenizer]({attach}src/out/tests/TestTestUAX29URLEmailTokenizer.html)
-
 <!-- Pelican Attach hack -->
 
-<!-- find . -type f | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dsrc/{}"></a>' | xclip -selection clipboard -->
+<!-- cd ./src/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dsrc/{}"></a>' | xclip -selection clipboard && cd - -->
 
 <!-- 
 <a href="{attach}src/./lucene-tokenizers.java"></a>
-<a href="{attach}src/./src/Test.java"></a>
+<a href="{attach}src/./merge.sh"></a>
+<a href="{attach}src/./out/js.sh"></a>
+<a href="{attach}src/./out/lucene-tokenizers.babel.js"></a>
+<a href="{attach}src/./out/lucene-tokenizers.es6"></a>
+<a href="{attach}src/./out/tests/BaseTokenStreamTestCase.js"></a>
+<a href="{attach}src/./out/tests/Coverage.html"></a>
+<a href="{attach}src/./out/tests/qunit/blanket.js"></a>
+<a href="{attach}src/./out/tests/qunit/lcov_reporter.js"></a>
+<a href="{attach}src/./out/tests/qunit/qunit-1.19.0.css"></a>
+<a href="{attach}src/./out/tests/qunit/qunit-1.19.0.js"></a>
+<a href="{attach}src/./out/tests/stdTests.js"></a>
+<a href="{attach}src/./out/tests/uaxTests.js"></a>
+<a href="{attach}src/./out/tests/WordBreakTestUnicode_6_3_0.js"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/Character.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/Exception.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/StandardTokenizer.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/StringReader.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/IOException.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/Reader.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/StandardAnalyzer.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/TokenModel.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/Character.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/Tokenizer.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/StandardTokenizer.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/StringReader.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/System.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/Exception.java"></a>
-<a href="{attach}src/./src/org/apache/lucene/analysis/standard/IOException.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/Tokenizer.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/TokenModel.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java"></a>
+<a href="{attach}src/./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java"></a>
 <a href="{attach}src/./src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java"></a>
+<a href="{attach}src/./src/Test.java"></a>
 <a href="{attach}src/./tests/org/apache/lucene/analysis/standard/BaseTokenStreamTestCase.java"></a>
-<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/TestUtil.java"></a>
-<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/TestUAX29URLEmailTokenizer.java"></a>
-<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/TestStandardAnalyzer.java"></a>
-<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/WordBreakTestUnicode_6_3_0.java"></a>
 <a href="{attach}src/./tests/org/apache/lucene/analysis/standard/Slow.java"></a>
-<a href="{attach}src/./notes"></a>
-<a href="{attach}src/./out/lucene-tokenizers.babel.js"></a>
-<a href="{attach}src/./out/js.sh"></a>
-<a href="{attach}src/./out/tests/qunit/qunit-1.19.0.js"></a>
-<a href="{attach}src/./out/tests/qunit/qunit-1.19.0.css"></a>
-<a href="{attach}src/./out/tests/BaseTokenStreamTestCase.js"></a>
-<a href="{attach}src/./out/tests/TestStandardTokenizer.html"></a>
-<a href="{attach}src/./out/tests/TestTestUAX29URLEmailTokenizer.html"></a>
-<a href="{attach}src/./out/tests/WordBreakTestUnicode_6_3_0.js"></a>
-<a href="{attach}src/./out/lucene-tokenizers.es6"></a>
-<a href="{attach}src/./merge.sh"></a>
+<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/TestStandardAnalyzer.java"></a>
+<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/TestUAX29URLEmailTokenizer.java"></a>
+<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/TestUtil.java"></a>
+<a href="{attach}src/./tests/org/apache/lucene/analysis/standard/WordBreakTestUnicode_6_3_0.java"></a>
  -->
 
-<!-- find . -type f | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dnpm/{}"></a>' | xclip -selection clipboard -->
+<!-- cd ./npm/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dnpm/{}"></a>' | xclip -selection clipboard && cd - -->
 
 <!--
-<a href="{attach}npm/./readme"></a>
 <a href="{attach}npm/./.gitignore"></a>
 <a href="{attach}npm/./package.json"></a>
+<a href="{attach}npm/./readme"></a>
  -->

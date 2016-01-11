@@ -38,7 +38,7 @@ function assertTokenStreamContents(ts, texts, types, starts, ends) {
 
 function assertAnalyzesTo(ts, input, output, types, start, end) {
   if (input != null) {
-    ts.setReader(new StringReader(input));
+    ts.setReader(new luceneTokenizers.StringReader(input));
   }
   assertTokenStreamContents(ts, output, types, start, end);
 }
@@ -48,6 +48,7 @@ function checkOneTerm(ts, input, expected) {
 }
 
 function checkBounds(tokenizer) {
+  var StringReader = luceneTokenizers.StringReader;
   tokenizer.setReader(new StringReader(''));
   QUnit.equal(tokenizer.incrementToken(), null);
   tokenizer.setReader(new StringReader(' '));

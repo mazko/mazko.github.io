@@ -308,8 +308,10 @@ public final class StandardTokenizerImpl {
 	private int zzEndRead;
 
 	/** the number of characters up to the start of the matched text */
+	// :es6:
+	// private int yychar1;
 	private int yychar;
-
+	// :end:
 	/** zzAtEOF == true <=> the scanner is at the EOF */
 	private boolean zzAtEOF;
 
@@ -348,7 +350,10 @@ public final class StandardTokenizerImpl {
 	public static final int HANGUL_TYPE = StandardTokenizer.HANGUL;
 
 	public final int yychar() {
+		// :es6:
+		// return yychar1;
 		return yychar;
+		// :end:
 	}
 
 	/**
@@ -483,7 +488,10 @@ public final class StandardTokenizerImpl {
 		zzEndRead = zzStartRead = 0;
 		zzCurrentPos = zzMarkedPos = 0;
 		zzFinalHighSurrogate = 0;
+		// :es6:
+		// yychar1 = 0;
 		yychar = 0;
+		// :end:
 		zzLexicalState = YYINITIAL;
 		if (zzBuffer.length > ZZ_BUFFERSIZE)
 			zzBuffer = new char[ZZ_BUFFERSIZE];
@@ -603,7 +611,10 @@ public final class StandardTokenizerImpl {
 		while (true) {
 			zzMarkedPosL = zzMarkedPos;
 
+			// :es6:
+			// yychar1 += zzMarkedPosL - zzStartRead;
 			yychar += zzMarkedPosL - zzStartRead;
+			// :end:
 
 			zzAction = -1;
 

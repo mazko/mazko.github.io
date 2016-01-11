@@ -1,7 +1,11 @@
+'use strict';
+
+function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.constructor === Symbol ? "symbol" : typeof obj; }
+
 (function (global, factory) {
-    if (typeof define === 'function' && define.amd) {
+    if (typeof define === "function" && define.amd) {
         define('luceneTokenizers', ['exports'], factory);
-    } else if (typeof exports !== 'undefined') {
+    } else if (typeof exports !== "undefined") {
         factory(exports);
     } else {
         var mod = {
@@ -11,15 +15,82 @@
         global.luceneTokenizers = mod.exports;
     }
 })(this, function (exports) {
-    'use strict';
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
 
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    var _get = function get(object, property, receiver) {
+        if (object === null) object = Function.prototype;
+        var desc = Object.getOwnPropertyDescriptor(object, property);
 
-    var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+        if (desc === undefined) {
+            var parent = Object.getPrototypeOf(object);
 
-    function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+            if (parent === null) {
+                return undefined;
+            } else {
+                return get(parent, property, receiver);
+            }
+        } else if ("value" in desc) {
+            return desc.value;
+        } else {
+            var getter = desc.get;
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+            if (getter === undefined) {
+                return undefined;
+            }
+
+            return getter.call(receiver);
+        }
+    };
+
+    function _possibleConstructorReturn(self, call) {
+        if (!self) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+
+        return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+    }
+
+    var _createClass = (function () {
+        function defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
+            }
+        }
+
+        return function (Constructor, protoProps, staticProps) {
+            if (protoProps) defineProperties(Constructor.prototype, protoProps);
+            if (staticProps) defineProperties(Constructor, staticProps);
+            return Constructor;
+        };
+    })();
+
+    function _inherits(subClass, superClass) {
+        if (typeof superClass !== "function" && superClass !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+        }
+
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+            constructor: {
+                value: subClass,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+    }
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
 
     var Exception = function Exception() {
         _classCallCheck(this, Exception);
@@ -30,11 +101,23 @@
     var IOException = (function (_Exception) {
         _inherits(IOException, _Exception);
 
+        _createClass(IOException, [{
+            key: 'msg',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$msg') ? this._$esjava$msg : this._$esjava$msg = null;
+            },
+            set: function set(v) {
+                this._$esjava$msg = v;
+            }
+        }]);
+
         function IOException(msg) {
             _classCallCheck(this, IOException);
 
-            _get(Object.getPrototypeOf(IOException.prototype), 'constructor', this).call(this);
-            this.msg = msg;
+            var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(IOException).call(this));
+
+            _this.msg = msg;
+            return _this;
         }
 
         return IOException;
@@ -46,7 +129,7 @@
         function IndexOutOfBoundsException() {
             _classCallCheck(this, IndexOutOfBoundsException);
 
-            _get(Object.getPrototypeOf(IndexOutOfBoundsException.prototype), 'constructor', this).apply(this, arguments);
+            return _possibleConstructorReturn(this, Object.getPrototypeOf(IndexOutOfBoundsException).apply(this, arguments));
         }
 
         return IndexOutOfBoundsException;
@@ -58,41 +141,100 @@
         }
 
         _createClass(Reader, [{
+            key: 'close$esjava$0',
+            value: function close$esjava$0() {
+                throw 'NotImpl < close$esjava$0 >';
+            }
+        }, {
+            key: 'read$esjava$3',
+            value: function read$esjava$3(arg0, arg1, arg2) {
+                throw 'NotImpl < read$esjava$3 >';
+            }
+        }, {
             key: 'close',
             value: function close() {
-                throw 'NotImpl < close >';
+                var _get2;
+
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.close$esjava$0.apply(this, args);
+                }
+
+                return (_get2 = _get(Object.getPrototypeOf(Reader.prototype), 'close', this)).call.apply(_get2, [this].concat(args));
             }
         }, {
             key: 'read',
-            value: function read(arg0, arg1, arg2) {
-                throw 'NotImpl < read >';
+            value: function read() {
+                var _get3;
+
+                for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                    args[_key2] = arguments[_key2];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.read$esjava$3.apply(this, args);
+                }
+
+                return (_get3 = _get(Object.getPrototypeOf(Reader.prototype), 'read', this)).call.apply(_get3, [this].concat(args));
             }
         }]);
 
         return Reader;
     })();
 
-    var StringReader = (function (_Reader) {
+    var StringReader = exports.StringReader = (function (_Reader) {
         _inherits(StringReader, _Reader);
+
+        _createClass(StringReader, [{
+            key: 'str',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$str') ? this._$esjava$str : this._$esjava$str = null;
+            },
+            set: function set(v) {
+                this._$esjava$str = v;
+            }
+        }, {
+            key: 'length',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$length') ? this._$esjava$length : this._$esjava$length = 0;
+            },
+            set: function set(v) {
+                this._$esjava$length = v;
+            }
+        }, {
+            key: 'next',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$next') ? this._$esjava$next : this._$esjava$next = 0;
+            },
+            set: function set(v) {
+                this._$esjava$next = v;
+            }
+        }]);
 
         function StringReader(s) {
             _classCallCheck(this, StringReader);
 
-            _get(Object.getPrototypeOf(StringReader.prototype), 'constructor', this).call(this);
-            this.next = 0;
-            this.str = s;
-            this.length = s.length;
+            var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(StringReader).call(this));
+
+            _this3.str = s;
+            _this3.length = s.length;
+            return _this3;
         }
 
         _createClass(StringReader, [{
-            key: 'ensureOpen',
-            value: function ensureOpen() {
+            key: 'ensureOpen$esjava$0',
+            value: function ensureOpen$esjava$0() {
                 if (this.str === null) throw new IOException("Stream closed");
             }
         }, {
-            key: 'read',
-            value: function read(cbuf, off, len) {
-                this.ensureOpen();
+            key: 'read$esjava$3',
+            value: function read$esjava$3(cbuf, off, len) {
+                this.ensureOpen$esjava$0();
                 if (off < 0 || off > cbuf.length || len < 0 || off + len > cbuf.length || off + len < 0) {
                     throw new IndexOutOfBoundsException();
                 } else if (len === 0) {
@@ -107,16 +249,44 @@
                 return n;
             }
         }, {
+            key: 'close$esjava$0',
+            value: function close$esjava$0() {
+                this.str = null;
+            }
+        }, {
             key: 'close',
             value: function close() {
-                this.str = null;
+                var _get4;
+
+                for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                    args[_key3] = arguments[_key3];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.close$esjava$0.apply(this, args);
+                }
+                return (_get4 = _get(Object.getPrototypeOf(StringReader.prototype), 'close', this)).call.apply(_get4, [this].concat(args));
+            }
+        }, {
+            key: 'read',
+            value: function read() {
+                var _get5;
+
+                for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                    args[_key4] = arguments[_key4];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.read$esjava$3.apply(this, args);
+                }
+                return (_get5 = _get(Object.getPrototypeOf(StringReader.prototype), 'read', this)).call.apply(_get5, [this].concat(args));
             }
         }]);
 
         return StringReader;
     })(Reader);
-
-    exports.StringReader = StringReader;
 
     var Character = (function () {
         function Character() {
@@ -124,82 +294,221 @@
         }
 
         _createClass(Character, null, [{
-            key: 'isHighSurrogate',
-            value: function isHighSurrogate(ch) {
+            key: 'isHighSurrogate$esjava$1',
+            value: function isHighSurrogate$esjava$1(ch) {
                 return ch >= Character.MIN_HIGH_SURROGATE && ch < Character.MAX_HIGH_SURROGATE + 1;
             }
         }, {
-            key: 'codePointAt',
-            value: function codePointAt(a, index, limit) {
+            key: 'codePointAt$esjava$3',
+            value: function codePointAt$esjava$3(a, index, limit) {
                 if (index >= limit || limit < 0 || limit > a.length) {
                     throw new IndexOutOfBoundsException();
                 }
-                return Character.codePointAtImpl(a, index, limit);
+
+                return Character.codePointAtImpl$esjava$3(a, index, limit);
             }
         }, {
-            key: 'isLowSurrogate',
-            value: function isLowSurrogate(ch) {
+            key: 'isLowSurrogate$esjava$1',
+            value: function isLowSurrogate$esjava$1(ch) {
                 return ch >= Character.MIN_LOW_SURROGATE && ch < Character.MAX_LOW_SURROGATE + 1;
             }
         }, {
-            key: 'toCodePoint',
-            value: function toCodePoint(high, low) {
+            key: 'toCodePoint$esjava$2',
+            value: function toCodePoint$esjava$2(high, low) {
                 return (high << 10) + low + (Character.MIN_SUPPLEMENTARY_CODE_POINT - (Character.MIN_HIGH_SURROGATE << 10) - Character.MIN_LOW_SURROGATE);
             }
         }, {
-            key: 'codePointAtImpl',
-            value: function codePointAtImpl(a, index, limit) {
+            key: 'codePointAtImpl$esjava$3',
+            value: function codePointAtImpl$esjava$3(a, index, limit) {
                 var c1 = a[index++];
-                if (Character.isHighSurrogate(c1)) {
+
+                if (Character.isHighSurrogate$esjava$1(c1)) {
                     if (index < limit) {
                         var c2 = a[index];
-                        if (Character.isLowSurrogate(c2)) {
-                            return Character.toCodePoint(c1, c2);
+
+                        if (Character.isLowSurrogate$esjava$1(c2)) {
+                            return Character.toCodePoint$esjava$2(c1, c2);
                         }
                     }
                 }
+
                 return c1;
             }
         }, {
-            key: 'charCount',
-            value: function charCount(codePoint) {
+            key: 'charCount$esjava$1',
+            value: function charCount$esjava$1(codePoint) {
                 return codePoint >= Character.MIN_SUPPLEMENTARY_CODE_POINT ? 2 : 1;
             }
         }, {
-            key: 'offsetByCodePoints',
-            value: function offsetByCodePoints(a, start, count, index, codePointOffset) {
+            key: 'offsetByCodePoints$esjava$5',
+            value: function offsetByCodePoints$esjava$5(a, start, count, index, codePointOffset) {
                 if (count > a.length - start || start < 0 || count < 0 || index < start || index > start + count) {
                     throw new IndexOutOfBoundsException();
                 }
-                return Character.offsetByCodePointsImpl(a, start, count, index, codePointOffset);
+
+                return Character.offsetByCodePointsImpl$esjava$5(a, start, count, index, codePointOffset);
             }
         }, {
-            key: 'offsetByCodePointsImpl',
-            value: function offsetByCodePointsImpl(a, start, count, index, codePointOffset) {
+            key: 'offsetByCodePointsImpl$esjava$5',
+            value: function offsetByCodePointsImpl$esjava$5(a, start, count, index, codePointOffset) {
                 var x = index;
+
                 if (codePointOffset >= 0) {
                     var limit = start + count;
                     var i = undefined;
+
                     for (i = 0; x < limit && i < codePointOffset; i++) {
-                        if (Character.isHighSurrogate(a[x++]) && x < limit && Character.isLowSurrogate(a[x])) {
+                        if (Character.isHighSurrogate$esjava$1(a[x++]) && x < limit && Character.isLowSurrogate$esjava$1(a[x])) {
                             x++;
                         }
                     }
+
                     if (i < codePointOffset) {
                         throw new IndexOutOfBoundsException();
                     }
                 } else {
                     var i = undefined;
+
                     for (i = codePointOffset; x > start && i < 0; i++) {
-                        if (Character.isLowSurrogate(a[--x]) && x > start && Character.isHighSurrogate(a[x - 1])) {
+                        if (Character.isLowSurrogate$esjava$1(a[--x]) && x > start && Character.isHighSurrogate$esjava$1(a[x - 1])) {
                             x--;
                         }
                     }
+
                     if (i < 0) {
                         throw new IndexOutOfBoundsException();
                     }
                 }
+
                 return x;
+            }
+        }, {
+            key: 'isHighSurrogate',
+            value: function isHighSurrogate() {
+                var _get6;
+
+                for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                    args[_key5] = arguments[_key5];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return Character.isHighSurrogate$esjava$1.apply(Character, args);
+                }
+
+                return (_get6 = _get(Object.getPrototypeOf(Character), 'isHighSurrogate', this)).call.apply(_get6, [this].concat(args));
+            }
+        }, {
+            key: 'codePointAt',
+            value: function codePointAt() {
+                var _get7;
+
+                for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                    args[_key6] = arguments[_key6];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return Character.codePointAt$esjava$3.apply(Character, args);
+                }
+
+                return (_get7 = _get(Object.getPrototypeOf(Character), 'codePointAt', this)).call.apply(_get7, [this].concat(args));
+            }
+        }, {
+            key: 'isLowSurrogate',
+            value: function isLowSurrogate() {
+                var _get8;
+
+                for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                    args[_key7] = arguments[_key7];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return Character.isLowSurrogate$esjava$1.apply(Character, args);
+                }
+
+                return (_get8 = _get(Object.getPrototypeOf(Character), 'isLowSurrogate', this)).call.apply(_get8, [this].concat(args));
+            }
+        }, {
+            key: 'toCodePoint',
+            value: function toCodePoint() {
+                var _get9;
+
+                for (var _len8 = arguments.length, args = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+                    args[_key8] = arguments[_key8];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return Character.toCodePoint$esjava$2.apply(Character, args);
+                }
+
+                return (_get9 = _get(Object.getPrototypeOf(Character), 'toCodePoint', this)).call.apply(_get9, [this].concat(args));
+            }
+        }, {
+            key: 'codePointAtImpl',
+            value: function codePointAtImpl() {
+                var _get10;
+
+                for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+                    args[_key9] = arguments[_key9];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return Character.codePointAtImpl$esjava$3.apply(Character, args);
+                }
+
+                return (_get10 = _get(Object.getPrototypeOf(Character), 'codePointAtImpl', this)).call.apply(_get10, [this].concat(args));
+            }
+        }, {
+            key: 'charCount',
+            value: function charCount() {
+                var _get11;
+
+                for (var _len10 = arguments.length, args = Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+                    args[_key10] = arguments[_key10];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return Character.charCount$esjava$1.apply(Character, args);
+                }
+
+                return (_get11 = _get(Object.getPrototypeOf(Character), 'charCount', this)).call.apply(_get11, [this].concat(args));
+            }
+        }, {
+            key: 'offsetByCodePoints',
+            value: function offsetByCodePoints() {
+                var _get12;
+
+                for (var _len11 = arguments.length, args = Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
+                    args[_key11] = arguments[_key11];
+                }
+
+                switch (args.length) {
+                    case 5:
+                        return Character.offsetByCodePoints$esjava$5.apply(Character, args);
+                }
+
+                return (_get12 = _get(Object.getPrototypeOf(Character), 'offsetByCodePoints', this)).call.apply(_get12, [this].concat(args));
+            }
+        }, {
+            key: 'offsetByCodePointsImpl',
+            value: function offsetByCodePointsImpl() {
+                var _get13;
+
+                for (var _len12 = arguments.length, args = Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
+                    args[_key12] = arguments[_key12];
+                }
+
+                switch (args.length) {
+                    case 5:
+                        return Character.offsetByCodePointsImpl$esjava$5.apply(Character, args);
+                }
+
+                return (_get13 = _get(Object.getPrototypeOf(Character), 'offsetByCodePointsImpl', this)).call.apply(_get13, [this].concat(args));
             }
         }, {
             key: 'MIN_LOW_SURROGATE',
@@ -232,40 +541,112 @@
     })();
 
     var CharTermAttribute = (function () {
+        function CharTermAttribute() {
+            _classCallCheck(this, CharTermAttribute);
+        }
+
         _createClass(CharTermAttribute, [{
-            key: 'copyBuffer',
-            value: function copyBuffer(buffer, offset, length) {
+            key: 'copyBuffer$esjava$3',
+            value: function copyBuffer$esjava$3(buffer, offset, length) {
                 var buff = buffer.slice(offset, offset + length);
                 this.tmp = String.fromCharCode.apply(String, buff);
             }
         }, {
-            key: 'toString',
-            value: function toString() {
+            key: 'toString$esjava$0',
+            value: function toString$esjava$0() {
                 return this.tmp;
             }
+        }, {
+            key: 'copyBuffer',
+            value: function copyBuffer() {
+                var _get14;
+
+                for (var _len13 = arguments.length, args = Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
+                    args[_key13] = arguments[_key13];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.copyBuffer$esjava$3.apply(this, args);
+                }
+
+                return (_get14 = _get(Object.getPrototypeOf(CharTermAttribute.prototype), 'copyBuffer', this)).call.apply(_get14, [this].concat(args));
+            }
+        }, {
+            key: 'toString',
+            value: function toString() {
+                var _get15;
+
+                for (var _len14 = arguments.length, args = Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
+                    args[_key14] = arguments[_key14];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.toString$esjava$0.apply(this, args);
+                }
+
+                return (_get15 = _get(Object.getPrototypeOf(CharTermAttribute.prototype), 'toString', this)).call.apply(_get15, [this].concat(args));
+            }
+        }, {
+            key: 'tmp',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$tmp') ? this._$esjava$tmp : this._$esjava$tmp = null;
+            },
+            set: function set(v) {
+                this._$esjava$tmp = v;
+            }
         }]);
-
-        function CharTermAttribute() {
-            _classCallCheck(this, CharTermAttribute);
-
-            this.tmp = null;
-        }
 
         return CharTermAttribute;
     })();
 
-    var TokenModel = function TokenModel(text, type, start, posInc) {
-        _classCallCheck(this, TokenModel);
+    var TokenModel = (function () {
+        _createClass(TokenModel, [{
+            key: 'text',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$text') ? this._$esjava$text : this._$esjava$text = null;
+            },
+            set: function set(v) {
+                this._$esjava$text = v;
+            }
+        }, {
+            key: 'type',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$type') ? this._$esjava$type : this._$esjava$type = null;
+            },
+            set: function set(v) {
+                this._$esjava$type = v;
+            }
+        }, {
+            key: 'start',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$start') ? this._$esjava$start : this._$esjava$start = 0;
+            },
+            set: function set(v) {
+                this._$esjava$start = v;
+            }
+        }, {
+            key: 'positionIncrement',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$positionIncrement') ? this._$esjava$positionIncrement : this._$esjava$positionIncrement = 0;
+            },
+            set: function set(v) {
+                this._$esjava$positionIncrement = v;
+            }
+        }]);
 
-        this.text = null;
-        this.type = null;
-        this.start = 0;
-        this.positionIncrement = 0;
-        this.text = text;
-        this.type = type;
-        this.start = start;
-        this.positionIncrement = posInc;
-    };
+        function TokenModel(text, type, start, posInc) {
+            _classCallCheck(this, TokenModel);
+
+            this.text = text;
+            this.type = type;
+            this.start = start;
+            this.positionIncrement = posInc;
+        }
+
+        return TokenModel;
+    })();
 
     var Tokenizer = (function () {
         function Tokenizer() {
@@ -273,29 +654,109 @@
         }
 
         _createClass(Tokenizer, [{
+            key: 'incrementToken$esjava$0',
+            value: function incrementToken$esjava$0() {
+                throw 'NotImpl < incrementToken$esjava$0 >';
+            }
+        }, {
+            key: 'setReader$esjava$1',
+            value: function setReader$esjava$1(reader) {
+                throw 'NotImpl < setReader$esjava$1 >';
+            }
+        }, {
+            key: 'reset$esjava$0',
+            value: function reset$esjava$0() {
+                throw 'NotImpl < reset$esjava$0 >';
+            }
+        }, {
+            key: 'end$esjava$0',
+            value: function end$esjava$0() {
+                throw 'NotImpl < end$esjava$0 >';
+            }
+        }, {
+            key: 'close$esjava$0',
+            value: function close$esjava$0() {
+                throw 'NotImpl < close$esjava$0 >';
+            }
+        }, {
             key: 'incrementToken',
             value: function incrementToken() {
-                throw 'NotImpl < incrementToken >';
+                var _get16;
+
+                for (var _len15 = arguments.length, args = Array(_len15), _key15 = 0; _key15 < _len15; _key15++) {
+                    args[_key15] = arguments[_key15];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.incrementToken$esjava$0.apply(this, args);
+                }
+
+                return (_get16 = _get(Object.getPrototypeOf(Tokenizer.prototype), 'incrementToken', this)).call.apply(_get16, [this].concat(args));
             }
         }, {
             key: 'setReader',
-            value: function setReader(reader) {
-                throw 'NotImpl < setReader >';
+            value: function setReader() {
+                var _get17;
+
+                for (var _len16 = arguments.length, args = Array(_len16), _key16 = 0; _key16 < _len16; _key16++) {
+                    args[_key16] = arguments[_key16];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setReader$esjava$1.apply(this, args);
+                }
+
+                return (_get17 = _get(Object.getPrototypeOf(Tokenizer.prototype), 'setReader', this)).call.apply(_get17, [this].concat(args));
             }
         }, {
             key: 'reset',
             value: function reset() {
-                throw 'NotImpl < reset >';
+                var _get18;
+
+                for (var _len17 = arguments.length, args = Array(_len17), _key17 = 0; _key17 < _len17; _key17++) {
+                    args[_key17] = arguments[_key17];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.reset$esjava$0.apply(this, args);
+                }
+
+                return (_get18 = _get(Object.getPrototypeOf(Tokenizer.prototype), 'reset', this)).call.apply(_get18, [this].concat(args));
             }
         }, {
             key: 'end',
             value: function end() {
-                throw 'NotImpl < end >';
+                var _get19;
+
+                for (var _len18 = arguments.length, args = Array(_len18), _key18 = 0; _key18 < _len18; _key18++) {
+                    args[_key18] = arguments[_key18];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.end$esjava$0.apply(this, args);
+                }
+
+                return (_get19 = _get(Object.getPrototypeOf(Tokenizer.prototype), 'end', this)).call.apply(_get19, [this].concat(args));
             }
         }, {
             key: 'close',
             value: function close() {
-                throw 'NotImpl < close >';
+                var _get20;
+
+                for (var _len19 = arguments.length, args = Array(_len19), _key19 = 0; _key19 < _len19; _key19++) {
+                    args[_key19] = arguments[_key19];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.close$esjava$0.apply(this, args);
+                }
+
+                return (_get20 = _get(Object.getPrototypeOf(Tokenizer.prototype), 'close', this)).call.apply(_get20, [this].concat(args));
             }
         }]);
 
@@ -308,10 +769,26 @@
         }
 
         _createClass(System, null, [{
-            key: 'arraycopy',
-            value: function arraycopy(src, srcPos, dest, destPos, length) {
+            key: 'arraycopy$esjava$5',
+            value: function arraycopy$esjava$5(src, srcPos, dest, destPos, length) {
                 var elements_to_add = src.slice(srcPos, srcPos + length);
                 Array.prototype.splice.apply(dest, [destPos, elements_to_add.length].concat(elements_to_add));
+            }
+        }, {
+            key: 'arraycopy',
+            value: function arraycopy() {
+                var _get21;
+
+                for (var _len20 = arguments.length, args = Array(_len20), _key20 = 0; _key20 < _len20; _key20++) {
+                    args[_key20] = arguments[_key20];
+                }
+
+                switch (args.length) {
+                    case 5:
+                        return System.arraycopy$esjava$5.apply(System, args);
+                }
+
+                return (_get21 = _get(Object.getPrototypeOf(System), 'arraycopy', this)).call.apply(_get21, [this].concat(args));
             }
         }]);
 
@@ -335,105 +812,218 @@
 
     var StandardTokenizerImpl = (function () {
         _createClass(StandardTokenizerImpl, [{
-            key: 'yychar$fixed',
-            value: function yychar$fixed() {
-                return this.yychar;
+            key: 'yychar$esjava$0',
+            value: function yychar$esjava$0() {
+                return this.yychar1;
             }
         }, {
-            key: 'getText',
-            value: function getText(t) {
+            key: 'getText$esjava$1',
+            value: function getText$esjava$1(t) {
                 t.copyBuffer(this.zzBuffer, this.zzStartRead, this.zzMarkedPos - this.zzStartRead);
             }
         }, {
-            key: 'setBufferSize',
-            value: function setBufferSize(numChars) {
+            key: 'setBufferSize$esjava$1',
+            value: function setBufferSize$esjava$1(numChars) {
                 this.ZZ_BUFFERSIZE = numChars;
                 var newZzBuffer = new Array(this.ZZ_BUFFERSIZE);
                 System.arraycopy(this.zzBuffer, 0, newZzBuffer, 0, Math.min(this.zzBuffer.length, this.ZZ_BUFFERSIZE));
                 this.zzBuffer = newZzBuffer;
             }
+        }, {
+            key: 'ZZ_BUFFERSIZE',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$ZZ_BUFFERSIZE') ? this._$esjava$ZZ_BUFFERSIZE : this._$esjava$ZZ_BUFFERSIZE = 255;
+            },
+            set: function set(v) {
+                this._$esjava$ZZ_BUFFERSIZE = v;
+            }
+        }, {
+            key: 'zzReader',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzReader') ? this._$esjava$zzReader : this._$esjava$zzReader = null;
+            },
+            set: function set(v) {
+                this._$esjava$zzReader = v;
+            }
+        }, {
+            key: 'zzState',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzState') ? this._$esjava$zzState : this._$esjava$zzState = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzState = v;
+            }
+        }, {
+            key: 'zzLexicalState',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzLexicalState') ? this._$esjava$zzLexicalState : this._$esjava$zzLexicalState = StandardTokenizerImpl.YYINITIAL;
+            },
+            set: function set(v) {
+                this._$esjava$zzLexicalState = v;
+            }
+        }, {
+            key: 'zzBuffer',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzBuffer') ? this._$esjava$zzBuffer : this._$esjava$zzBuffer = new Array(this.ZZ_BUFFERSIZE);
+            },
+            set: function set(v) {
+                this._$esjava$zzBuffer = v;
+            }
+        }, {
+            key: 'zzMarkedPos',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzMarkedPos') ? this._$esjava$zzMarkedPos : this._$esjava$zzMarkedPos = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzMarkedPos = v;
+            }
+        }, {
+            key: 'zzCurrentPos',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzCurrentPos') ? this._$esjava$zzCurrentPos : this._$esjava$zzCurrentPos = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzCurrentPos = v;
+            }
+        }, {
+            key: 'zzStartRead',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzStartRead') ? this._$esjava$zzStartRead : this._$esjava$zzStartRead = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzStartRead = v;
+            }
+        }, {
+            key: 'zzEndRead',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzEndRead') ? this._$esjava$zzEndRead : this._$esjava$zzEndRead = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzEndRead = v;
+            }
+        }, {
+            key: 'yychar1',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$yychar1') ? this._$esjava$yychar1 : this._$esjava$yychar1 = 0;
+            },
+            set: function set(v) {
+                this._$esjava$yychar1 = v;
+            }
+        }, {
+            key: 'zzAtEOF',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzAtEOF') ? this._$esjava$zzAtEOF : this._$esjava$zzAtEOF = false;
+            },
+            set: function set(v) {
+                this._$esjava$zzAtEOF = v;
+            }
+        }, {
+            key: 'zzFinalHighSurrogate',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzFinalHighSurrogate') ? this._$esjava$zzFinalHighSurrogate : this._$esjava$zzFinalHighSurrogate = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzFinalHighSurrogate = v;
+            }
         }], [{
-            key: 'zzUnpackAction$0',
-            value: function zzUnpackAction$0() {
+            key: 'zzUnpackAction$esjava$0',
+            value: function zzUnpackAction$esjava$0() {
                 var result = new Array(24);
                 var offset = 0;
-                offset = StandardTokenizerImpl.zzUnpackAction$3(StandardTokenizerImpl.ZZ_ACTION_PACKED_0, offset, result);
+                offset = StandardTokenizerImpl.zzUnpackAction$esjava$3(StandardTokenizerImpl.ZZ_ACTION_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackAction$3',
-            value: function zzUnpackAction$3(packed, offset, result) {
+            key: 'zzUnpackAction$esjava$3',
+            value: function zzUnpackAction$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
-                    do result[j++] = value; while (--count > 0);
+
+                    do {
+                        result[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return j;
             }
         }, {
-            key: 'zzUnpackRowMap$0',
-            value: function zzUnpackRowMap$0() {
+            key: 'zzUnpackRowMap$esjava$0',
+            value: function zzUnpackRowMap$esjava$0() {
                 var result = new Array(24);
                 var offset = 0;
-                offset = StandardTokenizerImpl.zzUnpackRowMap$3(StandardTokenizerImpl.ZZ_ROWMAP_PACKED_0, offset, result);
+                offset = StandardTokenizerImpl.zzUnpackRowMap$esjava$3(StandardTokenizerImpl.ZZ_ROWMAP_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackRowMap$3',
-            value: function zzUnpackRowMap$3(packed, offset, result) {
+            key: 'zzUnpackRowMap$esjava$3',
+            value: function zzUnpackRowMap$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var high = packed.charCodeAt(i++) << 16;
                     result[j++] = high | packed.charCodeAt(i++);
                 }
+
                 return j;
             }
         }, {
-            key: 'zzUnpackTrans$0',
-            value: function zzUnpackTrans$0() {
+            key: 'zzUnpackTrans$esjava$0',
+            value: function zzUnpackTrans$esjava$0() {
                 var result = new Array(396);
                 var offset = 0;
-                offset = StandardTokenizerImpl.zzUnpackTrans$3(StandardTokenizerImpl.ZZ_TRANS_PACKED_0, offset, result);
+                offset = StandardTokenizerImpl.zzUnpackTrans$esjava$3(StandardTokenizerImpl.ZZ_TRANS_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackTrans$3',
-            value: function zzUnpackTrans$3(packed, offset, result) {
+            key: 'zzUnpackTrans$esjava$3',
+            value: function zzUnpackTrans$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
                     value--;
-                    do result[j++] = value; while (--count > 0);
+
+                    do {
+                        result[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return j;
             }
         }, {
-            key: 'zzUnpackAttribute$0',
-            value: function zzUnpackAttribute$0() {
+            key: 'zzUnpackAttribute$esjava$0',
+            value: function zzUnpackAttribute$esjava$0() {
                 var result = new Array(24);
                 var offset = 0;
-                offset = StandardTokenizerImpl.zzUnpackAttribute$3(StandardTokenizerImpl.ZZ_ATTRIBUTE_PACKED_0, offset, result);
+                offset = StandardTokenizerImpl.zzUnpackAttribute$esjava$3(StandardTokenizerImpl.ZZ_ATTRIBUTE_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackAttribute$3',
-            value: function zzUnpackAttribute$3(packed, offset, result) {
+            key: 'zzUnpackAttribute$esjava$3',
+            value: function zzUnpackAttribute$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
-                    do result[j++] = value; while (--count > 0);
+
+                    do {
+                        result[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return j;
             }
         }, {
@@ -461,13 +1051,13 @@
             key: 'ZZ_CMAP',
             get: function get() {
                 delete StandardTokenizerImpl.ZZ_CMAP;
-                return StandardTokenizerImpl.ZZ_CMAP = StandardTokenizerImpl.zzUnpackCMap(StandardTokenizerImpl.ZZ_CMAP_PACKED);
+                return StandardTokenizerImpl.ZZ_CMAP = StandardTokenizerImpl.zzUnpackCMap$esjava$1(StandardTokenizerImpl.ZZ_CMAP_PACKED);
             }
         }, {
             key: 'ZZ_ACTION',
             get: function get() {
                 delete StandardTokenizerImpl.ZZ_ACTION;
-                return StandardTokenizerImpl.ZZ_ACTION = StandardTokenizerImpl.zzUnpackAction$0();
+                return StandardTokenizerImpl.ZZ_ACTION = StandardTokenizerImpl.zzUnpackAction$esjava$0();
             }
         }, {
             key: 'ZZ_ACTION_PACKED_0',
@@ -478,7 +1068,7 @@
             key: 'ZZ_ROWMAP',
             get: function get() {
                 delete StandardTokenizerImpl.ZZ_ROWMAP;
-                return StandardTokenizerImpl.ZZ_ROWMAP = StandardTokenizerImpl.zzUnpackRowMap$0();
+                return StandardTokenizerImpl.ZZ_ROWMAP = StandardTokenizerImpl.zzUnpackRowMap$esjava$0();
             }
         }, {
             key: 'ZZ_ROWMAP_PACKED_0',
@@ -489,7 +1079,7 @@
             key: 'ZZ_TRANS',
             get: function get() {
                 delete StandardTokenizerImpl.ZZ_TRANS;
-                return StandardTokenizerImpl.ZZ_TRANS = StandardTokenizerImpl.zzUnpackTrans$0();
+                return StandardTokenizerImpl.ZZ_TRANS = StandardTokenizerImpl.zzUnpackTrans$esjava$0();
             }
         }, {
             key: 'ZZ_TRANS_PACKED_0',
@@ -521,7 +1111,7 @@
             key: 'ZZ_ATTRIBUTE',
             get: function get() {
                 delete StandardTokenizerImpl.ZZ_ATTRIBUTE;
-                return StandardTokenizerImpl.ZZ_ATTRIBUTE = StandardTokenizerImpl.zzUnpackAttribute$0();
+                return StandardTokenizerImpl.ZZ_ATTRIBUTE = StandardTokenizerImpl.zzUnpackAttribute$esjava$0();
             }
         }, {
             key: 'ZZ_ATTRIBUTE_PACKED_0',
@@ -565,27 +1155,15 @@
             }
         }]);
 
-        function StandardTokenizerImpl(in$) {
+        function StandardTokenizerImpl(in$esjava) {
             _classCallCheck(this, StandardTokenizerImpl);
 
-            this.ZZ_BUFFERSIZE = 255;
-            this.zzReader = null;
-            this.zzState = 0;
-            this.zzLexicalState = StandardTokenizerImpl.YYINITIAL;
-            this.zzBuffer = new Array(this.ZZ_BUFFERSIZE);
-            this.zzMarkedPos = 0;
-            this.zzCurrentPos = 0;
-            this.zzStartRead = 0;
-            this.zzEndRead = 0;
-            this.yychar = 0;
-            this.zzAtEOF = false;
-            this.zzFinalHighSurrogate = 0;
-            this.zzReader = in$;
+            this.zzReader = in$esjava;
         }
 
         _createClass(StandardTokenizerImpl, [{
-            key: 'zzRefill',
-            value: function zzRefill() {
+            key: 'zzRefill$esjava$0',
+            value: function zzRefill$esjava$0() {
                 if (this.zzStartRead > 0) {
                     this.zzEndRead += this.zzFinalHighSurrogate;
                     this.zzFinalHighSurrogate = 0;
@@ -595,78 +1173,88 @@
                     this.zzMarkedPos -= this.zzStartRead;
                     this.zzStartRead = 0;
                 }
+
                 var requested = this.zzBuffer.length - this.zzEndRead - this.zzFinalHighSurrogate;
                 var totalRead = 0;
+
                 while (totalRead < requested) {
                     var numRead = this.zzReader.read(this.zzBuffer, this.zzEndRead + totalRead, requested - totalRead);
+
                     if (numRead === -1) {
                         break;
                     }
+
                     totalRead += numRead;
                 }
+
                 if (totalRead > 0) {
                     this.zzEndRead += totalRead;
+
                     if (totalRead === requested) {
                         if (Character.isHighSurrogate(this.zzBuffer[this.zzEndRead - 1])) {
                             --this.zzEndRead;
                             this.zzFinalHighSurrogate = 1;
+
                             if (totalRead === 1) {
                                 return true;
                             }
                         }
                     }
+
                     return false;
                 }
+
                 return true;
             }
         }, {
-            key: 'yyclose',
-            value: function yyclose() {
+            key: 'yyclose$esjava$0',
+            value: function yyclose$esjava$0() {
                 this.zzAtEOF = true;
                 this.zzEndRead = this.zzStartRead;
                 if (this.zzReader !== null) this.zzReader.close();
             }
         }, {
-            key: 'yyreset',
-            value: function yyreset(reader) {
+            key: 'yyreset$esjava$1',
+            value: function yyreset$esjava$1(reader) {
                 this.zzReader = reader;
                 this.zzAtEOF = false;
                 this.zzEndRead = this.zzStartRead = 0;
                 this.zzCurrentPos = this.zzMarkedPos = 0;
                 this.zzFinalHighSurrogate = 0;
-                this.yychar = 0;
+                this.yychar1 = 0;
                 this.zzLexicalState = StandardTokenizerImpl.YYINITIAL;
                 if (this.zzBuffer.length > this.ZZ_BUFFERSIZE) this.zzBuffer = new Array(this.ZZ_BUFFERSIZE);
             }
         }, {
-            key: 'yystate',
-            value: function yystate() {
+            key: 'yystate$esjava$0',
+            value: function yystate$esjava$0() {
                 return this.zzLexicalState;
             }
         }, {
-            key: 'yybegin',
-            value: function yybegin(newState) {
+            key: 'yybegin$esjava$1',
+            value: function yybegin$esjava$1(newState) {
                 this.zzLexicalState = newState;
             }
         }, {
-            key: 'yytext',
-            value: function yytext() {
+            key: 'yytext$esjava$0',
+            value: function yytext$esjava$0() {
                 return new String(this.zzBuffer, this.zzStartRead, this.zzMarkedPos - this.zzStartRead);
             }
         }, {
-            key: 'yycharat',
-            value: function yycharat(pos) {
+            key: 'yycharat$esjava$1',
+            value: function yycharat$esjava$1(pos) {
                 return this.zzBuffer[this.zzStartRead + pos];
             }
         }, {
-            key: 'yylength',
-            value: function yylength() {
+            key: 'yylength$esjava$0',
+            value: function yylength$esjava$0() {
                 return this.zzMarkedPos - this.zzStartRead;
             }
         }, {
-            key: 'zzScanError',
-            value: function zzScanError(errorCode) {
+            key: 'zzScanError$esjava$1',
+            value: function zzScanError$esjava$1(errorCode) {
                 var message = undefined;
+
                 try {
                     message = StandardTokenizerImpl.ZZ_ERROR_MSG[errorCode];
                 } catch (e) {
@@ -674,17 +1262,18 @@
                         message = StandardTokenizerImpl.ZZ_ERROR_MSG[StandardTokenizerImpl.ZZ_UNKNOWN_ERROR];
                     } else throw e;
                 }
+
                 throw new Error(message);
             }
         }, {
-            key: 'yypushback',
-            value: function yypushback(number) {
-                if (number > this.yylength()) this.zzScanError(StandardTokenizerImpl.ZZ_PUSHBACK_2BIG);
+            key: 'yypushback$esjava$1',
+            value: function yypushback$esjava$1(number) {
+                if (number > this.yylength$esjava$0()) this.zzScanError$esjava$1(StandardTokenizerImpl.ZZ_PUSHBACK_2BIG);
                 this.zzMarkedPos -= number;
             }
         }, {
-            key: 'getNextToken',
-            value: function getNextToken() {
+            key: 'getNextToken$esjava$0',
+            value: function getNextToken$esjava$0() {
                 var zzInput = undefined;
                 var zzAction = undefined;
                 var zzCurrentPosL = undefined;
@@ -695,16 +1284,19 @@
                 var zzTransL = StandardTokenizerImpl.ZZ_TRANS;
                 var zzRowMapL = StandardTokenizerImpl.ZZ_ROWMAP;
                 var zzAttrL = StandardTokenizerImpl.ZZ_ATTRIBUTE;
+
                 while (true) {
                     zzMarkedPosL = this.zzMarkedPos;
-                    this.yychar += zzMarkedPosL - this.zzStartRead;
+                    this.yychar1 += zzMarkedPosL - this.zzStartRead;
                     zzAction = -1;
                     zzCurrentPosL = this.zzCurrentPos = this.zzStartRead = zzMarkedPosL;
                     this.zzState = StandardTokenizerImpl.ZZ_LEXSTATE[this.zzLexicalState];
                     var zzAttributes = zzAttrL[this.zzState];
+
                     if ((zzAttributes & 1) === 1) {
                         zzAction = this.zzState;
                     }
+
                     zzForAction: {
                         while (true) {
                             if (zzCurrentPosL < zzEndReadL) {
@@ -716,11 +1308,12 @@
                             } else {
                                 this.zzCurrentPos = zzCurrentPosL;
                                 this.zzMarkedPos = zzMarkedPosL;
-                                var eof = this.zzRefill();
+                                var eof = this.zzRefill$esjava$0();
                                 zzCurrentPosL = this.zzCurrentPos;
                                 zzMarkedPosL = this.zzMarkedPos;
                                 zzBufferL = this.zzBuffer;
                                 zzEndReadL = this.zzEndRead;
+
                                 if (eof) {
                                     zzInput = StandardTokenizerImpl.YYEOF;
                                     break zzForAction;
@@ -729,10 +1322,12 @@
                                     zzCurrentPosL += Character.charCount(zzInput);
                                 }
                             }
+
                             var zzNext = zzTransL[zzRowMapL[this.zzState] + zzCMapL[zzInput]];
                             if (zzNext === -1) break zzForAction;
                             this.zzState = zzNext;
                             zzAttributes = zzAttrL[this.zzState];
+
                             if ((zzAttributes & 1) === 1) {
                                 zzAction = this.zzState;
                                 zzMarkedPosL = zzCurrentPosL;
@@ -740,56 +1335,74 @@
                             }
                         }
                     }
+
                     this.zzMarkedPos = zzMarkedPosL;
+
                     switch (zzAction < 0 ? zzAction : StandardTokenizerImpl.ZZ_ACTION[zzAction]) {
                         case 1:
                             {
                                 break;
                             }
+
                         case 9:
                             break;
+
                         case 2:
                             {
                                 return StandardTokenizerImpl.WORD_TYPE;
                             }
+
                         case 10:
                             break;
+
                         case 3:
                             {
                                 return StandardTokenizerImpl.HANGUL_TYPE;
                             }
+
                         case 11:
                             break;
+
                         case 4:
                             {
                                 return StandardTokenizerImpl.NUMERIC_TYPE;
                             }
+
                         case 12:
                             break;
+
                         case 5:
                             {
                                 return StandardTokenizerImpl.KATAKANA_TYPE;
                             }
+
                         case 13:
                             break;
+
                         case 6:
                             {
                                 return StandardTokenizerImpl.IDEOGRAPHIC_TYPE;
                             }
+
                         case 14:
                             break;
+
                         case 7:
                             {
                                 return StandardTokenizerImpl.HIRAGANA_TYPE;
                             }
+
                         case 15:
                             break;
+
                         case 8:
                             {
                                 return StandardTokenizerImpl.SOUTH_EAST_ASIAN_TYPE;
                             }
+
                         case 16:
                             break;
+
                         default:
                             if (zzInput === StandardTokenizerImpl.YYEOF && this.zzStartRead === this.zzCurrentPos) {
                                 this.zzAtEOF = true;
@@ -797,22 +1410,220 @@
                                     return StandardTokenizerImpl.YYEOF;
                                 }
                             } else {
-                                this.zzScanError(StandardTokenizerImpl.ZZ_NO_MATCH);
+                                this.zzScanError$esjava$1(StandardTokenizerImpl.ZZ_NO_MATCH);
                             }
+
                     }
                 }
             }
+        }, {
+            key: 'yychar',
+            value: function yychar() {
+                var _get22;
+
+                for (var _len21 = arguments.length, args = Array(_len21), _key21 = 0; _key21 < _len21; _key21++) {
+                    args[_key21] = arguments[_key21];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yychar$esjava$0.apply(this, args);
+                }
+
+                return (_get22 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yychar', this)).call.apply(_get22, [this].concat(args));
+            }
+        }, {
+            key: 'getText',
+            value: function getText() {
+                var _get23;
+
+                for (var _len22 = arguments.length, args = Array(_len22), _key22 = 0; _key22 < _len22; _key22++) {
+                    args[_key22] = arguments[_key22];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.getText$esjava$1.apply(this, args);
+                }
+
+                return (_get23 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'getText', this)).call.apply(_get23, [this].concat(args));
+            }
+        }, {
+            key: 'setBufferSize',
+            value: function setBufferSize() {
+                var _get24;
+
+                for (var _len23 = arguments.length, args = Array(_len23), _key23 = 0; _key23 < _len23; _key23++) {
+                    args[_key23] = arguments[_key23];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setBufferSize$esjava$1.apply(this, args);
+                }
+
+                return (_get24 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'setBufferSize', this)).call.apply(_get24, [this].concat(args));
+            }
+        }, {
+            key: 'yyclose',
+            value: function yyclose() {
+                var _get25;
+
+                for (var _len24 = arguments.length, args = Array(_len24), _key24 = 0; _key24 < _len24; _key24++) {
+                    args[_key24] = arguments[_key24];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yyclose$esjava$0.apply(this, args);
+                }
+
+                return (_get25 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yyclose', this)).call.apply(_get25, [this].concat(args));
+            }
+        }, {
+            key: 'yyreset',
+            value: function yyreset() {
+                var _get26;
+
+                for (var _len25 = arguments.length, args = Array(_len25), _key25 = 0; _key25 < _len25; _key25++) {
+                    args[_key25] = arguments[_key25];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yyreset$esjava$1.apply(this, args);
+                }
+
+                return (_get26 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yyreset', this)).call.apply(_get26, [this].concat(args));
+            }
+        }, {
+            key: 'yystate',
+            value: function yystate() {
+                var _get27;
+
+                for (var _len26 = arguments.length, args = Array(_len26), _key26 = 0; _key26 < _len26; _key26++) {
+                    args[_key26] = arguments[_key26];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yystate$esjava$0.apply(this, args);
+                }
+
+                return (_get27 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yystate', this)).call.apply(_get27, [this].concat(args));
+            }
+        }, {
+            key: 'yybegin',
+            value: function yybegin() {
+                var _get28;
+
+                for (var _len27 = arguments.length, args = Array(_len27), _key27 = 0; _key27 < _len27; _key27++) {
+                    args[_key27] = arguments[_key27];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yybegin$esjava$1.apply(this, args);
+                }
+
+                return (_get28 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yybegin', this)).call.apply(_get28, [this].concat(args));
+            }
+        }, {
+            key: 'yytext',
+            value: function yytext() {
+                var _get29;
+
+                for (var _len28 = arguments.length, args = Array(_len28), _key28 = 0; _key28 < _len28; _key28++) {
+                    args[_key28] = arguments[_key28];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yytext$esjava$0.apply(this, args);
+                }
+
+                return (_get29 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yytext', this)).call.apply(_get29, [this].concat(args));
+            }
+        }, {
+            key: 'yycharat',
+            value: function yycharat() {
+                var _get30;
+
+                for (var _len29 = arguments.length, args = Array(_len29), _key29 = 0; _key29 < _len29; _key29++) {
+                    args[_key29] = arguments[_key29];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yycharat$esjava$1.apply(this, args);
+                }
+
+                return (_get30 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yycharat', this)).call.apply(_get30, [this].concat(args));
+            }
+        }, {
+            key: 'yylength',
+            value: function yylength() {
+                var _get31;
+
+                for (var _len30 = arguments.length, args = Array(_len30), _key30 = 0; _key30 < _len30; _key30++) {
+                    args[_key30] = arguments[_key30];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yylength$esjava$0.apply(this, args);
+                }
+
+                return (_get31 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yylength', this)).call.apply(_get31, [this].concat(args));
+            }
+        }, {
+            key: 'yypushback',
+            value: function yypushback() {
+                var _get32;
+
+                for (var _len31 = arguments.length, args = Array(_len31), _key31 = 0; _key31 < _len31; _key31++) {
+                    args[_key31] = arguments[_key31];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yypushback$esjava$1.apply(this, args);
+                }
+
+                return (_get32 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'yypushback', this)).call.apply(_get32, [this].concat(args));
+            }
+        }, {
+            key: 'getNextToken',
+            value: function getNextToken() {
+                var _get33;
+
+                for (var _len32 = arguments.length, args = Array(_len32), _key32 = 0; _key32 < _len32; _key32++) {
+                    args[_key32] = arguments[_key32];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.getNextToken$esjava$0.apply(this, args);
+                }
+
+                return (_get33 = _get(Object.getPrototypeOf(StandardTokenizerImpl.prototype), 'getNextToken', this)).call.apply(_get33, [this].concat(args));
+            }
         }], [{
-            key: 'zzUnpackCMap',
-            value: function zzUnpackCMap(packed) {
+            key: 'zzUnpackCMap$esjava$1',
+            value: function zzUnpackCMap$esjava$1(packed) {
                 var map = new Array(0x110000);
                 var i = 0;
                 var j = 0;
+
                 while (i < 2836) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
-                    do map[j++] = value; while (--count > 0);
+
+                    do {
+                        map[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return map;
             }
         }]);
@@ -820,12 +1631,18 @@
         return StandardTokenizerImpl;
     })();
 
-    var StandardTokenizer = (function (_Tokenizer) {
+    var StandardTokenizer = exports.StandardTokenizer = (function (_Tokenizer) {
         _inherits(StandardTokenizer, _Tokenizer);
 
+        function StandardTokenizer() {
+            _classCallCheck(this, StandardTokenizer);
+
+            return _possibleConstructorReturn(this, Object.getPrototypeOf(StandardTokenizer).apply(this, arguments));
+        }
+
         _createClass(StandardTokenizer, [{
-            key: 'incrementToken',
-            value: function incrementToken() {
+            key: 'incrementToken$esjava$0',
+            value: function incrementToken$esjava$0() {
                 this.skippedPositions = 0;
                 var termAtt = new CharTermAttribute();
                 while (true) {
@@ -835,34 +1652,163 @@
                     }
                     if (this.scanner.yylength() <= this.maxTokenLength) {
                         this.scanner.getText(termAtt);
-                        return new TokenModel(termAtt.toString(), StandardTokenizer.TOKEN_TYPES[tokenType], this.scanner.yychar$fixed(), this.skippedPositions + 1);
+                        return new TokenModel(termAtt.toString(), StandardTokenizer.TOKEN_TYPES[tokenType], this.scanner.yychar(), this.skippedPositions + 1);
                     } else this.skippedPositions++;
                 }
             }
         }, {
-            key: 'setMaxTokenLength',
-            value: function setMaxTokenLength(length) {
+            key: 'setMaxTokenLength$esjava$1',
+            value: function setMaxTokenLength$esjava$1(length) {
                 this.maxTokenLength = length;
+            }
+        }, {
+            key: 'getMaxTokenLength$esjava$0',
+            value: function getMaxTokenLength$esjava$0() {
+                return this.maxTokenLength;
+            }
+        }, {
+            key: 'setReader$esjava$1',
+            value: function setReader$esjava$1(reader) {
+                this.scanner = new StandardTokenizerImpl(reader);
+            }
+        }, {
+            key: 'reset$esjava$0',
+            value: function reset$esjava$0() {}
+        }, {
+            key: 'end$esjava$0',
+            value: function end$esjava$0() {}
+        }, {
+            key: 'close$esjava$0',
+            value: function close$esjava$0() {}
+        }, {
+            key: 'incrementToken',
+            value: function incrementToken() {
+                var _get34;
+
+                for (var _len33 = arguments.length, args = Array(_len33), _key33 = 0; _key33 < _len33; _key33++) {
+                    args[_key33] = arguments[_key33];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.incrementToken$esjava$0.apply(this, args);
+                }
+                return (_get34 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'incrementToken', this)).call.apply(_get34, [this].concat(args));
+            }
+        }, {
+            key: 'setReader',
+            value: function setReader() {
+                var _get35;
+
+                for (var _len34 = arguments.length, args = Array(_len34), _key34 = 0; _key34 < _len34; _key34++) {
+                    args[_key34] = arguments[_key34];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setReader$esjava$1.apply(this, args);
+                }
+                return (_get35 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'setReader', this)).call.apply(_get35, [this].concat(args));
+            }
+        }, {
+            key: 'reset',
+            value: function reset() {
+                var _get36;
+
+                for (var _len35 = arguments.length, args = Array(_len35), _key35 = 0; _key35 < _len35; _key35++) {
+                    args[_key35] = arguments[_key35];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.reset$esjava$0.apply(this, args);
+                }
+                return (_get36 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'reset', this)).call.apply(_get36, [this].concat(args));
+            }
+        }, {
+            key: 'end',
+            value: function end() {
+                var _get37;
+
+                for (var _len36 = arguments.length, args = Array(_len36), _key36 = 0; _key36 < _len36; _key36++) {
+                    args[_key36] = arguments[_key36];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.end$esjava$0.apply(this, args);
+                }
+                return (_get37 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'end', this)).call.apply(_get37, [this].concat(args));
+            }
+        }, {
+            key: 'close',
+            value: function close() {
+                var _get38;
+
+                for (var _len37 = arguments.length, args = Array(_len37), _key37 = 0; _key37 < _len37; _key37++) {
+                    args[_key37] = arguments[_key37];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.close$esjava$0.apply(this, args);
+                }
+                return (_get38 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'close', this)).call.apply(_get38, [this].concat(args));
+            }
+        }, {
+            key: 'setMaxTokenLength',
+            value: function setMaxTokenLength() {
+                var _get39;
+
+                for (var _len38 = arguments.length, args = Array(_len38), _key38 = 0; _key38 < _len38; _key38++) {
+                    args[_key38] = arguments[_key38];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setMaxTokenLength$esjava$1.apply(this, args);
+                }
+                return (_get39 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'setMaxTokenLength', this)).call.apply(_get39, [this].concat(args));
             }
         }, {
             key: 'getMaxTokenLength',
             value: function getMaxTokenLength() {
-                return this.maxTokenLength;
+                var _get40;
+
+                for (var _len39 = arguments.length, args = Array(_len39), _key39 = 0; _key39 < _len39; _key39++) {
+                    args[_key39] = arguments[_key39];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.getMaxTokenLength$esjava$0.apply(this, args);
+                }
+                return (_get40 = _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'getMaxTokenLength', this)).call.apply(_get40, [this].concat(args));
             }
         }, {
-            key: 'setReader',
-            value: function setReader(reader) {
-                this.scanner = new StandardTokenizerImpl(reader);
+            key: 'scanner',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$scanner') ? this._$esjava$scanner : this._$esjava$scanner = null;
+            },
+            set: function set(v) {
+                this._$esjava$scanner = v;
             }
         }, {
-            key: 'reset',
-            value: function reset() {}
+            key: 'skippedPositions',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$skippedPositions') ? this._$esjava$skippedPositions : this._$esjava$skippedPositions = 0;
+            },
+            set: function set(v) {
+                this._$esjava$skippedPositions = v;
+            }
         }, {
-            key: 'end',
-            value: function end() {}
-        }, {
-            key: 'close',
-            value: function close() {}
+            key: 'maxTokenLength',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$maxTokenLength') ? this._$esjava$maxTokenLength : this._$esjava$maxTokenLength = StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH;
+            },
+            set: function set(v) {
+                this._$esjava$maxTokenLength = v;
+            }
         }], [{
             key: 'ALPHANUM',
             get: function get() {
@@ -946,123 +1892,225 @@
             }
         }]);
 
-        function StandardTokenizer() {
-            _classCallCheck(this, StandardTokenizer);
-
-            _get(Object.getPrototypeOf(StandardTokenizer.prototype), 'constructor', this).call(this);
-            this.scanner = null;
-            this.skippedPositions = 0;
-            this.maxTokenLength = StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH;
-        }
-
         return StandardTokenizer;
     })(Tokenizer);
 
-    exports.StandardTokenizer = StandardTokenizer;
-
     var UAX29URLEmailTokenizerImpl = (function () {
         _createClass(UAX29URLEmailTokenizerImpl, [{
-            key: 'yychar$fixed',
-            value: function yychar$fixed() {
-                return this.yychar;
+            key: 'yychar$esjava$0',
+            value: function yychar$esjava$0() {
+                return this.yychar1;
             }
         }, {
-            key: 'getText',
-            value: function getText(t) {
+            key: 'getText$esjava$1',
+            value: function getText$esjava$1(t) {
                 t.copyBuffer(this.zzBuffer, this.zzStartRead, this.zzMarkedPos - this.zzStartRead);
             }
         }, {
-            key: 'setBufferSize',
-            value: function setBufferSize(numChars) {
+            key: 'setBufferSize$esjava$1',
+            value: function setBufferSize$esjava$1(numChars) {
                 this.ZZ_BUFFERSIZE = numChars;
                 var newZzBuffer = new Array(this.ZZ_BUFFERSIZE);
                 System.arraycopy(this.zzBuffer, 0, newZzBuffer, 0, Math.min(this.zzBuffer.length, this.ZZ_BUFFERSIZE));
                 this.zzBuffer = newZzBuffer;
             }
+        }, {
+            key: 'ZZ_BUFFERSIZE',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$ZZ_BUFFERSIZE') ? this._$esjava$ZZ_BUFFERSIZE : this._$esjava$ZZ_BUFFERSIZE = 255;
+            },
+            set: function set(v) {
+                this._$esjava$ZZ_BUFFERSIZE = v;
+            }
+        }, {
+            key: 'zzReader',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzReader') ? this._$esjava$zzReader : this._$esjava$zzReader = null;
+            },
+            set: function set(v) {
+                this._$esjava$zzReader = v;
+            }
+        }, {
+            key: 'zzState',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzState') ? this._$esjava$zzState : this._$esjava$zzState = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzState = v;
+            }
+        }, {
+            key: 'zzLexicalState',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzLexicalState') ? this._$esjava$zzLexicalState : this._$esjava$zzLexicalState = UAX29URLEmailTokenizerImpl.YYINITIAL;
+            },
+            set: function set(v) {
+                this._$esjava$zzLexicalState = v;
+            }
+        }, {
+            key: 'zzBuffer',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzBuffer') ? this._$esjava$zzBuffer : this._$esjava$zzBuffer = new Array(this.ZZ_BUFFERSIZE);
+            },
+            set: function set(v) {
+                this._$esjava$zzBuffer = v;
+            }
+        }, {
+            key: 'zzMarkedPos',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzMarkedPos') ? this._$esjava$zzMarkedPos : this._$esjava$zzMarkedPos = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzMarkedPos = v;
+            }
+        }, {
+            key: 'zzCurrentPos',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzCurrentPos') ? this._$esjava$zzCurrentPos : this._$esjava$zzCurrentPos = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzCurrentPos = v;
+            }
+        }, {
+            key: 'zzStartRead',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzStartRead') ? this._$esjava$zzStartRead : this._$esjava$zzStartRead = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzStartRead = v;
+            }
+        }, {
+            key: 'zzEndRead',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzEndRead') ? this._$esjava$zzEndRead : this._$esjava$zzEndRead = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzEndRead = v;
+            }
+        }, {
+            key: 'yychar1',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$yychar1') ? this._$esjava$yychar1 : this._$esjava$yychar1 = 0;
+            },
+            set: function set(v) {
+                this._$esjava$yychar1 = v;
+            }
+        }, {
+            key: 'zzAtEOF',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzAtEOF') ? this._$esjava$zzAtEOF : this._$esjava$zzAtEOF = false;
+            },
+            set: function set(v) {
+                this._$esjava$zzAtEOF = v;
+            }
+        }, {
+            key: 'zzFinalHighSurrogate',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$zzFinalHighSurrogate') ? this._$esjava$zzFinalHighSurrogate : this._$esjava$zzFinalHighSurrogate = 0;
+            },
+            set: function set(v) {
+                this._$esjava$zzFinalHighSurrogate = v;
+            }
         }], [{
-            key: 'zzUnpackAction$0',
-            value: function zzUnpackAction$0() {
+            key: 'zzUnpackAction$esjava$0',
+            value: function zzUnpackAction$esjava$0() {
                 var result = new Array(2909);
                 var offset = 0;
-                offset = UAX29URLEmailTokenizerImpl.zzUnpackAction$3(UAX29URLEmailTokenizerImpl.ZZ_ACTION_PACKED_0, offset, result);
+                offset = UAX29URLEmailTokenizerImpl.zzUnpackAction$esjava$3(UAX29URLEmailTokenizerImpl.ZZ_ACTION_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackAction$3',
-            value: function zzUnpackAction$3(packed, offset, result) {
+            key: 'zzUnpackAction$esjava$3',
+            value: function zzUnpackAction$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
-                    do result[j++] = value; while (--count > 0);
+
+                    do {
+                        result[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return j;
             }
         }, {
-            key: 'zzUnpackRowMap$0',
-            value: function zzUnpackRowMap$0() {
+            key: 'zzUnpackRowMap$esjava$0',
+            value: function zzUnpackRowMap$esjava$0() {
                 var result = new Array(2909);
                 var offset = 0;
-                offset = UAX29URLEmailTokenizerImpl.zzUnpackRowMap$3(UAX29URLEmailTokenizerImpl.ZZ_ROWMAP_PACKED_0, offset, result);
+                offset = UAX29URLEmailTokenizerImpl.zzUnpackRowMap$esjava$3(UAX29URLEmailTokenizerImpl.ZZ_ROWMAP_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackRowMap$3',
-            value: function zzUnpackRowMap$3(packed, offset, result) {
+            key: 'zzUnpackRowMap$esjava$3',
+            value: function zzUnpackRowMap$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var high = packed.charCodeAt(i++) << 16;
                     result[j++] = high | packed.charCodeAt(i++);
                 }
+
                 return j;
             }
         }, {
-            key: 'zzUnpackTrans$0',
-            value: function zzUnpackTrans$0() {
+            key: 'zzUnpackTrans$esjava$0',
+            value: function zzUnpackTrans$esjava$0() {
                 var result = new Array(235368);
                 var offset = 0;
-                offset = UAX29URLEmailTokenizerImpl.zzUnpackTrans$3(UAX29URLEmailTokenizerImpl.ZZ_TRANS_PACKED_0, offset, result);
-                offset = UAX29URLEmailTokenizerImpl.zzUnpackTrans$3(UAX29URLEmailTokenizerImpl.ZZ_TRANS_PACKED_1, offset, result);
-                offset = UAX29URLEmailTokenizerImpl.zzUnpackTrans$3(UAX29URLEmailTokenizerImpl.ZZ_TRANS_PACKED_2, offset, result);
+                offset = UAX29URLEmailTokenizerImpl.zzUnpackTrans$esjava$3(UAX29URLEmailTokenizerImpl.ZZ_TRANS_PACKED_0, offset, result);
+                offset = UAX29URLEmailTokenizerImpl.zzUnpackTrans$esjava$3(UAX29URLEmailTokenizerImpl.ZZ_TRANS_PACKED_1, offset, result);
+                offset = UAX29URLEmailTokenizerImpl.zzUnpackTrans$esjava$3(UAX29URLEmailTokenizerImpl.ZZ_TRANS_PACKED_2, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackTrans$3',
-            value: function zzUnpackTrans$3(packed, offset, result) {
+            key: 'zzUnpackTrans$esjava$3',
+            value: function zzUnpackTrans$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
                     value--;
-                    do result[j++] = value; while (--count > 0);
+
+                    do {
+                        result[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return j;
             }
         }, {
-            key: 'zzUnpackAttribute$0',
-            value: function zzUnpackAttribute$0() {
+            key: 'zzUnpackAttribute$esjava$0',
+            value: function zzUnpackAttribute$esjava$0() {
                 var result = new Array(2909);
                 var offset = 0;
-                offset = UAX29URLEmailTokenizerImpl.zzUnpackAttribute$3(UAX29URLEmailTokenizerImpl.ZZ_ATTRIBUTE_PACKED_0, offset, result);
+                offset = UAX29URLEmailTokenizerImpl.zzUnpackAttribute$esjava$3(UAX29URLEmailTokenizerImpl.ZZ_ATTRIBUTE_PACKED_0, offset, result);
                 return result;
             }
         }, {
-            key: 'zzUnpackAttribute$3',
-            value: function zzUnpackAttribute$3(packed, offset, result) {
+            key: 'zzUnpackAttribute$esjava$3',
+            value: function zzUnpackAttribute$esjava$3(packed, offset, result) {
                 var i = 0;
                 var j = offset;
                 var l = packed.length;
+
                 while (i < l) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
-                    do result[j++] = value; while (--count > 0);
+
+                    do {
+                        result[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return j;
             }
         }, {
@@ -1095,13 +2143,13 @@
             key: 'ZZ_CMAP',
             get: function get() {
                 delete UAX29URLEmailTokenizerImpl.ZZ_CMAP;
-                return UAX29URLEmailTokenizerImpl.ZZ_CMAP = UAX29URLEmailTokenizerImpl.zzUnpackCMap(UAX29URLEmailTokenizerImpl.ZZ_CMAP_PACKED);
+                return UAX29URLEmailTokenizerImpl.ZZ_CMAP = UAX29URLEmailTokenizerImpl.zzUnpackCMap$esjava$1(UAX29URLEmailTokenizerImpl.ZZ_CMAP_PACKED);
             }
         }, {
             key: 'ZZ_ACTION',
             get: function get() {
                 delete UAX29URLEmailTokenizerImpl.ZZ_ACTION;
-                return UAX29URLEmailTokenizerImpl.ZZ_ACTION = UAX29URLEmailTokenizerImpl.zzUnpackAction$0();
+                return UAX29URLEmailTokenizerImpl.ZZ_ACTION = UAX29URLEmailTokenizerImpl.zzUnpackAction$esjava$0();
             }
         }, {
             key: 'ZZ_ACTION_PACKED_0',
@@ -1112,7 +2160,7 @@
             key: 'ZZ_ROWMAP',
             get: function get() {
                 delete UAX29URLEmailTokenizerImpl.ZZ_ROWMAP;
-                return UAX29URLEmailTokenizerImpl.ZZ_ROWMAP = UAX29URLEmailTokenizerImpl.zzUnpackRowMap$0();
+                return UAX29URLEmailTokenizerImpl.ZZ_ROWMAP = UAX29URLEmailTokenizerImpl.zzUnpackRowMap$esjava$0();
             }
         }, {
             key: 'ZZ_ROWMAP_PACKED_0',
@@ -1123,7 +2171,7 @@
             key: 'ZZ_TRANS',
             get: function get() {
                 delete UAX29URLEmailTokenizerImpl.ZZ_TRANS;
-                return UAX29URLEmailTokenizerImpl.ZZ_TRANS = UAX29URLEmailTokenizerImpl.zzUnpackTrans$0();
+                return UAX29URLEmailTokenizerImpl.ZZ_TRANS = UAX29URLEmailTokenizerImpl.zzUnpackTrans$esjava$0();
             }
         }, {
             key: 'ZZ_TRANS_PACKED_0',
@@ -1165,7 +2213,7 @@
             key: 'ZZ_ATTRIBUTE',
             get: function get() {
                 delete UAX29URLEmailTokenizerImpl.ZZ_ATTRIBUTE;
-                return UAX29URLEmailTokenizerImpl.ZZ_ATTRIBUTE = UAX29URLEmailTokenizerImpl.zzUnpackAttribute$0();
+                return UAX29URLEmailTokenizerImpl.ZZ_ATTRIBUTE = UAX29URLEmailTokenizerImpl.zzUnpackAttribute$esjava$0();
             }
         }, {
             key: 'ZZ_ATTRIBUTE_PACKED_0',
@@ -1219,27 +2267,15 @@
             }
         }]);
 
-        function UAX29URLEmailTokenizerImpl(in$) {
+        function UAX29URLEmailTokenizerImpl(in$esjava) {
             _classCallCheck(this, UAX29URLEmailTokenizerImpl);
 
-            this.ZZ_BUFFERSIZE = 255;
-            this.zzReader = null;
-            this.zzState = 0;
-            this.zzLexicalState = UAX29URLEmailTokenizerImpl.YYINITIAL;
-            this.zzBuffer = new Array(this.ZZ_BUFFERSIZE);
-            this.zzMarkedPos = 0;
-            this.zzCurrentPos = 0;
-            this.zzStartRead = 0;
-            this.zzEndRead = 0;
-            this.yychar = 0;
-            this.zzAtEOF = false;
-            this.zzFinalHighSurrogate = 0;
-            this.zzReader = in$;
+            this.zzReader = in$esjava;
         }
 
         _createClass(UAX29URLEmailTokenizerImpl, [{
-            key: 'zzRefill',
-            value: function zzRefill() {
+            key: 'zzRefill$esjava$0',
+            value: function zzRefill$esjava$0() {
                 if (this.zzStartRead > 0) {
                     this.zzEndRead += this.zzFinalHighSurrogate;
                     this.zzFinalHighSurrogate = 0;
@@ -1249,78 +2285,88 @@
                     this.zzMarkedPos -= this.zzStartRead;
                     this.zzStartRead = 0;
                 }
+
                 var requested = this.zzBuffer.length - this.zzEndRead - this.zzFinalHighSurrogate;
                 var totalRead = 0;
+
                 while (totalRead < requested) {
                     var numRead = this.zzReader.read(this.zzBuffer, this.zzEndRead + totalRead, requested - totalRead);
+
                     if (numRead === -1) {
                         break;
                     }
+
                     totalRead += numRead;
                 }
+
                 if (totalRead > 0) {
                     this.zzEndRead += totalRead;
+
                     if (totalRead === requested) {
                         if (Character.isHighSurrogate(this.zzBuffer[this.zzEndRead - 1])) {
                             --this.zzEndRead;
                             this.zzFinalHighSurrogate = 1;
+
                             if (totalRead === 1) {
                                 return true;
                             }
                         }
                     }
+
                     return false;
                 }
+
                 return true;
             }
         }, {
-            key: 'yyclose',
-            value: function yyclose() {
+            key: 'yyclose$esjava$0',
+            value: function yyclose$esjava$0() {
                 this.zzAtEOF = true;
                 this.zzEndRead = this.zzStartRead;
                 if (this.zzReader !== null) this.zzReader.close();
             }
         }, {
-            key: 'yyreset',
-            value: function yyreset(reader) {
+            key: 'yyreset$esjava$1',
+            value: function yyreset$esjava$1(reader) {
                 this.zzReader = reader;
                 this.zzAtEOF = false;
                 this.zzEndRead = this.zzStartRead = 0;
                 this.zzCurrentPos = this.zzMarkedPos = 0;
                 this.zzFinalHighSurrogate = 0;
-                this.yychar = 0;
+                this.yychar1 = 0;
                 this.zzLexicalState = UAX29URLEmailTokenizerImpl.YYINITIAL;
                 if (this.zzBuffer.length > this.ZZ_BUFFERSIZE) this.zzBuffer = new Array(this.ZZ_BUFFERSIZE);
             }
         }, {
-            key: 'yystate',
-            value: function yystate() {
+            key: 'yystate$esjava$0',
+            value: function yystate$esjava$0() {
                 return this.zzLexicalState;
             }
         }, {
-            key: 'yybegin',
-            value: function yybegin(newState) {
+            key: 'yybegin$esjava$1',
+            value: function yybegin$esjava$1(newState) {
                 this.zzLexicalState = newState;
             }
         }, {
-            key: 'yytext',
-            value: function yytext() {
+            key: 'yytext$esjava$0',
+            value: function yytext$esjava$0() {
                 return new String(this.zzBuffer, this.zzStartRead, this.zzMarkedPos - this.zzStartRead);
             }
         }, {
-            key: 'yycharat',
-            value: function yycharat(pos) {
+            key: 'yycharat$esjava$1',
+            value: function yycharat$esjava$1(pos) {
                 return this.zzBuffer[this.zzStartRead + pos];
             }
         }, {
-            key: 'yylength',
-            value: function yylength() {
+            key: 'yylength$esjava$0',
+            value: function yylength$esjava$0() {
                 return this.zzMarkedPos - this.zzStartRead;
             }
         }, {
-            key: 'zzScanError',
-            value: function zzScanError(errorCode) {
+            key: 'zzScanError$esjava$1',
+            value: function zzScanError$esjava$1(errorCode) {
                 var message = undefined;
+
                 try {
                     message = UAX29URLEmailTokenizerImpl.ZZ_ERROR_MSG[errorCode];
                 } catch (e) {
@@ -1328,17 +2374,18 @@
                         message = UAX29URLEmailTokenizerImpl.ZZ_ERROR_MSG[UAX29URLEmailTokenizerImpl.ZZ_UNKNOWN_ERROR];
                     } else throw e;
                 }
+
                 throw new Error(message);
             }
         }, {
-            key: 'yypushback',
-            value: function yypushback(number) {
-                if (number > this.yylength()) this.zzScanError(UAX29URLEmailTokenizerImpl.ZZ_PUSHBACK_2BIG);
+            key: 'yypushback$esjava$1',
+            value: function yypushback$esjava$1(number) {
+                if (number > this.yylength$esjava$0()) this.zzScanError$esjava$1(UAX29URLEmailTokenizerImpl.ZZ_PUSHBACK_2BIG);
                 this.zzMarkedPos -= number;
             }
         }, {
-            key: 'getNextToken',
-            value: function getNextToken() {
+            key: 'getNextToken$esjava$0',
+            value: function getNextToken$esjava$0() {
                 var zzInput = undefined;
                 var zzAction = undefined;
                 var zzCurrentPosL = undefined;
@@ -1349,16 +2396,19 @@
                 var zzTransL = UAX29URLEmailTokenizerImpl.ZZ_TRANS;
                 var zzRowMapL = UAX29URLEmailTokenizerImpl.ZZ_ROWMAP;
                 var zzAttrL = UAX29URLEmailTokenizerImpl.ZZ_ATTRIBUTE;
+
                 while (true) {
                     zzMarkedPosL = this.zzMarkedPos;
-                    this.yychar += zzMarkedPosL - this.zzStartRead;
+                    this.yychar1 += zzMarkedPosL - this.zzStartRead;
                     zzAction = -1;
                     zzCurrentPosL = this.zzCurrentPos = this.zzStartRead = zzMarkedPosL;
                     this.zzState = UAX29URLEmailTokenizerImpl.ZZ_LEXSTATE[this.zzLexicalState];
                     var zzAttributes = zzAttrL[this.zzState];
+
                     if ((zzAttributes & 1) === 1) {
                         zzAction = this.zzState;
                     }
+
                     zzForAction: {
                         while (true) {
                             if (zzCurrentPosL < zzEndReadL) {
@@ -1370,11 +2420,12 @@
                             } else {
                                 this.zzCurrentPos = zzCurrentPosL;
                                 this.zzMarkedPos = zzMarkedPosL;
-                                var eof = this.zzRefill();
+                                var eof = this.zzRefill$esjava$0();
                                 zzCurrentPosL = this.zzCurrentPos;
                                 zzMarkedPosL = this.zzMarkedPos;
                                 zzBufferL = this.zzBuffer;
                                 zzEndReadL = this.zzEndRead;
+
                                 if (eof) {
                                     zzInput = UAX29URLEmailTokenizerImpl.YYEOF;
                                     break zzForAction;
@@ -1383,10 +2434,12 @@
                                     zzCurrentPosL += Character.charCount(zzInput);
                                 }
                             }
+
                             var zzNext = zzTransL[zzRowMapL[this.zzState] + zzCMapL[zzInput]];
                             if (zzNext === -1) break zzForAction;
                             this.zzState = zzNext;
                             zzAttributes = zzAttrL[this.zzState];
+
                             if ((zzAttributes & 1) === 1) {
                                 zzAction = this.zzState;
                                 zzMarkedPosL = zzCurrentPosL;
@@ -1394,143 +2447,376 @@
                             }
                         }
                     }
+
                     this.zzMarkedPos = zzMarkedPosL;
+
                     switch (zzAction < 0 ? zzAction : UAX29URLEmailTokenizerImpl.ZZ_ACTION[zzAction]) {
                         case 1:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                             }
+
                         case 15:
                             break;
+
                         case 2:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.WORD_TYPE;
                             }
+
                         case 16:
                             break;
+
                         case 3:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.HANGUL_TYPE;
                             }
+
                         case 17:
                             break;
+
                         case 4:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.NUMERIC_TYPE;
                             }
+
                         case 18:
                             break;
+
                         case 5:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.KATAKANA_TYPE;
                             }
+
                         case 19:
                             break;
+
                         case 6:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.IDEOGRAPHIC_TYPE;
                             }
+
                         case 20:
                             break;
+
                         case 7:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.HIRAGANA_TYPE;
                             }
+
                         case 21:
                             break;
+
                         case 8:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.SOUTH_EAST_ASIAN_TYPE;
                             }
+
                         case 22:
                             break;
+
                         case 9:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.EMAIL_TYPE;
                             }
+
                         case 23:
                             break;
+
                         case 10:
                             {
                                 return UAX29URLEmailTokenizerImpl.URL_TYPE;
                             }
+
                         case 24:
                             break;
+
                         case 11:
                             this.zzMarkedPos = Character.offsetByCodePoints(zzBufferL, this.zzStartRead, this.zzEndRead - this.zzStartRead, this.zzMarkedPos, -1);
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.URL_TYPE;
                             }
+
                         case 25:
                             break;
+
                         case 12:
                             this.zzMarkedPos = Character.offsetByCodePoints(zzBufferL, this.zzStartRead, this.zzEndRead - this.zzStartRead, this.zzMarkedPos, -1);
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.AVOID_BAD_URL);
-                                this.yypushback(this.yylength());
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.AVOID_BAD_URL);
+                                this.yypushback$esjava$1(this.yylength$esjava$0());
                             }
+
                         case 26:
                             break;
+
                         case 13:
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.URL_TYPE;
                             }
+
                         case 27:
                             break;
+
                         case 14:
                             this.zzMarkedPos = Character.offsetByCodePoints(zzBufferL, this.zzStartRead, this.zzEndRead - this.zzStartRead, this.zzStartRead, 6);
                             {
-                                this.yybegin(UAX29URLEmailTokenizerImpl.YYINITIAL);
+                                this.yybegin$esjava$1(UAX29URLEmailTokenizerImpl.YYINITIAL);
                                 return UAX29URLEmailTokenizerImpl.WORD_TYPE;
                             }
+
                         case 28:
                             break;
+
                         default:
                             if (zzInput === UAX29URLEmailTokenizerImpl.YYEOF && this.zzStartRead === this.zzCurrentPos) {
                                 this.zzAtEOF = true;
+
                                 switch (this.zzLexicalState) {
                                     case UAX29URLEmailTokenizerImpl.YYINITIAL:
                                         {
                                             return UAX29URLEmailTokenizerImpl.YYEOF;
                                         }
+
                                     case 2910:
                                         break;
+
                                     case UAX29URLEmailTokenizerImpl.AVOID_BAD_URL:
                                         {
                                             return UAX29URLEmailTokenizerImpl.YYEOF;
                                         }
+
                                     case 2911:
                                         break;
+
                                     default:
                                         return UAX29URLEmailTokenizerImpl.YYEOF;
                                 }
                             } else {
-                                this.zzScanError(UAX29URLEmailTokenizerImpl.ZZ_NO_MATCH);
+                                this.zzScanError$esjava$1(UAX29URLEmailTokenizerImpl.ZZ_NO_MATCH);
                             }
+
                     }
                 }
             }
+        }, {
+            key: 'yychar',
+            value: function yychar() {
+                var _get41;
+
+                for (var _len40 = arguments.length, args = Array(_len40), _key40 = 0; _key40 < _len40; _key40++) {
+                    args[_key40] = arguments[_key40];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yychar$esjava$0.apply(this, args);
+                }
+
+                return (_get41 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yychar', this)).call.apply(_get41, [this].concat(args));
+            }
+        }, {
+            key: 'getText',
+            value: function getText() {
+                var _get42;
+
+                for (var _len41 = arguments.length, args = Array(_len41), _key41 = 0; _key41 < _len41; _key41++) {
+                    args[_key41] = arguments[_key41];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.getText$esjava$1.apply(this, args);
+                }
+
+                return (_get42 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'getText', this)).call.apply(_get42, [this].concat(args));
+            }
+        }, {
+            key: 'setBufferSize',
+            value: function setBufferSize() {
+                var _get43;
+
+                for (var _len42 = arguments.length, args = Array(_len42), _key42 = 0; _key42 < _len42; _key42++) {
+                    args[_key42] = arguments[_key42];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setBufferSize$esjava$1.apply(this, args);
+                }
+
+                return (_get43 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'setBufferSize', this)).call.apply(_get43, [this].concat(args));
+            }
+        }, {
+            key: 'yyclose',
+            value: function yyclose() {
+                var _get44;
+
+                for (var _len43 = arguments.length, args = Array(_len43), _key43 = 0; _key43 < _len43; _key43++) {
+                    args[_key43] = arguments[_key43];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yyclose$esjava$0.apply(this, args);
+                }
+
+                return (_get44 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yyclose', this)).call.apply(_get44, [this].concat(args));
+            }
+        }, {
+            key: 'yyreset',
+            value: function yyreset() {
+                var _get45;
+
+                for (var _len44 = arguments.length, args = Array(_len44), _key44 = 0; _key44 < _len44; _key44++) {
+                    args[_key44] = arguments[_key44];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yyreset$esjava$1.apply(this, args);
+                }
+
+                return (_get45 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yyreset', this)).call.apply(_get45, [this].concat(args));
+            }
+        }, {
+            key: 'yystate',
+            value: function yystate() {
+                var _get46;
+
+                for (var _len45 = arguments.length, args = Array(_len45), _key45 = 0; _key45 < _len45; _key45++) {
+                    args[_key45] = arguments[_key45];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yystate$esjava$0.apply(this, args);
+                }
+
+                return (_get46 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yystate', this)).call.apply(_get46, [this].concat(args));
+            }
+        }, {
+            key: 'yybegin',
+            value: function yybegin() {
+                var _get47;
+
+                for (var _len46 = arguments.length, args = Array(_len46), _key46 = 0; _key46 < _len46; _key46++) {
+                    args[_key46] = arguments[_key46];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yybegin$esjava$1.apply(this, args);
+                }
+
+                return (_get47 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yybegin', this)).call.apply(_get47, [this].concat(args));
+            }
+        }, {
+            key: 'yytext',
+            value: function yytext() {
+                var _get48;
+
+                for (var _len47 = arguments.length, args = Array(_len47), _key47 = 0; _key47 < _len47; _key47++) {
+                    args[_key47] = arguments[_key47];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yytext$esjava$0.apply(this, args);
+                }
+
+                return (_get48 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yytext', this)).call.apply(_get48, [this].concat(args));
+            }
+        }, {
+            key: 'yycharat',
+            value: function yycharat() {
+                var _get49;
+
+                for (var _len48 = arguments.length, args = Array(_len48), _key48 = 0; _key48 < _len48; _key48++) {
+                    args[_key48] = arguments[_key48];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yycharat$esjava$1.apply(this, args);
+                }
+
+                return (_get49 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yycharat', this)).call.apply(_get49, [this].concat(args));
+            }
+        }, {
+            key: 'yylength',
+            value: function yylength() {
+                var _get50;
+
+                for (var _len49 = arguments.length, args = Array(_len49), _key49 = 0; _key49 < _len49; _key49++) {
+                    args[_key49] = arguments[_key49];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.yylength$esjava$0.apply(this, args);
+                }
+
+                return (_get50 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yylength', this)).call.apply(_get50, [this].concat(args));
+            }
+        }, {
+            key: 'yypushback',
+            value: function yypushback() {
+                var _get51;
+
+                for (var _len50 = arguments.length, args = Array(_len50), _key50 = 0; _key50 < _len50; _key50++) {
+                    args[_key50] = arguments[_key50];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.yypushback$esjava$1.apply(this, args);
+                }
+
+                return (_get51 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'yypushback', this)).call.apply(_get51, [this].concat(args));
+            }
+        }, {
+            key: 'getNextToken',
+            value: function getNextToken() {
+                var _get52;
+
+                for (var _len51 = arguments.length, args = Array(_len51), _key51 = 0; _key51 < _len51; _key51++) {
+                    args[_key51] = arguments[_key51];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.getNextToken$esjava$0.apply(this, args);
+                }
+
+                return (_get52 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizerImpl.prototype), 'getNextToken', this)).call.apply(_get52, [this].concat(args));
+            }
         }], [{
-            key: 'zzUnpackCMap',
-            value: function zzUnpackCMap(packed) {
+            key: 'zzUnpackCMap$esjava$1',
+            value: function zzUnpackCMap$esjava$1(packed) {
                 var map = new Array(0x110000);
                 var i = 0;
                 var j = 0;
+
                 while (i < 3014) {
                     var count = packed.charCodeAt(i++);
                     var value = packed.charCodeAt(i++);
-                    do map[j++] = value; while (--count > 0);
+
+                    do {
+                        map[j++] = value;
+                    } while (--count > 0);
                 }
+
                 return map;
             }
         }]);
@@ -1538,12 +2824,18 @@
         return UAX29URLEmailTokenizerImpl;
     })();
 
-    var UAX29URLEmailTokenizer = (function (_Tokenizer2) {
+    var UAX29URLEmailTokenizer = exports.UAX29URLEmailTokenizer = (function (_Tokenizer2) {
         _inherits(UAX29URLEmailTokenizer, _Tokenizer2);
 
+        function UAX29URLEmailTokenizer() {
+            _classCallCheck(this, UAX29URLEmailTokenizer);
+
+            return _possibleConstructorReturn(this, Object.getPrototypeOf(UAX29URLEmailTokenizer).apply(this, arguments));
+        }
+
         _createClass(UAX29URLEmailTokenizer, [{
-            key: 'setMaxTokenLength',
-            value: function setMaxTokenLength(length) {
+            key: 'setMaxTokenLength$esjava$1',
+            value: function setMaxTokenLength$esjava$1(length) {
                 if (length < 1) {
                     throw new IllegalArgumentException("maxTokenLength must be greater than zero");
                 }
@@ -1551,13 +2843,13 @@
                 this.scanner.setBufferSize(Math.min(length, 1024 * 1024));
             }
         }, {
-            key: 'getMaxTokenLength',
-            value: function getMaxTokenLength() {
+            key: 'getMaxTokenLength$esjava$0',
+            value: function getMaxTokenLength$esjava$0() {
                 return this.maxTokenLength;
             }
         }, {
-            key: 'incrementToken',
-            value: function incrementToken() {
+            key: 'incrementToken$esjava$0',
+            value: function incrementToken$esjava$0() {
                 var termAtt = new CharTermAttribute();
                 this.skippedPositions = 0;
                 while (true) {
@@ -1567,24 +2859,153 @@
                     }
                     if (this.scanner.yylength() <= this.maxTokenLength) {
                         this.scanner.getText(termAtt);
-                        return new TokenModel(termAtt.toString(), UAX29URLEmailTokenizer.TOKEN_TYPES[tokenType], this.scanner.yychar$fixed(), this.skippedPositions + 1);
+                        return new TokenModel(termAtt.toString(), UAX29URLEmailTokenizer.TOKEN_TYPES[tokenType], this.scanner.yychar(), this.skippedPositions + 1);
                     } else this.skippedPositions++;
                 }
             }
         }, {
-            key: 'setReader',
-            value: function setReader(reader) {
+            key: 'setReader$esjava$1',
+            value: function setReader$esjava$1(reader) {
                 this.scanner = new UAX29URLEmailTokenizerImpl(reader);
             }
         }, {
+            key: 'reset$esjava$0',
+            value: function reset$esjava$0() {}
+        }, {
+            key: 'end$esjava$0',
+            value: function end$esjava$0() {}
+        }, {
+            key: 'close$esjava$0',
+            value: function close$esjava$0() {}
+        }, {
+            key: 'incrementToken',
+            value: function incrementToken() {
+                var _get53;
+
+                for (var _len52 = arguments.length, args = Array(_len52), _key52 = 0; _key52 < _len52; _key52++) {
+                    args[_key52] = arguments[_key52];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.incrementToken$esjava$0.apply(this, args);
+                }
+                return (_get53 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'incrementToken', this)).call.apply(_get53, [this].concat(args));
+            }
+        }, {
+            key: 'setReader',
+            value: function setReader() {
+                var _get54;
+
+                for (var _len53 = arguments.length, args = Array(_len53), _key53 = 0; _key53 < _len53; _key53++) {
+                    args[_key53] = arguments[_key53];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setReader$esjava$1.apply(this, args);
+                }
+                return (_get54 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'setReader', this)).call.apply(_get54, [this].concat(args));
+            }
+        }, {
             key: 'reset',
-            value: function reset() {}
+            value: function reset() {
+                var _get55;
+
+                for (var _len54 = arguments.length, args = Array(_len54), _key54 = 0; _key54 < _len54; _key54++) {
+                    args[_key54] = arguments[_key54];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.reset$esjava$0.apply(this, args);
+                }
+                return (_get55 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'reset', this)).call.apply(_get55, [this].concat(args));
+            }
         }, {
             key: 'end',
-            value: function end() {}
+            value: function end() {
+                var _get56;
+
+                for (var _len55 = arguments.length, args = Array(_len55), _key55 = 0; _key55 < _len55; _key55++) {
+                    args[_key55] = arguments[_key55];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.end$esjava$0.apply(this, args);
+                }
+                return (_get56 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'end', this)).call.apply(_get56, [this].concat(args));
+            }
         }, {
             key: 'close',
-            value: function close() {}
+            value: function close() {
+                var _get57;
+
+                for (var _len56 = arguments.length, args = Array(_len56), _key56 = 0; _key56 < _len56; _key56++) {
+                    args[_key56] = arguments[_key56];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.close$esjava$0.apply(this, args);
+                }
+                return (_get57 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'close', this)).call.apply(_get57, [this].concat(args));
+            }
+        }, {
+            key: 'setMaxTokenLength',
+            value: function setMaxTokenLength() {
+                var _get58;
+
+                for (var _len57 = arguments.length, args = Array(_len57), _key57 = 0; _key57 < _len57; _key57++) {
+                    args[_key57] = arguments[_key57];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setMaxTokenLength$esjava$1.apply(this, args);
+                }
+                return (_get58 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'setMaxTokenLength', this)).call.apply(_get58, [this].concat(args));
+            }
+        }, {
+            key: 'getMaxTokenLength',
+            value: function getMaxTokenLength() {
+                var _get59;
+
+                for (var _len58 = arguments.length, args = Array(_len58), _key58 = 0; _key58 < _len58; _key58++) {
+                    args[_key58] = arguments[_key58];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.getMaxTokenLength$esjava$0.apply(this, args);
+                }
+                return (_get59 = _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'getMaxTokenLength', this)).call.apply(_get59, [this].concat(args));
+            }
+        }, {
+            key: 'scanner',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$scanner') ? this._$esjava$scanner : this._$esjava$scanner = null;
+            },
+            set: function set(v) {
+                this._$esjava$scanner = v;
+            }
+        }, {
+            key: 'skippedPositions',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$skippedPositions') ? this._$esjava$skippedPositions : this._$esjava$skippedPositions = 0;
+            },
+            set: function set(v) {
+                this._$esjava$skippedPositions = v;
+            }
+        }, {
+            key: 'maxTokenLength',
+            get: function get() {
+                return Object.prototype.hasOwnProperty.call(this, '_$esjava$maxTokenLength') ? this._$esjava$maxTokenLength : this._$esjava$maxTokenLength = StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH;
+            },
+            set: function set(v) {
+                this._$esjava$maxTokenLength = v;
+            }
         }], [{
             key: 'ALPHANUM',
             get: function get() {
@@ -1638,18 +3059,7 @@
             }
         }]);
 
-        function UAX29URLEmailTokenizer() {
-            _classCallCheck(this, UAX29URLEmailTokenizer);
-
-            _get(Object.getPrototypeOf(UAX29URLEmailTokenizer.prototype), 'constructor', this).call(this);
-            this.scanner = null;
-            this.skippedPositions = 0;
-            this.maxTokenLength = StandardAnalyzer.DEFAULT_MAX_TOKEN_LENGTH;
-        }
-
         return UAX29URLEmailTokenizer;
     })(Tokenizer);
-
-    exports.UAX29URLEmailTokenizer = UAX29URLEmailTokenizer;
 });
 

@@ -9,8 +9,10 @@ done
 # Why Babel break unicode ? Fails on [\uD800-\uFFFF] chars. Hot fix: 
 
 sed 's/\\u/\\\\u/g' "$ES6FILE" |                     \
-~/iojs-v3.3.1-linux-x64/bin/node --stack-size=10000  \
+node --stack-size=10000                              \
 "`which babel`"                                      \
 --compact=false                                      \
---modules umdStrict --module-id luceneTokenizers |   \
+--presets es2015                                     \
+--plugins transform-es2015-modules-umd               \
+--module-id luceneTokenizers |                       \
 sed 's/\\\\u/\\u/g' > lucene-tokenizers.babel.js

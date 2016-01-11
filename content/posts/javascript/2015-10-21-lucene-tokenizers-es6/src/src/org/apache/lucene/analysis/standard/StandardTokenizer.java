@@ -87,12 +87,8 @@ public class StandardTokenizer implements Tokenizer {
 
 			if (scanner.yylength() <= maxTokenLength) {
 				scanner.getText(termAtt);
-				// :es6:
-				// esjava is not smart enough yet :(
-				// scanner.yychar$fixed()
 				return new TokenModel(termAtt.toString(), TOKEN_TYPES[tokenType], scanner.yychar(),
 						skippedPositions + 1);
-				// :end:
 			} else
 				// When we skip a too-long term, we still increment the
 				// position increment
