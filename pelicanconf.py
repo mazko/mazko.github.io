@@ -10,9 +10,15 @@ DISQUS_SITENAME = 'mazko'
 PATH = 'content'
 READERS = {'html': None}
 
-TIMEZONE = 'Europe/Paris'
+TIMEZONE = 'Europe/Kiev'
 
 DEFAULT_LANG = u'ru'
+
+LOCALE = (
+  'ru_RU.utf8',
+  'ru_RU',
+  'POSIX',
+)
 
 #THEME='simple-bootstrap'
 
