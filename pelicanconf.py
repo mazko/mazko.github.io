@@ -17,7 +17,7 @@ DEFAULT_LANG = u'ru'
 LOCALE = (
   'ru_RU.utf8',
   'ru_RU',
-  'POSIX',
+  #'POSIX',
 )
 
 #THEME='simple-bootstrap'
