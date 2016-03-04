@@ -5,6 +5,8 @@ env:
 branches:
   only:
     - src
+before_install:
+  - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-en language-pack-ru
 install:
   - pip install pelican markdown
 script:
