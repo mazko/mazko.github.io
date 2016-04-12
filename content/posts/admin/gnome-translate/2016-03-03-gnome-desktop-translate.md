@@ -12,12 +12,12 @@ tags: yandex, api
 
 - Выводит приятное всплывающее окошко с переведённым содержимым, даже картинка присутствует под катом
 
-*xsel-translate-notify.sh*
+*xsel-tr-notify.sh*
 
     :::bash
     #!/usr/bin/env bash
 
-    # chmod +x xsel-translate-notify.sh && sudo ln -s xsel-translate-notify.sh /usr/local/bin/xsel-translate-notify
+    # chmod +x xsel-tr-notify.sh && sudo ln -s `pwd`/xsel-tr-notify.sh /usr/local/bin/xsel-translate-notify
     # apt-get install mpg123 libnotify-bin xsel curl
 
     echo "Powered by Yandex api"
