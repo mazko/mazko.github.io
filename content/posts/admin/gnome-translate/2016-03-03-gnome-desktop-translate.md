@@ -20,6 +20,9 @@ tags: yandex, api
     # chmod +x xsel-tr-notify.sh && sudo ln -s `pwd`/xsel-tr-notify.sh /usr/local/bin/xsel-translate-notify
     # apt-get install mpg123 libnotify-bin xsel curl
 
+    # Exit immediately if a command exits with a non-zero status.
+    set -e
+
     echo "Powered by Yandex api"
 
     # https://tech.yandex.ru/translate/
@@ -31,7 +34,7 @@ tags: yandex, api
     text=`xsel -o`
 
     # text to speech in background, non-blocking
-    curl 'https://tts.voicetech.yandex.net/generate' \
+    curl -sf 'https://tts.voicetech.yandex.net/generate' \
       -d "text=$text"       \
       -d 'format=mp3'       \
       -d 'lang=en-EN'       \
@@ -41,7 +44,7 @@ tags: yandex, api
       | mpg123 --stereo - &
 
     # translate text & parse json response
-    translate=`curl 'https://translate.yandex.net/api/v1.5/tr.json/translate' \
+    translate=`curl -sf 'https://translate.yandex.net/api/v1.5/tr.json/translate' \
       -d "key=$YA_TRNSL_KEY"    \
       -d "text=$text"           \
       -d "lang=${LANGUAGE:0:2}" \
