@@ -9,7 +9,7 @@ tags: Lucene, Stemming
 <script type="text/javascript" src="{attach}Snowball.min.js"> </script>
 
 <p>
-<input maxlength="33" size="33" id="jssnowball_input" value="нежадный" style="text-align: left; padding:.3em;" type="text"/>
+<input maxlength="33" size="33" id="jssnowball_input" value="сады" style="text-align: left; padding:.3em;" type="text"/>
 <select id="jssnowball_language" style="padding:.2em;"><option value="russian">Русский</option><option value="danish">danish</option><option value="dutch">dutch</option><option value="finnish">finnish</option><option value="french">french</option><option value="german">german</option><option value="hungarian">hungarian</option><option value="italian">italian</option><option value="norwegian">norwegian</option><option value="portuguese">portuguese</option><option value="english">english</option><option value="spanish">spanish</option><option value="swedish">swedish</option><option value="romanian">romanian</option><option value="turkish">turkish</option></select>
 <button style="padding:.2em;" type="button" onclick="jssnowball_print();"><noscript><span style="color:red;">Включите JavaScript ! </span></noscript>Стеммер!</button>
 </p>
@@ -20,190 +20,200 @@ tags: Lucene, Stemming
 
 В данном примере будет представлено альтернативное решение, реализованное исключительно средствами *Lucene*. В структуре индекса добавятся дополнительные соответствующие конкретному языку поля. Для каждого поля в *Lucene* можно задать свой анализатор, используя класс `PerFieldAnalyzerWrapper`:
 
-*jLucene/server/webapps/search/src/nongreedy/LuceneBinding.java*
+*common/src/main/java/common/LuceneBinding.java*
 
     :::java
-    package nongreedy;
+    package common;
 
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
     import java.util.HashMap;
     import java.util.Map;
 
     import org.apache.lucene.analysis.Analyzer;
-    import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
     import org.apache.lucene.analysis.en.EnglishAnalyzer;
+    import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
     import org.apache.lucene.analysis.ru.RussianAnalyzer;
     import org.apache.lucene.analysis.standard.StandardAnalyzer;
-    import org.apache.lucene.util.Version;
 
     /* This class is used both by Crawler and SearchServlet */
 
     public final class LuceneBinding {
-    	public static final Version CURRENT_LUCENE_VERSION = 
-                Version.LUCENE_35;
+        public static final Path INDEX_PATH = Paths.get(
+            System.getProperty("user.home"), "lucene-tutorial-index");
 
-    	public static final String URI_FIELD = "uri";
-    	public static final String TITLE_FIELD = "title";
-    	public static final String CONTENT_FIELD = "content";
+        public static final String URI_FIELD = "uri";
+        public static final String TITLE_FIELD = "title";
+        public static final String CONTENT_FIELD = "content";
 
-    	/* Russian */
+        /* Russian */
 
-    	public static final String RUS_TITLE_FIELD = "rustitle";
-    	public static final String RUS_CONTENT_FIELD = "ruscontent";
+        public static final String RUS_TITLE_FIELD = "rustitle";
+        public static final String RUS_CONTENT_FIELD = "ruscontent";
 
-    	/* English */
+        /* English */
 
-    	public static final String ENG_TITLE_FIELD = "engtitle";
-    	public static final String ENG_CONTENT_FIELD = "engcontent";
+        public static final String ENG_TITLE_FIELD = "engtitle";
+        public static final String ENG_CONTENT_FIELD = "engcontent";
 
-    	public static Analyzer getAnalyzer() {
+        public static Analyzer getAnalyzer() {
+            final Map<String, Analyzer> analyzers = new HashMap<String, Analyzer>();
+            analyzers.put(LuceneBinding.RUS_TITLE_FIELD, new RussianAnalyzer());
+            analyzers.put(LuceneBinding.RUS_CONTENT_FIELD, new RussianAnalyzer());
+            analyzers.put(LuceneBinding.ENG_TITLE_FIELD, new EnglishAnalyzer());
+            analyzers.put(LuceneBinding.ENG_CONTENT_FIELD, new EnglishAnalyzer());
 
-    		Map<String, Analyzer> analyzers = 
-                        new HashMap<String, Analyzer>();
-    		analyzers.put(RUS_TITLE_FIELD, new RussianAnalyzer(
-    				CURRENT_LUCENE_VERSION));
-    		analyzers.put(RUS_CONTENT_FIELD, new RussianAnalyzer(
-    				CURRENT_LUCENE_VERSION));
-    		analyzers.put(ENG_TITLE_FIELD, new EnglishAnalyzer(
-    				CURRENT_LUCENE_VERSION));
-    		analyzers.put(ENG_CONTENT_FIELD, new EnglishAnalyzer(
-    				CURRENT_LUCENE_VERSION));
-
-    		return new PerFieldAnalyzerWrapper(new StandardAnalyzer(
-    				CURRENT_LUCENE_VERSION), analyzers);
-    	}
+            return new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzers);
+        }
     }
 
-Данные поля необходимо добавить в индекс - можно с параметром `Store.NO`, поскольку в нашем случае у документа `Document` уже имеются соответствующие поля, хранящие оригинальные значения (созданные с параметром `Store.YES`) - зачем дублировать информацию и тем самым раздувать размеры индекса.
+Данные поля необходимо добавить в индекс - можно с параметром `setStored(false)`, поскольку в нашем случае у документа `Document` уже имеются соответствующие поля, хранящие оригинальные значения (созданные с параметром `setStored(true)`) - зачем дублировать информацию и тем самым раздувать размеры индекса.
 
-*jLucene/crawler/src/nongreedy/LuceneIndexer.java*
+*crawler/src/main/java/crawler/LuceneIndexer.java*
 
     :::java
-    package nongreedy;
+    package crawler;
 
-    import java.io.File;
+    import java.io.Closeable;
     import java.io.IOException;
 
     import org.apache.log4j.Logger;
     import org.apache.lucene.document.Document;
     import org.apache.lucene.document.Field;
-    import org.apache.lucene.document.Field.Index;
-    import org.apache.lucene.document.Field.Store;
-    import org.apache.lucene.document.Field.TermVector;
+    import org.apache.lucene.document.FieldType;
+    import org.apache.lucene.index.IndexOptions;
     import org.apache.lucene.index.IndexWriter;
     import org.apache.lucene.index.IndexWriterConfig;
     import org.apache.lucene.index.IndexWriterConfig.OpenMode;
     import org.apache.lucene.store.Directory;
     import org.apache.lucene.store.FSDirectory;
 
-    class LuceneIndexer {
-        private static final Logger logger = 
-            Logger.getLogger(LuceneIndexer.class.getName());
+    import common.LuceneBinding;
+
+    class LuceneIndexer implements Closeable {
+        private static final Logger logger = Logger.getLogger(LuceneIndexer.class.getName());
 
         /* IndexWriter is completely thread safe */
 
-        private static IndexWriter indexWriter;
+        private IndexWriter indexWriter = null;
 
-        public static void optimizeAndClose() {
-            try {
-                synchronized (LuceneIndexer.class) {
-                    if (null != indexWriter) {
-                        indexWriter.close();
-                        indexWriter = null;
-                    } else {
-                        throw new IOException("Index already closed");
-                    }
-                }
-            } catch (IOException ex) {
-                logger.error(ex);
+        @Override
+        public void close() throws IOException {
+            if (this.indexWriter != null) {
+                LuceneIndexer.logger.info("Closing Index < " + 
+                        LuceneBinding.INDEX_PATH + " > NumDocs: " + this.indexWriter.numDocs());
+                this.indexWriter.close();
+                this.indexWriter = null;
+                LuceneIndexer.logger.info("Index Closed OK!");
+            } else {
+                throw new IOException("Index already closed");
             }
         }
 
-        public LuceneIndexer(String indexDir) throws IOException {
-            Directory dir = FSDirectory.open(new File(indexDir));
-            IndexWriterConfig config = new IndexWriterConfig(
-                    LuceneBinding.CURRENT_LUCENE_VERSION,
-                    LuceneBinding.getAnalyzer());
-            config.setOpenMode(OpenMode.CREATE); // Rewrite old index
-            indexWriter = new IndexWriter(dir, config);
+        public void new_index() throws IOException {
+            final Directory directory = FSDirectory.open(LuceneBinding.INDEX_PATH);
+            final IndexWriterConfig iwConfig = new IndexWriterConfig(LuceneBinding.getAnalyzer());
+            iwConfig.setOpenMode(OpenMode.CREATE);
+            this.indexWriter = new IndexWriter(directory, iwConfig);
         }
 
-        public void add(String url, String html) {
+        public void add(final String url, final String html) {
 
-            String title = HtmlHelper.extractTitle(html);
-            String content = HtmlHelper.extractContent(html);
+            final String title = HtmlHelper.extractTitle(html);
+            final String content = HtmlHelper.extractContent(html);
 
-            logger.info("***** " + url + " *****");
-            if (null != title)
-                logger.info(title);
-            logger.info(content);
+            LuceneIndexer.logger.info("***** " + url + " *****");
+            if (title != null) {
+                LuceneIndexer.logger.info(title);
+            }
+            LuceneIndexer.logger.info(content);
 
-            Document doc = new Document();
+            final Document doc = new Document();
 
-            doc.add(new Field(LuceneBinding.URI_FIELD, 
-                url, Store.YES, Index.NO));
-            if (null != title)
-                doc.add(new Field(LuceneBinding.TITLE_FIELD, 
-                        title, Store.YES, Index.ANALYZED, 
-                        TermVector.WITH_POSITIONS_OFFSETS));
-            doc.add(new Field(LuceneBinding.CONTENT_FIELD, 
-                    content, Store.YES, Index.ANALYZED, 
-                    TermVector.WITH_POSITIONS_OFFSETS));
+            final FieldType urlType = new FieldType();
+            urlType.setIndexOptions(IndexOptions.DOCS);
+            urlType.setStored(true);
+            urlType.setTokenized(false);
+            urlType.setStoreTermVectorOffsets(false);
+            urlType.setStoreTermVectorPayloads(false);
+            urlType.setStoreTermVectorPositions(false);
+            urlType.setStoreTermVectors(false);
+            doc.add(new Field(LuceneBinding.URI_FIELD, url, urlType));
 
-            /* Russian use Store.NO - we already have original value */
+            final FieldType tokType = new FieldType();
+            tokType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
+            tokType.setStored(true);
+            tokType.setTokenized(true);
+            tokType.setStoreTermVectorOffsets(true);
+            tokType.setStoreTermVectorPayloads(true);
+            tokType.setStoreTermVectorPositions(true);
+            tokType.setStoreTermVectors(true);
+            if (title != null) {
+                doc.add(new Field(LuceneBinding.TITLE_FIELD, title, tokType));
+            }
+            doc.add(new Field(LuceneBinding.CONTENT_FIELD, content, tokType));
 
-            if (null != title)
-                doc.add(new Field(LuceneBinding.RUS_TITLE_FIELD, 
-                        title, Store.NO, Index.ANALYZED, 
-                        TermVector.WITH_POSITIONS_OFFSETS));
-            doc.add(new Field(LuceneBinding.RUS_CONTENT_FIELD, 
-                    content, Store.NO, Index.ANALYZED, 
-                    TermVector.WITH_POSITIONS_OFFSETS));
+            // Language setStored(false) - we already have original value
 
-            /* English use Store.NO */
+            final FieldType lngType = new FieldType();
+            lngType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
+            lngType.setStored(false);
+            lngType.setTokenized(true);
+            lngType.setStoreTermVectorOffsets(true);
+            lngType.setStoreTermVectorPayloads(true);
+            lngType.setStoreTermVectorPositions(true);
+            lngType.setStoreTermVectors(true);
 
-            if (null != title)
-                doc.add(new Field(LuceneBinding.ENG_TITLE_FIELD, 
-                        title, Store.NO, Index.ANALYZED, 
-                        TermVector.WITH_POSITIONS_OFFSETS));
-            doc.add(new Field(LuceneBinding.ENG_CONTENT_FIELD, 
-                    content, Store.NO, Index.ANALYZED, 
-                    TermVector.WITH_POSITIONS_OFFSETS));
+            /* Russian */
+
+            if (title != null) {
+                doc.add(new Field(LuceneBinding.RUS_TITLE_FIELD, title, lngType));
+            }
+            doc.add(new Field(LuceneBinding.RUS_CONTENT_FIELD, content, lngType));
+
+            /* English */
+
+            if (title != null) {
+                doc.add(new Field(LuceneBinding.ENG_TITLE_FIELD, title, lngType));
+            }
+            doc.add(new Field(LuceneBinding.ENG_CONTENT_FIELD, content, lngType));
 
             try {
-                synchronized (LuceneIndexer.class) {
-                    if (null != indexWriter) {
-                        indexWriter.addDocument(doc);
-                    }
+                if (this.indexWriter != null) {
+                    this.indexWriter.addDocument(doc);
                 }
-            } catch (IOException ex) {
-                logger.error(ex);
+            } catch (final IOException ex) {
+                LuceneIndexer.logger.error(ex);
             }
         }
     }
 
 Для поиска по нескольким полям одновременно используем уже известный `MultiFieldQueryParser`, просто расширив перечень интересующих нас полей:
 
-*jLucene/server/webapps/search/src/nongreedy/QueryHelper.java*
+*server/src/main/java/server/QueryHelper.java*
 
     :::java
-    package nongreedy;
+    package server;
 
-    import org.apache.lucene.queryParser.MultiFieldQueryParser;
-    import org.apache.lucene.queryParser.ParseException;
-    import org.apache.lucene.queryParser.QueryParser;
+    import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+    import org.apache.lucene.queryparser.classic.ParseException;
+    import org.apache.lucene.queryparser.classic.QueryParser;
+    import org.apache.lucene.queryparser.classic.QueryParserBase;
     import org.apache.lucene.search.Query;
 
+    import common.LuceneBinding;
+
     final class QueryHelper {
-        static Query generate(String story) throws ParseException {
-            QueryParser parser = new MultiFieldQueryParser(
-                    LuceneBinding.CURRENT_LUCENE_VERSION, new String[] {
+        static Query generate(final String story) throws ParseException {
+            final QueryParser parser = new MultiFieldQueryParser(
+                    new String[] { 
                             LuceneBinding.TITLE_FIELD, 
                             LuceneBinding.CONTENT_FIELD,
                             /* Russian */
-                            LuceneBinding.RUS_TITLE_FIELD,
+                            LuceneBinding.RUS_TITLE_FIELD, 
                             LuceneBinding.RUS_CONTENT_FIELD,
                             /* English */
-                            LuceneBinding.ENG_TITLE_FIELD,
+                            LuceneBinding.ENG_TITLE_FIELD, 
                             LuceneBinding.ENG_CONTENT_FIELD },
                     LuceneBinding.getAnalyzer());
 
@@ -211,11 +221,16 @@ tags: Lucene, Stemming
 
             parser.setDefaultOperator(QueryParser.Operator.AND);
 
-            return parser.parse(QueryParser.escape(story));
+            return parser.parse(QueryParserBase.escape(story));
         }
     }
 
 После переидексации сайта результаты поисковой выдачи выглядят уже намного лучше:
+
+    :::bash
+    ~$ mvn clean install && bash -c 'mvn -pl server/ jetty:run & sleep 10 && \
+        mvn -pl crawler/ exec:java -Dexec.mainClass="crawler.App" & \
+        trap "kill -TERM -$$" SIGINT ; wait'
 
 ![screenshot]({attach}linux_search_stem_sad.png){:style="width:100%; border:1px solid #ddd;"}
 
@@ -225,14 +240,6 @@ tags: Lucene, Stemming
 
 ![screenshot]({attach}linux_search_stem_tests.png){:style="width:100%; border:1px solid #ddd;"}
 
-![screenshot]({attach}win_search_stem_sad.png){:style="width:100%; border:1px solid #ddd;"}
-
-![screenshot]({attach}win_search_stem_sad1.png){:style="width:100%; border:1px solid #ddd;"}
-
-![screenshot]({attach}win_search_stem_test.png){:style="width:100%; border:1px solid #ddd;"}
-
-![screenshot]({attach}win_search_stem_tests.png){:style="width:100%; border:1px solid #ddd;"}
-
 [Далее]({filename}../2012-10-28-lucene-real-world---highlighting/2012-10-28-lucene-real-world---highlighting.md) реализуем подсветку найденных вхождений.
 
-Текущие исходники на [github](https://github.com/mazko/Lucene-Jetty-Lessons/tree/master/Lucene_Stemmers){:rel="nofollow"}.
+[Исходники]({attach}lucene-tutorial.zip)

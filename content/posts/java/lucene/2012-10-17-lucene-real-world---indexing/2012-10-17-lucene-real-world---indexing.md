@@ -1,402 +1,473 @@
 title: Lucene - процесс индексации
 category: Java
-tags: Lucene, JSoup, log4j
+tags: Lucene, JSoup, Maven
 
 
 Среди множества документов, количество и размер которых могут быть очень большими,  необходимо отобрать только те из них, которые отвечают какому-либо условию - например содержат ту или иную фразу. Как решать подобную задачу ? Можно обойти последовательно все документы и проверить наличие искомой фразы в каждом из них. Но сколько времени и ресурсов может уйти на поиск фразы в документе размером скажем 1000000 слов и более ? Умножаем это число на количество документов... Предложенное решение слишком прямолинейно - пока мы будем что-то искать, пользователь может уже подзабыть что же именно он хотел и зачем это было надо.
 
-Чтобы иметь возможность осуществлять поиск текста максимально быстро, предварительно необходимо его проиндексировать - преобразовать в какой-то другой формат, который позволит избежать вышеупомянутых проблем. В нашем случае источником информации является [сайт]({filename}../2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md), а документы это не что иное как его отдельные HTML-страницы. Для обхода всех страниц сайта нам понадобится простая программа-*паук* (*crawler*):
+Чтобы иметь возможность осуществлять поиск текста максимально быстро, предварительно необходимо его проиндексировать - преобразовать в какой-то другой [формат](https://en.wikipedia.org/wiki/Inverted_index){:rel="nofollow"}, который позволит избежать вышеупомянутых проблем. В нашем случае источником информации является [сайт]({filename}../2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md), а документы это не что иное как текстовое содержимое его отдельных HTML-страниц. Для обхода всех страниц сайта нам понадобится *crawler*. Это будет ещё один подпроект в мультимодульном Maven проекте наряду с Server. Ещё у них будет общая зависимость Common для совместно используемых констант:
 
-*jLucene/crawler/src/nongreedy/SimpleCrawler.java*
+    :::bash
+    ~$ cd lucene-tutorial/
+    ~$ tree
+    .
+    ├── common
+    │   ├── pom.xml
+    │   └── src
+    │       └── main
+    │           └── java
+    │               └── common
+    │                   └── LuceneBinding.java
+    ├── crawler
+    │   ├── pom.xml
+    │   └── src
+    │       └── main
+    │           ├── java
+    │           │   └── crawler
+    │           │       ├── App.java
+    │           │       ├── HtmlHelper.java
+    │           │       ├── LuceneIndexer.java
+    │           │       └── SimpleCrawler.java
+    │           └── resources
+    │               └── log4j.properties
+    ├── pom.xml
+    └── server
+        ├── pom.xml
+        ├── src
+        │   └── main
+        │       ├── java
+        │       │   └── server
+        │       │       └── SearchServlet.java
+        │       └── webapp
+        │           └── WEB-INF
+        │               └── web.xml
+        └── static.war
 
-	:::java
-	package nongreedy;
+    18 directories, 13 files
 
-	import java.util.HashSet;
-	import java.util.NavigableSet;
-	import java.util.Set;
-	import java.util.TreeSet;
+*pom.xml*
 
-	import org.apache.log4j.Logger;
+	:::xml
+	<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	  <modelVersion>4.0.0</modelVersion>
+	  <groupId>tutorial.lucene</groupId>
+	  <artifactId>parent</artifactId>
+	  <packaging>pom</packaging>
+	  <version>1.0</version>
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.apache.lucene</groupId>
+	      <artifactId>lucene-core</artifactId>
+	      <version>6.0.0</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.apache.lucene</groupId>
+	      <artifactId>lucene-analyzers-common</artifactId>
+	      <version>6.0.0</version>
+	    </dependency>
+	  </dependencies>
+	  <modules>
+	    <module>server</module>
+	    <module>crawler</module>
+	    <module>common</module>
+	  </modules>
+	  <build>
+	    <plugins>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-compiler-plugin</artifactId>
+	        <version>3.5.1</version>
+	        <configuration>
+	          <source>1.8</source>
+	          <target>1.8</target>
+	        </configuration>
+	      </plugin>
+	    </plugins>
+	  </build>
+	</project>
 
-	class SimpleCrawler {
+*crawler/pom.xml*
 
-	    public interface ICrawlEvents {
-	        void onVisit(String url, String html, String seed);
-	        boolean shouldVisit(String url, String seed);
-	    }
+	:::xml
+	<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	                             http://maven.apache.org/maven-v4_0_0.xsd">
+	  <modelVersion>4.0.0</modelVersion>
+	  <parent>
+	    <groupId>tutorial.lucene</groupId>
+	    <artifactId>parent</artifactId>
+	    <version>1.0</version>
+	  </parent>
+	  <artifactId>crawler</artifactId>
+	  <packaging>jar</packaging>
+	  <name>Lucene Tutorial Crawler</name>
+	  <dependencies>
+	    <dependency>
+	      <groupId>log4j</groupId>
+	      <artifactId>log4j</artifactId>
+	      <version>1.2.17</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.jsoup</groupId>
+	      <artifactId>jsoup</artifactId>
+	      <version>1.9.1</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>tutorial.lucene</groupId>
+	      <artifactId>common</artifactId>
+	      <version>1.0</version>
+	    </dependency>
+	  </dependencies>
+	</project>
 
-	    private static final Logger logger = 
-	        Logger.getLogger(SimpleCrawler.class.getName());
+*common/pom.xml*
 
-	    private ICrawlEvents events;
-	    private NavigableSet<String> linksToCrawl;
-	    private Set<String> linksCrawled;
-	    private String seed;
+	:::xml
+	<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	                             http://maven.apache.org/maven-v4_0_0.xsd">
+	  <modelVersion>4.0.0</modelVersion>
+	  <parent>
+	    <groupId>tutorial.lucene</groupId>
+	    <artifactId>parent</artifactId>
+	    <version>1.0</version>
+	  </parent>
+	  <artifactId>common</artifactId>
+	  <packaging>jar</packaging>
+	  <name>Crawler and Server Shared Constants</name>
+	</project>
 
-	    public SimpleCrawler(String seed, ICrawlEvents events) {
-	        this.events = events;
-	        this.seed = seed;
-	    };
+*crawler/src/main/java/crawler/SimpleCrawler.java*
 
-	    public boolean hasLinksToCrawl() {
-	        return !linksToCrawl.isEmpty();
-	    }
+    :::java
+    package crawler;
 
-	    public void run() {
+    import java.util.HashSet;
+    import java.util.NavigableSet;
+    import java.util.Set;
+    import java.util.TreeSet;
 
-	        linksCrawled = new HashSet<String>();
-	        linksToCrawl = new TreeSet<String>();
-	        linksToCrawl.add(seed);
+    import org.apache.log4j.Logger;
 
-	        while (hasLinksToCrawl()) {
+    class SimpleCrawler {
 
-	            String strURL = linksToCrawl.pollFirst();
-	            linksCrawled.add(strURL);
+        public interface ICrawlEvents {
+            void onVisit(String url, String html, String seed);
+            boolean shouldVisit(String url, String seed);
+        }
 
-	            try {
-	                String html = HtmlHelper.download(strURL);
+        private static final Logger logger = Logger.getLogger(SimpleCrawler.class.getName());
 
-	                int linksAdded = 0;
-	                for (String l : HtmlHelper.extractLinks(html, seed)) {
-	                    if (events.shouldVisit(l, seed)
-	                            && !linksCrawled.contains(l)
-	                            && !linksToCrawl.contains(l)) {
-	                        linksToCrawl.add(l);
-	                        linksAdded++;
-	                    }
-	                }
+        private final ICrawlEvents events;
+        private NavigableSet<String> linksToCrawl;
+        private Set<String> linksCrawled;
+        private final String seed;
 
-	                logger.info(String.format("Fetched: [%s] %d new links",
-	                        strURL, linksAdded));
-	                events.onVisit(strURL, html, seed);
-	            } catch (Exception ex) {
-	                logger.error(String.format("Fetch error: [%s].",
-	                        strURL), ex);
-	            }
-	        }
-	    }
-	}
+        public SimpleCrawler(final String seed, final ICrawlEvents events) {
+            this.events = events;
+            this.seed = seed;
+        };
 
-Все ссылки хранятся в оперативной памяти - для маленьких и средних по величине сайтов такое решение вполне приемлемо. С внешним миром *crawler* общается посредством интерфейса `ICrawlEvents`, а с HTML работает через статический класс `HtmlHelper`. Последний активно использует прекрасную библиотеку для работы с *Html* в *Java* - [JSoup](http://jsoup.org/){:rel="nofollow"}, которая в совершенстве владеет языком *css-селекторов*. Также стоит обратить внимание на обязательное наличие временной задержки (*politeness*) между Http-запросами к сайту - большинство хостеров следят за количеством запросов с одного IP, поэтому при работе с реальным веб-сайтом необходимо соблюдать толерантность, если не хотите получить бан конечно.
+        public boolean hasLinksToCrawl() {
+            return !this.linksToCrawl.isEmpty();
+        }
 
-*jLucene/crawler/src/nongreedy/HtmlHelper.java*
+        public void run() {
 
-	:::java
-	package nongreedy;
+            this.linksCrawled = new HashSet<String>();
+            this.linksToCrawl = new TreeSet<String>();
+            this.linksToCrawl.add(this.seed);
 
-	import java.io.IOException;
-	import java.util.Collection;
-	import java.util.Collections;
-	import java.util.HashSet;
-	import java.util.Set;
+            while (this.hasLinksToCrawl()) {
 
-	import org.jsoup.Jsoup;
-	import org.jsoup.nodes.Document;
-	import org.jsoup.nodes.Element;
-	import org.jsoup.select.Elements;
+                final String strURL = this.linksToCrawl.pollFirst();
+                this.linksCrawled.add(strURL);
 
-	final class HtmlHelper {
-	    public static Collection<String> extractLinks(
-	        String html, String seed) {
+                try {
+                    final String html = HtmlHelper.download(strURL);
 
-	        Document document = Jsoup.parse(html, seed);
-	        Set<String> linksSet = new HashSet<String>();
-	        for (Element link : document.select("a[href]")) {
-	            String strLink = 
-	                link.attr("abs:href").trim().toLowerCase();
-	            if (!strLink.isEmpty())
-	                linksSet.add(strLink);
-	        }
+                    int linksAdded = 0;
+                    for (final String l : HtmlHelper.extractLinks(html, this.seed)) {
+                        if (this.events.shouldVisit(l, this.seed) && !this.linksCrawled.contains(l)
+                                && !this.linksToCrawl.contains(l)) {
+                            this.linksToCrawl.add(l);
+                            linksAdded++;
+                        }
+                    }
 
-	        return Collections.unmodifiableCollection(linksSet);
-	    }
+                    SimpleCrawler.logger.info(
+                        String.format("Fetched: [%s] %d new links", strURL, linksAdded));
+                    this.events.onVisit(strURL, html, this.seed);
+                } catch (final Exception ex) {
+                    SimpleCrawler.logger.error(String.format("Fetch error: [%s].", strURL), ex);
+                }
+            }
+        }
+    }
 
-	    public static String download(String link) throws IOException,
-	            InterruptedException {
+Все ссылки хранятся в оперативной памяти - для маленьких и средних по величине сайтов такое решение вполне приемлемо. С внешним миром *crawler* общается посредством интерфейса `ICrawlEvents`, а с HTML работает через статический класс `HtmlHelper`. Последний активно использует прекрасную библиотеку для работы с *Html* в *Java* - [JSoup](http://jsoup.org/){:rel="nofollow"}, которая работает в стиле JQuery посредством *css-селекторов*. Также стоит обратить внимание на **обязательное** наличие временной задержки (*politeness*) между Http-запросами к сайту - большинство хостеров следят за количеством запросов с одного IP, поэтому при работе с реальным веб-сайтом за пределами localhost необходимо соблюдать толерантность, если не хотите получить бан конечно.
 
-	        IOException ioe;
-	        int retry = 5;
+*crawler/src/main/java/crawler/HtmlHelper.java*
 
-	        do {
-	            try {
+    :::java
+    package crawler;
 
-	                /* Crawling a real web site politeness > 5s */
+    import java.io.IOException;
+    import java.util.Collection;
+    import java.util.Collections;
+    import java.util.HashSet;
+    import java.util.Set;
 
-	                Thread.sleep(1);
-	                Document bDoc = Jsoup.connect(link)
-	                        .userAgent("Mozilla")
-	                        .timeout(30000).get();
-	                return bDoc.html();
-	            } catch (IOException ex) {
-	                ioe = ex;
-	            }
-	        } while (--retry > 0);
+    import org.jsoup.Jsoup;
+    import org.jsoup.nodes.Document;
+    import org.jsoup.nodes.Element;
+    import org.jsoup.select.Elements;
 
-	        throw ioe;
-	    }
+    final class HtmlHelper {
+        public static Collection<String> extractLinks(final String html, final String seed) {
 
-	    public static String extractTitle(String html) {
-	        Document doc = Jsoup.parse(html);
-	        Elements elements = doc.select("table table div table font");
-	        if (null != elements && !elements.isEmpty())
-	            return elements.first().text();
-	        return null;
-	    }
+            final Document document = Jsoup.parse(html, seed);
+            final Set<String> linksSet = new HashSet<String>();
+            for (final Element link : document.select("a[href]")) {
+                final String strLink = link.attr("abs:href").trim().toLowerCase();
+                if (!strLink.isEmpty()) {
+                    linksSet.add(strLink);
+                }
+            }
 
-	    public static String extractContent(String html) {
-	        Document doc = Jsoup.parse(html);
-	        Elements elements = doc.select("table table div table div");
-	        if (null != elements && !elements.isEmpty())
-	            return elements.first().text();
-	        return doc.select("table table div table").first().text();
-	    }
-	}
+            return Collections.unmodifiableCollection(linksSet);
+        }
 
-Теперь основная программа, которая будет запускать *crawler* и передавать необходимую информацию соответствующему классу `LuceneIndexer` для индексации:
+        public static String download(final String link) throws IOException, InterruptedException {
 
-*jLucene/crawler/src/nongreedy/Controller.java*
+            IOException ioe;
+            int retry = 5;
 
-	:::java
-	package nongreedy; 
-	 
-	import nongreedy.SimpleCrawler.ICrawlEvents; 
-	 
-	import org.apache.log4j.Logger; 
-	import org.apache.log4j.PropertyConfigurator; 
-	 
-	public class Controller { 
-	 
-	    private static final Logger logger = 
-	        Logger.getLogger(Controller.class.getName()); 
-	 
-	    private final static String indexDir = 
-	        "../server/webapps/search/LuceneIndex"; 
-	    private final static String crawlSeed = 
-	        "http://localhost:8080"; 
-	 
-	    public static void main(String[] args) { 
-	        try { 
-	 
-	            /* Setup: Logger, Ctrl + C */ 
-	 
-	            PropertyConfigurator.configure("pps/log4j.properties"); 
-	            Runtime.getRuntime().addShutdownHook(new ShutdownHook()); 
-	 
-	            /* Start crawler and perform indexing */ 
-	 
-	            final LuceneIndexer luceneIndexer = 
-	                new LuceneIndexer(indexDir);
+            do {
+                try {
 
-	            new SimpleCrawler(crawlSeed, new ICrawlEvents() { 
-	 
-	                /* Proceed page - add to Lucene index */ 
-	 
-	                public void onVisit(String url, 
-	                    String html, String seed) { 
-	                    luceneIndexer.add(url, html); 
-	                } 
-	 
-	                /* Skip any external links */ 
-	 
-	                public boolean shouldVisit(String url, String seed) { 
-	                    return url.startsWith(seed); 
-	                } 
-	 
-	            }).run(); 
-	 
-	        } catch (Exception ex) { 
-	            logger.error("Unable to start !", ex); 
-	        } 
-	    } 
-	 
-	    /* Hook for Shutting down (include user Ctrl + C event) */ 
-	 
-	    private static class ShutdownHook extends Thread { 
-	        public void run() { 
-	            logger.info("Optimizing and close index."); 
-	            LuceneIndexer.optimizeAndClose(); 
-	            logger.info("Closed."); 
-	        } 
-	    } 
-	}
+                    /* Crawling a real web site politeness > 5s */
 
-Таким образом мы подошли, пожалуй, к ключевому моменту данной статьи - процессу создания индекса в *Lucene*. Главным классом тут является `IndexWriter` - которому необходимо знать директорию, где будут храниться файлы индекса. Опция `OpenMode.CREATE` указывает на необходимость удалять старый индекс, если тот на момент инициализации в указанной директории уже существует. Согласно [документации](http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/api/core/org/apache/lucene/index/IndexWriter.html){:rel="nofollow"}, `IndexWriter` потокобезопасный (completely thread safe), однако в нашем случае синхронизация введена для предупреждения попытки работы с `indexWriter`, который своё уже отработал, т.е. `indexWriter == null` - иначе в лог могут попасть не очень дружелюбные исключения типа `NullReferenceException` или `AlreadyClosedException`.
+                    Thread.sleep(1);
+                    final Document bDoc = Jsoup.connect(link).userAgent("Mozilla").timeout(30000).get();
+                    return bDoc.html();
+                } catch (final IOException ex) {
+                    ioe = ex;
+                }
+            } while (--retry > 0);
 
-*jLucene/crawler/src/nongreedy/LuceneIndexer.java*
+            throw ioe;
+        }
 
-	:::java
-	package nongreedy;
+        public static String extractTitle(final String html) {
+            final Document doc = Jsoup.parse(html);
+            final Elements elements = doc.select("table table div table font");
+            if (elements != null && !elements.isEmpty()) {
+                return elements.first().text();
+            }
+            return null;
+        }
 
-	import java.io.File;
-	import java.io.IOException;
+        public static String extractContent(final String html) {
+            final Document doc = Jsoup.parse(html);
+            final Elements elements = doc.select("table table div table div");
+            if (elements != null && !elements.isEmpty()) {
+                return elements.first().text();
+            }
+            return doc.select("table table div table").first().text();
+        }
+    }
 
-	import org.apache.log4j.Logger;
-	import org.apache.lucene.document.Document;
-	import org.apache.lucene.document.Field;
-	import org.apache.lucene.document.Field.Index;
-	import org.apache.lucene.document.Field.Store;
-	import org.apache.lucene.document.Field.TermVector;
-	import org.apache.lucene.index.IndexWriter;
-	import org.apache.lucene.index.IndexWriterConfig;
-	import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-	import org.apache.lucene.store.Directory;
-	import org.apache.lucene.store.FSDirectory;
+Теперь точка входа, которая будет запускать *crawler* и передавать необходимую информацию соответствующему классу `LuceneIndexer` для индексации:
 
-	class LuceneIndexer {
-	    private static final Logger logger = 
-	        Logger.getLogger(LuceneIndexer.class.getName());
+*crawler/src/main/java/crawler/App.java*
 
-	    /* IndexWriter is completely thread safe */
+    :::java
+    package crawler;
 
-	    private static IndexWriter indexWriter;
+    import org.apache.log4j.Logger;
 
-	    public static void optimizeAndClose() {
-	        try {
-	            synchronized (LuceneIndexer.class) {
-	                if (null != indexWriter) {
-	                    indexWriter.close();
-	                    indexWriter = null;
-	                } else {
-	                    throw new IOException("Index already closed");
-	                }
-	            }
-	        } catch (IOException ex) {
-	            logger.error(ex);
-	        }
-	    }
+    public class App {
 
-	    public LuceneIndexer(String indexDir) throws IOException {
-	        Directory dir = FSDirectory.open(new File(indexDir));
-	        IndexWriterConfig config = new IndexWriterConfig(
-	                LuceneBinding.CURRENT_LUCENE_VERSION,
-	                LuceneBinding.getAnalyzer());
-	        config.setOpenMode(OpenMode.CREATE); // Rewrite old index
-	        indexWriter = new IndexWriter(dir, config);
-	    }
+        private static final Logger logger = Logger.getLogger(App.class.getName());
 
-	    public void add(String url, String html) {
+        private final static String crawlSeed = "http://localhost:8080";
 
-	        String title = HtmlHelper.extractTitle(html);
-	        String content = HtmlHelper.extractContent(html);
+        public static void main(final String[] args) {
+            try (final LuceneIndexer luceneIndexer = new LuceneIndexer()) {
 
-	        logger.info("***** " + url + " *****");
-	        if (null != title)
-	            logger.info(title);
-	        logger.info(content);
+                luceneIndexer.new_index();
 
-	        Document doc = new Document();
+                /* Start crawler and perform indexing */
 
-	        doc.add(new Field(LuceneBinding.URI_FIELD, 
-	            url, Store.YES, Index.NO));
-	        if (null != title)
-	            doc.add(new Field(LuceneBinding.TITLE_FIELD, 
-	                title, Store.YES, Index.ANALYZED, 
-	                TermVector.WITH_POSITIONS_OFFSETS));
-	        doc.add(new Field(LuceneBinding.CONTENT_FIELD, 
-	            content, Store.YES, Index.ANALYZED, 
-	            TermVector.WITH_POSITIONS_OFFSETS));
+                new SimpleCrawler(App.crawlSeed, new SimpleCrawler.ICrawlEvents() {
 
-	        try {
-	            synchronized (LuceneIndexer.class) {
-	                if (null != indexWriter) {
-	                    indexWriter.addDocument(doc);
-	                }
-	            }
-	        } catch (IOException ex) {
-	            logger.error(ex);
-	        }
-	    }
-	}
+                    /* Proceed page - add to Lucene index */
+
+                    @Override
+                    public void onVisit(final String url, final String html, final String seed) {
+                        luceneIndexer.add(url, html);
+                    }
+
+                    /* Skip any external links */
+
+                    @Override
+                    public boolean shouldVisit(final String url, final String seed) {
+                        return url.startsWith(seed);
+                    }
+
+                }).run();
+
+            } catch (final Exception ex) {
+                App.logger.error("Unable to start !", ex);
+            }
+        }
+    }
+
+Таким образом мы подошли, пожалуй, к ключевому моменту данной статьи - процессу создания индекса в *Lucene*. Главным классом тут является `IndexWriter` - которому необходимо знать директорию, где будут храниться файлы индекса. Опция `OpenMode.CREATE` указывает на необходимость удалять старый индекс, если тот на момент инициализации в указанной директории уже существует. Согласно [документации](https://lucene.apache.org/core/6_0_0/core/org/apache/lucene/index/IndexWriter.html){:rel="nofollow"}, `IndexWriter` потокобезопасный:
+
+*crawler/src/main/java/crawler/LuceneIndexer.java*
+
+    :::java
+    package crawler;
+
+    import java.io.Closeable;
+    import java.io.IOException;
+
+    import org.apache.log4j.Logger;
+    import org.apache.lucene.document.Document;
+    import org.apache.lucene.document.Field;
+    import org.apache.lucene.document.FieldType;
+    import org.apache.lucene.index.IndexOptions;
+    import org.apache.lucene.index.IndexWriter;
+    import org.apache.lucene.index.IndexWriterConfig;
+    import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+    import org.apache.lucene.store.Directory;
+    import org.apache.lucene.store.FSDirectory;
+
+    import common.LuceneBinding;
+
+    class LuceneIndexer implements Closeable {
+        private static final Logger logger = Logger.getLogger(LuceneIndexer.class.getName());
+
+        /* IndexWriter is completely thread safe */
+
+        private IndexWriter indexWriter = null;
+
+        @Override
+        public void close() throws IOException {
+            if (this.indexWriter != null) {
+                LuceneIndexer.logger.info("Closing Index < " + 
+                        LuceneBinding.INDEX_PATH + " > NumDocs: " + this.indexWriter.numDocs());
+                this.indexWriter.close();
+                this.indexWriter = null;
+                LuceneIndexer.logger.info("Index Closed OK!");
+            } else {
+                throw new IOException("Index already closed");
+            }
+        }
+
+        public void new_index() throws IOException {
+            final Directory directory = FSDirectory.open(LuceneBinding.INDEX_PATH);
+            final IndexWriterConfig iwConfig = new IndexWriterConfig(LuceneBinding.getAnalyzer());
+            iwConfig.setOpenMode(OpenMode.CREATE);
+            this.indexWriter = new IndexWriter(directory, iwConfig);
+        }
+
+        public void add(final String url, final String html) {
+
+            final String title = HtmlHelper.extractTitle(html);
+            final String content = HtmlHelper.extractContent(html);
+
+            LuceneIndexer.logger.info("***** " + url + " *****");
+            if (title != null) {
+                LuceneIndexer.logger.info(title);
+            }
+            LuceneIndexer.logger.info(content);
+
+            final Document doc = new Document();
+
+            final FieldType urlType = new FieldType();
+            urlType.setIndexOptions(IndexOptions.DOCS);
+            urlType.setStored(true);
+            urlType.setTokenized(false);
+            urlType.setStoreTermVectorOffsets(false);
+            urlType.setStoreTermVectorPayloads(false);
+            urlType.setStoreTermVectorPositions(false);
+            urlType.setStoreTermVectors(false);
+            doc.add(new Field(LuceneBinding.URI_FIELD, url, urlType));
+
+            final FieldType tokType = new FieldType();
+            tokType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS);
+            tokType.setStored(true);
+            tokType.setTokenized(true);
+            tokType.setStoreTermVectorOffsets(true);
+            tokType.setStoreTermVectorPayloads(true);
+            tokType.setStoreTermVectorPositions(true);
+            tokType.setStoreTermVectors(true);
+            if (title != null) {
+                doc.add(new Field(LuceneBinding.TITLE_FIELD, title, tokType));
+            }
+            doc.add(new Field(LuceneBinding.CONTENT_FIELD, content, tokType));
+
+            try {
+                if (this.indexWriter != null) {
+                    this.indexWriter.addDocument(doc);
+                }
+            } catch (final IOException ex) {
+                LuceneIndexer.logger.error(ex);
+            }
+        }
+    }
 
 Если внимательно посмотреть на содержимое каждой html-странички нашего сайта, то помимо <span style="text-decoration: line-through;">не</span>навязчивой рекламы и прочего мусора можно выделить две единицы более - менее полезной информации: *название* (title) публикации и её *содержимое* (content). Извлечь данную информацию из html нам поможет уже упомянутая выше библиотека *JSoup*, после чего можно добавлять `Document` с соответствующими полями в индекс *Lucene*.
 
-*Lucene* может сохранять / извлекать следующие типы данных: `String`, `String[]`, `Byte[]` и `Byte[][]`, хотя поиск, конечно же, может осуществляться только по первым двум. В нашем случае первое поле - url, параметр `Store.YES` указывает на необходимость хранить в индексе оригинальное (неизменное) значение, а `Index.NO` на то, что поиск по этому полю осуществляться не будет, т.е. это поле несет дополнительную информацию о найденном документе, которую мы планируем использовать в будущем. Поля *title* и *content* индексируются одинаково - `Index.ANALYZED` указывает на то, что по данному полю будет осуществляться поиск а также просит *Lucene* задействовать механизмы анализа содержимого данного документа на этапе создания индекса (самый простой пример анализа - выделение слов из набора букв и пробелов между ними), параметр `TermVector.WITH_POSITIONS_OFFSET` позволяет сохранить дополнительную информацию о позициях тех или иных слов в теле документа - такой подход значительно ускоряет процесс подсветки найденных вхождений.
+*Lucene* может сохранять / извлекать следующие типы данных: `String`, `String[]`, `Byte[]` и `Byte[][]`, хотя поиск, конечно же, может осуществляться только по первым двум. В нашем случае первое поле - url, параметр `setStored(true)` указывает на необходимость хранить в индексе оригинальное (неизменное) значение, а остальный `false` на то, что поиск по этому полю осуществляться не будет, т.е. это поле несет дополнительную информацию о найденном документе, которую мы планируем использовать в будущем. Поля *title* и *content* индексируются одинаково - `setTokenized(true)` указывает на то, что по данному полю будет осуществляться поиск а также просит *Lucene* задействовать механизмы анализа содержимого данного документа на этапе создания индекса (самый простой пример анализа - выделение слов из набора букв и пробелов между ними), параметр `setStoreTermVector(true)` позволяет сохранить дополнительную информацию о позициях тех или иных слов в теле документа - такой подход значительно ускоряет процесс подсветки найденных вхождений.
 
 Класс `LuceneBinding` - это своеобразный мост между индексатором (*crawler*) и поиском (`SearchServlet`), он содержит общую информацию и используется совместно обоими приложениями:
 
-*jLucene/server/webapps/search/src/nongreedy/LuceneBinding.java*
+*common/src/main/java/common/LuceneBinding.java*
 
-	:::java
-	package nongreedy;
+    :::java
+    package common;
 
-	import org.apache.lucene.analysis.Analyzer;
-	import org.apache.lucene.analysis.standard.StandardAnalyzer;
-	import org.apache.lucene.util.Version;
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
 
-	/* This class is used both by Crawler and SearchServlet */
+    import org.apache.lucene.analysis.Analyzer;
+    import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
-	public final class LuceneBinding {
-	    public static final Version CURRENT_LUCENE_VERSION =
-	        Version.LUCENE_35;
+    /* This class is used both by Crawler and SearchServlet */
 
-	    public static final String URI_FIELD = "uri";
-	    public static final String TITLE_FIELD = "title";
-	    public static final String CONTENT_FIELD = "content";
+    public final class LuceneBinding {
+        public static final Path INDEX_PATH = Paths.get(
+            System.getProperty("user.home"), "lucene-tutorial-index");
+        public static final String URI_FIELD = "uri";
+        public static final String TITLE_FIELD = "title";
+        public static final String CONTENT_FIELD = "content";
 
-	    public static Analyzer getAnalyzer() {
-	        return new StandardAnalyzer(CURRENT_LUCENE_VERSION);
-	    }
-	}
+        public static Analyzer getAnalyzer() {
+            return new StandardAnalyzer();
+        }
+    }
 
 ###Сборка и запуск
 
-Перед запускам crawler должен быть запущен *Jetty* сервер с сайтом, который мы хотим проиндексировать. Чтобы корректно отображались русские буквы в консоли *Windows* необходимо обозначить правильную кодировку *Cp866* в файле *jLucene/crawler/pps/log4j.properties*
+Перед запускам crawler должен быть запущен *Jetty* сервер с сайтом, который мы хотим проиндексировать. Чтобы корректно отображались русские буквы в консоли *Windows* может понадобиться обозначить правильную кодировку *Cp866* в файле *crawler/src/main/resources/log4j.properties*
 
-*jLucene/crawler/build.bat*
-
-	:::batch
-	@rd bin /Q /S 
-	@md bin 
-	 
-	@set LIB=lib/*;../server/webapps/search/app/WEB-INF/lib/* 
-	@set SRC=src/nongreedy/*.java ^
-	../server/webapps/search/src/nongreedy/LuceneBinding.java 
-	 
-	@javac -cp .;%LIB% -d bin %SRC% 
-	 
-	@pause
-
-*jLucene/crawler/run.bat*
-
-	:::batch
-	@set LIB=lib/*;../server/webapps/search/app/WEB-INF/lib/* 
-	@java -cp bin;%LIB% nongreedy.Controller
-	@pause
-
-![Win Crawler Run]({attach}win_crawler_build_run_jog4j_Cp866.png){:style="width:100%; border:1px solid #ddd;"}
-
-*jLucene/crawler/build.sh*
-
-	:::bash
-	#!/bin/bash
-
-	cd "`dirname "${0}"`"
-
-	rm -r -f bin
-	mkdir bin
-
-	SRC="src/nongreedy/*.java \
-	../server/webapps/search/src/nongreedy/LuceneBinding.java"
-	LIB=lib/*:../server/webapps/search/app/WEB-INF/lib/*
-
-	javac -cp $LIB -d bin $SRC $*
-
-*jLucene/crawler/run.sh*
-
-	:::bash
-	#!/bin/bash
-
-	cd "`dirname "${0}"`"
-
-	# link libraries
-
-	LIB=lib/*:../server/webapps/search/app/WEB-INF/lib/*
-
-	java -cp bin:$LIB nongreedy.Controller
-
-![Linux Crawler Run]({attach}linux_crawler_build_run.png){:style="width:100%; border:1px solid #ddd;"}
+    :::bash
+    ~$ mvn clean install && bash -c 'mvn -pl server/ jetty:run & sleep 10 && \
+        mvn -pl crawler/ exec:java -Dexec.mainClass="crawler.App" & \
+        trap "kill -TERM -$$" SIGINT ; wait'
+    ...
+    INFO [crawler.App.main()] Closing Index < /home/oleg/lucene-tutorial-index > NumDocs: 53
+    INFO [crawler.App.main()] Index Closed OK!
+    Ctrl+C
 
 [Далее]({filename}../2012-10-21-lucene-real-world---check-index/2012-10-21-lucene-real-world---check-index.md) мы бегло заглянем в индекс, после чего реализуем простой поиск.
 
-Текущие исходники на [github](https://github.com/mazko/Lucene-Jetty-Lessons/tree/master/Simple_Crawler_Index){:rel="nofollow"}.
+[Исходники]({attach}lucene-tutorial.zip)

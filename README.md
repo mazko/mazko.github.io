@@ -6,8 +6,9 @@
     ~$ cd ~/virtualenvs/pelican && . bin/activate ; cd -
     ~$ pip install pelican markdown
     ~$ cd mazko.github.io
-    ~$ [[ "`ls -A -1 -I 'index?*.html' output/ | cksum`" == "1224166325 28" ]] && \
-        pelican content && bash -c 'cd output/ && python -m pelican.server'
+    ~$ pelican content && \
+         [[ "`ls -A -1 -I 'index?*.html' output/ | cksum`" == "1224166325 28" ]] && \
+         bash -c 'cd output/ && python -m pelican.server'
 
 Browse http://localhost:8000/
 
