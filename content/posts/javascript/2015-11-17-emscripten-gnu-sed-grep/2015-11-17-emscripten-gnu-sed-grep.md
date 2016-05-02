@@ -1,6 +1,6 @@
 title: Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)
 category: JavaScript
-tags: Emscripten, sed, grep
+tags: Emscripten, Docker
 
 
 [Emscripten](http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html){:rel="nofollow"} это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу *online* демка портированных таким образом GNU *sed* и *grep*, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: ```--help``` и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.
