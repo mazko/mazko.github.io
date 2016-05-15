@@ -1,9 +1,9 @@
-title: Apache Tika во всей своей красе
+title: Автоматический определь языка в Apache Tika
 category: Java
-tags: NLP, GreaseMonkey, Tika
+tags: NLP, Tika
 
 
-[Apache Tika](http://tika.apache.org/){:rel="nofollow"} - это кроссплатформенный набор инструментов, написанный на ```Java``` для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения контента из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но у нас есть уже намеченная ранее [задача]({filename}../../javascript/2013-01-18-universal-language-identifier-for-every-modern-browser/2013-01-18-universal-language-identifier-for-every-modern-browser.md) - научиться генерировать файлы с набором [N-gram](http://en.wikipedia.org/wiki/N-gram){:rel="nofollow"} для интересующих языков, чтобы с их помощью можно было автоматически определять эти самые языки впоследствии.
+[Apache Tika](http://tika.apache.org/){:rel="nofollow"} - это кроссплатформенный набор инструментов, написанный на ```Java``` для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации [N-gram](http://en.wikipedia.org/wiki/N-gram){:rel="nofollow"}-файлов для интересующих языков, не поддерживаемых Tika из коробки, чтобы с их помощью можно было автоматически определять языки для текстов.
 Для начала было бы неплохо скачать и попробовать запустить само приложение [tika-app-1.2.jar](http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar){:rel="nofollow"} ~ 27 МБ. Как и любое другое ```Java``` приложение [Tika](http://tika.apache.org/){:rel="nofollow"} можно запустить универсальным способом ```java -jar tika-app-1.2.jar --help```, хотя в *Linux* можно ещё проще:
 
 	:::bash
@@ -86,7 +86,7 @@ tags: NLP, GreaseMonkey, Tika
 	~$ java -cp .:tika-app-1.2.jar org.apache.tika.cli.TikaCLI -l \
 	http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
 
-Вывод: ```tr```. Ура ! Мы с Вами только что обучили [Tika](http://tika.apache.org/){:rel="nofollow"} новому языку ! Теперь ещё одна затея - преобразовать *tr.ngp* в *javascript*, который отработает в [GreaseMonkey]({filename}../../javascript/2013-01-18-universal-language-identifier-for-every-modern-browser/2013-01-18-universal-language-identifier-for-every-modern-browser.md). 
+Вывод: ```tr```. Ура ! Мы с Вами только что обучили [Tika](http://tika.apache.org/){:rel="nofollow"} новому языку ! Теперь ещё одна дача - преобразовать *tr.ngp* в [javascript](http://mazko.github.io/jsli/){:rel="nofollow"}:
 
 	:::bash
 	LNG=`basename $1 .ngp`
@@ -105,8 +105,5 @@ tags: NLP, GreaseMonkey, Tika
 	echo "LanguageIdentifier.addProfile('$LNG', ngrams, $SUM);" >> $LNG.js
 	echo "}());" >> $LNG.js
 
-Сохраним как ```ngp2js```, затем ```chmod +x ngp2js``` и запускаем: ```./ngp2js tr.ngp```. В результате будет сгенерирован ```tr.js``` размером ~13 КБ. Ну и напоследок картинка - результат наших трудов:
-
-![FF screenshot]({attach}tr.png){:style="width:100%; border:1px solid #ddd;"}
-
+Сохраним как ```ngp2js```, затем ```chmod +x ngp2js``` и запускаем: ```./ngp2js tr.ngp```. В результате будет сгенерирован ```tr.js``` размером ~13 КБ.
 Если очень коротко резюмировать - для генерации качественных [N-gram](http://en.wikipedia.org/wiki/N-gram){:rel="nofollow"} файлов нужно много хорошего связного текста заранее известного языка. Сам процесс создания *.ngp* профайлов очень прост и требует минимум усилий.
