@@ -189,4 +189,6 @@ tags: Lucene
 
 ![screenshot]({attach}phrase_fuzzy.png){:style="width:100%; border:1px solid #ddd;"}
 
+[Далее]({filename}../2016-05-15-lucene-facet/2016-05-15-lucene-facet.md) рассмотрим фасетный поиск.
+
 [Исходники]({attach}lucene-tutorial.zip)
