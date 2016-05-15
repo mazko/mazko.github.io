@@ -450,15 +450,21 @@ tags: Lucene, maven, JSTL
 						.unmodifiableMap(Arrays
 								.stream(facets.getTopChildren(FacetTakeResult.TOP,
 										LuceneBinding.FACET_DIRECTOR).labelValues)
-								.sorted((e1, e2) -> Integer.compare(e2.value.intValue(), e1.value.intValue()))
-								.collect(LinkedHashMap::new, (m, v) -> m.put(v.label, v.value), Map::putAll));
+								.sorted((e1, e2) -> 
+									Integer.compare(e2.value.intValue(), e1.value.intValue()))
+								.collect(LinkedHashMap::new, 
+									(m, v) -> m.put(v.label, v.value), 
+									Map::putAll));
 
 				this.categories = Collections
 						.unmodifiableMap(Arrays
 								.stream(facets.getTopChildren(FacetTakeResult.TOP,
 										LuceneBinding.FACET_CATEGORY).labelValues)
-								.sorted((e1, e2) -> Integer.compare(e2.value.intValue(), e1.value.intValue()))
-								.collect(LinkedHashMap::new, (m, v) -> m.put(v.label, v.value), Map::putAll));
+								.sorted((e1, e2) -> 
+									Integer.compare(e2.value.intValue(), e1.value.intValue()))
+								.collect(LinkedHashMap::new, 
+									(m, v) -> m.put(v.label, v.value), 
+									Map::putAll));
 
 				this.dates = Collections.unmodifiableMap(
 					Arrays.stream(FacetTakeResult.bugHelper(facets).labelValues)
@@ -466,7 +472,8 @@ tags: Lucene, maven, JSTL
 						.collect(LinkedHashMap::new, (ymap, y) -> ymap.put(y.label, 
 							new SimpleEntry<>(y.value, Collections.unmodifiableMap(Arrays
 								.stream(FacetTakeResult.bugHelper(facets, y.label).labelValues)
-								.sorted((m1, m2) -> Integer.compare(m2.value.intValue(), m1.value.intValue()))
+								.sorted((m1, m2) -> 
+									Integer.compare(m2.value.intValue(), m1.value.intValue()))
 								.collect(LinkedHashMap::new, (mmap, m) -> 
 									mmap.put(m.label, m.value), Map::putAll)))),
 							Map::putAll));
@@ -477,7 +484,8 @@ tags: Lucene, maven, JSTL
 
 		}
 
-		public FacetTakeResult(final int totalHits, final DrillSidewaysResult facetDrill) throws IOException {
+		public FacetTakeResult(final int totalHits, 
+			final DrillSidewaysResult facetDrill) throws IOException {
 			this(totalHits, (Collection<T>) null, facetDrill);
 		}
 	}
