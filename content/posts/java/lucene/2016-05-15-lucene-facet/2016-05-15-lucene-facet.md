@@ -675,10 +675,13 @@ tags: Lucene, maven, JSTL
 Сборка и запуск:
 
 	:::bash
-	~$ cd src && mvn clean install && bash -c 'mvn -pl server/ jetty:run & sleep 10 && \
-	    mvn -pl crawler/ exec:java -Dexec.mainClass="crawler.App" & \
-	    trap "kill -TERM -$$" SIGINT ; wait'
+	~$ cd src
+	~$ mvn clean install
+	~$ mvn -pl crawler/ exec:java -Dexec.mainClass="crawler.App"
+	~$ mvn -pl server/ jetty:run
 
 <!-- <a href="{attach}download-kinopoisk.es6"></a> -->
+
+[Далее]({filename}../2016-05-20-lucene-suggest/2016-05-20-lucene-suggest.md) автодополнение пользовательского ввода.
 
 [Исходники]({attach}lucene-tutorial.zip)
