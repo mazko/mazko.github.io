@@ -25,10 +25,10 @@ tags: Elastic, REST, Docker
       "tagline" : "You Know, for Search"
     }
 
-Достаточно просто проиндексировать содержимое дампа [Top.json.xz]({attach}Top.json.xz):
+Достаточно просто проиндексировать содержимое дампа [Top.bulk.json.xz]({attach}Top.bulk.json.xz):
 
     :::bash
-    # field mapping for suggest
+    # field mapping for suggest, aggregation
     # curl -XDELETE 'localhost:9200/kinopoisk?pretty'
     ~$ curl -XPUT 'localhost:9200/kinopoisk?pretty' -d '{
       "mappings": {
@@ -61,8 +61,8 @@ tags: Elastic, REST, Docker
       }
     }'
 
-    # index
-    ~$ xzcat Top.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
+    # index 14992 docs(verify: echo `xzcat Top.bulk.json.xz | wc -l` / 2 | bc -l)
+    ~$ xzcat Top.bulk.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
 
 Поля *category*, *directed* в терминологии Elastic являются [multi-field](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/_multi_fields.html){:rel="nofollow"}, в нашем случае они дополнительно хранят оригинальные значения что позволит агрегировать и фильтровать выдачу по строгому совпадению - например режиссёр "Игорь Масленников" вместо "Игорь" и "Масленников" по отдельности. После индексации собственно можно осуществлять поиск с подсветкой, агрегацией и фильтрацией, к осознанию которого было бы здорово подойти по окончании данного материала:
 
@@ -151,7 +151,7 @@ tags: Elastic, REST, Docker
     }'
     # response
     {
-      "took" : 149,
+      "took" : 2098,
       "timed_out" : false,
       "_shards" : {
         "total" : 5,
@@ -692,10 +692,7 @@ ElasticSearch автоматически и даже правильно расп
     from urllib.request import urlopen
 
     def get_shingles(*args):
-      data = {
-        "analyzer": "pre_suggest_analyzer",
-        "text": args
-      }
+      data = { "analyzer": "pre_suggest_analyzer", "text": args }
       data = json.dumps(data).encode("utf8")
       with urlopen("http://localhost:9200/kinopoisk/_analyze", data=data) as r:
         data = json.loads(r.read().decode(r.info().get_param("charset") or "utf-8"))
@@ -703,19 +700,12 @@ ElasticSearch автоматически и даже правильно расп
         tokens = filter(lambda v: len(v) > 1, tokens)
         return list(set(tokens))
 
-    data = json.load(sys.stdin)
-    for film in data:
+    for film in { obj["id"]: obj for obj in json.load(sys.stdin) }.values():
       film["rate"] = float(film["rate"])
-      film["suggest"] = {
-        "input": get_shingles(film["name"], film["description"])
-      }
-      print(
-        json.dumps({ 
-          "index" : { "_index" : "kinopoisk", "_type" : "film", "_id" : film["id"]} 
-       }), 
-       "\n", 
-       json.dumps(film, ensure_ascii=False))
-    ' < Top.json | xz --extreme -9 > Top.json.xz
+      film["suggest"] = { "input": get_shingles(film["name"], film["description"]) }
+      print(json.dumps({ "index" : { "_index" : "kinopoisk", "_type" : "film", "_id" : film["id"]} })) 
+      print(json.dumps(film, ensure_ascii=False))
+    ' < Top.json | xz --extreme -9 > Top.bulk.json.xz
 
 Индекс уже с Suggest:
 
@@ -736,7 +726,7 @@ ElasticSearch автоматически и даже правильно расп
       }
     }'
 
-    ~: xzcat Top.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
+    ~: xzcat Top.bulk.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
 
     ~: curl -XGET 'localhost:9200/kinopoisk/_suggest?pretty' -d '{
       "film-suggest" : {
@@ -760,18 +750,18 @@ ElasticSearch автоматически и даже правильно расп
         "length" : 7,
         "options" : [ {
           "text" : "шерлок холмс",
+          "score" : 3.0
+        }, {
+          "text" : "шерлок холмс и",
+          "score" : 2.0
+        }, {
+          "text" : "шерлок холмс и доктор",
+          "score" : 2.0
+        }, {
+          "text" : "шерлок холмс и доктор ватсон",
           "score" : 2.0
         }, {
           "text" : "шерлок младший",
-          "score" : 1.0
-        }, {
-          "text" : "шерлок младший который",
-          "score" : 1.0
-        }, {
-          "text" : "шерлок младший который расследуя",
-          "score" : 1.0
-        }, {
-          "text" : "шерлок младший который расследуя преступление",
           "score" : 1.0
         } ]
       } ]
@@ -809,7 +799,7 @@ ElasticSearch автоматически и даже правильно расп
       }
     }'
 
-    ~$ xzcat Top.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
+    ~$ xzcat Top.bulk.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
 
     ~$ curl -XGET 'localhost:9200/kinopoisk/film/_search?pretty' -d {'
       "fields" : ["id"],
@@ -849,7 +839,7 @@ ElasticSearch автоматически и даже правильно расп
     }'
     # response
     {
-      "took" : 1911,
+      "took" : 290,
       "timed_out" : false,
       "_shards" : {
         "total" : 5,
@@ -858,12 +848,12 @@ ElasticSearch автоматически и даже правильно расп
       },
       "hits" : {
         "total" : 16,
-        "max_score" : 4.9337463,
+        "max_score" : 4.933535,
         "hits" : [ {
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "11380",
-          "_score" : 4.9337463,
+          "_score" : 4.933535,
           "fields" : {
             "id" : [ 11380 ]
           }
@@ -871,7 +861,7 @@ ElasticSearch автоматически и даже правильно расп
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "420923",
-          "_score" : 4.766492,
+          "_score" : 4.7662845,
           "fields" : {
             "id" : [ 420923 ]
           }
@@ -879,7 +869,7 @@ ElasticSearch автоматически и даже правильно расп
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "7112",
-          "_score" : 3.8131933,
+          "_score" : 3.8130276,
           "fields" : {
             "id" : [ 7112 ]
           }
@@ -887,7 +877,7 @@ ElasticSearch автоматически и даже правильно расп
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "474953",
-          "_score" : 3.8131933,
+          "_score" : 3.8130276,
           "fields" : {
             "id" : [ 474953 ]
           }
@@ -910,14 +900,6 @@ ElasticSearch автоматически и даже правильно расп
         }, {
           "_index" : "kinopoisk",
           "_type" : "film",
-          "_id" : "521709",
-          "_score" : 2.638543,
-          "fields" : {
-            "id" : [ 521709 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
           "_id" : "77269",
           "_score" : 2.638543,
           "fields" : {
@@ -926,10 +908,10 @@ ElasticSearch автоматически и даже правильно расп
         }, {
           "_index" : "kinopoisk",
           "_type" : "film",
-          "_id" : "77267",
-          "_score" : 2.477974,
+          "_id" : "521709",
+          "_score" : 2.638543,
           "fields" : {
-            "id" : [ 77267 ]
+            "id" : [ 521709 ]
           }
         }, {
           "_index" : "kinopoisk",
@@ -938,6 +920,14 @@ ElasticSearch автоматически и даже правильно расп
           "_score" : 2.477974,
           "fields" : {
             "id" : [ 77265 ]
+          }
+        }, {
+          "_index" : "kinopoisk",
+          "_type" : "film",
+          "_id" : "77267",
+          "_score" : 2.477974,
+          "fields" : {
+            "id" : [ 77267 ]
           }
         } ]
       },
