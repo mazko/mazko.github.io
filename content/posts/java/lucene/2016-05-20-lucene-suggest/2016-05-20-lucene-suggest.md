@@ -308,5 +308,6 @@ tags: Lucene, maven, AJAX
 	~$ mvn -pl crawler/ exec:java -Dexec.mainClass="crawler.App"
 	~$ mvn -pl server/ jetty:run
 
-
 [Исходники]({attach}lucene-tutorial.zip)
+
+[ElasticSearch]({filename}../../../admin/2016-06-25-elastic-play/2016-06-25-elastic-play.md)
