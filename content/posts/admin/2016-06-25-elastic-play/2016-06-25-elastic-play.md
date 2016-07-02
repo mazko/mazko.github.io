@@ -64,11 +64,11 @@ tags: Elastic, REST, Docker
     # index 14992 docs(verify: echo `xzcat Top.bulk.json.xz | wc -l` / 2 | bc -l)
     ~$ xzcat Top.bulk.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
 
-Поля *category*, *directed* в терминологии Elastic являются [multi-field](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/_multi_fields.html){:rel="nofollow"}, в нашем случае они дополнительно хранят оригинальные значения что позволит агрегировать и фильтровать выдачу по строгому совпадению - например режиссёр "Игорь Масленников" вместо "Игорь" и "Масленников" по отдельности. После индексации собственно можно осуществлять поиск с подсветкой, агрегацией и фильтрацией, к осознанию которого было бы здорово подойти по окончании данного материала:
+Поля *category*, *directed* в терминологии Elastic являются [multi-field](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/_multi_fields.html){:rel="nofollow"}, в нашем случае они дополнительно хранят оригинальные значения что позволит агрегировать и фильтровать выдачу по строгому совпадению - например режиссёр "Игорь Масленников" вместо "Игорь" и "Масленников" по отдельности. После индексации собственно можно осуществлять поиск с подсветкой, сортировкой, агрегацией и фильтрацией, к осознанию которого было бы здорово подойти по окончании данного материала:
 
     :::bash
     ~$ curl -XGET 'localhost:9200/kinopoisk/film/_search?pretty' -d ' {
-      "fields" : ["id"],
+      "fields" : ["rate"],
       "query" : {
         "bool": {
           "must": [
@@ -122,6 +122,9 @@ tags: Elastic, REST, Docker
           "description" : {"fragment_size" : 22, "number_of_fragments" : 1}
         }
       },
+      "sort" : [
+          {"rate" : {"order" : "desc"} }
+      ],
       "aggs": {
         "years": {
           "date_histogram": {
@@ -151,7 +154,7 @@ tags: Elastic, REST, Docker
     }'
     # response
     {
-      "took" : 2098,
+      "took" : 81,
       "timed_out" : false,
       "_shards" : {
         "total" : 5,
@@ -160,66 +163,71 @@ tags: Elastic, REST, Docker
       },
       "hits" : {
         "total" : 5,
-        "max_score" : 2.638543,
+        "max_score" : null,
         "hits" : [ {
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "77269",
-          "_score" : 2.638543,
+          "_score" : null,
           "fields" : {
-            "id" : [ 77269 ]
+            "rate" : [ 8.415 ]
           },
           "highlight" : {
             "name" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор" ],
             "description" : [ " [mazko.github.io]Шерлок[/mazko.github.io] Холмс. Это" ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "77265",
-          "_score" : 2.477974,
-          "fields" : {
-            "id" : [ 77265 ]
           },
-          "highlight" : {
-            "name" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор" ],
-            "description" : [ ". Во второй — [mazko.github.io]Шерлок[/mazko.github.io]" ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "368936",
-          "_score" : 2.466133,
-          "fields" : {
-            "id" : [ 368936 ]
-          },
-          "highlight" : {
-            "name" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор" ],
-            "description" : [ " угрозой. [mazko.github.io]Шерлок[/mazko.github.io] Холмс" ]
-          }
+          "sort" : [ 8.415 ]
         }, {
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "354799",
-          "_score" : 2.1987858,
+          "_score" : null,
           "fields" : {
-            "id" : [ 354799 ]
+            "rate" : [ 8.313 ]
           },
           "highlight" : {
             "name" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор" ],
             "description" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс вступил" ]
-          }
+          },
+          "sort" : [ 8.313 ]
+        }, {
+          "_index" : "kinopoisk",
+          "_type" : "film",
+          "_id" : "77265",
+          "_score" : null,
+          "fields" : {
+            "rate" : [ 8.297 ]
+          },
+          "highlight" : {
+            "name" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор" ],
+            "description" : [ ". Во второй — [mazko.github.io]Шерлок[/mazko.github.io]" ]
+          },
+          "sort" : [ 8.297 ]
         }, {
           "_index" : "kinopoisk",
           "_type" : "film",
           "_id" : "368937",
-          "_score" : 1.2330666,
+          "_score" : null,
           "fields" : {
-            "id" : [ 368937 ]
+            "rate" : [ 8.269 ]
           },
           "highlight" : {
             "description" : [ " водопада. [mazko.github.io]Шерлок[/mazko.github.io] Холмс" ]
-          }
+          },
+          "sort" : [ 8.269 ]
+        }, {
+          "_index" : "kinopoisk",
+          "_type" : "film",
+          "_id" : "368936",
+          "_score" : null,
+          "fields" : {
+            "rate" : [ 8.248 ]
+          },
+          "highlight" : {
+            "name" : [ "[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор" ],
+            "description" : [ " угрозой. [mazko.github.io]Шерлок[/mazko.github.io] Холмс" ]
+          },
+          "sort" : [ 8.248 ]
         } ]
       },
       "aggregations" : {
@@ -263,7 +271,7 @@ tags: Elastic, REST, Docker
       }
     }
 
-В запросе мы искали строку *шерлок* по полям *name* и *description*, исключили все фильмы кроме режиссёра "Игорь Масленников", жанры дожны быть только и *детектив* и *криминал*, только 1980 год. Простая агрегация по полям *category*, *directed*. Вложенная агрегация по дате - годы и в них месяцы. Но обо всём по порядку :)
+В запросе мы искали строку *шерлок* по полям *name* и *description*, исключили все фильмы кроме режиссёра "Игорь Масленников", жанры дожны быть только и *детектив* и *криминал*, только 1980 год. Сортировка найденных результатов по полю *rate*. Простая агрегация по полям *category*, *directed*. Вложенная агрегация по дате - годы и в них месяцы. Но обо всём по порядку :)
 
 ##УСТАНОВКА И НАСТРОЙКА ELASTICSEARCH
 
@@ -487,7 +495,7 @@ tags: Elastic, REST, Docker
       }
     }
 
-ElasticSearch автоматически и даже правильно распознал типы данных для всех полей в индексе ! Простой [постраничный](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-from-size.html){:rel="nofollow"} поиск по двум полям *name* и *description*, в результатах поиска выводить только значение поля *id*:
+ElasticSearch автоматически и даже правильно распознал типы данных для всех полей в индексе ! Простой [постраничный](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-from-size.html){:rel="nofollow"} поиск по двум полям *name* и *description*, в результатах поиска выводить только значения полей *id*, *rate*:
 
     :::bash
     ~$ curl -XGET 'localhost:9200/kinopoisk/film/_search?pretty' -d {'
