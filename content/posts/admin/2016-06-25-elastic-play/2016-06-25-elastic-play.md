@@ -55,6 +55,15 @@ tags: Elastic, REST, Docker
                       "index": "not_analyzed"
                   }
               }
+            },
+            "starring": {
+              "type": "string",
+              "fields": {
+                  "raw": {
+                      "type": "string",
+                      "index": "not_analyzed"
+                  }
+              }
             }
           }
         }
@@ -64,7 +73,7 @@ tags: Elastic, REST, Docker
     # index 14992 docs(verify: echo `xzcat Top.bulk.json.xz | wc -l` / 2 | bc -l)
     ~$ xzcat Top.bulk.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
 
-Поля *category*, *directed* в терминологии Elastic являются [multi-field](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/_multi_fields.html){:rel="nofollow"}, в нашем случае они дополнительно хранят оригинальные значения что позволит агрегировать и фильтровать выдачу по строгому совпадению - например режиссёр "Игорь Масленников" вместо "Игорь" и "Масленников" по отдельности. После индексации собственно можно осуществлять поиск с подсветкой, сортировкой, агрегацией и фильтрацией, к осознанию которого было бы здорово подойти по окончании данного материала:
+Поля *category*, *directed*, *starring* в терминологии Elastic являются [multi-field](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/_multi_fields.html){:rel="nofollow"}, в нашем случае они дополнительно хранят оригинальные значения что позволит агрегировать и фильтровать выдачу по строгому совпадению - например режиссёр "Игорь Масленников" вместо "Игорь" и "Масленников" по отдельности. После индексации собственно можно осуществлять поиск с подсветкой, сортировкой, агрегацией и фильтрацией, к осознанию которого было бы здорово подойти по окончании данного материала:
 
     :::bash
     ~$ curl -XGET 'localhost:9200/kinopoisk/film/_search?pretty' -d ' {
@@ -144,17 +153,20 @@ tags: Elastic, REST, Docker
             }
           }
         },
-        "category" : {
+        "categories" : {
           "terms" : { "field" : "category.raw", "size": 0 }
         },
-        "directed" : {
+        "directors" : {
           "terms" : { "field" : "directed.raw", "size": 0 }
+        },
+        "stars" : {
+          "terms" : { "field" : "starring.raw", "size": 0 }
         }
       }
     }'
     # response
     {
-      "took" : 81,
+      "took" : 3117,
       "timed_out" : false,
       "_shards" : {
         "total" : 5,
@@ -231,7 +243,7 @@ tags: Elastic, REST, Docker
         } ]
       },
       "aggregations" : {
-        "directed" : {
+        "directors" : {
           "doc_count_error_upper_bound" : 0,
           "sum_other_doc_count" : 0,
           "buckets" : [ {
@@ -239,7 +251,7 @@ tags: Elastic, REST, Docker
             "doc_count" : 5
           } ]
         },
-        "category" : {
+        "categories" : {
           "doc_count_error_upper_bound" : 0,
           "sum_other_doc_count" : 0,
           "buckets" : [ {
@@ -248,6 +260,83 @@ tags: Elastic, REST, Docker
           }, {
             "key" : "криминал",
             "doc_count" : 5
+          } ]
+        },
+        "stars" : {
+          "doc_count_error_upper_bound" : 0,
+          "sum_other_doc_count" : 0,
+          "buckets" : [ {
+            "key" : "Василий Ливанов",
+            "doc_count" : 5
+          }, {
+            "key" : "Виталий Соломин",
+            "doc_count" : 5
+          }, {
+            "key" : "Рина Зеленая",
+            "doc_count" : 5
+          }, {
+            "key" : "Борислав Брондуков",
+            "doc_count" : 4
+          }, {
+            "key" : "Борис Клюев",
+            "doc_count" : 3
+          }, {
+            "key" : "Александр Захаров",
+            "doc_count" : 2
+          }, {
+            "key" : "Алексей Кожевников",
+            "doc_count" : 2
+          }, {
+            "key" : "Валентина Панина",
+            "doc_count" : 2
+          }, {
+            "key" : "Виктор Евграфов",
+            "doc_count" : 2
+          }, {
+            "key" : "Игорь Дмитриев",
+            "doc_count" : 2
+          }, {
+            "key" : "Игорь Ефимов",
+            "doc_count" : 2
+          }, {
+            "key" : "Николай Крюков",
+            "doc_count" : 2
+          }, {
+            "key" : "Адольф Ильин",
+            "doc_count" : 1
+          }, {
+            "key" : "Анатолий Подшивалов",
+            "doc_count" : 1
+          }, {
+            "key" : "Борис Рыжухин",
+            "doc_count" : 1
+          }, {
+            "key" : "Виктор Аристов",
+            "doc_count" : 1
+          }, {
+            "key" : "Виталий Баганов",
+            "doc_count" : 1
+          }, {
+            "key" : "Геннадий Богачёв",
+            "doc_count" : 1
+          }, {
+            "key" : "Игнат Лейрер",
+            "doc_count" : 1
+          }, {
+            "key" : "Катерина Шелл",
+            "doc_count" : 1
+          }, {
+            "key" : "Мария Соломина",
+            "doc_count" : 1
+          }, {
+            "key" : "Николай Караченцов",
+            "doc_count" : 1
+          }, {
+            "key" : "Светлана Крючкова",
+            "doc_count" : 1
+          }, {
+            "key" : "Федор Одиноков",
+            "doc_count" : 1
           } ]
         },
         "years" : {
@@ -775,7 +864,7 @@ ElasticSearch автоматически и даже правильно расп
       } ]
     }
 
-Поиск с [агрегацией](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html){:rel="nofollow"}:
+Поиск с [агрегацией](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html){:rel="nofollow"} по полю *starring*:
 
     :::bash
     ~$ curl -XDELETE 'localhost:9200/kinopoisk?pretty'
@@ -784,16 +873,7 @@ ElasticSearch автоматически и даже правильно расп
       "mappings": {
         "film" : {
           "properties" : {
-            "category": {
-              "type": "string",
-              "fields": {
-                  "raw": {
-                      "type": "string",
-                      "index": "not_analyzed"
-                  }
-              }
-            },
-            "directed": {
+            "starring": {
               "type": "string",
               "fields": {
                   "raw": {
@@ -810,6 +890,7 @@ ElasticSearch автоматически и даже правильно расп
     ~$ xzcat Top.bulk.json.xz | curl -XPOST localhost:9200/_bulk --data-binary @-
 
     ~$ curl -XGET 'localhost:9200/kinopoisk/film/_search?pretty' -d {'
+      "size": 0,
       "fields" : ["id"],
       "query" : {
         "query_string" : {
@@ -819,35 +900,14 @@ ElasticSearch автоматически и даже правильно расп
         }
       },
       "aggs": {
-        "years": {
-          "date_histogram": {
-            "field": "date",
-            "interval": "year",
-            "min_doc_count": 1,
-            "order" : { "_count" : "desc" }
-          },
-          "aggs": {
-            "months": {
-              "date_histogram": {
-                "field": "date",
-                "interval": "month",
-                "min_doc_count": 1,
-                "order" : { "_count" : "desc" }
-              }
-            }
-          }
-        },
-        "category" : {
-          "terms" : { "field" : "category.raw", "size": 0 }
-        },
-        "directed" : {
-          "terms" : { "field" : "directed.raw", "size": 0 }
+        "stars" : {
+          "terms" : { "field" : "starring.raw", "size": 10 }
         }
       }
     }'
     # response
     {
-      "took" : 290,
+      "took" : 97,
       "timed_out" : false,
       "_shards" : {
         "total" : 5,
@@ -856,295 +916,43 @@ ElasticSearch автоматически и даже правильно расп
       },
       "hits" : {
         "total" : 16,
-        "max_score" : 4.933535,
-        "hits" : [ {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "11380",
-          "_score" : 4.933535,
-          "fields" : {
-            "id" : [ 11380 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "420923",
-          "_score" : 4.7662845,
-          "fields" : {
-            "id" : [ 420923 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "7112",
-          "_score" : 3.8130276,
-          "fields" : {
-            "id" : [ 7112 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "474953",
-          "_score" : 3.8130276,
-          "fields" : {
-            "id" : [ 474953 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "502838",
-          "_score" : 3.518057,
-          "fields" : {
-            "id" : [ 502838 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "417715",
-          "_score" : 3.518057,
-          "fields" : {
-            "id" : [ 417715 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "77269",
-          "_score" : 2.638543,
-          "fields" : {
-            "id" : [ 77269 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "521709",
-          "_score" : 2.638543,
-          "fields" : {
-            "id" : [ 521709 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "77265",
-          "_score" : 2.477974,
-          "fields" : {
-            "id" : [ 77265 ]
-          }
-        }, {
-          "_index" : "kinopoisk",
-          "_type" : "film",
-          "_id" : "77267",
-          "_score" : 2.477974,
-          "fields" : {
-            "id" : [ 77267 ]
-          }
-        } ]
+        "max_score" : 0.0,
+        "hits" : [ ]
       },
       "aggregations" : {
-        "directed" : {
-          "doc_count_error_upper_bound" : 0,
-          "sum_other_doc_count" : 0,
+        "stars" : {
+          "doc_count_error_upper_bound" : 1,
+          "sum_other_doc_count" : 122,
           "buckets" : [ {
-            "key" : "Игорь Масленников",
+            "key" : "Василий Ливанов",
             "doc_count" : 7
           }, {
-            "key" : "Гай Ричи",
-            "doc_count" : 2
+            "key" : "Виталий Соломин",
+            "doc_count" : 7
           }, {
-            "key" : "Андрей Кавун",
-            "doc_count" : 1
+            "key" : "Рина Зеленая",
+            "doc_count" : 7
           }, {
-            "key" : "Барри Левинсон",
-            "doc_count" : 1
+            "key" : "Борислав Брондуков",
+            "doc_count" : 6
           }, {
-            "key" : "Бастер Китон",
-            "doc_count" : 1
-          }, {
-            "key" : "Гай Ферленд",
-            "doc_count" : 1
-          }, {
-            "key" : "Джефф Сьергей",
-            "doc_count" : 1
-          }, {
-            "key" : "Джон Полсон",
-            "doc_count" : 1
-          }, {
-            "key" : "Коки Гидройч",
-            "doc_count" : 1
-          }, {
-            "key" : "Пол МакГиган",
-            "doc_count" : 1
-          }, {
-            "key" : "Саймон Селлан Джоунс",
-            "doc_count" : 1
-          }, {
-            "key" : "Сет Манн",
-            "doc_count" : 1
-          }, {
-            "key" : "Спайк Брандт",
-            "doc_count" : 1
-          }, {
-            "key" : "Эрос Лин",
-            "doc_count" : 1
-          } ]
-        },
-        "category" : {
-          "doc_count_error_upper_bound" : 0,
-          "sum_other_doc_count" : 0,
-          "buckets" : [ {
-            "key" : "детектив",
-            "doc_count" : 16
-          }, {
-            "key" : "криминал",
-            "doc_count" : 12
-          }, {
-            "key" : "триллер",
-            "doc_count" : 5
-          }, {
-            "key" : "драма",
+            "key" : "Борис Клюев",
             "doc_count" : 4
           }, {
-            "key" : "приключения",
-            "doc_count" : 4
-          }, {
-            "key" : "комедия",
-            "doc_count" : 3
-          }, {
-            "key" : "боевик",
+            "key" : "Александр Захаров",
             "doc_count" : 2
           }, {
-            "key" : "фэнтези",
+            "key" : "Алексей Кожевников",
             "doc_count" : 2
           }, {
-            "key" : "мультфильм",
-            "doc_count" : 1
+            "key" : "Валентина Панина",
+            "doc_count" : 2
           }, {
-            "key" : "семейный",
-            "doc_count" : 1
-          } ]
-        },
-        "years" : {
-          "buckets" : [ {
-            "key_as_string" : "1980-01-01T00:00:00.000Z",
-            "key" : 315532800000,
-            "doc_count" : 5,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "1980-01-01T00:00:00.000Z",
-                "key" : 315532800000,
-                "doc_count" : 3
-              }, {
-                "key_as_string" : "1980-03-01T00:00:00.000Z",
-                "key" : 320716800000,
-                "doc_count" : 2
-              } ]
-            }
+            "key" : "Виктор Евграфов",
+            "doc_count" : 2
           }, {
-            "key_as_string" : "2010-01-01T00:00:00.000Z",
-            "key" : 1262304000000,
-            "doc_count" : 2,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "2010-07-01T00:00:00.000Z",
-                "key" : 1277942400000,
-                "doc_count" : 1
-              }, {
-                "key_as_string" : "2010-08-01T00:00:00.000Z",
-                "key" : 1280620800000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "2012-01-01T00:00:00.000Z",
-            "key" : 1325376000000,
-            "doc_count" : 2,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "2012-09-01T00:00:00.000Z",
-                "key" : 1346457600000,
-                "doc_count" : 1
-              }, {
-                "key_as_string" : "2012-12-01T00:00:00.000Z",
-                "key" : 1354320000000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "1924-01-01T00:00:00.000Z",
-            "key" : -1451692800000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "1924-04-01T00:00:00.000Z",
-                "key" : -1443830400000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "1983-01-01T00:00:00.000Z",
-            "key" : 410227200000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "1983-06-01T00:00:00.000Z",
-                "key" : 423273600000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "1985-01-01T00:00:00.000Z",
-            "key" : 473385600000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "1985-12-01T00:00:00.000Z",
-                "key" : 502243200000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "1987-01-01T00:00:00.000Z",
-            "key" : 536457600000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "1987-03-01T00:00:00.000Z",
-                "key" : 541555200000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "2004-01-01T00:00:00.000Z",
-            "key" : 1072915200000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "2004-12-01T00:00:00.000Z",
-                "key" : 1101859200000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "2009-01-01T00:00:00.000Z",
-            "key" : 1230768000000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "2009-12-01T00:00:00.000Z",
-                "key" : 1259625600000,
-                "doc_count" : 1
-              } ]
-            }
-          }, {
-            "key_as_string" : "2011-01-01T00:00:00.000Z",
-            "key" : 1293840000000,
-            "doc_count" : 1,
-            "months" : {
-              "buckets" : [ {
-                "key_as_string" : "2011-12-01T00:00:00.000Z",
-                "key" : 1322697600000,
-                "doc_count" : 1
-              } ]
-            }
+            "key" : "Джеральдин Джеймс",
+            "doc_count" : 2
           } ]
         }
       }
