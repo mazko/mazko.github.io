@@ -10,6 +10,6 @@ before_install:
 install:
   - pip install pelican markdown
 script:
-  - PCO='.PCO#42' && pelican content -o ${PCO} -s pelicanconf.py && cp .travis.yml google6294828ff42db199.html ${PCO} && git remote set-branches --add origin master && git fetch origin && git checkout master && rm -rf * && mv ${PCO}/{.[!.],}* . && rm -rf ${PCO} && git add -A && git -c user.name='Travis CI' -c user.email='<>' commit -m "up" && ! git status --porcelain | grep -q . && if [[ "`ls -A -1 -I 'index?*.html' -I '.git' | cksum`" != "2103587821 68" ]]; then echo 'Trap ls,cksum FAIL - check pelican version ?'; exit 1; fi
+  - PCO='.PCO#42' && pelican content -o ${PCO} -s publishconf.py && cp .travis.yml google6294828ff42db199.html ${PCO} && git remote set-branches --add origin master && git fetch origin && git checkout master && rm -rf * && mv ${PCO}/{.[!.],}* . && rm -rf ${PCO} && git add -A && git -c user.name='Travis CI' -c user.email='<>' commit -m "up" && ! git status --porcelain | grep -q . && if [[ "`ls -A -1 -I 'index?*.html' -I '.git' | cksum`" != "2723194966 74" ]]; then echo 'Trap ls,cksum FAIL - check pelican version ?'; exit 1; fi
 after_success:
   - bash -c 'if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then git push "https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" master > /dev/null 2>&1 || exit 42; else echo "skip git push for PULL REQUEST"; fi'
