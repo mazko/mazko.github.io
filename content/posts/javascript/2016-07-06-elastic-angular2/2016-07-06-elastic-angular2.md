@@ -2,7 +2,7 @@ title: ElasticSearch - одностраничное приложение на An
 category: JavaScript
 tags: Elastic, Angular2
 
-Вооружившись знаниями приобретёнными в предыдущем материале по [ElasticSearch]({filename}../../admin/2016-06-25-elastic-play/2016-06-25-elastic-play.md) самое время сделать что-то полезное. В данном материале мы напишем [одностраничное](https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5){:rel="nofollow"} приложение (SPA) на [Angular2](https://angular.io/){:rel="nofollow"}. Это будет полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам. Писать SPA будем на [TypeScript](https://www.typescriptlang.org/){:rel="nofollow"} - это который JavaScript нового поколения плюс строгая типизация, умеющая обнаруживать многие типичные ошибки в коде программы ещё на этапе сборки приложения и соотвественно вежливо сообщать об этом ещё до неловкого момента *ой, не работает*.
+Вооружившись знаниями приобретёнными в предыдущем материале по [ElasticSearch]({filename}../../admin/2016-06-25-elastic-play/2016-06-25-elastic-play.md) самое время сделать что-то полезное. В данном материале мы напишем [одностраничное](https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5){:rel="nofollow"} приложение (SPA) на [Angular2](https://angular.io/){:rel="nofollow"}. Это будет полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам. Писать SPA будем на [TypeScript](https://www.typescriptlang.org/){:rel="nofollow"} - это который JavaScript нового поколения плюс строгая типизация, умеющая обнаруживать многие типичные ошибки в коде программы ещё на этапе сборки приложения и соотвественно вежливо сообщать об этом ещё до неловкого момента *ой, не работает*. Для работы демо в [ElasticSearch]({filename}../../admin/2016-06-25-elastic-play/2016-06-25-elastic-play.md) нужно настроить ```http.cors``` для *http://mazko.github.io*, например ```allow-origin: /https?:\/\/mazko\.github\.io/```.
 
 <!-- cd ./dist/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Ddist/{}"></a>' | xclip -selection clipboard && cd - -->
 
@@ -890,7 +890,7 @@ tags: Elastic, Angular2
       color: #000;
     }
 
-В компонент Aggregations присутствуют оба случая:
+В компоненте Aggregations присутствуют оба случая:
 
     :::bash
     (env)~: ng generate component films-search/Aggregations
