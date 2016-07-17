@@ -50,7 +50,7 @@ tags: GnuPlot
     # show horizontal grid lines 
     set grid ytics
     set xrange [-2:16]
-    set yrange [%(bottom)d - 0.05:%(top)d]
+    set yrange [%(bottom)d - 0.1:%(top)d]
     set term png truecolor size 1280,720
     plot for [IDX=0:%(total)d-1] "-" \
         using 2:(%(bottom)d):(4):(2*abs(%(bottom)d - $1)) \
@@ -139,4 +139,4 @@ tags: GnuPlot
 
 ![screenshot]({attach}wifi.ellipses.png){:style="width:100%; border:1px solid #ddd;"}
 
-Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.05.
+Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1
