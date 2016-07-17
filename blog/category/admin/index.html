@@ -82,7 +82,7 @@
 <span class="s1"># show horizontal grid lines </span>
 <span class="s1">set grid ytics</span>
 <span class="s1">set xrange [-2:16]</span>
-<span class="s1">set yrange [%(bottom)d - 0.05:%(top)d]</span>
+<span class="s1">set yrange [%(bottom)d - 0.1:%(top)d]</span>
 <span class="s1">set term png truecolor size 1280,720</span>
 <span class="s1">plot for [IDX=0:%(total)d-1] &quot;-&quot; \</span>
 <span class="s1">    using 2:(%(bottom)d):(4):(2*abs(%(bottom)d - $1)) \</span>
@@ -170,7 +170,7 @@ gnuplot 4.6 patchlevel 6
 
 
 <p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.ellipses.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.05.</p><p>There are <a href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </article>
+<p>Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1</p><p>There are <a href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
