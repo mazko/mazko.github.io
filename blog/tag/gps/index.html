@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - GPS</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/">TDD в жизни микроконтроллеров</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2012-09-29T00:00:00+03:00">
+                Published: Сб. 29 Сентябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/mikrokontroller">Микроконтроллер</a> <a href="http://mazko.github.io/blog/tag/tdd">TDD</a> <a href="http://mazko.github.io/blog/tag/gps">GPS</a> <a href="http://mazko.github.io/blog/tag/cppunit">CppUnit</a> </p>
+</footer><!-- /.post-info --><blockquote>
+<p>Тестирование традиционно проводится в качестве финального аккорда разработки проекта, после того, как «всё заработало, просто для уверенности». Экстремальное программирование (<em style="color:darkred;">Extreme Programming</em> (<em style="color:darkred;">XP</em>)) революционизирует процесс тестирования, придавая ему равный (а то и больший) приоритет с программированием. Вообще, вы пишете тесты перед написанием программы, которая будет тестироваться, и эти тесты навсегда остаются с кодом. Тесты должны успешно проводиться каждый раз при интеграции и сборке проекта. У таких тестов есть два чрезвычайно важных преимущества.</p>
+<ul>
+<li>
+<p>Они позволяют ясно определить интерфейс класса. Я часто предлагал «вообразить идеальный класс для решения определённой задачи» в качестве инструмента для разработки системы. Стратегия XP идёт дальше - она описывает, как класс должен выглядеть в точности для потребителя его услуг и ясно определяет его поведение. Без двусмысленных определений. Вы можете написать целый роман или создать ворох диаграмм, объясняя, как выглядит и что делает класс, но ничто не сравнится с несколькими тестами. Первое - не более чем список пожеланий, а тесты - своего рода контракт, скреплённый компилятором и выполняющийся программой. Трудно представить себе более конкретное описание класса, чем его тесты.</p>
+</li>
+<li>
+<p>Bторой важный эффект написания тестов появляется, потому что вам приходится запускать тесты каждый раз при построении вашей программы. Если взглянуть на эволюцию языков программирования с этой точки зрения, нетрудно увидеть, что все настоящие улучшения в технологии связаны с тестами. Язык ассемблера проверял только синтаксис, а в <strong style="color:darkred;">С</strong> были введены некоторые семантические ограничения, которые в конечном счёте помогли избежать некоторых частых ошибок. Языки ООП накладывают ещё более строгие семантические ограничения, которые, если разобраться, находятся в форме нескольких тестов. «Правильно ли используется этот тип данных ?» и «Правильно ли вызывается функция ?» - это тесты, проводимые компилятором во время выполнения.</p>
+</li>
+</ul>
+<p>Так как вы понимаете, что ваши тесты удержат вас в рамках дозволенного и не дадут удалиться от нужной задачи (при этом по мере разработки вы всё время добавляете тесты), появляется уверенность в себе - вы можете спокойно делать огромные изменения в проекте, не беспокоясь о том, что проект может прийти в беспорядок. Это действительно замечательно.</p>
+<p><strong>Брюс Еккель</strong> <em>Философия Java. Библиотека пркраммиста. 2001г.</em></p>
+</blockquote>
+<p>При чём тут <strong>микроконтроллеры</strong> ? Естественно, в контексте <strong>С</strong> не нужно понимать выражение интерфейс класса буквально. Это может быть просто набор методов в файле заголовка, которые не объявлены как <strong>static</strong>.  Программы для микроконтроллеров пишутся на <strong>C / C++</strong>, а <strong>XP</strong> - это методика разработки, которая не привязана к конкретному языку программирования. В идеале, конечно, для достижения максимального эффекта лучше производить тестирование на той же платформе, на которой предполагается разворачивать приложение. Но это необязательное условие - если исходный код программы для микроконтроллера содержит явную ошибку, она никуда не исчезнет и её можно выявить посредством тестирования в другом месте, на ПК к примеру. Запустить же среду тестирования непосредственно в микроконтроллере вследствие ограниченности ресурсов может оказаться очень сложной да и нецелесообразной задачей.</p>
+<h3>Постановка задачи</h3>
+<p>Необходимо рассчитать расстояние между двумя координатами <strong>GPS</strong>. Используем формулу под названием <strong>haversine</strong>:</p>
+<script type="text/javascript" src="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/haversine.js"> </script>
+
+<table cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td valign="top"><b>Haversine formula:</b>&nbsp;</td>
+<td class="formula">a = sin²(Δlat/2) + cos(lat<sub>1</sub>) * cos(lat<sub>2</sub>) * sin²(Δlong/2)<br> c = 2 * atan2(√<span class="radicand">a</span>, √<span class="radicand">(1−a)</span>)<br> d = R * c</td>
+</tr>
+</tbody>
+</table>
+
+<p>где <strong><em>R</em></strong> - радиус Земли (т.е. R = 6371km), d - <strong><em>km</em></strong>, углы измеряются в <strong><em>радианах</em></strong>. Формула рассчитывает кратчайшее расстояние по прямой, т.е. сферическая составляющая не учитывается - при небольших расстояниях её влияние невелико.</p>
+<p>Координаты <em>Latitude</em> и <em>Longitude</em> первой точки:</p>
+<p>
+<input maxlength="10" size="10" id="haversine_lat1" value="48.6098" style="text-align: right; padding:.3em;" type="text"/>
+<input maxlength="10" size="10" id="haversine_long1" value="34.5621" style="text-align: right; padding:.3em;" type="text"/>
+</p>
+
+<p>Координаты <em>Latitude</em> и <em>Longitude</em> второй точки:</p>
+<p>
+<input maxlength="10" size="10" id="haversine_lat2" value="-48.6098" style="text-align: right; padding:.3em;" type="text"/>
+<input maxlength="10" size="10" id="haversine_long2" value="-34.5621" style="text-align: right; padding:.3em;" type="text"/>
+<button style="padding:.2em;" type="button" onclick="haversine_math.print_haversine();"><noscript><span style="color:red;">Включите JavaScript ! </span></noscript>Рассчитать!</button>
+</p>
+
+<p id="haversine_result">
+</p>
+
+<h3>Рабочее место</h3>
+<p>Нам точно понадобится <strong>C / C++</strong> компилятор, в качестве среды тестирования выбор пал на <strong>CppUnit</strong>, работать будем под 'чистой' <strong>openSUSE</strong> 11.4.</p>
+<div class="highlight"><pre><span></span>sudo zypper install gcc-c++ libcppunit-devel
+</pre></div>
+
+
+<p><img alt="Установка Скриншот" src="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/cppunit_install.png" style="width:100%; border:1px solid grey;" /></p>
+<p><strong>CppUnit</strong> поставляется в виде библиотеки, поэтому сперва необходимо реализовать программу, которая будет вызывать тесты, а результат выводить, например, в консоль:</p>
+<p><em>gps_haversine/tests/cppunit/main.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;cppunit/CompilerOutputter.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;cppunit/extensions/TestFactoryRegistry.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;cppunit/ui/text/TextTestRunner.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">RunTests</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Get the top level suite from the registry</span>
+    <span class="n">CppUnit</span><span class="o">::</span><span class="n">Test</span> <span class="o">*</span><span class="n">suite</span> <span class="o">=</span> 
+        <span class="n">CppUnit</span><span class="o">::</span><span class="n">TestFactoryRegistry</span><span class="o">::</span><span class="n">getRegistry</span><span class="p">()</span>
+                <span class="p">.</span><span class="n">makeTest</span><span class="p">();</span>
+
+    <span class="c1">// Adds the test to the list of test to run</span>
+    <span class="c1">// CppUnit::TextUi::TestRunner runner;</span>
+    <span class="n">CppUnit</span><span class="o">::</span><span class="n">TextTestRunner</span> <span class="n">runner</span><span class="p">;</span>
+    <span class="n">runner</span><span class="p">.</span><span class="n">addTest</span><span class="p">(</span> <span class="n">suite</span> <span class="p">);</span>
+
+    <span class="c1">// Change the default outputter to a error outputter</span>
+    <span class="n">runner</span><span class="p">.</span><span class="n">setOutputter</span><span class="p">(</span> 
+        <span class="k">new</span> <span class="n">CppUnit</span><span class="o">::</span><span class="n">CompilerOutputter</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">runner</span><span class="p">.</span><span class="n">result</span><span class="p">(),</span> 
+                <span class="n">std</span><span class="o">::</span><span class="n">cerr</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="c1">// Run the tests.</span>
+    <span class="kt">bool</span> <span class="n">wasSucessful</span> <span class="o">=</span> <span class="n">runner</span><span class="p">.</span><span class="n">run</span><span class="p">();</span>
+
+    <span class="c1">// Return error code 1 if the one of test failed.</span>
+    <span class="k">return</span> <span class="n">wasSucessful</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">RunTests</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>После сборки и запуска результат должен быть таким:</p>
+<div class="highlight"><pre><span></span>g++ -g -ldl main.cpp -lcppunit
+./a.out
+
+OK <span class="o">(</span>0<span class="o">)</span>
+</pre></div>
+
+
+<p>Теперь можно писать тесты. Для начала объявим тело функции, которую предполагается реализовать  - это позволит успешно проходить компиляцию в тех местах, где она используется:</p>
+<p><em>gps_haversine/src/gps/gps.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*********************************************************</span>
+<span class="cm"> *      Function Name:  haversine_km                     *</span>
+<span class="cm"> *      Return Value:   Double                           *</span>
+<span class="cm"> *      Parameters:     Two coordinates                  *</span>
+<span class="cm"> *      Description:    Calculate haversine distance for *</span>
+<span class="cm"> *                      linear distance                  *</span>
+<span class="cm"> *********************************************************/</span>
+
+<span class="kt">double</span> <span class="nf">haversine_km</span><span class="p">(</span><span class="kt">double</span> <span class="n">lat1</span><span class="p">,</span> <span class="kt">double</span> <span class="n">long1</span><span class="p">,</span> 
+                    <span class="kt">double</span> <span class="n">lat2</span><span class="p">,</span> <span class="kt">double</span> <span class="n">long2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Тесты:</p>
+<p><em>gps_haversine/tests/cppunit/gps/GpsTest.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef __GPS_TEST_H</span>
+<span class="cp">#define __GPS_TEST_H</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;cppunit/extensions/HelperMacros.h&gt;</span><span class="cp"></span>
+
+<span class="k">class</span> <span class="nc">GpsTest</span> <span class="o">:</span> <span class="k">public</span> <span class="n">CppUnit</span><span class="o">::</span><span class="n">TestFixture</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_TEST_SUITE</span><span class="p">(</span> <span class="n">GpsTest</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_params_immutable</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_zero</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_params_positive</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_params_negative</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_lat1_negative</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_lon1_negative</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_lat2_negative</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST</span><span class="p">(</span> <span class="n">test_haversine_km_lon2_negative</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_TEST_SUITE_END</span><span class="p">();</span>
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">void</span> <span class="n">test_haversine_km_params_immutable</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_zero</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_params_positive</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_params_negative</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_lat1_negative</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_lon1_negative</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_lat2_negative</span><span class="p">();</span>
+    <span class="kt">void</span> <span class="nf">test_haversine_km_lon2_negative</span><span class="p">();</span>
+<span class="p">};</span>
+
+<span class="cp">#endif  </span><span class="c1">// __GPS_TEST_H</span>
+</pre></div>
+
+
+<p><em>gps_haversine/tests/cppunit/gps/GpsTest.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;GpsTest.h&quot;</span><span class="cp"></span>
+
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span>
+<span class="p">{</span>
+    <span class="cp">#include</span> <span class="cpf">&quot;../../../src/gps/gps.c&quot;</span><span class="cp"></span>
+<span class="p">}</span>
+
+<span class="c1">// Registers the fixture into the &#39;registry&#39;</span>
+<span class="n">CPPUNIT_TEST_SUITE_REGISTRATION</span><span class="p">(</span> <span class="n">GpsTest</span> <span class="p">);</span>
+
+<span class="cm">/* Функция не должна изменять значение передаваемых параметров */</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_params_immutable</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">lat1</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">lon1</span> <span class="o">=</span> <span class="mf">3.1</span><span class="p">,</span> <span class="n">lat2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lon2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">;</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">689.8</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">),</span> <span class="mf">0.5</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_EQUAL</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_EQUAL</span><span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_EQUAL</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_EQUAL</span><span class="p">(</span><span class="o">-</span><span class="mf">3.1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* Расстояние между одинаковыми точками ноль */</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_zero</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">0</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">0</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="mi">0</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="mi">0</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_params_positive</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">122.4</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="mf">48.6092</span><span class="p">,</span> <span class="mf">34.5622</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">11.12</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_params_negative</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">122.4</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="o">-</span><span class="mf">48.6092</span><span class="p">,</span> <span class="o">-</span><span class="mf">34.5622</span><span class="p">,</span> <span class="o">-</span><span class="mi">49</span><span class="p">,</span> <span class="o">-</span><span class="mi">33</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">31.45</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_lat1_negative</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">10850</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="o">-</span><span class="mf">48.6092</span><span class="p">,</span> <span class="mf">34.5622</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="mf">2.2</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">11.12</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_lon1_negative</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">4778</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mf">48.6092</span><span class="p">,</span> <span class="o">-</span><span class="mf">34.5622</span><span class="p">,</span> <span class="mi">49</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="mf">3.5</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">15.73</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_lat2_negative</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">12630</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mf">48.6092</span><span class="p">,</span> <span class="mf">34.5622</span><span class="p">,</span> <span class="o">-</span><span class="mi">49</span><span class="p">,</span> <span class="o">-</span><span class="mi">33</span><span class="p">),</span> <span class="mf">4.5</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">15.73</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">GpsTest</span><span class="o">::</span><span class="n">test_haversine_km_lon2_negative</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mi">10850</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mf">48.6092</span><span class="p">,</span> <span class="mf">34.5622</span><span class="p">,</span> <span class="o">-</span><span class="mi">49</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span> <span class="mf">2.2</span> <span class="p">);</span>
+    <span class="n">CPPUNIT_ASSERT_DOUBLES_EQUAL</span><span class="p">(</span> <span class="mf">11.12</span><span class="p">,</span> 
+        <span class="n">haversine_km</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.1</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Тесты должны быть максимально лаконичными - иначе придётся ломать голову, где же именно ошибка. Мы пока не реализовали <strong>haversine_km</strong>, поэтому результат будет такой:</p>
+<div class="highlight"><pre><span></span>g++ -g -ldl main.cpp gps/GpsTest.cpp -lcppunit
+./a.out
+
+.F.F.F.F.F.F.F.F
+
+GpsTest.cpp:15:Assertion
+Test name: GpsTest::test_haversine_km_params_immutable
+double equality assertion failed
+- Expected: 689.8
+- Actual  : -1
+- Delta   : 0.5
+
+GpsTest.cpp:25:Assertion
+Test name: GpsTest::test_haversine_km_zero
+double equality assertion failed
+- Expected: 0
+- Actual  : -1
+- Delta   : 0
+
+GpsTest.cpp:32:Assertion
+Test name: GpsTest::test_haversine_km_params_positive
+double equality assertion failed
+- Expected: 122.4
+- Actual  : -1
+- Delta   : 0.1
+
+GpsTest.cpp:37:Assertion
+Test name: GpsTest::test_haversine_km_params_negative
+double equality assertion failed
+- Expected: 122.4
+- Actual  : -1
+- Delta   : 0.1
+
+GpsTest.cpp:42:Assertion
+Test name: GpsTest::test_haversine_km_lat1_negative
+double equality assertion failed
+- Expected: 10850
+- Actual  : -1
+- Delta   : 2.2
+
+GpsTest.cpp:47:Assertion
+Test name: GpsTest::test_haversine_km_lon1_negative
+double equality assertion failed
+- Expected: 4778
+- Actual  : -1
+- Delta   : 3.5
+
+GpsTest.cpp:52:Assertion
+Test name: GpsTest::test_haversine_km_lat2_negative
+double equality assertion failed
+- Expected: 12630
+- Actual  : -1
+- Delta   : 4.5
+
+GpsTest.cpp:57:Assertion
+Test name: GpsTest::test_haversine_km_lon2_negative
+double equality assertion failed
+- Expected: 10850
+- Actual  : -1
+- Delta   : 2.2
+
+Failures !!!
+Run: <span class="m">8</span>   Failure total: <span class="m">8</span>   Failures: <span class="m">8</span>   Errors: 0
+</pre></div>
+
+
+<p>На самом деле это хорошо - если теперь реализовать необходимый функционал и после этого все тесты пройдут успешно, значит они имеют смысл. Теперь реализуем недостающее звено. Вот первый пример рассчёта, взятый с сайта <a href="http://stackoverflow.com/questions/6148814/distance-measurment-by-the-gps-coordinates" rel="nofollow" title="StackOverflow.com">StackOverflow.com</a>:</p>
+<p><em>gps_haversine/src/gps/gps.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
+
+<span class="cm">/*********************************************************</span>
+<span class="cm"> *      Function Name:  haversine_km                     *</span>
+<span class="cm"> *      Return Value:   Double                           *</span>
+<span class="cm"> *      Parameters:     Two coordinates                  *</span>
+<span class="cm"> *      Description:    Calculate haversine distance for *</span>
+<span class="cm"> *                      linear distance                  *</span>
+<span class="cm"> *********************************************************/</span>
+
+<span class="cp">#define d2r (M_PI / 180.0)</span>
+
+<span class="kt">double</span> <span class="nf">haversine_km</span><span class="p">(</span><span class="kt">double</span> <span class="n">lat1</span><span class="p">,</span> <span class="kt">double</span> <span class="n">long1</span><span class="p">,</span> 
+                    <span class="kt">double</span> <span class="n">lat2</span><span class="p">,</span> <span class="kt">double</span> <span class="n">long2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">double</span> <span class="n">dlong</span> <span class="o">=</span> <span class="p">(</span><span class="n">long2</span> <span class="o">-</span> <span class="n">long1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2r</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">dlat</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="n">d2r</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="n">pow</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">dlat</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> 
+        <span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="o">*</span><span class="n">d2r</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="o">*</span><span class="n">d2r</span><span class="p">)</span> <span class="o">*</span> <span class="n">pow</span><span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">dlong</span><span class="o">/</span><span class="mf">2.0</span><span class="p">),</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="kt">double</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="p">));</span>
+    <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">6367</span> <span class="o">*</span> <span class="n">c</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">d</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Результат выполнения:</p>
+<div class="highlight"><pre><span></span>g++ -g -ldl main.cpp gps/GpsTest.cpp -lcppunit
+./a.out
+
+........
+
+OK <span class="o">(</span>8<span class="o">)</span>
+</pre></div>
+
+
+<p>Теперь вернёмся к микроконтроллерам. В представленном решении компилятор резервирует в стеке место под <strong>девять</strong> переменных типа <strong>double</strong>, это очень много. Поэтому код нужно оптимизировать, а существующие тесты помогут избежать ошибок. Вот что получилось:</p>
+<p><em>gps_haversine/src/gps/gps.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp"></span>
+
+<span class="cm">/*********************************************************</span>
+<span class="cm"> *      Function Name:  haversine_km                     *</span>
+<span class="cm"> *      Return Value:   Double                           *</span>
+<span class="cm"> *      Parameters:     Two coordinates                  *</span>
+<span class="cm"> *      Description:    Calculate haversine distance for *</span>
+<span class="cm"> *                      linear distance                  *</span>
+<span class="cm"> *********************************************************/</span>
+
+<span class="kt">double</span> <span class="nf">haversine_km</span><span class="p">(</span><span class="kt">double</span> <span class="n">lat1</span><span class="p">,</span> <span class="kt">double</span> <span class="n">long1</span><span class="p">,</span> 
+                    <span class="kt">double</span> <span class="n">lat2</span><span class="p">,</span> <span class="kt">double</span> <span class="n">long2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="cp">#define d2r (3.141592 / 180.0)</span>
+    <span class="cp">#define sindif(v1, v2) sin(((v1 - v2) * d2r) / 2.0)</span>
+
+    <span class="kt">double</span> <span class="n">sdlong</span> <span class="o">=</span> <span class="n">sindif</span><span class="p">(</span><span class="n">long2</span><span class="p">,</span> <span class="n">long1</span><span class="p">);</span>
+    <span class="kt">double</span> <span class="n">sdlat</span>  <span class="o">=</span> <span class="n">sindif</span><span class="p">(</span><span class="n">lat2</span><span class="p">,</span> <span class="n">lat1</span><span class="p">);</span>
+    <span class="n">lat1</span> <span class="o">*=</span> <span class="n">d2r</span><span class="p">;</span>
+    <span class="n">lat2</span> <span class="o">*=</span> <span class="n">d2r</span><span class="p">;</span>
+    <span class="n">sdlong</span> <span class="o">*=</span> <span class="n">sdlong</span><span class="p">;</span>
+    <span class="n">sdlat</span>  <span class="o">*=</span> <span class="n">sdlat</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="n">sdlat</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sdlong</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="mi">6367</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">a</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Результат выполнения тестов аналогичен предыдущему, а исходники <a href="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/gps_haversine.zip">тут</a>.</p><p>There are <a href="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

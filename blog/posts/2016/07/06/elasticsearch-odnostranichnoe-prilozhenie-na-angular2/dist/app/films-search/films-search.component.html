@@ -1,0 +1,30 @@
+<div>
+  <p>
+    <auto-complete (q_change)="handleQuery($event)"></auto-complete>
+
+    <select #perPage 
+      [disabled]=is_fetching_state
+      (change)="handlePerPage(perPage.value)">
+      <option *ngFor="let p of [3, 5, 10, 25]"
+        [attr.selected]="p === films_per_page ? 'selected' : null">
+        {{p}}
+      </option>
+    </select>
+
+    <button *ngIf="current_page > 1" 
+      [disabled]=is_fetching_state
+      (click)="handlePrevPage()">{{'<'}}
+    </button>
+    <button *ngIf="current_page < total_pages"
+      [disabled]=is_fetching_state
+      (click)="handleNextPage()">{{'>'}}
+    </button>
+    <span *ngIf=total_pages>Страница {{current_page}} из {{total_pages}}</span>
+  </p>
+
+  <p>
+    <aggregations [data]=aggs (aggs_change)="handleAggs($event)"></aggregations>
+  </p>
+
+  <films-list [films]=films></films-list> 
+</div>

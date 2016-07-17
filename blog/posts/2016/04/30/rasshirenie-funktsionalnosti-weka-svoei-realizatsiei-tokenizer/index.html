@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Расширение функциональности Weka своей реализацией Tokenizer</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/" rel="bookmark"
+           title="Permalink to Расширение функциональности Weka своей реализацией Tokenizer">Расширение функциональности Weka своей реализацией Tokenizer</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-04-30T00:00:00+03:00">
+                Published: Сб. 30 Апрель 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/nlp">NLP</a> <a href="http://mazko.github.io/blog/tag/weka">Weka</a> <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->      <p>В случае классификации <a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">текстовой информации</a> качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается <a href="http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html" rel="nofollow">StringToWordVector</a> и одним из параметров у него задаётся тип <a href="http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html" rel="nofollow">токенайзера</a>. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но как нетрудно убедиться на картинке ниже если не полениться и задействовать более качественный <a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">токенизатор</a>, взятый например из <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>, итоговая точность определения категорий в Weka-классификаторе повышается:</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Итак <a href="https://maven.apache.org/guides/getting-started/" rel="nofollow">приступим</a>:</p>
+<div class="highlight"><pre><span></span>~$ apt install maven
+~$ mvn -B archetype:generate <span class="se">\</span>
+      -DarchetypeGroupId<span class="o">=</span>org.apache.maven.archetypes <span class="se">\</span>
+      -DgroupId<span class="o">=</span>weka.lucene <span class="se">\</span>
+      -DartifactId<span class="o">=</span>weka-lucene
+~$ <span class="nb">cd</span> weka-lucene/
+</pre></div>
+
+
+<p>Зависимости <a href="http://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable" rel="nofollow">Weka</a>, <a href="http://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common" rel="nofollow">Lucene Analyzers</a>:</p>
+<p><em>pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>weka.lucene<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>weka-lucene<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;name&gt;</span>weka-lucene<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;url&gt;</span>http://maven.apache.org<span class="nt">&lt;/url&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>4.12<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-analyzers-common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>nz.ac.waikato.cms.weka<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>weka-stable<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>3.8.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>Проверить актуальность зависимостей как всегда можно <code>mvn versions:display-dependency-updates</code>.</p>
+<div class="highlight"><pre><span></span>~$ tree
+.
+├── pom.xml
+└── src
+    ├── main
+    │   └── java
+    │       └── weka
+    │           └── core
+    │               └── tokenizers
+    │                   └── LuceneTokenizer.java
+    └── <span class="nb">test</span>
+        └── java
+            └── weka
+                └── core
+                    └── tokenizers
+                        └── LuceneTokenizerTest.java
+
+<span class="m">11</span> directories, <span class="m">3</span> files
+</pre></div>
+
+
+<p><em>src/main/java/weka/core/tokenizers/LuceneTokenizer.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">weka.core.tokenizers</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.Math</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.StringReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Enumeration</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Vector</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.TokenStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.shingle.ShingleFilter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.standard.UAX29URLEmailTokenizer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.tokenattributes.CharTermAttribute</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">weka.core.Option</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.RevisionUtils</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">weka.core.Utils</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LuceneTokenizer</span> <span class="kd">extends</span> <span class="n">Tokenizer</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">transient</span> <span class="n">TokenStream</span> <span class="n">m_stream</span><span class="o">;</span>
+
+    <span class="cm">/** the maximum number of N */</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">m_NMax</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+
+    <span class="cm">/** the minimum number of N */</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">m_NMin</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns the revision string.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return the revision</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getRevision</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">RevisionUtils</span><span class="o">.</span><span class="na">extract</span><span class="o">(</span><span class="s">&quot;$Revision: 1.0 $&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns a string describing the tokenizer</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return a description suitable for displaying in the</span>
+<span class="cm">     *         explorer/experimenter gui</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">globalInfo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;Tokenizer based on Apache Lucene UAX29URLEmailTokenizer &amp; ShingleFilter.&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns true if there&#39;s more elements available</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return true if there are more elements available</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasMoreElements</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">m_stream</span><span class="o">.</span><span class="na">incrementToken</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+                <span class="n">m_stream</span><span class="o">.</span><span class="na">end</span><span class="o">();</span>
+                <span class="n">m_stream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+                <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns N-grams and also (N-1)-grams and .... and 1-grams.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return the next element</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">nextElement</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">CharSequence</span> <span class="n">o</span> <span class="o">=</span> <span class="n">m_stream</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="n">CharTermAttribute</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Sets the string to tokenize.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @param s</span>
+<span class="cm">     *            the string to tokenize</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">tokenize</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">UAX29URLEmailTokenizer</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UAX29URLEmailTokenizer</span><span class="o">();</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">setReader</span><span class="o">(</span><span class="k">new</span> <span class="n">StringReader</span><span class="o">(</span><span class="n">s</span><span class="o">));</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">m_NMax</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">ShingleFilter</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ShingleFilter</span><span class="o">(</span><span class="n">t</span><span class="o">,</span> <span class="n">m_NMax</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">m_NMin</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">f</span><span class="o">.</span><span class="na">setMinShingleSize</span><span class="o">(</span><span class="n">m_NMin</span><span class="o">);</span>
+                <span class="n">f</span><span class="o">.</span><span class="na">setOutputUnigrams</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">m_stream</span> <span class="o">=</span> <span class="n">f</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">m_stream</span> <span class="o">=</span> <span class="n">t</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">m_stream</span><span class="o">.</span><span class="na">reset</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns an enumeration of all the available options..</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return an enumeration of all available options.</span>
+<span class="cm">     */</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">Option</span><span class="o">&gt;</span> <span class="nf">listOptions</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">Option</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">Option</span><span class="o">&gt;();</span>
+        <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
+        <span class="kd">final</span> <span class="n">Enumeration</span><span class="o">&lt;</span><span class="n">Option</span><span class="o">&gt;</span> <span class="n">enm</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">listOptions</span><span class="o">();</span>
+
+        <span class="k">while</span> <span class="o">(</span><span class="n">enm</span><span class="o">.</span><span class="na">hasMoreElements</span><span class="o">())</span> <span class="o">{</span>
+            <span class="n">result</span><span class="o">.</span><span class="na">addElement</span><span class="o">(</span><span class="n">enm</span><span class="o">.</span><span class="na">nextElement</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">addElement</span><span class="o">(</span>
+            <span class="k">new</span> <span class="n">Option</span><span class="o">(</span><span class="s">&quot;\tThe max size of the Ngram (default = 3).&quot;</span><span class="o">,</span> <span class="s">&quot;max&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="s">&quot;-max &lt;int&gt;&quot;</span><span class="o">));</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">addElement</span><span class="o">(</span>
+            <span class="k">new</span> <span class="n">Option</span><span class="o">(</span><span class="s">&quot;\tThe min size of the Ngram (default = 1).&quot;</span><span class="o">,</span> <span class="s">&quot;min&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="s">&quot;-min &lt;int&gt;&quot;</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="na">elements</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Gets the current option settings for the OptionHandler.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return the list of current option settings as an array of strings</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span><span class="o">[]</span> <span class="nf">getOptions</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Vector</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">result</span><span class="o">;</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">options</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+
+        <span class="n">options</span> <span class="o">=</span> <span class="kd">super</span><span class="o">.</span><span class="na">getOptions</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">options</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">options</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+        <span class="o">}</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;-max&quot;</span><span class="o">);</span>
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">getNGramMaxSize</span><span class="o">());</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;-min&quot;</span><span class="o">);</span>
+        <span class="n">result</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">getNGramMinSize</span><span class="o">());</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="na">toArray</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">result</span><span class="o">.</span><span class="na">size</span><span class="o">()]);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Parses a given list of options.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @param options</span>
+<span class="cm">     *            the list of options as an array of strings</span>
+<span class="cm">     * @throws Exception</span>
+<span class="cm">     *             if an option is not supported</span>
+<span class="cm">     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setOptions</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">options</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+
+        <span class="kd">super</span><span class="o">.</span><span class="na">setOptions</span><span class="o">(</span><span class="n">options</span><span class="o">);</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getOption</span><span class="o">(</span><span class="s">&quot;max&quot;</span><span class="o">,</span> <span class="n">options</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">setNGramMaxSize</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">setNGramMaxSize</span><span class="o">(</span><span class="mi">3</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="na">getOption</span><span class="o">(</span><span class="s">&quot;min&quot;</span><span class="o">,</span> <span class="n">options</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">value</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">setNGramMinSize</span><span class="o">(</span><span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">value</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">setNGramMinSize</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Gets the max N of the NGram.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return the size (N) of the NGram.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getNGramMaxSize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">m_NMax</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Sets the max size of the Ngram.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @param value</span>
+<span class="cm">     *            the size of the NGram.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNGramMaxSize</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">m_NMax</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns the tip text for this property.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return tip text for this property suitable for displaying in the</span>
+<span class="cm">     *         explorer/experimenter gui</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">NGramMaxSizeTipText</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;The max N of the NGram.&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Sets the min size of the Ngram.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @param value</span>
+<span class="cm">     *            the size of the NGram.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setNGramMinSize</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">m_NMin</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Gets the min N of the NGram.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return the size (N) of the NGram.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getNGramMinSize</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">m_NMin</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Returns the tip text for this property.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @return tip text for this property suitable for displaying in the</span>
+<span class="cm">     *         explorer/experimenter gui</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">NGramMinSizeTipText</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;The min N of the NGram.&quot;</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Runs the tokenizer with the given options and strings to tokenize. The</span>
+<span class="cm">     * tokens are printed to stdout.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @param args</span>
+<span class="cm">     *            the commandline options and strings to tokenize</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">runTokenizer</span><span class="o">(</span><span class="k">new</span> <span class="n">LuceneTokenizer</span><span class="o">(),</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>src/test/java/weka/core/tokenizers/LuceneTokenizerTest.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">weka.core.tokenizers</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.junit.Assert</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.junit.Test</span><span class="o">;</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">LuceneTokenizerTest</span> <span class="o">{</span>
+
+    <span class="cm">/** Creates a default LuceneTokenizer */</span>
+    <span class="kd">final</span> <span class="n">Tokenizer</span> <span class="n">m_Tokenizer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LuceneTokenizer</span><span class="o">();</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * tests the number of generated tokens</span>
+<span class="cm">     * </span>
+<span class="cm">     * @throws Exception</span>
+<span class="cm">     */</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testNumberOfGeneratedTokens</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;HOWEVER, the egg only got larger and larger, and more and more human&quot;</span><span class="o">;</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">result</span><span class="o">;</span>
+
+        <span class="c1">// only 1-grams</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ (1)&quot;</span><span class="o">,</span> <span class="mi">13</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+        <span class="c1">// only 2-grams</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ (2)&quot;</span><span class="o">,</span> <span class="mi">12</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+        <span class="c1">// 1 to 3-grams</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ (3)&quot;</span><span class="o">,</span> <span class="mi">36</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+        <span class="c1">// 1 to 5-grams</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;5&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ (4)&quot;</span><span class="o">,</span> <span class="mi">55</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * tests the number of generated tokens</span>
+<span class="cm">     * </span>
+<span class="cm">     * @throws Exception</span>
+<span class="cm">     */</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testNumberOfGeneratedTokensCannotSplit</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+        <span class="c1">// 1 to 3-grams, but sentence only has 2 grams</span>
+
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;cannot split&quot;</span><span class="o">;</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">result</span><span class="o">;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ&quot;</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * tests the number of generated tokens</span>
+<span class="cm">     * </span>
+<span class="cm">     * @throws Exception</span>
+<span class="cm">     */</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testNumberOfGeneratedBlank</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">s</span><span class="o">;</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">result</span><span class="o">;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;!-/&quot;</span><span class="o">;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">&quot;number of tokens differ&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">result</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * tests the content of generated tokens</span>
+<span class="cm">     * </span>
+<span class="cm">     * @throws Exception</span>
+<span class="cm">     */</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testContentOfGeneratedTokens</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;The quick brown fox jumps over the lazy dog@dog.com&quot;</span><span class="o">;</span>
+        <span class="n">String</span><span class="o">[]</span> <span class="n">result</span><span class="o">;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;3&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertArrayEquals</span><span class="o">(</span><span class="s">&quot;dismatch&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span>
+            <span class="s">&quot;The&quot;</span><span class="o">,</span> <span class="s">&quot;The quick&quot;</span><span class="o">,</span> <span class="s">&quot;The quick brown&quot;</span><span class="o">,</span>
+            <span class="s">&quot;quick&quot;</span><span class="o">,</span> <span class="s">&quot;quick brown&quot;</span><span class="o">,</span> <span class="s">&quot;quick brown fox&quot;</span><span class="o">,</span>
+            <span class="s">&quot;brown&quot;</span><span class="o">,</span> <span class="s">&quot;brown fox&quot;</span><span class="o">,</span> <span class="s">&quot;brown fox jumps&quot;</span><span class="o">,</span>
+            <span class="s">&quot;fox&quot;</span><span class="o">,</span> <span class="s">&quot;fox jumps&quot;</span><span class="o">,</span> <span class="s">&quot;fox jumps over&quot;</span><span class="o">,</span>
+            <span class="s">&quot;jumps&quot;</span><span class="o">,</span> <span class="s">&quot;jumps over&quot;</span><span class="o">,</span> <span class="s">&quot;jumps over the&quot;</span><span class="o">,</span>
+            <span class="s">&quot;over&quot;</span><span class="o">,</span> <span class="s">&quot;over the&quot;</span><span class="o">,</span> <span class="s">&quot;over the lazy&quot;</span><span class="o">,</span>
+            <span class="s">&quot;the&quot;</span><span class="o">,</span> <span class="s">&quot;the lazy&quot;</span><span class="o">,</span> <span class="s">&quot;the lazy dog@dog.com&quot;</span><span class="o">,</span>
+            <span class="s">&quot;lazy&quot;</span><span class="o">,</span> <span class="s">&quot;lazy dog@dog.com&quot;</span><span class="o">,</span> <span class="s">&quot;dog@dog.com&quot;</span>
+        <span class="o">},</span> <span class="n">result</span><span class="o">);</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="o">.</span><span class="na">tokenize</span><span class="o">(</span><span class="n">m_Tokenizer</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="s">&quot;-min&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">,</span> <span class="s">&quot;-max&quot;</span><span class="o">,</span> <span class="s">&quot;4&quot;</span><span class="o">,</span> <span class="n">s</span> <span class="o">});</span>
+        <span class="n">Assert</span><span class="o">.</span><span class="na">assertArrayEquals</span><span class="o">(</span><span class="s">&quot;dismatch&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span>
+            <span class="s">&quot;The quick&quot;</span><span class="o">,</span> <span class="s">&quot;The quick brown&quot;</span><span class="o">,</span> <span class="s">&quot;The quick brown fox&quot;</span><span class="o">,</span>
+            <span class="s">&quot;quick brown&quot;</span><span class="o">,</span> <span class="s">&quot;quick brown fox&quot;</span><span class="o">,</span> <span class="s">&quot;quick brown fox jumps&quot;</span><span class="o">,</span>
+            <span class="s">&quot;brown fox&quot;</span><span class="o">,</span> <span class="s">&quot;brown fox jumps&quot;</span><span class="o">,</span> <span class="s">&quot;brown fox jumps over&quot;</span><span class="o">,</span>
+            <span class="s">&quot;fox jumps&quot;</span><span class="o">,</span> <span class="s">&quot;fox jumps over&quot;</span><span class="o">,</span> <span class="s">&quot;fox jumps over the&quot;</span><span class="o">,</span>
+            <span class="s">&quot;jumps over&quot;</span><span class="o">,</span> <span class="s">&quot;jumps over the&quot;</span><span class="o">,</span> <span class="s">&quot;jumps over the lazy&quot;</span><span class="o">,</span>
+            <span class="s">&quot;over the&quot;</span><span class="o">,</span> <span class="s">&quot;over the lazy&quot;</span><span class="o">,</span> <span class="s">&quot;over the lazy dog@dog.com&quot;</span><span class="o">,</span>
+            <span class="s">&quot;the lazy&quot;</span><span class="o">,</span> <span class="s">&quot;the lazy dog@dog.com&quot;</span><span class="o">,</span> <span class="s">&quot;lazy dog@dog.com&quot;</span>
+        <span class="o">},</span> <span class="n">result</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Проверка, <a href="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-lucene.zip">исходники</a>:</p>
+<div class="highlight"><pre><span></span>~$ mvn clean <span class="nb">test</span>
+   Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+~$ mvn clean install exec:java -Dexec.mainClass<span class="o">=</span><span class="s2">&quot;weka.gui.GUIChooser&quot;</span>
+</pre></div>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Lucene - постраничный поиск</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/" rel="bookmark"
+           title="Permalink to Lucene - постраничный поиск">Lucene - постраничный поиск</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-21T00:00:00+03:00">
+                Published: Вс. 21 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsp">JSP</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->      <p>С <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/">индексом</a> в <strong>Lucene</strong>, кажется, разобрались - на очереди поиск. Давайте немножко подумаем. Предположим, поиском будет заниматься класс <code>LuceneSearcher</code>, а результатом поиска должен быть класс <code>TakeResult</code>, в котором будет достаточно информации для реализации постраничной выдачи. Что может измениться в будущем ? На данном этапе мы можем предположить, что единицей поиска будет класс в котором будут два поля - <em>content</em> и <em>title</em>. А если изменится сайт или нам понадобиться какая-то дополнительная информация в результатах выдачи ? Процесс создания и наполнения класса - единицы поиска лучше вынести за пределы <code>LuceneSearcher</code>, для этой цели можно задействовать механизм <em>шаблонов</em> (<em>generic</em>):</p>
+<p><em>pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-core<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-analyzers-common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-queryparser<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;modules&gt;</span>
+    <span class="nt">&lt;module&gt;</span>server<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>crawler<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>common<span class="nt">&lt;/module&gt;</span>
+  <span class="nt">&lt;/modules&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.5.1<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;source&gt;</span>1.8<span class="nt">&lt;/source&gt;</span>
+          <span class="nt">&lt;target&gt;</span>1.8<span class="nt">&lt;/target&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p><em>server/src/main/java/server/TakeResult.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.ParseException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">totalHits</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">items</span><span class="o">;</span>
+
+    <span class="kd">protected</span> <span class="nf">TakeResult</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">totalHits</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">items</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">totalHits</span> <span class="o">=</span> <span class="n">totalHits</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">items</span> <span class="o">=</span> <span class="n">items</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">getItems</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">items</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableCollection</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">items</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">interface</span> <span class="nc">ITakeble</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+        <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">Take</span><span class="o">(</span><span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span>
+                <span class="kd">throws</span> <span class="n">ParseException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InstantiationException</span><span class="o">,</span> <span class="n">IllegalAccessException</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>server/src/main/java/server/LuceneSearcher.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.CorruptIndexException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.DirectoryReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.ParseException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.IndexSearcher</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.Query</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.ScoreDoc</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.TopDocs</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.TopScoreDocCollector</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.Directory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Aggregator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">Query</span> <span class="n">query</span><span class="o">;</span>
+    <span class="kd">protected</span> <span class="n">IndexSearcher</span> <span class="n">indexSearcher</span><span class="o">;</span>
+
+    <span class="kd">abstract</span> <span class="n">T</span> <span class="nf">aggregate</span><span class="o">(</span><span class="n">ScoreDoc</span> <span class="n">sd</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">CorruptIndexException</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">LuceneSearcher</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">A</span> <span class="kd">extends</span> <span class="n">Aggregator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="kd">implements</span> <span class="n">TakeResult</span><span class="o">.</span><span class="na">ITakeble</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">story</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span> <span class="n">classA</span><span class="o">;</span>
+
+    <span class="cm">/* IndexReader is thread safe - one instance for all requests */</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="n">IndexReader</span> <span class="n">indexReader</span><span class="o">;</span>
+
+    <span class="n">LuceneSearcher</span><span class="o">(</span><span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span> <span class="n">classA</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="n">Path</span> <span class="n">indexPath</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">story</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">story</span> <span class="o">=</span> <span class="n">story</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">classA</span> <span class="o">=</span> <span class="n">classA</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="kd">final</span> <span class="n">Directory</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">indexPath</span><span class="o">);</span>
+                    <span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span> <span class="o">=</span> <span class="n">DirectoryReader</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">dir</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">Take</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">ParseException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InstantiationException</span><span class="o">,</span> <span class="n">IllegalAccessException</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">nDocs</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">count</span><span class="o">;</span>
+
+        <span class="kd">final</span> <span class="n">Query</span> <span class="n">query</span> <span class="o">=</span> <span class="n">QueryHelper</span><span class="o">.</span><span class="na">generate</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">story</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">IndexSearcher</span> <span class="n">indexSearcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexSearcher</span><span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">TopScoreDocCollector</span> <span class="n">collector</span> <span class="o">=</span> <span class="n">TopScoreDocCollector</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">nDocs</span><span class="o">,</span> <span class="mi">1</span><span class="o">));</span>
+        <span class="n">indexSearcher</span><span class="o">.</span><span class="na">search</span><span class="o">(</span><span class="n">query</span><span class="o">,</span> <span class="n">collector</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">TopDocs</span> <span class="n">topDocs</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="na">topDocs</span><span class="o">();</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">nDocs</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">topDocs</span><span class="o">.</span><span class="na">totalHits</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="n">ScoreDoc</span><span class="o">[]</span> <span class="n">scoreDocs</span> <span class="o">=</span> <span class="n">topDocs</span><span class="o">.</span><span class="na">scoreDocs</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">scoreDocs</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="n">start</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">topDocs</span><span class="o">.</span><span class="na">totalHits</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">items</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">length</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">A</span> <span class="n">aggregator</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">classA</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+        <span class="n">aggregator</span><span class="o">.</span><span class="na">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">;</span>
+        <span class="n">aggregator</span><span class="o">.</span><span class="na">indexSearcher</span> <span class="o">=</span> <span class="n">indexSearcher</span><span class="o">;</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">start</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">scoreDocs</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">items</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">start</span><span class="o">,</span> <span class="n">aggregator</span><span class="o">.</span><span class="na">aggregate</span><span class="o">(</span><span class="n">scoreDocs</span><span class="o">[</span><span class="n">i</span><span class="o">]));</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">topDocs</span><span class="o">.</span><span class="na">totalHits</span><span class="o">,</span> <span class="n">items</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Процесс создания нового экземпляра класса <code>IndexReader</code>, в зависимости от размера текущего индекса, может быть очень затратным с точки зрения ресурсов системы - CPU и ОЗУ. Поэтому в документации настоятельно рекомендуется создать в программе ОДИН экземпляр данного класса и использовать его совместно между всеми потоками приложения по мере необходимости - <code>IndexReader</code> изначально проектировался как <a href="https://lucene.apache.org/core/6_0_0/core/org/apache/lucene/index/IndexReader.html" rel="nofollow">потокобезопасный</a> (thread safe). С учётом вышесказанного в нашем случае (см. <em>LuceneSearcher.java</em>) <code>IndexReader</code> может существовать только в одном экземпляре, используется <em>ленивая инициализация</em> по принципу double checked locking (<a href="http://ru.wikipedia.org/wiki/Double_checked_locking" rel="nofollow">блокировка с двойной проверкой</a>), в связи с чем поле <code>indexReader</code> объявлено как <code>volatile</code>. Если содержимое индекса измениться извне (что вполне возможно в реальных условиях), <code>IndexReader</code> необходимо обновить - для этой цели целесообразней не создавать новый экземпляр, а лучше использовать специальный метод <code>IndexReader.reopen()</code>. В противном случае, если не обновить экземпляр <code>IndexReader</code>, новые данные, добавленные в индекс, в результаты поисковой выдачи не попадут.</p>
+<p>Когда пользователь вводит какое-либо слово / фразу в качестве поискового запроса, это просто строка, чтобы с ней мог работать <em>Lucene</em> её необходимо преобразовать / распарсить в экземпляр класса <code>Query</code> . Почему именно так будет понятно, когда будет описан синтаксис запросов для <em>Lucene</em>. В нашем случае используется <code>MultiFieldQueryParser</code>, который позволяет осуществлять поиск одновременно(параллельно) по нескольким заданным полям в индексе:</p>
+<p><em>server/src/main/java/server/QueryHelper.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.MultiFieldQueryParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.ParseException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.QueryParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.QueryParserBase</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.Query</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="nc">QueryHelper</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">Query</span> <span class="nf">generate</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">story</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ParseException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">QueryParser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MultiFieldQueryParser</span><span class="o">(</span>
+                <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> 
+                    <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span><span class="o">,</span> 
+                    <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span> <span class="o">},</span> 
+                <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">());</span>
+
+        <span class="cm">/* Operator OR is used by default */</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="na">setDefaultOperator</span><span class="o">(</span><span class="n">QueryParser</span><span class="o">.</span><span class="na">Operator</span><span class="o">.</span><span class="na">AND</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">QueryParserBase</span><span class="o">.</span><span class="na">escape</span><span class="o">(</span><span class="n">story</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Теперь можно реализовать простой класс, который содержит информацию о найденном документе. Помимо известных нам <em>title</em>, <em>content</em> и <em>uri</em> появляется новая сущность - <em>score</em>. Это числовой показатель соответствия найденного документа тому запросу, который использовался <em>Lucene</em> для его поиска - <strong>релевантность</strong>.</p>
+<p><em>server/src/main/java/server/DefaultSearchItem.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.CorruptIndexException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.ScoreDoc</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DefaultSearchItem</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="n">content</span><span class="o">,</span> <span class="n">uri</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">final</span> <span class="kt">float</span> <span class="n">score</span><span class="o">;</span>
+
+    <span class="n">DefaultSearchItem</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">title</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">content</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">uri</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">float</span> <span class="n">score</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">uri</span> <span class="o">=</span> <span class="n">uri</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">score</span> <span class="o">=</span> <span class="n">score</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">DefaultAgregator</span> <span class="kd">extends</span> <span class="n">Aggregator</span><span class="o">&lt;</span><span class="n">DefaultSearchItem</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">DefaultSearchItem</span> <span class="nf">aggregate</span><span class="o">(</span><span class="kd">final</span> <span class="n">ScoreDoc</span> <span class="n">sd</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">CorruptIndexException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">indexSearcher</span><span class="o">.</span><span class="na">doc</span><span class="o">(</span><span class="n">sd</span><span class="o">.</span><span class="na">doc</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="n">DefaultSearchItem</span><span class="o">(</span>
+            <span class="n">doc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span><span class="o">),</span> 
+            <span class="n">doc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span><span class="o">),</span>
+            <span class="n">doc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">URI_FIELD</span><span class="o">),</span> 
+            <span class="n">sd</span><span class="o">.</span><span class="na">score</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+
+
+<p>На данном этапе уже имеются все необходимые механизмы для реализии процесса поиска с постраничной выдачей результатов. В качестве передаваемой <em>jsp</em>-представлению <em>модели</em> данных будет выступать экземпляр класса <code>TakeResult&lt;DefaultSearchItem&gt;</code>:</p>
+<p><em>server/src/main/java/server/SearchServlet.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SearchServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">QUERY_INPUT</span> <span class="o">=</span> <span class="s">&quot;query&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">RESULTS_PER_PAGE</span> <span class="o">=</span> <span class="s">&quot;resperpage&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">CURRENT_PAGE</span> <span class="o">=</span> <span class="s">&quot;currentpage&quot;</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">query</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">SearchServlet</span><span class="o">.</span><span class="na">QUERY_INPUT</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">itemsPerPage</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">SearchServlet</span><span class="o">.</span><span class="na">RESULTS_PER_PAGE</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">currentPage</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">SearchServlet</span><span class="o">.</span><span class="na">CURRENT_PAGE</span><span class="o">);</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">query</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">query</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="kt">int</span> <span class="n">currentPageInt</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span> <span class="n">itemsPerPageInt</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">currentPageInt</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">currentPage</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">NumberFormatException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">itemsPerPageInt</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">itemsPerPage</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">NumberFormatException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="o">}</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">req</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&quot;searchmodel&quot;</span><span class="o">,</span>
+                        <span class="k">new</span> <span class="n">LuceneSearcher</span><span class="o">&lt;</span><span class="n">DefaultSearchItem</span><span class="o">,</span> <span class="n">DefaultAgregator</span><span class="o">&gt;(</span>
+                                <span class="n">DefaultAgregator</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+                                <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">INDEX_PATH</span><span class="o">,</span> <span class="n">query</span><span class="o">.</span><span class="na">trim</span><span class="o">())</span>
+                                <span class="o">.</span><span class="na">Take</span><span class="o">(</span>
+                                    <span class="n">itemsPerPageInt</span><span class="o">,</span>
+                                    <span class="o">(</span><span class="n">currentPageInt</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">*</span> <span class="n">itemsPerPageInt</span><span class="o">));</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="n">ServletException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&quot;/index.jsp&quot;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>server/src/main/webapp/index.jsp</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;jsp:directive.page</span> <span class="na">language=</span><span class="s">&quot;java&quot;</span>
+    <span class="na">contentType=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span>
+    <span class="na">pageEncoding=</span><span class="s">&quot;UTF-8&quot;</span> <span class="nt">/&gt;</span>
+
+<span class="nt">&lt;jsp:directive.page</span> <span class="na">import=</span><span class="s">&quot;server.TakeResult&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;jsp:directive.page</span> <span class="na">import=</span><span class="s">&quot;server.SearchServlet&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;jsp:directive.page</span> <span class="na">import=</span><span class="s">&quot;server.DefaultSearchItem&quot;</span> <span class="nt">/&gt;</span>
+
+<span class="k">&lt;%!</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">escapeHTML</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&amp;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;amp;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&lt;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;lt;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&gt;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;gt;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;\&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;quot;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&#39;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;apos;&quot;</span><span class="o">);</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">ellipsize</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span> <span class="n">max</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">max</span><span class="o">)</span> <span class="o">{</span>
+              <span class="kd">final</span> <span class="n">String</span> <span class="n">end</span> <span class="o">=</span> <span class="s">&quot; ...&quot;</span><span class="o">;</span>
+              <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">max</span> <span class="o">-</span> <span class="n">end</span><span class="o">.</span><span class="na">length</span><span class="o">()).</span><span class="na">trim</span><span class="o">()</span> <span class="o">+</span> <span class="n">end</span><span class="o">;</span>
+          <span class="o">}</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="k">%&gt;</span>
+
+<span class="k">&lt;%</span> 
+    <span class="kd">final</span> <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">DefaultSearchItem</span><span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> 
+        <span class="o">(</span><span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">DefaultSearchItem</span><span class="o">&gt;)</span><span class="n">request</span>
+            <span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;searchmodel&quot;</span><span class="o">);</span>
+
+    <span class="kd">final</span> <span class="n">String</span> <span class="n">qDefValue</span> <span class="o">=</span> <span class="n">escapeHTML</span><span class="o">(</span><span class="n">request</span>
+        <span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">SearchServlet</span><span class="o">.</span><span class="na">QUERY_INPUT</span><span class="o">));</span>
+    <span class="kd">final</span> <span class="kt">int</span> <span class="n">rPerPage</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span>
+        <span class="n">SearchServlet</span><span class="o">.</span><span class="na">RESULTS_PER_PAGE</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="mi">5</span> <span class="o">:</span> 
+            <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">request</span>
+                <span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">SearchServlet</span><span class="o">.</span><span class="na">RESULTS_PER_PAGE</span><span class="o">));</span>
+    <span class="kd">final</span> <span class="kt">int</span> <span class="n">cPage</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span>
+        <span class="n">SearchServlet</span><span class="o">.</span><span class="na">CURRENT_PAGE</span><span class="o">)</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> 
+            <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">request</span>
+                <span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="n">SearchServlet</span><span class="o">.</span><span class="na">CURRENT_PAGE</span><span class="o">));</span>
+<span class="k">%&gt;</span>
+
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>Lucene Search Example<span class="nt">&lt;/title&gt;</span>
+        <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;Content-Type&quot;</span> 
+            <span class="na">content=</span><span class="s">&quot;text/html; charset=UTF-8&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+
+        <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;search&quot;</span> <span class="na">action=</span><span class="s">&quot;/search&quot;</span> <span class="na">accept-charset=</span><span class="s">&quot;UTF-8&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;p</span> <span class="na">align=</span><span class="s">&quot;center&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">QUERY_INPUT</span> <span class="k">%&gt;</span><span class="s">&quot;</span>
+                    <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">qDefValue</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">qDefValue</span> <span class="k">%&gt;</span><span class="s">&quot;</span>
+                    <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+                    <span class="na">size=</span><span class="s">&quot;55&quot;</span> <span class="na">style=</span><span class="s">&quot;text-align:center;&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/p&gt;</span>
+            <span class="nt">&lt;p</span> <span class="na">align=</span><span class="s">&quot;center&quot;</span><span class="nt">&gt;</span>
+                <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">RESULTS_PER_PAGE</span> <span class="k">%&gt;</span><span class="s">&quot;</span> 
+                    <span class="na">size=</span><span class="s">&quot;5&quot;</span> <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">rPerPage</span> <span class="k">%&gt;</span><span class="s">&quot;</span>
+                    <span class="na">style=</span><span class="s">&quot;text-align:center;&quot;</span> <span class="nt">/&gt;</span>
+                <span class="ni">&amp;nbsp;</span>Results Per Page<span class="ni">&amp;nbsp;</span>
+                <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> <span class="na">value=</span><span class="s">&quot;Search!&quot;</span><span class="nt">/&gt;</span>
+            <span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;/form&gt;</span>
+
+        <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">model</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">model</span><span class="o">.</span><span class="na">getItems</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+            <span class="nt">&lt;p</span> <span class="na">style=</span><span class="s">&quot;float:right;&quot;</span><span class="nt">&gt;</span>
+                Page <span class="nt">&lt;b&gt;</span><span class="k">&lt;%=</span> <span class="n">cPage</span> <span class="k">%&gt;</span><span class="nt">&lt;/b&gt;</span> from <span class="nt">&lt;b&gt;</span>
+                    <span class="k">&lt;%=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="n">Math</span><span class="o">.</span><span class="na">ceil</span><span class="o">(</span>
+                            <span class="o">((</span><span class="kt">float</span><span class="o">)</span><span class="n">model</span><span class="o">.</span><span class="na">totalHits</span><span class="o">)</span> <span class="o">/</span> <span class="n">rPerPage</span><span class="o">)</span> 
+                    <span class="k">%&gt;</span><span class="nt">&lt;/b&gt;</span>
+            <span class="nt">&lt;/p&gt;</span>
+        <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+
+        <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">model</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">model</span><span class="o">.</span><span class="na">getItems</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+            <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">cPage</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;search&quot;</span> <span class="na">action=</span><span class="s">&quot;/search&quot;</span> 
+                        <span class="na">accept-charset=</span><span class="s">&quot;UTF-8&quot;</span> 
+                        <span class="na">style=</span><span class="s">&quot;float:left;&quot;</span><span class="nt">&gt;</span>
+                    <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">qDefValue</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> 
+                            <span class="na">name=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">QUERY_INPUT</span> <span class="k">%&gt;</span><span class="s">&quot;</span>
+                            <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">qDefValue</span> <span class="k">%&gt;</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> 
+                        <span class="na">name=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">RESULTS_PER_PAGE</span> <span class="k">%&gt;</span><span class="s">&quot;</span> 
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">rPerPage</span> <span class="k">%&gt;</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> 
+                        <span class="na">name=</span> <span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">CURRENT_PAGE</span> <span class="k">%&gt;</span><span class="s">&quot;</span> 
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">cPage</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">%&gt;</span><span class="s">&quot;</span><span class="nt">/&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> 
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">escapeHTML</span><span class="o">(</span><span class="s">&quot;&lt;&quot;</span><span class="o">)</span> <span class="k">%&gt;</span><span class="s">&quot;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/form&gt;</span>
+            <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+
+            <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">totalHits</span> <span class="o">&gt;</span> <span class="n">cPage</span> <span class="o">*</span> <span class="n">rPerPage</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                <span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">&quot;search&quot;</span> <span class="na">action=</span><span class="s">&quot;/search&quot;</span> 
+                        <span class="na">accept-charset=</span><span class="s">&quot;UTF-8&quot;</span> <span class="nt">&gt;</span>
+                    <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">qDefValue</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> 
+                            <span class="na">name=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">QUERY_INPUT</span> <span class="k">%&gt;</span><span class="s">&quot;</span>
+                            <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">qDefValue</span> <span class="k">%&gt;</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> 
+                        <span class="na">name=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">RESULTS_PER_PAGE</span> <span class="k">%&gt;</span><span class="s">&quot;</span> 
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">rPerPage</span> <span class="k">%&gt;</span><span class="s">&quot;</span> <span class="nt">/&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span> 
+                        <span class="na">name=</span> <span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">SearchServlet</span><span class="o">.</span><span class="na">CURRENT_PAGE</span> <span class="k">%&gt;</span><span class="s">&quot;</span> 
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">cPage</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">%&gt;</span><span class="s">&quot;</span><span class="nt">/&gt;</span>
+                    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span> 
+                        <span class="na">value=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">escapeHTML</span><span class="o">(</span><span class="s">&quot;&gt;&quot;</span><span class="o">)</span> <span class="k">%&gt;</span><span class="s">&quot;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/form&gt;</span>
+            <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+        <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+
+        <span class="nt">&lt;p</span> <span class="na">align=</span><span class="s">&quot;center&quot;</span> <span class="na">style=</span><span class="s">&quot;clear:both;&quot;</span><span class="nt">&gt;</span>
+            <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">model</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                <span class="k">&lt;%</span> <span class="k">if</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">getItems</span><span class="o">()</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                    <span class="nt">&lt;p&gt;</span>
+                        <span class="k">&lt;%</span> <span class="k">for</span><span class="o">(</span><span class="n">DefaultSearchItem</span> <span class="n">item</span> <span class="o">:</span> 
+                                <span class="n">model</span><span class="o">.</span><span class="na">getItems</span><span class="o">())</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                            <span class="nt">&lt;hr/&gt;</span>
+                            <span class="nt">&lt;p&gt;&lt;b&gt;</span>Score: <span class="nt">&lt;/b&gt;</span><span class="k">&lt;%=</span> <span class="n">item</span><span class="o">.</span><span class="na">score</span> <span class="k">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+                            <span class="nt">&lt;p&gt;&lt;b&gt;</span>Url: <span class="nt">&lt;/b&gt;</span>
+                                <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="k">&lt;%=</span> <span class="n">item</span><span class="o">.</span><span class="na">uri</span> <span class="k">%&gt;</span><span class="s">&quot;</span><span class="nt">&gt;</span>
+                                    <span class="k">&lt;%=</span> <span class="n">item</span><span class="o">.</span><span class="na">uri</span> <span class="k">%&gt;</span>
+                                <span class="nt">&lt;/a&gt;</span>
+                            <span class="nt">&lt;/p&gt;</span>
+                            <span class="nt">&lt;p&gt;&lt;b&gt;</span>Title: <span class="nt">&lt;/b&gt;</span>
+                                <span class="k">&lt;%=</span> <span class="n">escapeHTML</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">title</span><span class="o">)</span> <span class="k">%&gt;</span>
+                            <span class="nt">&lt;/p&gt;</span>
+                            <span class="nt">&lt;p&gt;&lt;b&gt;</span>Content: <span class="nt">&lt;/b&gt;</span>
+                                <span class="k">&lt;%=</span> <span class="n">escapeHTML</span><span class="o">(</span>
+                                        <span class="n">ellipsize</span><span class="o">(</span><span class="n">item</span><span class="o">.</span><span class="na">content</span><span class="o">,</span> <span class="mi">330</span><span class="o">))</span> 
+                                <span class="k">%&gt;</span>
+                            <span class="nt">&lt;/p&gt;</span>
+                        <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+                    <span class="nt">&lt;/p&gt;</span>
+                <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">else</span> <span class="o">{</span> <span class="k">%&gt;</span>
+                    I&#39;m sorry I couldn&#39;t find what you were looking for.
+                <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+            <span class="k">&lt;%</span> <span class="o">}</span> <span class="k">%&gt;</span>
+        <span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p</span> <span class="na">align=</span><span class="s">&quot;center&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://mazko.github.io/&quot;</span><span class="nt">&gt;</span>http://mazko.github.io/<span class="nt">&lt;/a&gt;</span>
+        <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>Результат выполнения должен быть таким:</p>
+<div class="highlight"><pre><span></span>~$ mvn clean install -pl server/ jetty:run
+</pre></div>
+
+
+<p><img alt="Screen1" src="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/linux_search_veka.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Screen2" src="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/linux_search_7_chudes.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/27/lucene-iazykovye-analizatory/">Далее</a> рассмотрим языковые возможности <em>Lucene</em>, особенно интересно посмотреть на русский анализатор - <code>RussianAnalyzer</code>.</p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/lucene-tutorial.zip">Исходники</a></p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2012/10/21/lucene-postranichnyi-poisk/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

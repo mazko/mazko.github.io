@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Lucene - проверка индекса</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/" rel="bookmark"
+           title="Permalink to Lucene - проверка индекса">Lucene - проверка индекса</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-21T00:00:00+03:00">
+                Published: Вс. 21 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsp">jsp</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->      <p>Данный пост будет очень короткий - на данном этапе имеется <strong>Lucene</strong> - <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индекс</a>, необходимо доработать <code>SearchServlet</code> таким образом, чтобы можно было получить и отобразить краткую информацию об индексе. Для проверки индекса в <strong>Lucene</strong> существует уже готовый к использованию специальный класс - <code>CheckIndex</code>, который мы и задействуем. Чтобы со временем исходный код сервлета <code>SearchServlet</code> не превратился в <em>макароны</em> по-флотски, максимально приблизимся к паттерну <em>модель-представление-контроллер</em> (<strong>MVC</strong>), где сервлет будет выполнять функцию <em>контроллера</em>, <em>модель</em> будет иметь формат простой строки, а <em>представление</em> будет реализовано в виде <strong>jsp</strong>-страницы.</p>
+<p><em>server/pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;parent&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;/parent&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>server<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>war<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;name&gt;</span>Lucene Tutorial Server<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>javax.servlet<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>servlet-api<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.4<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.eclipse.jetty<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>9.3.8.v20160314<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;webApp&gt;</span>
+            <span class="nt">&lt;contextPath&gt;</span>/search<span class="nt">&lt;/contextPath&gt;</span>
+          <span class="nt">&lt;/webApp&gt;</span>
+          <span class="nt">&lt;contextHandlers&gt;</span>
+            <span class="nt">&lt;contextHandler</span> <span class="na">implementation=</span><span class="s">&quot;org.eclipse.jetty.maven.plugin.JettyWebAppContext&quot;</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;war&gt;</span>${project.basedir}/static.war<span class="nt">&lt;/war&gt;</span> --&gt;
+              <span class="nt">&lt;contextPath&gt;</span>/<span class="nt">&lt;/contextPath&gt;</span>
+            <span class="nt">&lt;/contextHandler&gt;</span>
+          <span class="nt">&lt;/contextHandlers&gt;</span> 
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p><em>server/src/main/java/server/SearchServlet.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.ByteArrayOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.OutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintStream</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.CheckIndex</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.Directory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SearchServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">(</span><span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">byteArrayOutputStream</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ByteArrayOutputStream</span><span class="o">())</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">Directory</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">common</span><span class="o">.</span><span class="na">LuceneBinding</span><span class="o">.</span><span class="na">INDEX_PATH</span><span class="o">);</span>
+            <span class="k">try</span> <span class="o">(</span><span class="kd">final</span> <span class="n">CheckIndex</span> <span class="n">checkIndex</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CheckIndex</span><span class="o">(</span><span class="n">dir</span><span class="o">))</span> <span class="o">{</span>
+                <span class="n">checkIndex</span><span class="o">.</span><span class="na">setInfoStream</span><span class="o">(</span><span class="k">new</span> <span class="n">PrintStream</span><span class="o">(</span><span class="n">byteArrayOutputStream</span><span class="o">));</span>
+                <span class="n">checkIndex</span><span class="o">.</span><span class="na">checkIndex</span><span class="o">();</span>
+                <span class="n">byteArrayOutputStream</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+                <span class="n">req</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">&quot;checkindexmodel&quot;</span><span class="o">,</span> <span class="n">byteArrayOutputStream</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">getServletContext</span><span class="o">().</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&quot;/index.jsp&quot;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">res</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>server/src/main/webapp/index.jsp</em></p>
+<div class="highlight"><pre><span></span><span class="k">&lt;%</span> <span class="n">String</span> <span class="n">model</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&quot;checkindexmodel&quot;</span><span class="o">).</span><span class="na">toString</span><span class="o">();</span> <span class="k">%&gt;</span>
+
+<span class="k">&lt;%!</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">escapeHTML</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&amp;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;amp;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&lt;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;lt;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&gt;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;gt;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;\&quot;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;quot;&quot;</span><span class="o">);</span>
+          <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">replaceAll</span><span class="o">(</span><span class="s">&quot;&#39;&quot;</span><span class="o">,</span> <span class="s">&quot;&amp;apos;&quot;</span><span class="o">);</span>
+          <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="k">%&gt;</span>
+
+<span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>Lucene CheckIndex Example<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;p&gt;</span>
+            <span class="k">&lt;%=</span> <span class="n">escapeHTML</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">trim</span><span class="o">()).</span><span class="na">replace</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">,</span> <span class="s">&quot;&lt;br /&gt;&quot;</span><span class="o">)</span><span class="k">%&gt;</span>
+        <span class="nt">&lt;/p&gt;</span>
+        <span class="nt">&lt;p</span> <span class="na">align=</span><span class="s">&quot;center&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://mazko.github.io/&quot;</span><span class="nt">&gt;</span>http://mazko.github.io/<span class="nt">&lt;/a&gt;</span>
+        <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>Результат выполнения должен быть таким:</p>
+<div class="highlight"><pre><span></span>~$ mvn clean install -pl server/ jetty:run
+</pre></div>
+
+
+<p><img alt="Linux" src="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/linux_checkindex.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">Далее</a> реализуем простой поиск.</p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/lucene-tutorial.zip">Исходники</a></p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2012/10/21/lucene-proverka-indeksa/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

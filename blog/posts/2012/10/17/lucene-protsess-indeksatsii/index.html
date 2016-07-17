@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Lucene - процесс индексации</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/" rel="bookmark"
+           title="Permalink to Lucene - процесс индексации">Lucene - процесс индексации</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-17T00:00:00+03:00">
+                Published: Ср. 17 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsoup">JSoup</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->      <p>Среди множества документов, количество и размер которых могут быть очень большими,  необходимо отобрать только те из них, которые отвечают какому-либо условию - например содержат ту или иную фразу. Как решать подобную задачу ? Можно обойти последовательно все документы и проверить наличие искомой фразы в каждом из них. Но сколько времени и ресурсов может уйти на поиск фразы в документе размером скажем 1000000 слов и более ? Умножаем это число на количество документов... Предложенное решение слишком прямолинейно - пока мы будем что-то искать, пользователь может уже подзабыть что же именно он хотел и зачем это было надо.</p>
+<p>Чтобы иметь возможность осуществлять поиск текста максимально быстро, предварительно необходимо его проиндексировать - преобразовать в какой-то другой <a href="https://en.wikipedia.org/wiki/Inverted_index" rel="nofollow">формат</a>, который позволит избежать вышеупомянутых проблем. В нашем случае источником информации является <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">сайт</a>, а документы это не что иное как текстовое содержимое его отдельных HTML-страниц. Для обхода всех страниц сайта нам понадобится <em>crawler</em>. Это будет ещё один подпроект в мультимодульном Maven проекте наряду с Server. Ещё у них будет общая зависимость Common для совместно используемых констант:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">cd</span> lucene-tutorial/
+~$ tree
+.
+├── common
+│   ├── pom.xml
+│   └── src
+│       └── main
+│           └── java
+│               └── common
+│                   └── LuceneBinding.java
+├── crawler
+│   ├── pom.xml
+│   └── src
+│       └── main
+│           ├── java
+│           │   └── crawler
+│           │       ├── App.java
+│           │       ├── HtmlHelper.java
+│           │       ├── LuceneIndexer.java
+│           │       └── SimpleCrawler.java
+│           └── resources
+│               └── log4j.properties
+├── pom.xml
+└── server
+    ├── pom.xml
+    ├── src
+    │   └── main
+    │       ├── java
+    │       │   └── server
+    │       │       └── SearchServlet.java
+    │       └── webapp
+    │           └── WEB-INF
+    │               └── web.xml
+    └── static.war
+
+<span class="m">18</span> directories, <span class="m">13</span> files
+</pre></div>
+
+
+<p><em>pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-core<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-analyzers-common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;modules&gt;</span>
+    <span class="nt">&lt;module&gt;</span>server<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>crawler<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>common<span class="nt">&lt;/module&gt;</span>
+  <span class="nt">&lt;/modules&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.5.1<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;source&gt;</span>1.8<span class="nt">&lt;/source&gt;</span>
+          <span class="nt">&lt;target&gt;</span>1.8<span class="nt">&lt;/target&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p><em>crawler/pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+         <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 </span>
+<span class="s">                             http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;parent&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;/parent&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>crawler<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;name&gt;</span>Lucene Tutorial Crawler<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>log4j<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>log4j<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.2.17<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.jsoup<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>jsoup<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.9.1<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p><em>common/pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+         <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 </span>
+<span class="s">                             http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;parent&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;/parent&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>common<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;name&gt;</span>Crawler and Server Shared Constants<span class="nt">&lt;/name&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p><em>crawler/src/main/java/crawler/SimpleCrawler.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">crawler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.HashSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.NavigableSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.TreeSet</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.log4j.Logger</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">SimpleCrawler</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ICrawlEvents</span> <span class="o">{</span>
+        <span class="kt">void</span> <span class="nf">onVisit</span><span class="o">(</span><span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="n">String</span> <span class="n">html</span><span class="o">,</span> <span class="n">String</span> <span class="n">seed</span><span class="o">);</span>
+        <span class="kt">boolean</span> <span class="nf">shouldVisit</span><span class="o">(</span><span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="n">String</span> <span class="n">seed</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">SimpleCrawler</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ICrawlEvents</span> <span class="n">events</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">NavigableSet</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">linksToCrawl</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">linksCrawled</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">seed</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">SimpleCrawler</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">seed</span><span class="o">,</span> <span class="kd">final</span> <span class="n">ICrawlEvents</span> <span class="n">events</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">events</span> <span class="o">=</span> <span class="n">events</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">seed</span> <span class="o">=</span> <span class="n">seed</span><span class="o">;</span>
+    <span class="o">};</span>
+
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasLinksToCrawl</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">!</span><span class="k">this</span><span class="o">.</span><span class="na">linksToCrawl</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">linksCrawled</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">linksToCrawl</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TreeSet</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">linksToCrawl</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">seed</span><span class="o">);</span>
+
+        <span class="k">while</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">hasLinksToCrawl</span><span class="o">())</span> <span class="o">{</span>
+
+            <span class="kd">final</span> <span class="n">String</span> <span class="n">strURL</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">linksToCrawl</span><span class="o">.</span><span class="na">pollFirst</span><span class="o">();</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">linksCrawled</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">strURL</span><span class="o">);</span>
+
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="kd">final</span> <span class="n">String</span> <span class="n">html</span> <span class="o">=</span> <span class="n">HtmlHelper</span><span class="o">.</span><span class="na">download</span><span class="o">(</span><span class="n">strURL</span><span class="o">);</span>
+
+                <span class="kt">int</span> <span class="n">linksAdded</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+                <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">l</span> <span class="o">:</span> <span class="n">HtmlHelper</span><span class="o">.</span><span class="na">extractLinks</span><span class="o">(</span><span class="n">html</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">seed</span><span class="o">))</span> <span class="o">{</span>
+                    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">events</span><span class="o">.</span><span class="na">shouldVisit</span><span class="o">(</span><span class="n">l</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">seed</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="o">.</span><span class="na">linksCrawled</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">l</span><span class="o">)</span>
+                            <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="o">.</span><span class="na">linksToCrawl</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">l</span><span class="o">))</span> <span class="o">{</span>
+                        <span class="k">this</span><span class="o">.</span><span class="na">linksToCrawl</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">l</span><span class="o">);</span>
+                        <span class="n">linksAdded</span><span class="o">++;</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+
+                <span class="n">SimpleCrawler</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span>
+                    <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Fetched: [%s] %d new links&quot;</span><span class="o">,</span> <span class="n">strURL</span><span class="o">,</span> <span class="n">linksAdded</span><span class="o">));</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">events</span><span class="o">.</span><span class="na">onVisit</span><span class="o">(</span><span class="n">strURL</span><span class="o">,</span> <span class="n">html</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">seed</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">SimpleCrawler</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Fetch error: [%s].&quot;</span><span class="o">,</span> <span class="n">strURL</span><span class="o">),</span> <span class="n">ex</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Все ссылки хранятся в оперативной памяти - для маленьких и средних по величине сайтов такое решение вполне приемлемо. С внешним миром <em>crawler</em> общается посредством интерфейса <code>ICrawlEvents</code>, а с HTML работает через статический класс <code>HtmlHelper</code>. Последний активно использует прекрасную библиотеку для работы с <em>Html</em> в <em>Java</em> - <a href="http://jsoup.org/" rel="nofollow">JSoup</a>, которая работает в стиле JQuery посредством <em>css-селекторов</em>. Также стоит обратить внимание на <strong>обязательное</strong> наличие временной задержки (<em>politeness</em>) между Http-запросами к сайту - большинство хостеров следят за количеством запросов с одного IP, поэтому при работе с реальным веб-сайтом за пределами localhost необходимо соблюдать толерантность, если не хотите получить бан конечно.</p>
+<p><em>crawler/src/main/java/crawler/HtmlHelper.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">crawler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashSet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.jsoup.Jsoup</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.jsoup.nodes.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.jsoup.nodes.Element</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.jsoup.select.Elements</span><span class="o">;</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="nc">HtmlHelper</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">extractLinks</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">html</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">seed</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">document</span> <span class="o">=</span> <span class="n">Jsoup</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">html</span><span class="o">,</span> <span class="n">seed</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">linksSet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">Element</span> <span class="n">link</span> <span class="o">:</span> <span class="n">document</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="s">&quot;a[href]&quot;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">String</span> <span class="n">strLink</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="na">attr</span><span class="o">(</span><span class="s">&quot;abs:href&quot;</span><span class="o">).</span><span class="na">trim</span><span class="o">().</span><span class="na">toLowerCase</span><span class="o">();</span>
+            <span class="k">if</span> <span class="o">(!</span><span class="n">strLink</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">linksSet</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">strLink</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableCollection</span><span class="o">(</span><span class="n">linksSet</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">download</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">link</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+
+        <span class="n">IOException</span> <span class="n">ioe</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">retry</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+
+        <span class="k">do</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+
+                <span class="cm">/* Crawling a real web site politeness &gt; 5s */</span>
+
+                <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+                <span class="kd">final</span> <span class="n">Document</span> <span class="n">bDoc</span> <span class="o">=</span> <span class="n">Jsoup</span><span class="o">.</span><span class="na">connect</span><span class="o">(</span><span class="n">link</span><span class="o">).</span><span class="na">userAgent</span><span class="o">(</span><span class="s">&quot;Mozilla&quot;</span><span class="o">).</span><span class="na">timeout</span><span class="o">(</span><span class="mi">30000</span><span class="o">).</span><span class="na">get</span><span class="o">();</span>
+                <span class="k">return</span> <span class="n">bDoc</span><span class="o">.</span><span class="na">html</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">ioe</span> <span class="o">=</span> <span class="n">ex</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">while</span> <span class="o">(--</span><span class="n">retry</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">);</span>
+
+        <span class="k">throw</span> <span class="n">ioe</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">extractTitle</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">html</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">Jsoup</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">html</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">Elements</span> <span class="n">elements</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="s">&quot;table table div table font&quot;</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">elements</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">elements</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">elements</span><span class="o">.</span><span class="na">first</span><span class="o">().</span><span class="na">text</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">extractContent</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">html</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">Jsoup</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">html</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">Elements</span> <span class="n">elements</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="s">&quot;table table div table div&quot;</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">elements</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">elements</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">elements</span><span class="o">.</span><span class="na">first</span><span class="o">().</span><span class="na">text</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">doc</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="s">&quot;table table div table&quot;</span><span class="o">).</span><span class="na">first</span><span class="o">().</span><span class="na">text</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Теперь точка входа, которая будет запускать <em>crawler</em> и передавать необходимую информацию соответствующему классу <code>LuceneIndexer</code> для индексации:</p>
+<p><em>crawler/src/main/java/crawler/App.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">crawler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.log4j.Logger</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">App</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">App</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">String</span> <span class="n">crawlSeed</span> <span class="o">=</span> <span class="s">&quot;http://localhost:8080&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">(</span><span class="kd">final</span> <span class="n">LuceneIndexer</span> <span class="n">luceneIndexer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LuceneIndexer</span><span class="o">())</span> <span class="o">{</span>
+
+            <span class="n">luceneIndexer</span><span class="o">.</span><span class="na">new_index</span><span class="o">();</span>
+
+            <span class="cm">/* Start crawler and perform indexing */</span>
+
+            <span class="k">new</span> <span class="n">SimpleCrawler</span><span class="o">(</span><span class="n">App</span><span class="o">.</span><span class="na">crawlSeed</span><span class="o">,</span> <span class="k">new</span> <span class="n">SimpleCrawler</span><span class="o">.</span><span class="na">ICrawlEvents</span><span class="o">()</span> <span class="o">{</span>
+
+                <span class="cm">/* Proceed page - add to Lucene index */</span>
+
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onVisit</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">html</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">seed</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">luceneIndexer</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">html</span><span class="o">);</span>
+                <span class="o">}</span>
+
+                <span class="cm">/* Skip any external links */</span>
+
+                <span class="nd">@Override</span>
+                <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">shouldVisit</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">seed</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="n">seed</span><span class="o">);</span>
+                <span class="o">}</span>
+
+            <span class="o">}).</span><span class="na">run</span><span class="o">();</span>
+
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">App</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">&quot;Unable to start !&quot;</span><span class="o">,</span> <span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Таким образом мы подошли, пожалуй, к ключевому моменту данной статьи - процессу создания индекса в <em>Lucene</em>. Главным классом тут является <code>IndexWriter</code> - которому необходимо знать директорию, где будут храниться файлы индекса. Опция <code>OpenMode.CREATE</code> указывает на необходимость удалять старый индекс, если тот на момент инициализации в указанной директории уже существует. Согласно <a href="https://lucene.apache.org/core/6_0_0/core/org/apache/lucene/index/IndexWriter.html" rel="nofollow">документации</a>, <code>IndexWriter</code> потокобезопасный:</p>
+<p><em>crawler/src/main/java/crawler/LuceneIndexer.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">crawler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.Closeable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.log4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Field</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.FieldType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexOptions</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriterConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriterConfig.OpenMode</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.Directory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">LuceneIndexer</span> <span class="kd">implements</span> <span class="n">Closeable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+
+    <span class="cm">/* IndexWriter is completely thread safe */</span>
+
+    <span class="kd">private</span> <span class="n">IndexWriter</span> <span class="n">indexWriter</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Closing Index &lt; &quot;</span> <span class="o">+</span> 
+                    <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">INDEX_PATH</span> <span class="o">+</span> <span class="s">&quot; &gt; NumDocs: &quot;</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span><span class="o">.</span><span class="na">numDocs</span><span class="o">());</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Index Closed OK!&quot;</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">IOException</span><span class="o">(</span><span class="s">&quot;Index already closed&quot;</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">new_index</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Directory</span> <span class="n">directory</span> <span class="o">=</span> <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">INDEX_PATH</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">IndexWriterConfig</span> <span class="n">iwConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriterConfig</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">());</span>
+        <span class="n">iwConfig</span><span class="o">.</span><span class="na">setOpenMode</span><span class="o">(</span><span class="n">OpenMode</span><span class="o">.</span><span class="na">CREATE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriter</span><span class="o">(</span><span class="n">directory</span><span class="o">,</span> <span class="n">iwConfig</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">url</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">html</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">title</span> <span class="o">=</span> <span class="n">HtmlHelper</span><span class="o">.</span><span class="na">extractTitle</span><span class="o">(</span><span class="n">html</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">content</span> <span class="o">=</span> <span class="n">HtmlHelper</span><span class="o">.</span><span class="na">extractContent</span><span class="o">(</span><span class="n">html</span><span class="o">);</span>
+
+        <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;***** &quot;</span> <span class="o">+</span> <span class="n">url</span> <span class="o">+</span> <span class="s">&quot; *****&quot;</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">title</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">title</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">content</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Document</span><span class="o">();</span>
+
+        <span class="kd">final</span> <span class="n">FieldType</span> <span class="n">urlType</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FieldType</span><span class="o">();</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setIndexOptions</span><span class="o">(</span><span class="n">IndexOptions</span><span class="o">.</span><span class="na">DOCS</span><span class="o">);</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setStored</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setTokenized</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setStoreTermVectorOffsets</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setStoreTermVectorPayloads</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setStoreTermVectorPositions</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">urlType</span><span class="o">.</span><span class="na">setStoreTermVectors</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Field</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">URI_FIELD</span><span class="o">,</span> <span class="n">url</span><span class="o">,</span> <span class="n">urlType</span><span class="o">));</span>
+
+        <span class="kd">final</span> <span class="n">FieldType</span> <span class="n">tokType</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FieldType</span><span class="o">();</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setIndexOptions</span><span class="o">(</span><span class="n">IndexOptions</span><span class="o">.</span><span class="na">DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS</span><span class="o">);</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setStored</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setTokenized</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setStoreTermVectorOffsets</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setStoreTermVectorPayloads</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setStoreTermVectorPositions</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="n">tokType</span><span class="o">.</span><span class="na">setStoreTermVectors</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">title</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Field</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span><span class="o">,</span> <span class="n">title</span><span class="o">,</span> <span class="n">tokType</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">Field</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span><span class="o">,</span> <span class="n">content</span><span class="o">,</span> <span class="n">tokType</span><span class="o">));</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span><span class="o">.</span><span class="na">addDocument</span><span class="o">(</span><span class="n">doc</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Если внимательно посмотреть на содержимое каждой html-странички нашего сайта, то помимо <span style="text-decoration: line-through;">не</span>навязчивой рекламы и прочего мусора можно выделить две единицы более - менее полезной информации: <em>название</em> (title) публикации и её <em>содержимое</em> (content). Извлечь данную информацию из html нам поможет уже упомянутая выше библиотека <em>JSoup</em>, после чего можно добавлять <code>Document</code> с соответствующими полями в индекс <em>Lucene</em>.</p>
+<p><em>Lucene</em> может сохранять / извлекать <a href="https://lucene.apache.org/core/6_0_0/core/org/apache/lucene/document/Field.html" rel="nofollow">различные типы данных</a>. В нашем случае все данные текстовые, первое поле - url, параметр <code>setStored(true)</code> указывает на необходимость хранить в индексе оригинальное (неизменное) значение, а остальные <code>false</code> на то, что поиск по этому полю осуществляться не будет, т.е. это поле несет дополнительную информацию о найденном документе, которую мы планируем использовать в будущем. Поля <em>title</em> и <em>content</em> индексируются одинаково - <code>setTokenized(true)</code> указывает на то, что по данному полю будет осуществляться поиск а также просит <em>Lucene</em> задействовать механизмы анализа содержимого данного документа на этапе создания индекса (самый простой пример анализа - выделение слов из набора букв и пробелов между ними), параметр <code>setStoreTermVector(true)</code> позволяет сохранить дополнительную информацию о позициях тех или иных слов в теле документа - такой подход значительно ускоряет процесс подсветки найденных вхождений.</p>
+<p>Класс <code>LuceneBinding</code> - это своеобразный мост между индексатором (<em>crawler</em>) и поиском (<code>SearchServlet</code>), он содержит общую информацию и используется совместно обоими приложениями:</p>
+<p><em>common/src/main/java/common/LuceneBinding.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">common</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Paths</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.Analyzer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.standard.StandardAnalyzer</span><span class="o">;</span>
+
+<span class="cm">/* This class is used both by Crawler and SearchServlet */</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">LuceneBinding</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">INDEX_PATH</span> <span class="o">=</span> <span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;user.home&quot;</span><span class="o">),</span> <span class="s">&quot;lucene-tutorial-index&quot;</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">URI_FIELD</span> <span class="o">=</span> <span class="s">&quot;uri&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">TITLE_FIELD</span> <span class="o">=</span> <span class="s">&quot;title&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">CONTENT_FIELD</span> <span class="o">=</span> <span class="s">&quot;content&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Analyzer</span> <span class="nf">getAnalyzer</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">StandardAnalyzer</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3>Сборка и запуск</h3>
+<p>Перед запускам crawler должен быть запущен <em>Jetty</em> сервер с сайтом, который мы хотим проиндексировать. Чтобы корректно отображались русские буквы в консоли <em>Windows</em> может понадобиться обозначить правильную кодировку <em>Cp866</em> в файле <em>crawler/src/main/resources/log4j.properties</em></p>
+<div class="highlight"><pre><span></span>~$ mvn clean install <span class="o">&amp;&amp;</span> bash -c <span class="s1">&#39;mvn -pl server/ jetty:run &amp; sleep 10 &amp;&amp; \</span>
+<span class="s1">    mvn -pl crawler/ exec:java -Dexec.mainClass=&quot;crawler.App&quot; &amp; \</span>
+<span class="s1">    trap &quot;kill -TERM -$$&quot; SIGINT ; wait&#39;</span>
+...
+INFO <span class="o">[</span>crawler.App.main<span class="o">()]</span> Closing Index &lt; /home/oleg/lucene-tutorial-index &gt; NumDocs: 53
+INFO <span class="o">[</span>crawler.App.main<span class="o">()]</span> Index Closed OK!
+Ctrl+C
+</pre></div>
+
+
+<p><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/">Далее</a> мы бегло заглянем в индекс, после чего реализуем простой поиск.</p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/lucene-tutorial.zip">Исходники</a></p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2012/10/17/lucene-protsess-indeksatsii/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

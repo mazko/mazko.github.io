@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - Embedded</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/">TDD на уровне микроконтроллеров - свежий взгляд</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2014-03-29T00:00:00+02:00">
+                Published: Сб. 29 Март 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/mikrokontroller">Микроконтроллер</a> <a href="http://mazko.github.io/blog/tag/tdd">TDD</a> <a href="http://mazko.github.io/blog/tag/cmock">CMock</a> <a href="http://mazko.github.io/blog/tag/unity">Unity</a> </p>
+</footer><!-- /.post-info --><p>Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже <a href="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/">поднималась</a>. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой <em>наивный</em> подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки особенно на стыке софта перефирии:</p>
+<ul>
+<li>
+<p>увеличивается объём кода за счёт дополнительных функций или <code>#ifdef</code> на стыке с периферией (всякие <em>UART</em>, <em>I2C</em>, порты ввода-вывода и т.д.). Например логику по установке битов портов можно завернуть в функцию <code>set_flag()</code> и при написании тестов задействовать соотв. ей <em>mock</em> - однако это увеличит общий объём кода</p>
+</li>
+<li>
+<p>на уровне периферии код часто так и остаётся недопокрытым тестами. К примеру периферийные модули имеют свойство по характерным событиям выбрасывать флаги, наполнять регистры данными - изобретать велосипеды и придумывать фейковые периферийные модули ? Как минимум нужно прекрасно понимать как эта периферия работает, плюс асинхронность</p>
+</li>
+<li>
+<p>ну а о тестировании фич специфичных для архитектуры микроконтроллера типа <a href="http://www.microchip.com/stellent/groups/SiteComm_sg/documents/DeviceDoc/en557154.pdf" rel="nofollow">MIPS16</a> вообще и говорить не приходится</p>
+</li>
+</ul>
+<p>Итак далее будет рассмотрен пример с использованием микроконтроллеров <em>Microchip</em>, <strong>эмулятора</strong> и TDD фреймворка <a href="http://throwtheswitch.org/" rel="nofollow">Ceedling</a>. Эмулятор микроконтроллера запускается на ПК и соответственно использует его вычислительные ресурсы, а <em>Ceedling</em> это не более чем средство автоматизации, написано на <em>Ruby</em> плюс всё что может понадобится для покрытия тестами кода на <em>C</em> (<em>Unity</em>, <em>CMock</em> и даже <em>CException</em>).</p>
+<div class="highlight"><pre><span></span><span class="c1">#apt-get install ruby</span>
+~$ gem install ceedling
+~$ ceedling new PIC_Demo
+~$ <span class="nb">cd</span> PIC_Demo/
+~$ ls
+build  project.yml  rakefile.rb  src  <span class="nb">test</span>  vendor
+</pre></div>
+
+
+<p>Ещё нам понадобится <em>C</em> компилятор для микроконтроллеров <em>PIC</em> и среда разработки <em>MPLAB</em>. Всё это можно бесплатно загрузить с официального сайта <em>Microchip</em> и после установки этого добра должно получиться примерно следующее:</p>
+<div class="highlight"><pre><span></span>~$ which xc16-gcc
+/opt/microchip/xc16/v1.21/bin/xc16-gcc
+~$ which mplab_ide 
+/usr/bin/mplab_ide
+</pre></div>
+
+
+<p>Никак не обойтись нам без <em>Hello World</em>:</p>
+<p><em>src/hello.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt; /* Required for printf */</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;Hello, world!&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Компиляция + линковка:</p>
+<div class="highlight"><pre><span></span>~$ xc16-gcc -omf<span class="o">=</span>elf -mcpu<span class="o">=</span>24EP64MC206 src/hello.c <span class="se">\</span>
+-o build/hello.elf -Wl,-Tp24EP64MC206.gld
+~$ file build/hello.elf
+build/hello.elf: ELF 32-bit LSB executable, <span class="se">\</span>
+version <span class="m">1</span> <span class="o">(</span>SYSV<span class="o">)</span>, statically linked, not stripped
+</pre></div>
+
+
+<p>Эмуляция. Самый простой случай - использовать <em>sim30</em>, который поставляется вместе с <em>С</em> компилятором <em>xc16-gcc</em>:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s2">&quot;</span>
+<span class="s2">LD pic24epsuper</span>
+<span class="s2">LC build/hello.elf</span>
+<span class="s2">IO NULL /tmp/</span><span class="nv">$$</span><span class="s2">.txt</span>
+<span class="s2">RP</span>
+<span class="s2">E</span>
+<span class="s2">Q</span>
+<span class="s2">&quot;</span> <span class="p">|</span> sim30
+~$ cat /tmp/<span class="nv">$$</span>.txt
+Hello, world!
+</pre></div>
+
+
+<p>Прелестно ! Важно отметить что при эмуляции в <em>sim30</em> есть ограничения и можно указывать только <em>семейства</em> чипов, а не какой-либо конкретно по отдельности:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> DH <span class="p">|</span> sim30 <span class="p">|</span> grep LD 
+LD &lt;devicename&gt; -Load Device: <span class="se">\</span>
+dspic30super dspic33epsuper pic24epsuper pic24fpsuper pic24super
+</pre></div>
+
+
+<p>Как результат в процессе эмуляции поддерживается не вся имеющаяся на борту микроконтроллера периферия и об этом мы ещё поговорим чуть позже, ну а сейчас самое время начать получать удовольствие от юнит тестов с использованием <a href="http://throwtheswitch.org/" rel="nofollow">Ceedling</a>. В <em>Hello World</em> всего одна функция main. Не секрет, что в <em>C</em> программе функция с таким именем может быть только одна, а поскольку в <em>Ceedling</em> она уже явно имеется, для тестов <em>hello.c</em> тут нужны <code>#ifdef</code> - но это частный случай, исключение из правил так сказать и пугаться не стоит:</p>
+<p><em>src/hello.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef hello_H</span>
+<span class="cp">#define hello_H</span>
+
+<span class="cp">#ifdef TEST</span>
+<span class="kt">int</span> <span class="nf">test_main</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="cp">#endif</span>
+
+<span class="cp">#endif </span><span class="c1">// hello_H</span>
+</pre></div>
+
+
+<p><em>src/hello.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt; /* Required for printf */</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;hello.h&quot;</span><span class="cp"></span>
+<span class="cp">#ifdef TEST</span>
+<span class="kt">int</span> <span class="nf">test_main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="cp">#else</span>
+<span class="kt">int</span> <span class="n">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="cp">#endif</span>
+<span class="p">{</span>
+    <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;Hello, world!&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>test/test_main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;unity.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;hello.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">setUp</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">tearDown</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_main_function_should_always_return_0</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">TEST_ASSERT_EQUAL</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_main</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>По умолчанию <em>Ceedling</em> заточен под <em>gcc</em>, поэтому нужно допилить <em>project.yml</em>, указав компилятор, линковщик в секции <code>:tools:</code>:</p>
+<p><em>project.yml</em></p>
+<div class="highlight"><pre><span></span>:tools:
+  :test_compiler:
+    :executable: xc16-gcc
+    :arguments:
+      - -mcpu=24EP64MC206
+      - -x c
+      - -c
+      - &quot;${1}&quot;
+      - -o &quot;${2}&quot;
+      - -D$: COLLECTION_DEFINES_TEST_AND_VENDOR
+      - -I&quot;$&quot;: COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
+      - -Wall
+      - -Wextra
+      - -mlarge-code
+      - -mlarge-arrays
+      - -mlarge-data
+  :test_linker:
+    :executable: xc16-gcc
+    :arguments:
+      - -mcpu=24EP64MC206
+      - -omf=elf
+      - ${1}
+      - -o &quot;./build/TestBuild.out&quot;
+      - -Wl,-Tp24EP64MC206.gld
+</pre></div>
+
+
+<p>Запуск всех тестов выглядит так:</p>
+<div class="highlight"><pre><span></span><span class="c1"># для просмотра всех возможностей Ceedling</span>
+<span class="c1"># rake -T</span>
+~$ rake test:all
+<span class="c1"># build/test/out/cmock.o: Link Error: \</span>
+<span class="c1"># Could not allocate section .bss, size = 32774 bytes, attributes = bss </span>
+<span class="c1"># Link Error: Could not allocate data memory</span>
+</pre></div>
+
+
+<p>Линковщик ругается - микроконтроллеру не хватает памяти для работы с <em>cmock</em>, поэтому уменьшим аппетиты этого замечательного инструмента в секции <code>:defines:</code>:</p>
+<p><em>project.yml</em></p>
+<div class="highlight"><pre><span></span>:commmon: &amp;common_defines
+  - UNITY_INT_WIDTH=16
+  - CMOCK_MEM_INDEX_TYPE=uint16_t
+  - CMOCK_MEM_PTR_AS_INT=uint16_t
+  - CMOCK_MEM_ALIGN=1
+  - CMOCK_MEM_SIZE=4096
+</pre></div>
+
+
+<p>Пробуем:</p>
+<div class="highlight"><pre><span></span>~$ rake test:all
+<span class="c1"># ERROR: Test executable &quot;test_main.out&quot; failed.</span>
+<span class="c1"># &gt; Produced no final test result counts in $stdout:</span>
+<span class="c1"># sh: 1: build/test/out/test_main.out: not found</span>
+<span class="c1"># &gt; And exited with status: [127] (count of failed tests).</span>
+<span class="c1"># &gt; This is often a symptom of a bad memory access in source or test code.</span>
+</pre></div>
+
+
+<p>Тут <em>Ceedling</em> наивно пытается выполнить собранную программу <em>test_main.out</em>, но не знает как, зато мы знаем что это делается с помощью <em>sim30</em>:</p>
+<p><em>test/simulation/sim30_instruction.txt</em></p>
+<div class="highlight"><pre><span></span>LD pic24epsuper
+LC ./build/TestBuild.out
+IO NULL ./test/simulation/out.txt
+RP
+E
+quit
+</pre></div>
+
+
+<p><em>test/simulation/sim_test_fixture.rb</em></p>
+<div class="highlight"><pre><span></span><span class="no">OUT_FILE</span> <span class="o">=</span> <span class="s2">&quot;test/simulation/out.txt&quot;</span>
+<span class="no">File</span><span class="o">.</span><span class="n">delete</span> <span class="no">OUT_FILE</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span> <span class="no">OUT_FILE</span>
+<span class="n">pipe</span><span class="o">=</span><span class="no">IO</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;sim30 ./test/simulation/sim30_instruction.txt&quot;</span><span class="p">)</span>
+
+<span class="nb">trap</span><span class="p">(</span><span class="s2">&quot;INT&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">Process</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="s2">&quot;KILL&quot;</span><span class="p">,</span> <span class="n">pipe</span><span class="o">.</span><span class="n">pid</span><span class="p">);</span> <span class="nb">exit</span> <span class="p">}</span>
+
+<span class="no">Process</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
+<span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span> <span class="no">OUT_FILE</span>
+    <span class="n">file_contents</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span> <span class="no">OUT_FILE</span>
+    <span class="nb">print</span> <span class="n">file_contents</span>
+<span class="k">else</span>
+    <span class="nb">print</span> <span class="s2">&quot;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">\</span>
+          <span class="s2">&quot;! Program was not simulated ? !</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">\</span>
+          <span class="s2">&quot;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!&quot;</span>
+<span class="k">end</span>
+</pre></div>
+
+
+<p>Рассказать <em>Ceedling</em> в секции <code>:tools:</code> как всем этим управлять:</p>
+<p><em>project.yml</em> </p>
+<div class="highlight"><pre><span></span>:test_fixture:
+  :executable: ruby
+  :name: &quot;Microchip simulator test fixture&quot;
+  :stderr_redirect: :win
+  :arguments:
+    - test/simulation/sim_test_fixture.rb
+</pre></div>
+
+
+<p>Запуск... Вуаля !</p>
+<div class="highlight"><pre><span></span>~$ rake test:all
+<span class="c1"># ----------------------</span>
+<span class="c1"># UNIT TEST OTHER OUTPUT</span>
+<span class="c1"># ----------------------</span>
+<span class="c1"># [test_main.c]</span>
+<span class="c1">#   - &quot;Hello, world!&quot;</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># OVERALL UNIT TEST SUMMARY</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># TESTED:  1</span>
+<span class="c1"># PASSED:  1</span>
+<span class="c1"># FAILED:  0</span>
+<span class="c1"># IGNORED: 0</span>
+</pre></div>
+
+
+<p>Вот ! Теперь проект будет жить и развиваться вместе с тестами. Предлагаю помигать светодиодом и mockнуть результат сего действа:</p>
+<p><em>src/gpio_led.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef gpio_led_H</span>
+<span class="cp">#define gpio_led_H</span>
+
+<span class="kt">void</span> <span class="nf">gpio_led_init</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">gpio_led_set</span><span class="p">(</span><span class="kt">int</span> <span class="n">brightness</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">gpio_led_clear</span><span class="p">();</span>
+
+<span class="cp">#endif </span><span class="c1">// gpio_H</span>
+</pre></div>
+
+
+<p><em>src/system.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef system_H</span>
+<span class="cp">#define system_H</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+
+<span class="kt">bool</span> <span class="nf">system_should_abort_app</span><span class="p">();</span>
+
+<span class="cp">#endif </span><span class="c1">// system_H</span>
+</pre></div>
+
+
+<p><em>src/hello.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;hello.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;system.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;gpio_led.h&quot;</span><span class="cp"></span>
+<span class="cp">#ifdef TEST</span>
+<span class="kt">int</span> <span class="nf">test_main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="cp">#else</span>
+<span class="kt">int</span> <span class="n">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="cp">#endif</span>
+<span class="p">{</span>
+    <span class="n">gpio_led_init</span><span class="p">();</span>
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">system_should_abort_app</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">gpio_led_set</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span>
+        <span class="n">gpio_led_clear</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>test/test_main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;unity.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;hello.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;mock_system.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;mock_gpio_led.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">setUp</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">gpio_led_init_Expect</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">tearDown</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_main_function_without_loop</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">system_should_abort_app_ExpectAndReturn</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+    <span class="n">TEST_ASSERT_EQUAL</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_main</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_main_function_loop_one_iteration</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">system_should_abort_app_ExpectAndReturn</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+    <span class="n">gpio_led_set_Expect</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span>
+    <span class="n">gpio_led_clear_Expect</span><span class="p">();</span>
+    <span class="n">system_should_abort_app_ExpectAndReturn</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+    <span class="n">TEST_ASSERT_EQUAL</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">test_main</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Пробуем:</p>
+<div class="highlight"><pre><span></span>~$ rake test:all
+<span class="c1"># -------------------------</span>
+<span class="c1"># OVERALL UNIT TEST SUMMARY</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># TESTED:  2</span>
+<span class="c1"># PASSED:  2</span>
+<span class="c1"># FAILED:  0</span>
+<span class="c1"># IGNORED: 0</span>
+</pre></div>
+
+
+<p>Как несложно догадаться из <em>test/test_main.c</em> в пределах одного юнит теста <em>Ceedling</em> линкует все файлы, указанные в его <code>#include</code>, причём если присутствует префикс <code>mock</code>, вместо оригинальной <em>*.c</em> имплементации <em>Ceedling</em> автоматически генерирует <em>mock</em> согласно интерфейсу, прописанному в соответствующем <em>*.h</em>. </p>
+<p>Чуть ближе к железу на уровень портов ввода-вывода:</p>
+<p><em>src/gpio_led.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;gpio_led.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">gpio_led_init</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">TRISAbits</span><span class="p">.</span><span class="n">TRISA0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">gpio_led_set</span><span class="p">(</span><span class="kt">int</span> <span class="n">brightness</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* TODO: brightness :) */</span>
+    <span class="n">LATAbits</span><span class="p">.</span><span class="n">LATA0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">gpio_led_clear</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">LATAbits</span><span class="p">.</span><span class="n">LATA0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>test/test_gpio_led.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;unity.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;gpio_led.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">setUp</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">gpio_led_init</span><span class="p">();</span>
+    <span class="n">LATABITS</span> <span class="n">clean</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+    <span class="n">memcpy</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">LATAbits</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">clean</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">clean</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">tearDown</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_gpio_led_set</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">TEST_ASSERT_EQUAL</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">LATAbits</span><span class="p">.</span><span class="n">LATA0</span><span class="p">);</span>
+    <span class="n">gpio_led_set</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span>
+    <span class="n">TEST_ASSERT_EQUAL</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">LATAbits</span><span class="p">.</span><span class="n">LATA0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_gpio_led_clear</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">test_gpio_led_set</span><span class="p">();</span>
+    <span class="n">gpio_led_clear</span><span class="p">();</span>
+    <span class="n">TEST_ASSERT_EQUAL</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">LATAbits</span><span class="p">.</span><span class="n">LATA0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Пробуем:</p>
+<div class="highlight"><pre><span></span>~$ rake test:all
+<span class="c1"># -------------------------</span>
+<span class="c1"># OVERALL UNIT TEST SUMMARY</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># TESTED:  4</span>
+<span class="c1"># PASSED:  4</span>
+<span class="c1"># FAILED:  0</span>
+<span class="c1"># IGNORED: 0</span>
+</pre></div>
+
+
+<p>Очевидно, что такой <em>TDD</em> подход на порядок удобнее <a href="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/">предыдущих</a>. Тут очень многое зависит от возможностей эмулятора и иногда функционала <em>sim30</em> бывает недостаточно. Типичный пример - логика обработка прерываний:</p>
+<p><em>src/gpio_button.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef gpio_button_H</span>
+<span class="cp">#define gpio_button_H</span>
+
+<span class="kt">void</span> <span class="nf">gpio_button_init</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="cp">#endif </span><span class="c1">// gpio_H</span>
+</pre></div>
+
+
+<p><em>src/gpio_button.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;gpio_button.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;gpio_led.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">gpio_button_init</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">TRISFbits</span><span class="p">.</span><span class="n">TRISF0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">CNENFbits</span><span class="p">.</span><span class="n">CNIEF0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="n">IFS1bits</span><span class="p">.</span><span class="n">CNIF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">IEC1bits</span><span class="p">.</span><span class="n">CNIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">interrupt</span><span class="p">,</span><span class="n">auto_psv</span><span class="p">))</span> <span class="n">_CNInterrupt</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">IFS1bits</span><span class="p">.</span><span class="n">CNIF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">gpio_led_set</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>test/test_gpio_button.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;unity.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;gpio_button.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;mock_gpio_led.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">setUp</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">gpio_button_init</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">tearDown</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">test_gpio_button_interrupt</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">gpio_led_set_Expect</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+    <span class="n">IFS1bits</span><span class="p">.</span><span class="n">CNIF</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">asm</span><span class="p">(</span><span class="s">&quot;NOP&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Упс:</p>
+<div class="highlight"><pre><span></span>~$ rake test:all
+<span class="c1"># ------------------------</span>
+<span class="c1"># FAILED UNIT TEST SUMMARY</span>
+<span class="c1"># ------------------------</span>
+<span class="c1"># [test_gpio_button.c]</span>
+<span class="c1"># Test: test_gpio_button_interrupt</span>
+<span class="c1"># At line (13): &quot;Function &#39;gpio_led_set&#39; called less times than expected&quot;</span>
+</pre></div>
+
+
+<p>Похоже эмулятор <em>sim30</em> не обрабатывает прерывания. Альтернатива - использовать эмулятор <em>mdb</em> из среды разработки <em>MPLAB</em>. Текущий <em>MPLAB X IDE v2.05</em> написан на <em>Java</em> и поэтому эмулятор работает очень небыстро, ну маемо те шо маемо:</p>
+<p><em>test/simulation/mplab_sim_instructions.txt</em></p>
+<div class="highlight"><pre><span></span>Device PIC24EP64MC206
+Hwtool SIM -p
+Program ./build/TestBuild.out
+Run
+Quit
+</pre></div>
+
+
+<p><em>test/simulation/sim_test_fixture.rb</em></p>
+<div class="highlight"><pre><span></span><span class="no">OUT_FILE</span> <span class="o">=</span> <span class="s2">&quot;test/simulation/out.txt&quot;</span>
+<span class="no">File</span><span class="o">.</span><span class="n">delete</span> <span class="no">OUT_FILE</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span> <span class="no">OUT_FILE</span>
+
+<span class="n">pipe</span> <span class="o">=</span> <span class="no">IO</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="s2">&quot;/opt/microchip/mplabx/mplab_ide/bin/mdb.sh &quot;</span>   <span class="p">\</span>
+                <span class="s2">&quot;./test/simulation/mplab_sim_instructions.txt &quot;</span> <span class="p">\</span>
+                <span class="s2">&quot;&gt; </span><span class="si">#{</span><span class="no">OUT_FILE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">trap</span><span class="p">(</span><span class="s2">&quot;INT&quot;</span><span class="p">)</span> <span class="p">{</span> <span class="no">Process</span><span class="o">.</span><span class="n">kill</span><span class="p">(</span><span class="s2">&quot;KILL&quot;</span><span class="p">,</span> <span class="n">pipe</span><span class="o">.</span><span class="n">pid</span><span class="p">);</span> <span class="nb">exit</span> <span class="p">}</span>
+
+<span class="no">Process</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">pid</span><span class="p">)</span>
+<span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span> <span class="no">OUT_FILE</span>
+    <span class="n">file_contents</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">read</span> <span class="no">OUT_FILE</span>
+    <span class="nb">print</span> <span class="n">file_contents</span>
+<span class="k">else</span>
+    <span class="nb">print</span> <span class="s2">&quot;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">\</span>
+          <span class="s2">&quot;! Program was not simulated ? !</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">\</span>
+          <span class="s2">&quot;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!&quot;</span>
+<span class="k">end</span>
+</pre></div>
+
+
+<p>Финальный аккорд:</p>
+<div class="highlight"><pre><span></span>~$ rake test:all
+<span class="c1"># -------------------------</span>
+<span class="c1"># OVERALL UNIT TEST SUMMARY</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># TESTED:  5</span>
+<span class="c1"># PASSED:  5</span>
+<span class="c1"># FAILED:  0</span>
+<span class="c1"># IGNORED: 0</span>
+</pre></div>
+
+
+<p>Исходники <a href="http://mazko.github.io/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/PIC_Demo.zip">тут</a>.</p><p>There are <a href="http://mazko.github.io/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/" rel="bookmark"
+                           title="Permalink to Софтверная WI-FI точка доступа в Linux">Софтверная WI-FI точка доступа в Linux</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-02-08T00:00:00+02:00">
+                Published: Сб. 08 Февраль 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/mk802">MK802</a> <a href="http://mazko.github.io/blog/tag/krosskompiliatsiia">кросскомпиляция</a> <a href="http://mazko.github.io/blog/tag/hostapd">hostapd</a> <a href="http://mazko.github.io/blog/tag/udhcpd">udhcpd</a> </p>
+</footer><!-- /.post-info -->                <p>Для разогрева предлагаю провести маленький эксперимент - на одной машине генерить случайные данные <code>/dev/urandom</code>, а на другой принимать  и сливать в <code>/dev/null</code>, тем самым замерять скорость:</p>
+<div class="highlight"><pre><span></span><span class="c1"># sudo apt-get install sshpass pv</span>
+~$ cat /dev/urandom <span class="p">|</span> pv <span class="p">|</span> sshpass -p <span class="s2">&quot;YOUR_SSH_PASS&quot;</span> <span class="se">\</span>
+ssh root@torrents.local <span class="s2">&quot;cat &gt; /dev/null&quot;</span>
+9,7GB 13:32 ...</pre></div>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2014/01/25/avtonomnyi-torrent-nasos-na-mk802/" rel="bookmark"
+                           title="Permalink to Автономный торрент-насос на MK802">Автономный торрент-насос на MK802</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2014-01-25T00:00:00+02:00">
+                Published: Сб. 25 Январь 2014
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/mk802">MK802</a> <a href="http://mazko.github.io/blog/tag/soc">SoC</a> <a href="http://mazko.github.io/blog/tag/torrent">Torrent</a> <a href="http://mazko.github.io/blog/tag/avahi">Avahi</a> <a href="http://mazko.github.io/blog/tag/debian">Debian</a> </p>
+</footer><!-- /.post-info -->                <p>Что такое торрент думаю знает каждый школьник :) Попался мне в руки одноплатный компьютер <a href="http://ru.wikipedia.org/wiki/Android_Mini_PC_MK802" rel="nofollow">MK802</a>, который отличается очень маленькими габаритами. Под капотом сего девайса одна большая <a href="http://ru.wikipedia.org/wiki/SoC" rel="nofollow">SoC</a> - микросхема, параметры впечатляют - ARM V7 Cortex A8 1 GHz, 1GB ОЗУ, графических процессор Mali-400 и ОС <em>Android</em> на борту. Самое замечательное что разработчики заложили ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2014/01/25/avtonomnyi-torrent-nasos-na-mk802/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2014/01/25/avtonomnyi-torrent-nasos-na-mk802/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/" rel="bookmark"
+                           title="Permalink to Паттерны в чистом C. State">Паттерны в чистом C. State</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-13T00:00:00+03:00">
+                Published: Сб. 13 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/pattern">Паттерн</a> <a href="http://mazko.github.io/blog/tag/uml">UML</a> <a href="http://mazko.github.io/blog/tag/konechnyi-avtomat">Конечный Автомат</a> </p>
+</footer><!-- /.post-info -->                <blockquote>
+<p>"Шаблоны предназначены для объектно ориентированного проектирования и реализации."</p>
+<p>Это заблуждение относится к разряду тех, где возможности шаблонов чересчур ограничиваются.</p>
+<p>Шаблоны не представляют собой никакой ценности, если они не содержат практического опыта. Какой опыт будет заключен в шаблоне, зависит от его разработчика. Безусловно, в объектно ориентированном проектировании существует огромный опыт, но ...</p></blockquote>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/" rel="bookmark"
+                           title="Permalink to Автомат с конечным числом состояний">Автомат с конечным числом состояний</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-09T00:00:00+03:00">
+                Published: Вт. 09 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/pattern">Паттерн</a> <a href="http://mazko.github.io/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://mazko.github.io/blog/tag/idioma">Идиома</a> </p>
+</footer><!-- /.post-info -->                <p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 3
+        <a href="http://mazko.github.io/blog/category/embedded/index2.html">&raquo;</a>
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

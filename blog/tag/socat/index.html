@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - socat</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2013/07/31/besplatnoe-opredelenie-koordinat-po-gsm-sotam/">Бесплатное определение координат по GSM сотам</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2013-07-31T00:00:00+03:00">
+                Published: Ср. 31 Июль 2013
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/python/">Python</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/gsm">GSM</a> <a href="http://mazko.github.io/blog/tag/google-maps">Google Maps</a> <a href="http://mazko.github.io/blog/tag/bluetooth">Bluetooth</a> <a href="http://mazko.github.io/blog/tag/socat">socat</a> </p>
+</footer><!-- /.post-info --><p>Сколько раз доводилось слышать, что криминальные элементы или правоохранительные органы могут определить местоположение телефона по его номеру. Это правда :) Изначально GSM стандарты не разрабатывались для этих целей, поэтому, безусловно, <em>точность</em> полученных координат конечно же уступает всем известным GPS / ГЛОНАСС. В густонаселенных местах, где плотность базовых станций (такие закрытые будки с антеннами) большая точность повышается, а в сельской местности, на трассе соответственно уменьшается. Не особо углубляясь в теорию предлагаю посмотреть как в любое время можно определить местоположение ручками с помощью обычных AT-команд.</p>
+<p>Итак, у каждого GSM модуля, зарегистрированного в сети мобильного оператора, всегда можно вполне легально запросить следующие параметры: </p>
+<ul>
+<li><a href="http://ru.wikipedia.org/wiki/Mobile_Country_Code" rel="nofollow">MCC - Mobile Country Code</a></li>
+<li><a href="http://ru.wikipedia.org/wiki/Mobile_Network_Code" rel="nofollow">MNC - Mobile Network Code</a></li>
+<li><a href="http://ru.wikipedia.org/wiki/Cell_Global_Identity" rel="nofollow">LAC - Location Area Code</a></li>
+<li><a href="http://ru.wikipedia.org/wiki/Cell_Global_Identity" rel="nofollow">CID - Cell ID</a></li>
+</ul>
+<p>Для экспериментов можно задействовать любой мобильный телефон (либо GSM модуль типа sim900, если Вы дружите с паяльником), который имеет возможность подключения к ПК. Поскольку особого желания возиться с проводами нету, самый простой способ соединить телефон и компьютер - использовать Bluetooth. Посмотрим какие устройства доступны для подключения:</p>
+<div class="highlight"><pre><span></span>~$ hcitool scan
+Scanning ...
+    00:11:22:33:44:55   Nokia 6300
+</pre></div>
+
+
+<p>Имея MAC адрес устройства, можем посмотреть список сервисов (вывод команды показан не весь):</p>
+<div class="highlight"><pre><span></span>~$ sdptool browse 00:11:22:33:44:55
+Browsing 00:11:22:33:44:55 ...
+......
+Service Name: COM 1
+Service RecHandle: 0x10002
+Service Class ID List:
+  <span class="s2">&quot;Serial Port&quot;</span> <span class="o">(</span>0x1101<span class="o">)</span>
+Protocol Descriptor List:
+  <span class="s2">&quot;L2CAP&quot;</span> <span class="o">(</span>0x0100<span class="o">)</span>
+  <span class="s2">&quot;RFCOMM&quot;</span> <span class="o">(</span>0x0003<span class="o">)</span>
+    Channel: 3
+Language Base Attr List:
+  code_ISO639: 0x656e
+  encoding:    0x6a
+  base_offset: 0x100
+......
+</pre></div>
+
+
+<p>Цепляемся к <code>Channel: 3</code>:</p>
+<div class="highlight"><pre><span></span>~$ rfcomm connect <span class="m">0</span> 00:11:22:33:44:55 3
+Connected /dev/rfcomm0 to 00:11:22:33:44:55 on channel 3
+Press CTRL-C <span class="k">for</span> hangup
+</pre></div>
+
+
+<p>Теперь мы можем подключиться к последовательному порту <code>/dev/rfcomm0</code>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># cu -l /dev/rfcomm0</span>
+<span class="c1"># screen /dev/rfcomm0</span>
+<span class="c1"># minicom</span>
+~$ putty -serial /dev/rfcomm0
+</pre></div>
+
+
+<p>После запуска <code>Putty</code> открывается окошко, в котором можно писать AT-команды:</p>
+<div class="highlight"><pre><span></span><span class="c1"># ATE1</span>
+AT
+OK
+</pre></div>
+
+
+<p>Отлично. Нас интересуют две AT-команды: <code>AT+COPS</code> и <code>AT+CREG</code>, которые имеют настраиваемый формат ответа - задаём тот, который устроит:</p>
+<div class="highlight"><pre><span></span>AT+COPS<span class="o">=</span>0,2
+OK
+AT+CREG<span class="o">=</span>2
+OK
+</pre></div>
+
+
+<p>Всё готово - запрашиваем MCC, MNC, LAC, CID:</p>
+<div class="highlight"><pre><span></span>AT+COPS?
++COPS: 0,2,<span class="s2">&quot;25501&quot;</span>,0
+
+OK
+AT+CREG?
++CREG: 2,1,<span class="s2">&quot;8174&quot;</span>,<span class="s2">&quot;EA45&quot;</span>
+
+OK
+</pre></div>
+
+
+<p>В сети <a href="http://lbs.ultrastar.ru/" rel="nofollow">полно</a> онлайн сервисов, которые позволяют преобразовать MCC=255, MNC=01, LAC=8174, CID=EA45 в координаты Latitude, Longitude, но, как всегда, Гуголь знает всё:</p>
+<p><em>pygsm.py</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python</span>
+
+<span class="n">MMAP_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.google.com/glm/mmap&#39;</span>
+<span class="n">GOOGLE_MAPS_URL</span>  <span class="o">=</span> <span class="s1">&#39;http://maps.google.com&#39;</span>
+
+<span class="kn">import</span> <span class="nn">shlex</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
+<span class="kn">import</span> <span class="nn">serial</span> <span class="c1"># pip install pyserial</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="k">def</span> <span class="nf">fetch_cell_from_serial</span><span class="p">(</span><span class="n">comm</span><span class="o">=</span><span class="s1">&#39;/dev/rfcomm0&#39;</span><span class="p">):</span>
+
+    <span class="c1"># open serial and setup GSM module</span>
+
+    <span class="n">ser</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="n">comm</span><span class="p">)</span>
+    <span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;AT+COPS=0,2</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;AT+CREG=2</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Get MCC and MNC</span>
+
+    <span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;AT+COPS?</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">ser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ser</span><span class="o">.</span><span class="n">inWaiting</span><span class="p">())</span>
+    <span class="c1"># out &gt;&gt;&gt; &#39;AT+COPS?\r\r\n+COPS: 0,2,&quot;25501&quot;,0\r\n\r\nOK\r\n&#39;</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> 
+    <span class="c1"># tmp &gt;&gt;&gt; [&#39;AT+COPS?&#39;, &#39;+COPS:&#39;, &#39;0,2,25501,0&#39;, &#39;OK&#39;]</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;+COPS:&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># &#39;0,2,25501,0&#39;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">([</span><span class="n">tmp</span><span class="p">])</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># [&#39;0&#39;, &#39;2&#39;, &#39;25501&#39;, &#39;0&#39;]</span>
+    <span class="n">mcc_mnc_dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="c1"># 152833</span>
+
+    <span class="c1"># Get LAC and CID</span>
+
+    <span class="n">ser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;AT+CREG?</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">ser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ser</span><span class="o">.</span><span class="n">inWaiting</span><span class="p">())</span>
+    <span class="c1"># out &gt;&gt;&gt; &#39;AT+CREG?\r\r\n+CREG: 2,1,&quot;8174&quot;,&quot;EA45&quot;\r\n\r\nOK\r\n&#39;</span>
+
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="c1"># tmp &gt;&gt;&gt; [&#39;AT+CREG?&#39;, &#39;+CREG:&#39;, &#39;2,1,8174,EA45&#39;, &#39;OK&#39;]</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;+CREG:&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># &#39;2,1,8174,E76A&#39;</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">([</span><span class="n">tmp</span><span class="p">])</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># [&#39;2&#39;, &#39;1&#39;, &#39;8174&#39;, &#39;E76A&#39;]</span>
+
+    <span class="n">lac_dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="c1"># 33140</span>
+    <span class="n">cid_dec</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="c1"># 59242</span>
+
+    <span class="k">return</span> <span class="n">cid_dec</span><span class="p">,</span> <span class="n">lac_dec</span><span class="p">,</span> <span class="n">mcc_mnc_dec</span>
+
+<span class="k">def</span> <span class="nf">get_location_by_cell</span><span class="p">(</span><span class="n">cid_dec</span><span class="p">,</span> <span class="n">lac_dec</span><span class="p">,</span> <span class="n">mcc_mnc_dec</span><span class="p">):</span>
+
+    <span class="c1"># Use Google to get coordinates</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;000E00000000000000000000000000001B0000000000000000000000030000&#39;</span>
+    <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">mcc_mnc_dec</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span> <span class="c1"># 152833 &gt;&gt;&gt; (1528, 33)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">cid_dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">lac_dec</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># b &gt;&gt;&gt; &#39;0000e76a00008174&#39;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">h1</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="nb">hex</span><span class="p">(</span><span class="n">h2</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># c &gt;&gt;&gt; &#39;000005f800000021&#39;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span> <span class="o">+</span> <span class="s1">&#39;FFFFFFFF00000000&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;hex&#39;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">MMAP_URL</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="n">res_hex</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;hex&#39;</span><span class="p">)</span>
+    <span class="c1"># res_hex &gt;&gt;&gt; &#39;000e1b0000000002e5bfbd020f49a50000097b0000004b0000&#39;</span>
+
+    <span class="n">latitude</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">res_hex</span><span class="p">[</span><span class="mi">14</span><span class="p">:</span><span class="mi">22</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">/</span> <span class="mi">1000000</span> <span class="c1"># 48.611261</span>
+    <span class="n">longitude</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">res_hex</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">30</span><span class="p">],</span> <span class="mi">16</span><span class="p">))</span> <span class="o">/</span> <span class="mi">1000000</span> <span class="c1"># 34.556325</span>
+
+    <span class="k">return</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span>
+
+<span class="k">def</span> <span class="nf">format_googlemaps_link</span><span class="p">(</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">?q=</span><span class="si">%f</span><span class="s1">,</span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">GOOGLE_MAPS_URL</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">cid_dec</span><span class="p">,</span> <span class="n">lac_dec</span><span class="p">,</span> <span class="n">mcc_mnc_dec</span> <span class="o">=</span> <span class="n">fetch_cell_from_serial</span><span class="p">()</span>
+    <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">get_location_by_cell</span><span class="p">(</span><span class="n">cid_dec</span><span class="p">,</span> <span class="n">lac_dec</span><span class="p">,</span> <span class="n">mcc_mnc_dec</span><span class="p">)</span>
+    <span class="k">print</span> <span class="n">format_googlemaps_link</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Скрипт написан на питоне и использует <code>pyserial</code> для коммуникации с последовательным портом.</p>
+<div class="highlight"><pre><span></span>~$ python pygsm.py 
+http://maps.google.com?q<span class="o">=</span>48.611261,34.556325
+</pre></div>
+
+
+<h3>ПОЛЕЗНЫЕ ТРЮКИ</h3>
+<p>Данные обмена можно снифить:</p>
+<div class="highlight"><pre><span></span><span class="c1">#apt-get install socat</span>
+~$ socat -d -v -x <span class="se">\</span>
+PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span>777,echo<span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+/dev/rfcomm0,raw
+<span class="c1">#echo -e &#39;AT\r&#39; &gt; /dev/ttyNONGREEDY</span>
+&gt; 2014/01/11 11:34:08.565031  <span class="nv">length</span><span class="o">=</span><span class="m">4</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>3
+ <span class="m">41</span> <span class="m">54</span> 0d 0a                                      AT..
+--
+&lt; 2014/01/11 11:34:08.743405  <span class="nv">length</span><span class="o">=</span><span class="m">6</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>5
+ 0d 0a                                            ..
+ 4f 4b 0d 0a                                      OK..
+--
+</pre></div>
+
+
+<p>Порой для корректной работы необходимо задать источнику скорость:</p>
+<div class="highlight"><pre><span></span>~$ socat -d -v -x <span class="se">\</span>
+PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span><span class="m">777</span> <span class="se">\</span>
+/dev/ttyUSB0,raw,b115200
+</pre></div>
+
+
+<p>Если нужно пробрасить последовательный порт по сети от одного компа к другому:</p>
+<div class="highlight"><pre><span></span>~$ wget -O tcp_serial_redirect.py <span class="se">\</span>
+http://sourceforge.net/p/pyserial/code/HEAD/tree/trunk/<span class="se">\</span>
+pyserial/examples/tcp_serial_redirect.py?format<span class="o">=</span>raw
+~$ python tcp_serial_redirect.py -b <span class="m">115200</span> -p /dev/rfcomm0 --spy
+<span class="c1">#ifconfig | grep -o &#39;inet addr:[^ ]*&#39;</span>
+<span class="c1">#inet addr:192.168.1.246</span>
+
+<span class="c1"># на другом компе</span>
+~$ socat PTY,link<span class="o">=</span>/dev/rfcomm0,perm<span class="o">=</span><span class="m">777</span> TCP:192.168.1.246:7777
+</pre></div>
+
+
+<p>Эмулировать устройство можно так:</p>
+<div class="highlight"><pre><span></span>~$ socat -d -v -x <span class="se">\</span>
+PTY,link<span class="o">=</span>/dev/rfcomm0,raw,perm<span class="o">=</span>777,echo<span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span>777,echo<span class="o">=</span>0
+<span class="c1"># echo -e &#39;AT\r&#39; &gt; /dev/rfcomm0</span>
+&gt; 2014/01/11 12:31:37.585420  <span class="nv">length</span><span class="o">=</span><span class="m">4</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>3
+ <span class="m">41</span> <span class="m">54</span> 0d 0a                                      AT..
+--
+&lt; 2014/01/11 12:31:37.586518  <span class="nv">length</span><span class="o">=</span><span class="m">7</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>6
+ <span class="m">41</span> <span class="m">54</span> 0d 0a                                      AT..
+ 4f 4b 0a                                         OK.
+--
+
+~$ cat /dev/ttyNONGREEDY <span class="p">|</span> <span class="k">while</span> <span class="nb">read</span> val<span class="p">;</span> <span class="se">\</span>
+<span class="k">do</span> <span class="nb">echo</span> <span class="nv">$val</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<span class="nb">echo</span> <span class="nv">$val</span> &gt; /dev/ttyNONGREEDY <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<span class="nb">echo</span> <span class="s1">&#39;OK&#39;</span> &gt; /dev/ttyNONGREEDY<span class="p">;</span> <span class="se">\</span>
+<span class="k">done</span>
+AT
+</pre></div>
+
+
+<p>P.S. Совсем необязательно иметь ПК чтобы получить MCC, MNC, LAC, CID с телефона - просто так удобнее для текущей задачи. Большинство производителей предоставляют API для доступа к подобного рода данным из приложений, запускаемых в их телефонах. В этом случае можно (и даже нужно) обойтись без AT команд. Вот например API для мидлетов <a href="http://developer.nokia.com/Community/Wiki/CS000947_-_Getting_Cell_ID_in_Java_ME" rel="nofollow">Nokia</a> и т.д.</p><p>There are <a href="http://mazko.github.io/blog/posts/2013/07/31/besplatnoe-opredelenie-koordinat-po-gsm-sotam/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

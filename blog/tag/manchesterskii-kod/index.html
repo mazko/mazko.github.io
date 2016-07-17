@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - Манчестерский код</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/">Использование манчестерского кода на примере</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2012-10-07T00:00:00+03:00">
+                Published: Вс. 07 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/manchesterskii-kod">Манчестерский код</a> <a href="http://mazko.github.io/blog/tag/uart">UART</a> <a href="http://mazko.github.io/blog/tag/mikrokontroller">Микроконтроллер</a> </p>
+</footer><!-- /.post-info --><p>В <a href="http://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">предыдущем</a> посте была подготовлена почва для работы с <em>Манчестерским кодом</em>. Теперь рассмотрим реальный пример с использованием микроконтроллеров <strong>Microchip</strong> - один будет кодировать и передавать данные, другой принимать, декодировать и выводить результат в <strong>UART</strong> - терминал. Поскольку это тестовый пример, то с выбором <strong>C</strong> - компилятора ничего выдумывать не будем и возьмём то, что по умолчанию даёт производитель - пробную версию <strong>mplabc18</strong> (<em>mplabc18_v3.40_windows_eval.exe</em>) на 60 дней, скачать можно с официального сайта с родной средой разработки <strong>MPLAB_IDE</strong> (<em>v8_70</em>).</p>
+<p>Как и в прошлый раз начнём с простого - реализуем устройство, которое преобразовывает последовательность данных в <em>Манчестерский Код</em> и передаёт их. Прежде всего необходимо создать новый проект в <strong>MPLAB</strong>, мастер попросит указать модель микроконтроллера - тут каких-либо особых требований нет, поэтому можно выбрать самый простой, например <strong>PIC18F1230</strong>. В результате должно получиться что-то вроде этого:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;p18cxxx.h&gt; </span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;timers.h&gt; </span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;../../../../src/tx/Man_Encode.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">(){</span> 
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+
+    <span class="n">PORTBbits</span><span class="p">.</span><span class="n">RB0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="n">OpenTimer0</span><span class="p">(</span><span class="n">TIMER_INT_ON</span> <span class="o">&amp;</span> <span class="n">T0_8BIT</span> <span class="o">&amp;</span> <span class="n">T0_SOURCE_INT</span> <span class="o">&amp;</span> <span class="n">T0_PS_1_8</span><span class="p">);</span>
+
+    <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
+
+        <span class="cm">/* &#39;n&#39; =&gt; 01101110b, MSB = 0 see tests =&gt; Man_Decode.cpp */</span>
+
+        <span class="n">On_Man_Encode_One</span><span class="p">();</span>  <span class="c1">// Clay balance (1 - 1 = 0) </span>
+        <span class="n">On_Man_Encode_Zero</span><span class="p">();</span> <span class="c1">// Sync balance (2 - 2 = 0) </span>
+        <span class="n">On_Man_Encode_Zero</span><span class="p">();</span>  
+        <span class="n">On_Man_Encode_One</span><span class="p">();</span>  <span class="c1">// Sync </span>
+        <span class="n">On_Man_Encode_One</span><span class="p">();</span> 
+        <span class="n">On_Man_Encode_Zero</span><span class="p">();</span> <span class="c1">// Clay</span>
+
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;n&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;o&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;n&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;g&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;r&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;e&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;e&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;d&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;y&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;.&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;r&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;u&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;\r&#39;</span><span class="p">);</span> 
+        <span class="n">Man_Encode</span><span class="p">(</span><span class="sc">&#39;\n&#39;</span><span class="p">);</span>
+
+        <span class="n">On_Man_Encode_Zero</span><span class="p">();</span> <span class="cm">/* Tx off */</span>
+
+        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">150000</span><span class="p">;</span> <span class="n">i</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">);</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Encode_One</span><span class="p">(){</span> 
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">TMR0IF</span><span class="p">);</span> 
+    <span class="n">TMR0L</span> <span class="o">-=</span> <span class="mi">104</span><span class="p">;</span> <span class="c1">// 4Mhz/4/8/1200bp/s = 104 </span>
+    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">TMR0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="n">PORTBbits</span><span class="p">.</span><span class="n">RB0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Encode_Zero</span><span class="p">(){</span> 
+    <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">TMR0IF</span><span class="p">);</span> 
+    <span class="n">TMR0L</span> <span class="o">-=</span> <span class="mi">104</span><span class="p">;</span> <span class="c1">// 4Mhz/4/8/1200bp/s = 104 </span>
+    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">TMR0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="n">PORTBbits</span><span class="p">.</span><span class="n">RB0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+<span class="p">}</span>
+</pre></div>
+
+
+<p><img alt="MPLab Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/mplab_man_tx.png" style="width:100%; border:1px solid grey;" /></p>
+<p>Результатом сборки является файл с расширением <strong>.hex</strong>, в народе просто <em>хекс</em> - прошивка, которую необходимо записать в микроконтроллер с помощью специального оборудования (программатора). Поскольку последнего, наверно, у Вас нет, можно задействовать виртуальную среду, которая умеет эмулировать поведение электронных схем - <strong>Proteus VSM</strong> (v 7.9sp1). Как видно из рисунка на виртуальном осциллографе время логической 1 чуть больше 4 делений при шаге 0.2 мс. При скорости 1200 бит/с 1000 мс / 1200 = 0,83 мс это похоже на правду.</p>
+<p><img alt="Proteus Sim Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/proteus_tx_simulation.png" style="width:100%; border:1px solid grey;" /></p>
+<p>Теперь реализуем приёмник, который будет анализировать состояние на входе (вывод <strong>RB0</strong>), декодировать сигнал из <em>Манчестерского Кода</em> в оригинальный и принимать решение о том, что передача полезных данных завершена. Самый простой способ отобразить данные при работе в <strong>Proteus VSM</strong> - использовать виртуальный <strong>UART</strong> - терминал.</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;p18cxxx.h&gt; </span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;timers.h&gt; </span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;usart.h&gt; </span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;  </span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;../../../../src/rx/Man_Decode.h&quot;</span><span class="cp"></span>
+
+<span class="kt">char</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span><span class="p">))];</span>
+
+<span class="kt">void</span> <span class="nf">printrxbuf</span><span class="p">()</span> <span class="p">{</span> 
+    <span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rxbuf</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+        <span class="n">_usart_putc</span><span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+<span class="p">}</span>
+
+<span class="kt">char</span> <span class="nf">calcperiods</span><span class="p">()</span> <span class="p">{</span> 
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">time</span> <span class="o">=</span> <span class="n">TMR0L</span><span class="p">;</span> 
+    <span class="n">TMR0L</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="cm">/* 8Mhz/4/32/1200(bp/s) = 52 */</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">&lt;</span> <span class="mi">52</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">time</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">52</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="mi">2</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">(){</span> 
+    <span class="n">OpenTimer0</span><span class="p">(</span><span class="n">TIMER_INT_OFF</span> <span class="o">&amp;</span> <span class="n">T0_8BIT</span> <span class="o">&amp;</span> <span class="n">T0_SOURCE_INT</span> <span class="o">&amp;</span> <span class="n">T0_PS_1_32</span><span class="p">);</span> 
+    <span class="n">OpenUSART</span><span class="p">(</span> <span class="n">USART_TX_INT_OFF</span> <span class="o">&amp;</span> <span class="n">USART_RX_INT_OFF</span> <span class="o">&amp;</span> 
+        <span class="n">USART_ASYNCH_MODE</span> <span class="o">&amp;</span> <span class="n">USART_EIGHT_BIT</span> <span class="o">&amp;</span> 
+        <span class="n">USART_CONT_RX</span> <span class="o">&amp;</span> <span class="n">USART_BRGH_HIGH</span><span class="p">,</span> <span class="mi">12</span>  <span class="p">);</span> <span class="c1">// 38400 b/s</span>
+
+    <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span> 
+        <span class="n">memset</span><span class="p">(</span><span class="n">rxbuf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rxbuf</span><span class="p">));</span> 
+        <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span> 
+            <span class="kt">char</span> <span class="n">ds_B</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;\r&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39;\n&#39;</span><span class="p">)</span> <span class="p">{</span> 
+                <span class="n">printrxbuf</span><span class="p">();</span> 
+                <span class="k">break</span><span class="p">;</span> 
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="n">PORTBbits</span><span class="p">.</span><span class="n">RB0</span> <span class="p">)</span> <span class="p">{</span> 
+                <span class="k">if</span> <span class="p">(</span> <span class="n">ds_B</span> <span class="p">)</span> <span class="k">continue</span><span class="p">;</span> 
+                <span class="n">ds_B</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> 
+                <span class="n">Man_Decode_Stable_Zero</span><span class="p">(</span><span class="n">calcperiods</span><span class="p">());</span> 
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> 
+                <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ds_B</span> <span class="p">)</span> <span class="k">continue</span><span class="p">;</span> 
+                <span class="n">ds_B</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+                <span class="n">Man_Decode_Stable_One</span><span class="p">(</span><span class="n">calcperiods</span><span class="p">());</span> 
+            <span class="p">}</span> 
+        <span class="p">}</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">shiftrxbuf</span><span class="p">()</span> <span class="p">{</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">)</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Decode_Add_0</span><span class="p">(){</span> 
+    <span class="n">shiftrxbuf</span><span class="p">();</span> 
+    <span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="mh">0xFE</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Decode_Add_1</span><span class="p">(){</span> 
+    <span class="n">shiftrxbuf</span><span class="p">();</span> 
+    <span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>
+</pre></div>
+
+
+<p><img alt="MPLab Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/mplab_man_rx.png" style="width:100%; border:1px solid grey;" /></p>
+<p>Как видно из кода, признаком окончания передачи данных в данном примере является комбинация символов <code>'\r'</code> и <code>'\n'</code>. Это очень простое решение, при использовании в реальных условиях этот механизм нужно доработать - иначе иногда можно получать ложный сигнал о завершении передачи данных. Также стоит обратить внимание на буфер <code>rxbuf</code>, в который программа записывает декодированные данные с помощью метода <code>shiftrxbuf()</code>. Етот метод делает операцию побитового сдвига для всего буфера, как если бы это был простой (примитивный) тип данных типа <code>char</code>, <code>long</code> и т.д.  Если всё это теперь запустить в <strong>Proteus VSM</strong>, то результат будет примерно таким:</p>
+<p><img alt="Proteus Sim Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/proteus_rx_simulation.png" style="width:100%; border:1px solid grey;" /></p>
+<p>Вроде всё, исходники на <a href="https://github.com/mazko/Manchester-Code" rel="nofollow">GitHub</a>.</p><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/" rel="bookmark"
+                           title="Permalink to Манчестерский код для чайников">Манчестерский код для чайников</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-07T00:00:00+03:00">
+                Published: Вс. 07 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/tdd">TDD</a> <a href="http://mazko.github.io/blog/tag/manchesterskii-kod">Манчестерский код</a> <a href="http://mazko.github.io/blog/tag/gtest">gtest</a> <a href="http://mazko.github.io/blog/tag/gmock">gmock</a> </p>
+</footer><!-- /.post-info -->                <p><em>Манчестерский Код</em> - это самосинхронизирующийся двоичный код без постоянной составляющей, в котором значение каждого передаваемого бита определяется направлением смены логического уровня в середине обусловленного заранее временного интервала. Поскольку логических уровней у самой маленькой единицы информации (бит) на данный момент известно всего два (1 и 0),  вариантов тут немного: либо смена 1 ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

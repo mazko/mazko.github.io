@@ -1,0 +1,12 @@
+<span>
+  <input
+    [(ngModel)]=query 
+    (keyup)=handleKey($event.keyCode) 
+    (keyup.enter)=handleQuery() 
+    type="text" placeholder="пример:космос" autocomplete="off">
+</span>
+<ul #menu>
+  <li *ngFor="let suggest of suggestions" [attr.data-val]=suggest>
+    {{suggest}}
+  </li>
+</ul>

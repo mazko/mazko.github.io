@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - ES6</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">Как перестать беспокоиться и начать портировать</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2015-10-21T00:00:00+03:00">
+                Published: Ср. 21 Октябрь 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/nlp">NLP</a> <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/es6">ES6</a> </p>
+</footer><!-- /.post-info --><p>Пример портирования <strong>Java</strong> =&gt; <strong>JavaScript</strong> на примере токенизаторов из <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. </p>
+<p><a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6">lucene-tokenizers.es6</a> | <a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js">lucene-tokenizers.babel.js</a> | <a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html">Тесты</a> | <a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src">Исходники</a></p>
+<h2>TL;DR</h2>
+<p>Процесс можно условно разделить на несколько этапов:</p>
+<ul>
+<li>
+<p>Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше весит портированный скрипт тем он быстрее отработает в браузере</p>
+</li>
+<li>
+<p>Точно так же системные классы среды исполнения <em>Java</em>, например <em>Character.java</em>, необходимо переопределить скопировав в проект </p>
+</li>
+<li>
+<p>На этом этапе логика должна быть полностью рабочей, если у портируемого проекта имеются юнит-тесты - прогнать их. Если что-то не работает сейчас, вряд-ли заработает после трансляции :)</p>
+</li>
+<li>
+<p>Собственно сама <a href="http://mazko.github.io/ESJava/">трансляция</a> добытых <em>Java</em> исходников в <a href="https://babeljs.io/docs/learn-es2015/" rel="nofollow">ES6</a></p>
+</li>
+<li>
+<p>Точечная адаптация - например реализовать логику метода <em>System.arraycopy</em>, который переопределили ранее, но уже для <em>JavaScript</em></p>
+</li>
+</ul>
+<noscript><span style="color:red;">Включите JavaScript ! </span></noscript>
+
+<script type="text/javascript" src="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"></script>
+
+<script type="text/javascript">
+(function() {
+  var parseId;
+
+  function id(i) {
+      return document.getElementById(i);
+  }
+  function parse(delay) {
+      if (parseId) {
+          window.clearTimeout(parseId);
+      }
+
+      parseId = window.setTimeout(function () {
+        var ts = new luceneTokenizers[id("tokenizer-class").value];
+        ts.setReader(
+          new luceneTokenizers.StringReader(
+            id("text-to-tokenize").value)
+        );
+        var res = [];
+        for (var token, i=0; (token = ts.incrementToken()) !== null; i++) {
+          var pretty_token = {};
+          for (var prop in token) {
+            if(token.hasOwnProperty(prop)) {
+              pretty_token[prop.substring('_$esjava$'.length)] = token[prop];
+            } 
+          }
+          res.push(pretty_token);
+        }
+
+        id("tokenize-result").value = JSON.stringify(res, null, 2);
+      }, delay || 555);
+  }
+  window.onload = function () {
+      var update = function() { parse(); };
+      id("text-to-tokenize").onkeyup = update;
+      id("tokenizer-class").onchange = update;
+      parse();
+  };
+})();
+</script>
+
+<p><select id="tokenizer-class">
+    <option value="StandardTokenizer">Standard</option>
+    <option value="UAX29URLEmailTokenizer">UAX29URLEmail</option>
+</select></p>
+<div>
+<!-- http://www.freeformatter.com/html-escape.html -->
+<div style="width:49%; border:1px solid #ddd; float:left;">
+  <textarea rows="10" id="text-to-tokenize" autocomplete="off"
+    style="width:97%; margin:auto; color: #AAFF00; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;">The quick brown fox &lt;fox@mail.ru&gt; jumps over the 42 lazy dogs &lt; mailto:dog@gmail.com &gt; !? More at -> http://www.google.com/ &#9749;
+  </textarea>
+</div>
+<div style="width:49%; border:1px solid #ddd; float:right;">
+  <textarea rows="10" id="tokenize-result" autocomplete="off"
+    style="width:97%; margin:auto; color: #EE00AA; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;" readonly></textarea>
+</div>
+<div style="clear:both;"></div>
+</div>
+
+<p>Как видно на демке и несложно догадаться по названию токенайзер <a href="https://lucene.apache.org/core/5_3_1/analyzers-common/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.html" rel="nofollow">UAX29URLEmailTokenizer</a> чуть более православный по вебу. Оба <em>StandardTokenizer</em> и <em>UAX29URLEmailTokenizer</em> вполне себе дружат с юникодом.</p>
+<p>Теперь чуть подробней о процессе портирования.</p>
+<h2>ESJava</h2>
+<p>Итоговая структура папок Java проекта (Eclipse):</p>
+<div class="highlight"><pre><span></span>~$ tree
+.
+├── src
+│   ├── org
+│   │   └── apache
+│   │       └── lucene
+│   │           └── analysis
+│   │               ├── standard
+│   │               │   ├── Character.java
+│   │               │   ├── Exception.java
+│   │               │   ├── IndexOutOfBoundsException.java
+│   │               │   ├── IOException.java
+│   │               │   ├── Reader.java
+│   │               │   ├── StandardAnalyzer.java
+│   │               │   ├── StandardTokenizerImpl.java
+│   │               │   ├── StandardTokenizer.java
+│   │               │   ├── StringReader.java
+│   │               │   ├── System.java
+│   │               │   ├── Tokenizer.java
+│   │               │   ├── TokenModel.java
+│   │               │   ├── UAX29URLEmailTokenizerImpl.java
+│   │               │   └── UAX29URLEmailTokenizer.java
+│   │               └── tokenattributes
+│   │                   └── CharTermAttribute.java
+│   └── Test.java
+└── tests
+    └── org
+        └── apache
+            └── lucene
+                └── analysis
+                    └── standard
+                        ├── BaseTokenStreamTestCase.java
+                        ├── Slow.java
+                        ├── TestStandardAnalyzer.java
+                        ├── TestUAX29URLEmailTokenizer.java
+                        ├── TestUtil.java
+                        └── WordBreakTestUnicode_6_3_0.java
+
+<span class="m">13</span> directories, <span class="m">22</span> files
+</pre></div>
+
+
+<p>Для удобства работы с исходниками среды выполнения Java:</p>
+<div class="highlight"><pre><span></span>~$ apt-get install openjdk-7-source
+</pre></div>
+
+
+<p>И так выглядит один из переопределённых в проекте системных файлов:</p>
+<p><em>src/org/apache/lucene/analysis/standardSystem.java</em></p>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">System</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">arraycopy</span><span class="o">(</span><span class="n">Object</span> <span class="n">src</span><span class="o">,</span> <span class="kt">int</span> <span class="n">srcPos</span><span class="o">,</span> <span class="n">Object</span> <span class="n">dest</span><span class="o">,</span> <span class="kt">int</span> <span class="n">destPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">length</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// :es6:</span>
+    <span class="c1">// int[] elements_to_add = src.slice(srcPos, srcPos + length);</span>
+    <span class="c1">// Array.prototype.splice.apply(dest, new int[] {destPos,</span>
+    <span class="c1">// elements_to_add.length}.concat(elements_to_add));</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">src</span><span class="o">,</span> <span class="n">srcPos</span><span class="o">,</span> <span class="n">dest</span><span class="o">,</span> <span class="n">destPos</span><span class="o">,</span> <span class="n">length</span><span class="o">);</span>
+    <span class="c1">// :end:</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>В <em>ES6</em> есть хорошая инструкция <code>import</code>, но поведение немного отличается от аналогичной в Java - файлы из одного пространства тоже необходимо импортировать явно. Но лень. Проще закинуть все классы в один файл:</p>
+<p><em>merge.sh</em></p>
+<div class="highlight"><pre><span></span><span class="c1"># find -name &#39;*.java&#39; | grep &#39;./src/org/apache/lucene/analysis/&#39;</span>
+cat <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/Exception.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/IOException.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/Reader.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/StringReader.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/Character.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/TokenModel.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/Tokenizer.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/System.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/StandardAnalyzer.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/StandardTokenizer.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java <span class="se">\</span>
+./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java <span class="se">\</span>
+<span class="p">|</span> sed <span class="s1">&#39;/^package\s/d&#39;</span> <span class="p">|</span> sed <span class="s1">&#39;/^import\s/d&#39;</span> <span class="se">\</span>
+&gt; lucene-tokenizers.java
+</pre></div>
+
+
+<p>И просмотреть список точечных адаптаций для JavaScript:</p>
+<div class="highlight"><pre><span></span>~$ awk <span class="s1">&#39;/\:es6\:/,/\:end\:/&#39;</span> lucene-tokenizers.java
+</pre></div>
+
+
+<p>Трансляция:</p>
+<div class="highlight"><pre><span></span>~$ npm install -g esjava
+~$ node --stack-size<span class="o">=</span><span class="m">10000</span> <span class="sb">`</span>which esjava<span class="sb">`</span> lucene-tokenizers.java &gt; out/lucene-tokenizers.es6
+</pre></div>
+
+
+<p>Осталось указать на <em>export</em> классы <em>StringReader</em>, <em>StandardTokenizer</em>, <em>UAX29URLEmailTokenizer</em> и добавить поддержку старых JavaScript движков:</p>
+<p><em>out/js.sh</em></p>
+<div class="highlight"><pre><span></span><span class="nv">ES6FILE</span><span class="o">=</span><span class="s1">&#39;lucene-tokenizers.es6&#39;</span>
+
+<span class="k">for</span> cls in <span class="s1">&#39;StringReader&#39;</span> <span class="s1">&#39;StandardTokenizer&#39;</span> <span class="s1">&#39;UAX29URLEmailTokenizer&#39;</span><span class="p">;</span> <span class="k">do</span>
+  sed -i <span class="s2">&quot;s/^class\s\+</span><span class="si">${</span><span class="nv">cls</span><span class="si">}</span><span class="s2">\s\+/export class </span><span class="si">${</span><span class="nv">cls</span><span class="si">}</span><span class="s2"> /&quot;</span> <span class="si">${</span><span class="nv">ES6FILE</span><span class="si">}</span>
+<span class="k">done</span>
+
+sed <span class="s1">&#39;s/\\u/\\\\u/g&#39;</span> <span class="s2">&quot;</span><span class="nv">$ES6FILE</span><span class="s2">&quot;</span> <span class="p">|</span>                     <span class="se">\</span>
+node --stack-size<span class="o">=</span><span class="m">10000</span>                              <span class="se">\</span>
+<span class="s2">&quot;`which babel`&quot;</span>                                      <span class="se">\</span>
+--compact<span class="o">=</span><span class="nb">false</span>                                      <span class="se">\</span>
+--presets es2015                                     <span class="se">\</span>
+--plugins transform-es2015-modules-umd               <span class="se">\</span>
+--module-id luceneTokenizers <span class="p">|</span>                       <span class="se">\</span>
+sed <span class="s1">&#39;s/\\\\u/\\u/g&#39;</span> &gt; lucene-tokenizers.babel.js
+</pre></div>
+
+
+<p>Скрипт на выходе <em>lucene-tokenizers.babel.js</em> крутится в демке.</p>
+<!-- Pelican Attach hack -->
+
+<!-- cd ./src/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dsrc/{}"></a>' | xclip -selection clipboard && cd - -->
+
+<!-- 
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/lucene-tokenizers.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/merge.sh"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/js.sh"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/BaseTokenStreamTestCase.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/blanket.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/lcov_reporter.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.css"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/stdTests.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/uaxTests.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/WordBreakTestUnicode_6_3_0.js"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Character.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Exception.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IOException.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Reader.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardAnalyzer.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizer.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StringReader.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/System.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Tokenizer.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/TokenModel.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/Test.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/BaseTokenStreamTestCase.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/Slow.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestStandardAnalyzer.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUAX29URLEmailTokenizer.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUtil.java"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/WordBreakTestUnicode_6_3_0.java"></a>
+ -->
+
+<!-- cd ./npm/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Dnpm/{}"></a>' | xclip -selection clipboard && cd - -->
+
+<!--
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/.gitignore"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/package.json"></a>
+<a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/readme"></a>
+ --><p>There are <a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

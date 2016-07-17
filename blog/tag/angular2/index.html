@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - Angular2</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/">ElasticSearch - одностраничное приложение на Angular2</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-07-06T00:00:00+03:00">
+                Published: Ср. 06 Июль 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/elastic">Elastic</a> <a href="http://mazko.github.io/blog/tag/angular2">Angular2</a> </p>
+</footer><!-- /.post-info --><p>Вооружившись знаниями приобретёнными в предыдущем материале по <a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">ElasticSearch</a> самое время сделать что-то полезное. В данном материале мы напишем <a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow">одностраничное</a> приложение (SPA) на <a href="https://angular.io/" rel="nofollow">Angular2</a>. Это будет полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам. Писать SPA будем на <a href="https://www.typescriptlang.org/" rel="nofollow">TypeScript</a> - это который JavaScript нового поколения плюс строгая типизация, умеющая обнаруживать многие типичные ошибки в коде программы ещё на этапе сборки приложения и соотвественно вежливо сообщать об этом ещё до неловкого момента <em>ой, не работает</em>. Для работы демо в <a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">ElasticSearch</a> нужно настроить <code>http.cors</code> для <strong>http://mazko.github.io</strong>, например <code>allow-origin: /https?:\/\/mazko\.github\.io/</code></p>
+<!-- cd ./dist/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Ddist/{}"></a>' | xclip -selection clipboard && cd - -->
+
+<!-- sed -i '/<base href="\/">/d' ./dist/index.html -->
+
+<!-- 
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/app.component.css"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/app.component.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/aggregations/aggregations.component.css"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/aggregations/aggregations.component.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/auto-complete/auto-complete.component.css"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/auto-complete/auto-complete.component.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-list/films-list.component.css"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-list/films-list.component.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-search.component.css"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-search.component.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/hi/hi.component.css"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/hi/hi.component.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/favicon.ico"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/index.html"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/main.js"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/system-config.js"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/es6-shim/es6-shim.js"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/Reflect.js"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/reflect-metadata.d.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/Reflect.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/harness.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-decorate.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-definemetadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-deletemetadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getmetadatakeys.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getmetadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getownmetadatakeys.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getownmetadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-hasmetadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-hasownmetadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-metadata.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/run.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/spec.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/typings.d.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/typings/node.d.ts"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/systemjs/dist/system.src.js"></a>
+<a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/zone.js/dist/zone.js"></a>
+-->
+
+<p><a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/elastic-angular2.zip">Исходники</a> | <a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/index.html">Демо</a></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Очень простой и быстрый способ начать работать с Angular2 - воспользоваться генератором проектов <a href="https://github.com/angular/angular-cli" rel="nofollow">angular-cli</a>: </p>
+<div class="highlight"><pre><span></span>~: pip install nodeenv
+~: mkdir angular2-elastic-tutorial <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$_</span>
+~: nodeenv env --prebuilt
+~: . env/bin/activate
+<span class="o">(</span>env<span class="o">)</span>~: node -v 
+v6.3.0
+<span class="o">(</span>env<span class="o">)</span>~: npm -v
+3.10.3
+<span class="o">(</span>env<span class="o">)</span>~: npm install -g angular-cli
+<span class="o">(</span>env<span class="o">)</span>~: ng version
+angular-cli: 1.0.0-beta.9
+node: 6.3.0
+os: linux x64
+<span class="o">(</span>env<span class="o">)</span>~: ng new elastic <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$_</span>
+<span class="o">(</span>env<span class="o">)</span>~: tree -I node_modules
+.
+├── angular-cli-build.js
+├── angular-cli.json
+├── config
+│   ├── environment.dev.ts
+│   ├── environment.js
+│   ├── environment.prod.ts
+│   ├── karma.conf.js
+│   ├── karma-test-shim.js
+│   └── protractor.conf.js
+├── e2e
+│   ├── app.e2e-spec.ts
+│   ├── app.po.ts
+│   ├── tsconfig.json
+│   └── typings.d.ts
+├── package.json
+├── public
+├── README.md
+├── src
+│   ├── app
+│   │   ├── app.component.css
+│   │   ├── app.component.html
+│   │   ├── app.component.spec.ts
+│   │   ├── app.component.ts
+│   │   ├── environment.ts
+│   │   ├── index.ts
+│   │   └── shared
+│   │       └── index.ts
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── main.ts
+│   ├── system-config.ts
+│   ├── tsconfig.json
+│   └── typings.d.ts
+├── tslint.json
+├── typings
+│   ├── browser
+│   │   └── ambient
+│   │       ├── angular-protractor
+│   │       │   └── index.d.ts
+│   │       ├── es6-shim
+│   │       │   └── index.d.ts
+│   │       ├── jasmine
+│   │       │   └── index.d.ts
+│   │       └── selenium-webdriver
+│   │           └── index.d.ts
+│   ├── browser.d.ts
+│   ├── main
+│   │   └── ambient
+│   │       ├── angular-protractor
+│   │       │   └── index.d.ts
+│   │       ├── es6-shim
+│   │       │   └── index.d.ts
+│   │       ├── jasmine
+│   │       │   └── index.d.ts
+│   │       └── selenium-webdriver
+│   │           └── index.d.ts
+│   └── main.d.ts
+└── typings.json
+
+<span class="m">19</span> directories, <span class="m">39</span> files
+</pre></div>
+
+
+<p>Вот такая вот структура у нового Angular2 проекта. Тут предусмотрено наличие <a href="https://angular.io/docs/ts/latest/guide/testing.html" rel="nofollow">юнит-тестов</a>:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng <span class="nb">test</span> --watch<span class="o">=</span><span class="nb">false</span>
+Executed <span class="m">2</span> of <span class="m">2</span> SUCCESS
+</pre></div>
+
+
+<p>Запуск в режиме разработки:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng serve
+</pre></div>
+
+
+<p>Сгенерируем компонент для поиска и отображения фильмов а также сервис для получения соответствующих данных из ElasticSearch:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng generate component FilmsSearch
+  create src/app/films-search/films-search.component.css
+  create src/app/films-search/films-search.component.html
+  create src/app/films-search/films-search.component.spec.ts
+  create src/app/films-search/films-search.component.ts
+  create src/app/films-search/index.ts
+<span class="o">(</span>env<span class="o">)</span>~: ng generate service films-search/Elastic
+  create src/app/films-search/elastic.service.spec.ts
+  create src/app/films-search/elastic.service.ts
+</pre></div>
+
+
+<p>Сервис Elastic и юнит тесты к нему:</p>
+<p><em>src/app/films-search/elastic.service.spec.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span>
+  <span class="nx">beforeEach</span><span class="p">,</span> <span class="nx">beforeEachProviders</span><span class="p">,</span>
+  <span class="nx">describe</span><span class="p">,</span> <span class="nx">xdescribe</span><span class="p">,</span>
+  <span class="nx">expect</span><span class="p">,</span> <span class="nx">it</span><span class="p">,</span> <span class="nx">xit</span><span class="p">,</span>
+  <span class="nx">async</span><span class="p">,</span> <span class="nx">inject</span>
+<span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core/testing&#39;</span><span class="p">;</span>
+
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">MockBackend</span><span class="p">,</span> <span class="nx">MockConnection</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/http/testing&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">Http</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/http&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">provide</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">BaseRequestOptions</span><span class="p">,</span> <span class="nx">Response</span><span class="p">,</span> <span class="nx">ResponseOptions</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/http&#39;</span><span class="p">;</span>
+
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ElasticService</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./elastic.service&#39;</span><span class="p">;</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Elastic Service&#39;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+
+  <span class="nx">beforeEachProviders</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="nx">ElasticService</span><span class="p">,</span>
+    <span class="nx">BaseRequestOptions</span><span class="p">,</span>
+    <span class="nx">MockBackend</span><span class="p">,</span>
+    <span class="nx">provide</span><span class="p">(</span><span class="nx">Http</span><span class="p">,</span> <span class="p">{</span>
+      <span class="nx">useFactory</span><span class="o">:</span> <span class="p">(</span><span class="nx">backend</span>: <span class="kt">MockBackend</span><span class="p">,</span> <span class="nx">defaultOptions</span>: <span class="kt">BaseRequestOptions</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">Http</span><span class="p">(</span><span class="nx">backend</span><span class="p">,</span> <span class="nx">defaultOptions</span><span class="p">);</span>
+      <span class="p">},</span>
+      <span class="nx">deps</span><span class="o">:</span> <span class="p">[</span><span class="nx">MockBackend</span><span class="p">,</span> <span class="nx">BaseRequestOptions</span><span class="p">]</span>
+    <span class="p">})</span>
+  <span class="p">]);</span>
+
+  <span class="nx">beforeEach</span><span class="p">(</span><span class="nx">inject</span><span class="p">([</span><span class="nx">MockBackend</span><span class="p">],</span> <span class="p">(</span><span class="nx">backend</span>: <span class="kt">MockBackend</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">baseResponse</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="k">new</span> <span class="nx">ResponseOptions</span><span class="p">({</span>
+      <span class="nx">body</span>: <span class="kt">JSON.stringify</span><span class="p">({</span>
+        <span class="nx">hits</span><span class="o">:</span> <span class="p">{</span>
+          <span class="nx">total</span> : <span class="kt">42</span><span class="p">,</span>
+          <span class="nx">hits</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span> <span class="nx">fields</span> <span class="o">:</span> <span class="p">{</span> <span class="nx">rate</span> <span class="o">:</span> <span class="p">[</span> <span class="mf">8.042</span> <span class="p">],</span> <span class="nx">id</span> <span class="o">:</span> <span class="p">[</span> <span class="mi">409640</span> <span class="p">]</span> <span class="p">}</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="nx">fields</span> <span class="o">:</span> <span class="p">{</span> <span class="nx">rate</span> <span class="o">:</span> <span class="p">[</span> <span class="mf">7.943</span> <span class="p">],</span> <span class="nx">id</span> <span class="o">:</span> <span class="p">[</span> <span class="mi">153013</span> <span class="p">]</span> <span class="p">}</span> <span class="p">}</span>
+          <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">})</span> 
+    <span class="p">}));</span>
+    <span class="nx">backend</span><span class="p">.</span><span class="nx">connections</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">((</span><span class="nx">c</span>: <span class="kt">MockConnection</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">mockRespond</span><span class="p">(</span><span class="nx">baseResponse</span><span class="p">));</span>
+  <span class="p">}));</span>
+
+  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should elastic search&#39;</span><span class="p">,</span>
+    <span class="nx">inject</span><span class="p">([</span><span class="nx">ElasticService</span><span class="p">],</span> <span class="p">(</span><span class="nx">elk</span>: <span class="kt">ElasticService</span><span class="p">)</span> <span class="o">=&gt;</span> 
+      <span class="nx">elk</span><span class="p">.</span><span class="nx">search</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="nx">chunk</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">chunk</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">chunk</span><span class="p">.</span><span class="nx">total</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+        <span class="nx">expect</span><span class="p">(</span><span class="nx">chunk</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">id</span><span class="p">).</span><span class="nx">toEqual</span><span class="p">([</span><span class="mi">153013</span><span class="p">]);</span>
+      <span class="p">})</span>
+    <span class="p">)</span>
+  <span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/elastic.service.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Injectable</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">Http</span><span class="p">,</span> <span class="nx">URLSearchParams</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/http&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">&#39;rxjs/add/operator/toPromise&#39;</span><span class="p">;</span>
+
+<span class="c1">// Elastic docs:</span>
+<span class="c1">// Field values fetched from the document it self </span>
+<span class="c1">// are always returned as an array.</span>
+<span class="kr">export</span> <span class="kr">interface</span> <span class="nx">IFilm</span> <span class="p">{</span>
+  <span class="nx">id</span>: <span class="kt">number</span><span class="p">[];</span>
+  <span class="nx">name</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">date</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">description</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">rate</span>: <span class="kt">number</span><span class="p">[];</span>
+  <span class="nx">starring</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">category</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">directed</span>: <span class="kt">string</span><span class="p">[];</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="kr">interface</span> <span class="nx">IChunk</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="nx">items</span>: <span class="kt">T</span><span class="p">[];</span>
+  <span class="nx">total</span>: <span class="kt">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">ELASTIC_URL</span> <span class="o">=</span> <span class="s1">&#39;//localhost:9200/kinopoisk/&#39;</span><span class="p">;</span>
+
+<span class="kr">interface</span> <span class="nx">ISearchKwargs</span> <span class="p">{</span>
+  <span class="nx">from?</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">size?</span>: <span class="kt">number</span><span class="p">;</span> <span class="cm">/* paginating */</span>
+  <span class="nx">fields?</span>: <span class="kt">string</span><span class="p">[];</span> <span class="cm">/* full text searching fields */</span>
+<span class="p">}</span>
+
+<span class="kd">@Injectable</span><span class="p">()</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">ElasticService</span> <span class="p">{</span>
+
+  <span class="kr">constructor</span><span class="p">(</span><span class="kr">private</span> <span class="nx">_http</span> : <span class="kt">Http</span><span class="p">){}</span>
+
+  <span class="nx">search</span><span class="p">(</span><span class="nx">kwargs?</span> : <span class="kt">ISearchKwargs</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="nx">IChunk</span><span class="o">&lt;</span><span class="nx">IFilm</span><span class="o">&gt;&gt;</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">kwargsDefs</span> : <span class="kt">ISearchKwargs</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">from</span>: <span class="kt">0</span><span class="p">,</span> <span class="nx">size</span>: <span class="kt">5</span><span class="p">,</span> <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span> <span class="p">]</span>
+    <span class="p">};</span>
+    <span class="nx">kwargs</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">kwargsDefs</span><span class="p">,</span> <span class="nx">kwargs</span><span class="p">);</span>
+
+    <span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URLSearchParams</span><span class="p">();</span>
+    <span class="c1">// Elastic docs: </span>
+    <span class="c1">// For libraries that don’t accept a request body </span>
+    <span class="c1">// for non-POST requests, you can pass the request </span>
+    <span class="c1">// body as the source query string parameter instead.</span>
+    <span class="nx">params</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+      <span class="s1">&#39;from&#39;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">from</span><span class="p">,</span>
+      <span class="s1">&#39;size&#39;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">size</span><span class="p">,</span>
+      <span class="s2">&quot;fields&quot;</span> <span class="o">:</span> <span class="p">[</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;rate&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;starring&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;directed&quot;</span><span class="p">],</span>
+      <span class="s2">&quot;query&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;match_all&quot;</span><span class="o">:</span> <span class="p">{}</span> <span class="p">},</span>
+      <span class="s2">&quot;sort&quot;</span> <span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;rate&quot;</span> <span class="o">:</span> <span class="p">{</span><span class="s2">&quot;order&quot;</span> <span class="o">:</span> <span class="s2">&quot;desc&quot;</span><span class="p">}</span> <span class="p">}</span>
+       <span class="p">],</span>
+    <span class="p">}));</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_http</span>
+      <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ELASTIC_URL</span> <span class="o">+</span> <span class="s1">&#39;film/_search&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">search</span>: <span class="kt">params</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">toPromise</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="kr">const</span> <span class="p">{</span> <span class="nx">hits</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+        <span class="k">return</span> <span class="p">{</span>
+          <span class="nx">items</span>: <span class="kt">hits.hits.map</span><span class="p">(</span><span class="nx">hit</span> <span class="o">=&gt;</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">fields</span><span class="p">),</span>
+          <span class="nx">total</span>: <span class="kt">hits.total</span>
+        <span class="p">};</span>
+      <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Запуск тестов:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng <span class="nb">test</span> --watch<span class="o">=</span><span class="nb">false</span>
+Executed <span class="m">3</span> of <span class="m">3</span> SUCCESS
+</pre></div>
+
+
+<p>Компонент FilmsSearch и юнит тесты:</p>
+<p><em>src/app/films-search/films-search.component.spec.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">provide</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+
+<span class="kr">import</span> <span class="p">{</span>
+  <span class="nx">beforeEach</span><span class="p">,</span> <span class="nx">beforeEachProviders</span><span class="p">,</span>
+  <span class="nx">describe</span><span class="p">,</span> <span class="nx">xdescribe</span><span class="p">,</span>
+  <span class="nx">expect</span><span class="p">,</span> <span class="nx">it</span><span class="p">,</span> <span class="nx">xit</span><span class="p">,</span>
+  <span class="nx">async</span><span class="p">,</span> <span class="nx">inject</span>
+<span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core/testing&#39;</span><span class="p">;</span>
+
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">TestComponentBuilder</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/compiler/testing&#39;</span>
+
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">FilmsSearchComponent</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./films-search.component&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ElasticService</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./elastic.service&#39;</span><span class="p">;</span>
+
+<span class="kr">class</span> <span class="nx">MockElasticService</span> <span class="p">{</span>
+
+  <span class="nx">search() {</span>
+    <span class="k">return</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">({</span>
+      <span class="nx">items</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span> 
+          <span class="nx">id</span><span class="o">:</span> <span class="p">[</span><span class="mi">409640</span><span class="p">],</span>
+          <span class="nx">name</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;Касл (сериал 2009 – ...)&quot;</span><span class="p">],</span>
+          <span class="nx">rate</span>: <span class="kt">8.042</span>
+        <span class="p">},</span>
+        <span class="p">{</span> 
+          <span class="nx">id</span><span class="o">:</span> <span class="p">[</span><span class="mi">153013</span><span class="p">],</span>
+          <span class="nx">name</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;Звездный крейсер Галактика (сериал 2004 – 2009)&quot;</span><span class="p">],</span>
+          <span class="nx">rate</span>: <span class="kt">7.943</span>
+        <span class="p">}</span>
+      <span class="p">],</span>
+      <span class="nx">total</span>: <span class="kt">42</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">describe</span><span class="p">(</span><span class="s1">&#39;Component: FilmsSearch&#39;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">tcb</span>:<span class="kt">TestComponentBuilder</span><span class="p">;</span>
+
+  <span class="c1">//setup</span>
+  <span class="nx">beforeEach</span><span class="p">(</span><span class="nx">inject</span><span class="p">([</span><span class="nx">TestComponentBuilder</span><span class="p">],</span> <span class="nx">_tcb</span> <span class="o">=&gt;</span> 
+    <span class="nx">tcb</span> <span class="o">=</span> <span class="nx">_tcb</span><span class="p">.</span><span class="nx">overrideProviders</span><span class="p">(</span>
+      <span class="nx">FilmsSearchComponent</span><span class="p">,</span>
+      <span class="p">[</span><span class="nx">provide</span><span class="p">(</span><span class="nx">ElasticService</span><span class="p">,</span> <span class="p">{</span> <span class="nx">useClass</span>: <span class="kt">MockElasticService</span> <span class="p">})]</span>
+    <span class="p">)</span>
+  <span class="p">));</span>
+
+  <span class="c1">//specs</span>
+  <span class="nx">it</span><span class="p">(</span><span class="s1">&#39;should render films&#39;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span>
+    <span class="nx">tcb</span><span class="p">.</span><span class="nx">createAsync</span><span class="p">(</span><span class="nx">FilmsSearchComponent</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">fixture</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kr">const</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">fixture</span><span class="p">.</span><span class="nx">nativeElement</span><span class="p">;</span>
+      <span class="nx">fixture</span><span class="p">.</span><span class="nx">detectChanges</span><span class="p">();</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">).</span><span class="nx">length</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+      <span class="nx">expect</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;div p a&#39;</span><span class="p">).</span><span class="nx">innerText</span><span class="p">).</span><span class="nx">toBe</span><span class="p">(</span><span class="s1">&#39;8.042&#39;</span><span class="p">);</span>
+    <span class="p">})</span>
+  <span class="p">);</span>
+
+<span class="p">});</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/films-search.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ElasticService</span><span class="p">,</span> <span class="nx">IFilm</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./elastic.service&#39;</span><span class="p">;</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;films-search&#39;</span><span class="p">,</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;films-search.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;films-search.component.css&#39;</span><span class="p">],</span>
+  <span class="nx">providers</span><span class="o">:</span> <span class="p">[</span><span class="nx">ElasticService</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">FilmsSearchComponent</span> <span class="p">{</span>
+
+  <span class="nx">films</span>: <span class="kt">IFilm</span><span class="p">[];</span>
+
+  <span class="kr">constructor</span><span class="p">(</span><span class="nx">elk</span> : <span class="kt">ElasticService</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">elk</span><span class="p">.</span><span class="nx">search</span><span class="p">({</span>
+      <span class="nx">from</span>: <span class="kt">0</span><span class="p">,</span> <span class="nx">size</span>: <span class="kt">5</span>
+    <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">chunk</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">films</span> <span class="o">=</span> <span class="nx">chunk</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+    <span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">alert</span><span class="p">(</span><span class="nx">e</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/films-search.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;div *ngFor=&quot;let film of films&quot;&gt;
+  &lt;p&gt;
+    &lt;b&gt;Название: &lt;/b&gt;{{film.name}} | 
+    &lt;a href=&quot;https://www.kinopoisk.ru/film/{{film.id}}/&quot;&gt;{{film.rate}}&lt;/a&gt; | 
+    &lt;span *ngFor=&quot;let date of film.date&quot;&gt;
+      {{date | date}}
+    &lt;/span&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Режиссёр: &lt;/b&gt;{{film.directed?.join(&#39; | &#39;)}}
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Жанр: &lt;/b&gt;{{film.category?.join(&#39; | &#39;)}}
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Актёры: &lt;/b&gt;{{film.starring?.join(&#39; | &#39;)}}
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Описание: &lt;/b&gt;{{film.description}}
+  &lt;/p&gt;
+  &lt;hr/&gt;
+&lt;/div&gt;
+</pre></div>
+
+
+<p>Тесты:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng <span class="nb">test</span> --watch<span class="o">=</span><span class="nb">false</span>
+Executed <span class="m">4</span> of <span class="m">4</span> SUCCESS
+</pre></div>
+
+
+<p>Осталось совсем чуть-чуть, чтобы увидеть результаты в браузере:</p>
+<p><em>src/app/app.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;films-search&gt;
+</pre></div>
+
+
+<p><em>src/app/app.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">FilmsSearchComponent</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./films-search&#39;</span><span class="p">;</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;app-root&#39;</span><span class="p">,</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;app.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;app.component.css&#39;</span><span class="p">],</span>
+  <span class="nx">directives</span><span class="o">:</span> <span class="p">[</span><span class="nx">FilmsSearchComponent</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">AppComponent</span> <span class="p">{}</span>
+</pre></div>
+
+
+<p><em>src/main.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">bootstrap</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/platform-browser-dynamic&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">enableProdMode</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">AppComponent</span><span class="p">,</span> <span class="nx">environment</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./app/&#39;</span><span class="p">;</span>
+
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">HTTP_PROVIDERS</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/http&#39;</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">environment</span><span class="p">.</span><span class="nx">production</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">enableProdMode</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="nx">bootstrap</span><span class="p">(</span><span class="nx">AppComponent</span><span class="p">,</span> <span class="p">[</span> <span class="nx">HTTP_PROVIDERS</span> <span class="p">]);</span>
+</pre></div>
+
+
+<p>Вуаля !</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/hello-world-a2.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Дальше интересней. Дополним Elastic сервис подсказками, агрегацией, подсветкой и.т.д.:</p>
+<p><em>src/app/films-search/elastic.service.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Injectable</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">Http</span><span class="p">,</span> <span class="nx">URLSearchParams</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/http&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">&#39;rxjs/add/operator/toPromise&#39;</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="kr">interface</span> <span class="nx">IFilm</span> <span class="p">{</span>
+  <span class="nx">id</span>: <span class="kt">number</span><span class="p">[];</span>
+  <span class="nx">name</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">date</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">description</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">rate</span>: <span class="kt">number</span><span class="p">[];</span>
+  <span class="nx">starring</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">category</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">directed</span>: <span class="kt">string</span><span class="p">[];</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="kr">interface</span> <span class="nx">IChunk</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="nx">items</span>: <span class="kt">T</span><span class="p">[];</span>
+  <span class="nx">total</span>: <span class="kt">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="kr">interface</span> <span class="nx">IAggs</span> <span class="p">{</span>
+  <span class="nx">directors</span>: <span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span><span class="nx">key</span>:<span class="kt">string</span><span class="p">;</span> <span class="nx">doc_count</span>:<span class="kt">number</span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="nx">categories</span>: <span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span><span class="nx">key</span>:<span class="kt">string</span><span class="p">;</span> <span class="nx">doc_count</span>:<span class="kt">number</span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="nx">stars</span>: <span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span><span class="nx">key</span>:<span class="kt">string</span><span class="p">;</span> <span class="nx">doc_count</span>:<span class="kt">number</span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
+  <span class="nx">years</span>: <span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span><span class="nx">key</span>:<span class="kt">number</span><span class="p">;</span> <span class="nx">doc_count</span>:<span class="kt">number</span><span class="p">;</span> 
+    <span class="nx">months?</span>:<span class="kt">Array</span><span class="o">&lt;</span><span class="p">{</span><span class="nx">key</span>:<span class="kt">number</span><span class="p">;</span> <span class="nx">doc_count</span>:<span class="kt">number</span><span class="p">}</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">ELASTIC_URL</span> <span class="o">=</span> <span class="s1">&#39;//localhost:9200/kinopoisk/&#39;</span><span class="p">;</span>
+
+<span class="kr">interface</span> <span class="nx">ISearchKwargs</span> <span class="p">{</span>
+  <span class="nx">q?</span>: <span class="kt">string</span><span class="p">;</span> <span class="nx">from?</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">size?</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">fields?</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">year?</span>: <span class="kt">number</span><span class="p">;</span> <span class="nx">month?</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">star?</span>: <span class="kt">string</span><span class="p">,</span> <span class="nx">director?</span>: <span class="kt">string</span><span class="p">,</span> <span class="nx">category?</span>: <span class="kt">string</span>
+<span class="p">}</span>
+
+<span class="kd">@Injectable</span><span class="p">()</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">ElasticService</span> <span class="p">{</span>
+
+  <span class="kr">constructor</span><span class="p">(</span><span class="kr">private</span> <span class="nx">_http</span> : <span class="kt">Http</span><span class="p">){}</span>
+
+  <span class="nx">suggest</span><span class="p">(</span><span class="nx">a</span>:<span class="kt">string</span><span class="p">,</span> <span class="nx">size</span>:<span class="kt">number</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">[]</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URLSearchParams</span><span class="p">();</span>
+    <span class="nx">params</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+      <span class="s2">&quot;kino&quot;</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;text&quot;</span> <span class="o">:</span> <span class="nx">a</span><span class="p">,</span>
+        <span class="s2">&quot;completion&quot;</span> <span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;suggest&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;size&quot;</span><span class="o">:</span> <span class="nx">size</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}));</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_http</span>
+      <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ELASTIC_URL</span> <span class="o">+</span> <span class="s1">&#39;_suggest&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">search</span>: <span class="kt">params</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">toPromise</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="kr">const</span> <span class="nx">opts</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">().</span><span class="nx">kino</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">options</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nx">opts</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">opt</span> <span class="o">=&gt;</span> <span class="nx">opt</span><span class="p">.</span><span class="nx">text</span><span class="p">);</span>
+      <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="nx">search</span><span class="p">(</span><span class="nx">kwargs?</span> : <span class="kt">ISearchKwargs</span><span class="p">)</span> <span class="o">:</span> <span class="nx">Promise</span><span class="o">&lt;</span><span class="p">{</span><span class="nx">chunk</span>:<span class="kt">IChunk</span><span class="o">&lt;</span><span class="nx">IFilm</span><span class="o">&gt;</span><span class="p">;</span> <span class="nx">aggs</span>:<span class="kt">IAggs</span><span class="p">}</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">kwargsDefs</span> : <span class="kt">ISearchKwargs</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">from</span>: <span class="kt">0</span><span class="p">,</span> <span class="nx">size</span>: <span class="kt">5</span><span class="p">,</span> <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span> <span class="p">]</span>
+    <span class="p">};</span>
+    <span class="nx">kwargs</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">kwargsDefs</span><span class="p">,</span> <span class="nx">kwargs</span><span class="p">);</span>
+
+    <span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URLSearchParams</span><span class="p">();</span>
+    <span class="nx">params</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+      <span class="s1">&#39;from&#39;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">from</span><span class="p">,</span>
+      <span class="s1">&#39;size&#39;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">size</span><span class="p">,</span>
+      <span class="s2">&quot;fields&quot;</span> <span class="o">:</span> <span class="p">[</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;rate&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;starring&quot;</span><span class="p">,</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;directed&quot;</span><span class="p">],</span>
+      <span class="s2">&quot;query&quot;</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;bool&quot;</span><span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;must&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="nx">kwargs</span><span class="p">.</span><span class="nx">q</span> 
+              <span class="o">?</span> <span class="p">{</span> <span class="s2">&quot;query_string&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;query&quot;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">q</span><span class="p">,</span>
+                    <span class="s2">&quot;fields&quot;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span>
+                    <span class="s2">&quot;default_operator&quot;</span><span class="o">:</span> <span class="s2">&quot;and&quot;</span>
+                  <span class="p">}</span>
+                <span class="p">}</span> 
+              <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;match_all&quot;</span><span class="o">:</span> <span class="p">{}</span> <span class="p">},</span>
+          <span class="p">],</span>
+          <span class="s2">&quot;filter&quot;</span><span class="o">:</span> <span class="p">[</span>
+            <span class="nx">kwargs</span><span class="p">.</span><span class="nx">year</span>
+              <span class="o">?</span> <span class="p">{</span>
+                <span class="s2">&quot;range&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                  <span class="s2">&quot;date&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;gte&quot;</span> <span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">month</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">?</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">year</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">kwargs.month</span> : <span class="kt">kwargs.year</span><span class="p">,</span>
+                    <span class="s2">&quot;lt&quot;</span> <span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">year</span> <span class="o">+</span> <span class="p">(</span><span class="nx">kwargs</span><span class="p">.</span><span class="nx">month</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">?</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">month</span> <span class="o">+</span> <span class="s2">&quot;||+1M&quot;</span> <span class="o">:</span> <span class="s2">&quot;||+1y&quot;</span><span class="p">),</span>
+                    <span class="s2">&quot;format&quot;</span><span class="o">:</span> <span class="s2">&quot;yyyy-MM||yyyy&quot;</span>
+                  <span class="p">}</span>
+                <span class="p">}</span>
+              <span class="p">}</span>
+              <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+           <span class="nx">kwargs</span><span class="p">.</span><span class="nx">category</span> 
+             <span class="o">?</span> <span class="p">{</span>
+               <span class="s2">&quot;match&quot;</span><span class="o">:</span> <span class="p">{</span>
+                 <span class="s2">&quot;category.raw&quot;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">category</span>
+               <span class="p">}</span>
+             <span class="p">}</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+           <span class="nx">kwargs</span><span class="p">.</span><span class="nx">director</span> 
+             <span class="o">?</span> <span class="p">{</span>
+               <span class="s2">&quot;match&quot;</span><span class="o">:</span> <span class="p">{</span>
+                 <span class="s2">&quot;directed.raw&quot;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">director</span>
+               <span class="p">}</span>
+             <span class="p">}</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+           <span class="nx">kwargs</span><span class="p">.</span><span class="nx">star</span> 
+             <span class="o">?</span> <span class="p">{</span>
+               <span class="s2">&quot;match&quot;</span><span class="o">:</span> <span class="p">{</span>
+                 <span class="s2">&quot;starring.raw&quot;</span><span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">star</span>
+               <span class="p">}</span>
+             <span class="p">}</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+          <span class="p">].</span><span class="nx">filter</span><span class="p">(</span><span class="nx">v</span> <span class="o">=&gt;</span> <span class="nx">v</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;highlight&quot;</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;pre_tags&quot;</span> <span class="o">:</span> <span class="p">[</span><span class="s2">&quot;[mazko.github.io]&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;post_tags&quot;</span> <span class="o">:</span> <span class="p">[</span><span class="s2">&quot;[/mazko.github.io]&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;fields&quot;</span> <span class="o">:</span> <span class="nx">kwargs</span><span class="p">.</span><span class="nx">fields</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span>
+          <span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">item</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">result</span><span class="p">[</span><span class="nx">item</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="s2">&quot;fragment_size&quot;</span> <span class="o">:</span> <span class="mi">333</span>
+            <span class="p">};</span>
+            <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+          <span class="p">},</span> <span class="p">{})</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;sort&quot;</span> <span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;rate&quot;</span> <span class="o">:</span> <span class="p">{</span><span class="s2">&quot;order&quot;</span> <span class="o">:</span> <span class="s2">&quot;desc&quot;</span><span class="p">}</span> <span class="p">}</span>
+       <span class="p">],</span>
+      <span class="s2">&quot;aggs&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;years&quot;</span><span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;date_histogram&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;field&quot;</span><span class="o">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;year&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;min_doc_count&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;order&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;_count&quot;</span> <span class="o">:</span> <span class="s2">&quot;desc&quot;</span> <span class="p">}</span>
+          <span class="p">},</span>
+          <span class="s2">&quot;aggs&quot;</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;months&quot;</span><span class="o">:</span> <span class="p">{</span>
+              <span class="s2">&quot;date_histogram&quot;</span><span class="o">:</span> <span class="p">{</span>
+                <span class="s2">&quot;field&quot;</span><span class="o">:</span> <span class="s2">&quot;date&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;interval&quot;</span><span class="o">:</span> <span class="s2">&quot;month&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;min_doc_count&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;order&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;_count&quot;</span> <span class="o">:</span> <span class="s2">&quot;desc&quot;</span> <span class="p">}</span>
+              <span class="p">}</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;categories&quot;</span> <span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;terms&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;category.raw&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="o">:</span> <span class="mi">1000</span> <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;directors&quot;</span> <span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;terms&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;directed.raw&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="o">:</span> <span class="mi">1000</span> <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;stars&quot;</span> <span class="o">:</span> <span class="p">{</span>
+          <span class="s2">&quot;terms&quot;</span> <span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;field&quot;</span> <span class="o">:</span> <span class="s2">&quot;starring.raw&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="o">:</span> <span class="mi">1000</span> <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}));</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_http</span>
+      <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">ELASTIC_URL</span> <span class="o">+</span> <span class="s1">&#39;film/_search&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">search</span>: <span class="kt">params</span> <span class="p">})</span>
+      <span class="p">.</span><span class="nx">toPromise</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="kr">const</span> <span class="p">{</span> <span class="nx">hits</span><span class="p">,</span> <span class="nx">aggregations</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+        <span class="kr">const</span> <span class="nx">chunk</span> : <span class="kt">IChunk</span><span class="o">&lt;</span><span class="nx">IFilm</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="nx">items</span>: <span class="kt">hits.hits.map</span><span class="p">(</span>
+            <span class="nx">hit</span> <span class="o">=&gt;</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">hit</span><span class="p">.</span><span class="nx">fields</span><span class="p">,</span> <span class="nx">hit</span><span class="p">.</span><span class="nx">highlight</span><span class="p">)),</span>
+          <span class="nx">total</span>: <span class="kt">hits.total</span>
+        <span class="p">};</span>
+        <span class="kr">const</span> <span class="nx">aggs</span> : <span class="kt">IAggs</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="nx">directors</span>: <span class="kt">aggregations.directors.buckets</span><span class="p">,</span>
+          <span class="nx">categories</span>: <span class="kt">aggregations.categories.buckets</span><span class="p">,</span>
+          <span class="nx">stars</span>: <span class="kt">aggregations.stars.buckets</span><span class="p">,</span>
+          <span class="nx">years</span>: <span class="kt">aggregations.years.buckets.map</span><span class="p">(</span><span class="nx">y</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">{</span>
+              <span class="nx">doc_count</span>: <span class="kt">y.doc_count</span><span class="p">,</span> 
+              <span class="nx">key</span>: <span class="kt">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">y</span><span class="p">.</span><span class="nx">key</span><span class="p">).</span><span class="nx">getFullYear</span><span class="p">(),</span>
+              <span class="nx">months</span>: <span class="kt">y.months.buckets.map</span><span class="p">(</span><span class="nx">m</span> <span class="o">=&gt;</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="p">{</span>
+                  <span class="nx">doc_count</span>: <span class="kt">m.doc_count</span><span class="p">,</span> 
+                  <span class="nx">key</span>: <span class="kt">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">m</span><span class="p">.</span><span class="nx">key</span><span class="p">).</span><span class="nx">getMonth</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="p">}</span>
+              <span class="p">})</span>
+            <span class="p">}</span>
+          <span class="p">})</span>
+        <span class="p">};</span>
+        <span class="k">return</span> <span class="p">{</span><span class="nx">chunk</span><span class="p">,</span> <span class="nx">aggs</span><span class="p">};</span>
+      <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Реальное Angular2 приложение состоит из множества компонентов, которые могут передавать данные как от родителя к дочернему элементу так и наоборот. Например компонент FilmsList получает данные от родителя в поле films и в свою очередь передаёт свои данные в компонент подсветки Hi: </p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng generate component films-search/FilmsList
+  create src/app/films-search/films-list/films-list.component.css
+  create src/app/films-search/films-list/films-list.component.html
+  create src/app/films-search/films-list/films-list.component.spec.ts
+  create src/app/films-search/films-list/films-list.component.ts
+  create src/app/films-search/films-list/index.ts
+</pre></div>
+
+
+<p><em>src/app/films-search/films-list/films-list.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span><span class="p">,</span> <span class="nx">Input</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">IFilm</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../elastic.service&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">HiComponent</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../hi&#39;</span><span class="p">;</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;films-list&#39;</span><span class="p">,</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;films-list.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;films-list.component.css&#39;</span><span class="p">],</span>
+  <span class="nx">directives</span><span class="o">:</span> <span class="p">[</span><span class="nx">HiComponent</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">FilmsListComponent</span> <span class="p">{</span>
+
+  <span class="kd">@Input</span><span class="p">()</span> <span class="nx">films</span>: <span class="kt">IFilm</span><span class="p">[];</span>
+
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/films-list/films-list.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;div *ngFor=&quot;let film of films&quot;&gt;
+  &lt;hr/&gt;
+  &lt;p&gt;
+    &lt;b&gt;Название: &lt;/b&gt;&lt;hi [content]=&quot;film.name&quot;&gt;&lt;/hi&gt; | 
+    &lt;a href=&quot;https://www.kinopoisk.ru/film/{{film.id}}/&quot;&gt;{{film.rate}}&lt;/a&gt; | 
+    &lt;span *ngFor=&quot;let date of film.date&quot;&gt;
+      {{date | date}}
+    &lt;/span&gt;
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Режиссёр: &lt;/b&gt;{{film.directed?.join(&#39; | &#39;)}}
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Жанр: &lt;/b&gt;{{film.category?.join(&#39; | &#39;)}}
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Актёры: &lt;/b&gt;{{film.starring?.join(&#39; | &#39;)}}
+  &lt;/p&gt;
+  &lt;p&gt;
+    &lt;b&gt;Описание: &lt;/b&gt;&lt;hi [content]=&quot;film.description?.join(&#39; ... &#39;)&quot;&gt;&lt;/hi&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+</pre></div>
+
+
+<p>Компонент Hi:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng generate component films-search/hi
+  create src/app/films-search/hi/hi.component.css
+  create src/app/films-search/hi/hi.component.html
+  create src/app/films-search/hi/hi.component.spec.ts
+  create src/app/films-search/hi/hi.component.ts
+  create src/app/films-search/hi/index.ts
+</pre></div>
+
+
+<p><em>src/app/films-search/hi/hi.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span><span class="p">,</span> <span class="nx">Input</span><span class="p">,</span> <span class="nx">ViewChild</span><span class="p">,</span> <span class="nx">AfterViewInit</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;hi&#39;</span><span class="p">,</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;hi.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;hi.component.css&#39;</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">HiComponent</span> <span class="kr">implements</span> <span class="nx">AfterViewInit</span> <span class="p">{</span>
+
+  <span class="kd">@Input</span><span class="p">()</span> <span class="nx">content</span>: <span class="kt">string</span><span class="p">;</span>
+
+  <span class="kd">@ViewChild</span><span class="p">(</span><span class="s1">&#39;hi&#39;</span><span class="p">)</span> <span class="nx">hi</span><span class="p">;</span>
+
+  <span class="nx">ngAfterViewInit() {</span>
+    <span class="kr">const</span> <span class="nx">hi</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">hi</span><span class="p">.</span><span class="nx">nativeElement</span><span class="p">;</span>
+    <span class="nx">hi</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">hi</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span>
+        <span class="sr">/\[mazko\.github\.io\](.*?)\[\/mazko\.github\.io\]/g</span><span class="p">,</span> 
+        <span class="s2">&quot;&lt;b style=\&quot;color:red;\&quot;&gt;$1&lt;/b&gt;&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/hi/hi.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;span #hi&gt;{{content}}&lt;/span&gt;
+</pre></div>
+
+
+<p>Поле ввода поискового запроса в свою очередь уже отсылает данные родителю - событие q_change:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng generate component films-search/AutoComplete
+  create src/app/films-search/auto-complete/auto-complete.component.css
+  create src/app/films-search/auto-complete/auto-complete.component.html
+  create src/app/films-search/auto-complete/auto-complete.component.spec.ts
+  create src/app/films-search/auto-complete/auto-complete.component.ts
+  create src/app/films-search/auto-complete/index.ts
+</pre></div>
+
+
+<p><em>src/app/films-search/auto-complete/auto-complete.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span><span class="p">,</span> <span class="nx">Output</span><span class="p">,</span> <span class="nx">EventEmitter</span><span class="p">,</span> <span class="nx">ViewChild</span><span class="p">,</span> <span class="nx">ElementRef</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">Subject</span> <span class="p">}</span>        <span class="nx">from</span> <span class="s1">&#39;rxjs/Subject&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">&#39;rxjs/add/operator/debounceTime&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">&#39;rxjs/add/operator/distinctUntilChanged&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="s1">&#39;rxjs/add/operator/switchMap&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ElasticService</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../elastic.service&#39;</span><span class="p">;</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;auto-complete&#39;</span><span class="p">,</span>
+  <span class="nx">host</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;(document:click)&#39;</span><span class="o">:</span> <span class="s1">&#39;handleClick($event)&#39;</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;auto-complete.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">providers</span><span class="o">:</span> <span class="p">[</span><span class="nx">ElasticService</span><span class="p">],</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;auto-complete.component.css&#39;</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">AutoCompleteComponent</span>  <span class="p">{</span>
+
+  <span class="kd">@Output</span><span class="p">()</span> <span class="nx">q_change</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventEmitter</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">();</span>
+  <span class="kd">@ViewChild</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">)</span> <span class="kr">private</span> <span class="nx">menuRef</span><span class="p">;</span>
+
+  <span class="kr">private</span> <span class="nx">searchTermStream</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Subject</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+  <span class="kr">constructor</span><span class="p">(</span><span class="kr">private</span> <span class="nx">_es</span> : <span class="kt">ElasticService</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">searchTermStream</span>
+      <span class="p">.</span><span class="nx">debounceTime</span><span class="p">(</span><span class="mi">333</span><span class="p">)</span>
+      <span class="p">.</span><span class="nx">distinctUntilChanged</span><span class="p">()</span>
+      <span class="p">.</span><span class="nx">switchMap</span><span class="p">(</span><span class="nx">q</span> <span class="o">=&gt;</span> <span class="nx">q</span> 
+        <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">_es</span><span class="p">.</span><span class="nx">suggest</span><span class="p">(</span><span class="nx">q</span><span class="p">).</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">([]))</span> 
+        <span class="o">:</span> <span class="nx">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">([]))</span>
+      <span class="p">.</span><span class="nx">subscribe</span><span class="p">(</span><span class="nx">suggestions</span> <span class="o">=&gt;</span> <span class="p">{</span>
+         <span class="k">this</span><span class="p">.</span><span class="nx">suggestions</span> <span class="o">=</span> <span class="nx">suggestions</span><span class="p">;</span>
+      <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="nx">suggestions</span>: <span class="kt">string</span><span class="p">[];</span>
+  <span class="nx">query</span>: <span class="kt">string</span><span class="p">;</span>
+
+  <span class="nx">handleClear() {</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">suggestions</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">searchTermStream</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleQuery() {</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">q_change</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleKey</span><span class="p">(</span><span class="nx">keyCode</span>: <span class="kt">number</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">([</span><span class="mi">27</span><span class="p">,</span> <span class="mi">13</span><span class="p">].</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">keyCode</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">handleClear</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">searchTermStream</span><span class="p">.</span><span class="nx">next</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">query</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="kr">private</span> <span class="nx">isEventInsideElement</span><span class="p">(</span><span class="nx">event</span>:<span class="kt">Event</span><span class="p">,</span> <span class="nx">child</span>:<span class="kt">ElementRef</span><span class="p">)</span> <span class="o">:</span> <span class="kr">boolean</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">child</span><span class="p">.</span><span class="nx">nativeElement</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleClick</span><span class="p">(</span><span class="nx">event</span>:<span class="kt">MouseEvent</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">isEventInsideElement</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">menuRef</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="p">(</span><span class="o">&lt;</span><span class="nx">HTMLElement</span><span class="o">&gt;</span><span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">).</span><span class="nx">dataset</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">];</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">handleQuery</span><span class="p">();</span>
+    <span class="p">}</span> 
+    <span class="k">this</span><span class="p">.</span><span class="nx">handleClear</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/auto-complete/auto-complete.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;span&gt;
+  &lt;input
+    [(ngModel)]=query 
+    (keyup)=handleKey($event.keyCode) 
+    (keyup.enter)=handleQuery() 
+    type=&quot;text&quot; placeholder=&quot;пример:космос&quot; autocomplete=&quot;off&quot;&gt;
+&lt;/span&gt;
+&lt;ul #menu&gt;
+  &lt;li *ngFor=&quot;let suggest of suggestions&quot; [attr.data-val]=suggest&gt;
+    {{suggest}}
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre></div>
+
+
+<p><em>src/app/films-search/auto-complete/auto-complete.component.css</em></p>
+<div class="highlight"><pre><span></span><span class="nt">input</span> <span class="p">{</span>
+  <span class="nb">text-align</span><span class="o">:</span> <span class="nb">center</span><span class="p">;</span>
+  <span class="n">flex</span><span class="o">-</span><span class="n">grow</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">span</span> <span class="p">{</span>
+  <span class="nb">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
+  <span class="nb">height</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">ul</span> <span class="p">{</span>
+  <span class="nb">padding</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+  <span class="nb">margin</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+  <span class="nb">border</span><span class="o">:</span> <span class="nb">solid</span> <span class="m">1px</span> <span class="m">#f1f1f1</span><span class="p">;</span>
+  <span class="nb">position</span><span class="o">:</span> <span class="nb">absolute</span><span class="p">;</span>
+  <span class="nb">background</span><span class="o">:</span> <span class="m">#FFF</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
+  <span class="nb">list-style</span><span class="o">:</span> <span class="nb">none</span><span class="p">;</span>
+  <span class="nb">padding</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="nb">margin</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
+  <span class="nb">color</span><span class="o">:</span> <span class="m">#7E7E7E</span><span class="p">;</span>
+  <span class="nb">cursor</span><span class="o">:</span> <span class="nb">pointer</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">ul</span> <span class="nt">li</span><span class="nd">:hover</span> <span class="p">{</span>
+  <span class="nb">background-color</span><span class="o">:</span> <span class="m">#f1f1f1</span><span class="p">;</span>
+  <span class="nb">color</span><span class="o">:</span> <span class="m">#000</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>В компоненте Aggregations присутствуют оба случая:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng generate component films-search/Aggregations
+  create src/app/films-search/aggregations/aggregations.component.css
+  create src/app/films-search/aggregations/aggregations.component.html
+  create src/app/films-search/aggregations/aggregations.component.spec.ts
+  create src/app/films-search/aggregations/aggregations.component.ts
+  create src/app/films-search/aggregations/index.ts
+</pre></div>
+
+
+<p><em>src/app/films-search/aggregations/aggregations.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span><span class="p">,</span> <span class="nx">Output</span><span class="p">,</span> <span class="nx">EventEmitter</span><span class="p">,</span> <span class="nx">Input</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">IAggs</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;../elastic.service&#39;</span><span class="p">;</span>
+
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">IAggsFilter</span> <span class="p">{</span>
+  <span class="nx">year</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">month</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">star</span>: <span class="kt">string</span><span class="p">;</span>
+  <span class="nx">category</span>: <span class="kt">string</span><span class="p">;</span>
+  <span class="nx">director</span>: <span class="kt">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;aggregations&#39;</span><span class="p">,</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;aggregations.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;aggregations.component.css&#39;</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">AggregationsComponent</span> <span class="p">{</span>
+
+  <span class="kd">@Output</span><span class="p">()</span> <span class="nx">aggs_change</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">EventEmitter</span><span class="o">&lt;</span><span class="nx">IAggsFilter</span><span class="o">&gt;</span><span class="p">();</span>
+
+  <span class="kd">@Input</span><span class="p">()</span> <span class="nx">set</span> <span class="nx">data</span><span class="p">(</span><span class="nx">aggs</span> : <span class="kt">IAggs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">aggs</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+    <span class="c1">// Flatten array easier to work in Angular2</span>
+    <span class="c1">// TODO: strong typing &lt;reduce&gt;</span>
+    <span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span> <span class="o">=</span> <span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span>
+      <span class="p">(</span><span class="nx">flat</span><span class="p">,</span> <span class="nx">toFlat</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="p">...</span><span class="nx">flat</span><span class="p">,</span>
+        <span class="p">{</span> <span class="nx">year</span>: <span class="kt">toFlat.key</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">toFlat.doc_count</span> <span class="p">},</span>
+        <span class="p">...</span><span class="nx">toFlat</span><span class="p">.</span><span class="nx">months</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">m</span> <span class="o">=&gt;</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">year</span>: <span class="kt">toFlat.key</span><span class="p">,</span>
+            <span class="nx">month</span>: <span class="kt">m.key</span><span class="p">,</span>
+            <span class="nx">doc_count</span>: <span class="kt">m.doc_count</span>
+          <span class="p">}</span>
+        <span class="p">})</span>
+      <span class="p">],</span> <span class="p">[]);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_star</span> <span class="o">&amp;&amp;</span> <span class="nx">aggs</span><span class="p">.</span><span class="nx">stars</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">aggs</span><span class="p">.</span><span class="nx">stars</span> <span class="o">=</span> <span class="p">[{</span><span class="nx">key</span>: <span class="kt">this.search_star</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">0</span><span class="p">}];</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_category</span> <span class="o">&amp;&amp;</span> <span class="nx">aggs</span><span class="p">.</span><span class="nx">categories</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">aggs</span><span class="p">.</span><span class="nx">categories</span> <span class="o">=</span> <span class="p">[{</span><span class="nx">key</span>: <span class="kt">this.search_category</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">0</span><span class="p">}];</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_director</span> <span class="o">&amp;&amp;</span> <span class="nx">aggs</span><span class="p">.</span><span class="nx">directors</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">aggs</span><span class="p">.</span><span class="nx">directors</span> <span class="o">=</span> <span class="p">[{</span><span class="nx">key</span>: <span class="kt">this.search_director</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">0</span><span class="p">}];</span>
+    <span class="p">}</span>
+    <span class="c1">// TODO: strong typing &lt;any&gt;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_month</span> <span class="o">&amp;&amp;</span> <span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="o">&lt;</span><span class="nx">any</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">year</span>: <span class="kt">this.search_year</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">0</span><span class="p">},</span>
+        <span class="o">&lt;</span><span class="nx">any</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">year</span>: <span class="kt">this.search_year</span><span class="p">,</span> <span class="nx">month</span>: <span class="kt">this.search_month</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">0</span><span class="p">}</span>
+      <span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_year</span> <span class="o">&amp;&amp;</span> <span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span> <span class="o">=</span> <span class="p">[</span><span class="o">&lt;</span><span class="nx">any</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">year</span>: <span class="kt">this.search_year</span><span class="p">,</span> <span class="nx">doc_count</span>: <span class="kt">0</span><span class="p">}];</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">aggs</span> <span class="o">=</span> <span class="nx">aggs</span><span class="p">;</span>
+   <span class="p">}</span>
+
+  <span class="nx">aggs</span>:<span class="kt">IAggs</span><span class="p">;</span>
+
+  <span class="nx">search_year</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">search_month</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">search_star</span>: <span class="kt">string</span><span class="p">;</span>
+  <span class="nx">search_category</span>: <span class="kt">string</span><span class="p">;</span>
+  <span class="nx">search_director</span>: <span class="kt">string</span><span class="p">;</span>
+
+  <span class="kr">private</span> <span class="nx">_emit() {</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">aggs_change</span><span class="p">.</span><span class="nx">emit</span><span class="p">({</span>
+      <span class="nx">year</span>: <span class="kt">this.search_year</span><span class="p">,</span>
+      <span class="nx">month</span>: <span class="kt">this.search_month</span><span class="p">,</span>
+      <span class="nx">star</span>: <span class="kt">this.search_star</span><span class="p">,</span>
+      <span class="nx">category</span>: <span class="kt">this.search_category</span><span class="p">,</span>
+      <span class="nx">director</span>: <span class="kt">this.search_director</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleYM</span><span class="p">(</span><span class="nx">index</span>:<span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">idx</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">index</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">idx</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">search_year</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span><span class="p">[</span><span class="nx">idx</span><span class="p">][</span><span class="s1">&#39;year&#39;</span><span class="p">];</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">search_month</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">aggs</span><span class="p">.</span><span class="nx">years</span><span class="p">[</span><span class="nx">idx</span><span class="p">][</span><span class="s1">&#39;month&#39;</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">search_year</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">search_month</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_emit</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleStar</span><span class="p">(</span><span class="nx">star</span>:<span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">search_star</span> <span class="o">=</span> <span class="nx">star</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_emit</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleDirector</span><span class="p">(</span><span class="nx">dir</span>:<span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">search_director</span><span class="o">=</span> <span class="nx">dir</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_emit</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleCaterory</span><span class="p">(</span><span class="nx">cat</span>:<span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">search_category</span> <span class="o">=</span> <span class="nx">cat</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_emit</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/aggregations/aggregations.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;span&gt;
+  &lt;select #ym (change)=&quot;handleYM(ym.value)&quot;&gt;
+    &lt;option value=&#39;-1&#39;&gt;&lt;/option&gt;
+    &lt;option *ngFor=&quot;let ym of aggs?.years ; let idx = index&quot; 
+      [value]=&quot;idx&quot; [attr.selected]=
+        &quot;(ym.month === search_month &amp;&amp; ym.year === search_year) ? &#39;selected&#39; : null&quot;&gt;
+      {{ym.month &gt;= 0 ? &#39;-&gt; &#39; + (&quot;00&quot; + ym.month).slice(-2) : ym.year}} | {{ym.doc_count}}
+    &lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;select #star (change)=&quot;handleStar(star.value)&quot;&gt;
+    &lt;option&gt;&lt;/option&gt;
+    &lt;option *ngFor=&quot;let star of aggs?.stars&quot; [value]=&quot;star.key&quot;
+      [attr.selected]=&quot;star.key === search_star ? &#39;selected&#39; : null&quot;&gt;
+      {{star.doc_count}} | {{star.key}}
+    &lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;select #dir (change)=&quot;handleDirector(dir.value)&quot;&gt;
+    &lt;option&gt;&lt;/option&gt;
+    &lt;option *ngFor=&quot;let dir of aggs?.directors&quot; [value]=&quot;dir.key&quot;
+      [attr.selected]=&quot;dir.key === search_director ? &#39;selected&#39; : null&quot;&gt;
+      {{dir.doc_count}} | {{dir.key}}
+    &lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;select #cat (change)=&quot;handleCaterory(cat.value)&quot;&gt;
+    &lt;option&gt;&lt;/option&gt;
+    &lt;option *ngFor=&quot;let cat of aggs?.categories&quot; [value]=&quot;cat.key&quot;
+      [attr.selected]=&quot;cat.key === search_category ? &#39;selected&#39; : null&quot;&gt;
+      {{cat.doc_count}} | {{cat.key}}
+    &lt;/option&gt;
+  &lt;/select&gt;
+&lt;/span&gt;
+</pre></div>
+
+
+<p><em>src/app/films-search/aggregations/aggregations.component.css</em></p>
+<div class="highlight"><pre><span></span><span class="nt">span</span> <span class="p">{</span>
+  <span class="nb">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
+  <span class="nb">height</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">select</span> <span class="p">{</span>
+  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
+  <span class="nb">text</span><span class="o">-</span><span class="nb">overflow</span><span class="o">:</span> <span class="n">ellipsis</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">select</span> <span class="p">{</span>
+  <span class="n">flex</span><span class="o">-</span><span class="n">grow</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">select</span><span class="nd">:not</span><span class="o">(</span><span class="nd">:first-of-type</span><span class="o">)</span> <span class="p">{</span>
+  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">7px</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Последний штрих - связать всё в одном компоненте FilmsSearch:</p>
+<p><em>src/app/films-search/films-search.component.ts</em></p>
+<div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">Component</span><span class="p">,</span> <span class="nx">OnInit</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;@angular/core&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ElasticService</span><span class="p">,</span> <span class="nx">IFilm</span><span class="p">,</span> <span class="nx">IAggs</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./elastic.service&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">FilmsListComponent</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./films-list&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">AutoCompleteComponent</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./auto-complete&#39;</span><span class="p">;</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">AggregationsComponent</span><span class="p">,</span> <span class="nx">IAggsFilter</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;./aggregations&#39;</span><span class="p">;</span>
+
+<span class="kd">@Component</span><span class="p">({</span>
+  <span class="kr">module</span><span class="nx">Id</span><span class="o">:</span> <span class="kr">module</span><span class="nx">.id</span><span class="p">,</span>
+  <span class="nx">selector</span><span class="o">:</span> <span class="s1">&#39;films-search&#39;</span><span class="p">,</span>
+  <span class="nx">templateUrl</span><span class="o">:</span> <span class="s1">&#39;films-search.component.html&#39;</span><span class="p">,</span>
+  <span class="nx">styleUrls</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;films-search.component.css&#39;</span><span class="p">],</span>
+  <span class="nx">providers</span><span class="o">:</span> <span class="p">[</span><span class="nx">ElasticService</span><span class="p">],</span>
+  <span class="nx">directives</span><span class="o">:</span> <span class="p">[</span><span class="nx">FilmsListComponent</span><span class="p">,</span> <span class="nx">AutoCompleteComponent</span><span class="p">,</span> <span class="nx">AggregationsComponent</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="kr">export</span> <span class="kr">class</span> <span class="nx">FilmsSearchComponent</span> <span class="kr">implements</span> <span class="nx">OnInit</span> <span class="p">{</span>
+
+  <span class="nx">films</span>: <span class="kt">IFilm</span><span class="p">[];</span>
+  <span class="nx">films_per_page</span>: <span class="kt">number</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="nx">aggs</span>: <span class="kt">IAggs</span><span class="p">;</span>
+  <span class="nx">total_pages</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">current_page</span>: <span class="kt">number</span><span class="p">;</span>
+  <span class="nx">search_query</span>: <span class="kt">string</span><span class="p">;</span>
+  <span class="nx">search_aggs</span>: <span class="kt">IAggsFilter</span><span class="p">;</span>
+
+  <span class="nx">is_fetching_state</span>: <span class="kt">boolean</span><span class="p">;</span>
+
+  <span class="kr">constructor</span><span class="p">(</span><span class="kr">private</span> <span class="nx">_es</span> : <span class="kt">ElasticService</span><span class="p">){}</span>
+
+  <span class="kr">private</span> <span class="nx">_search() {</span>
+    <span class="kr">const</span> <span class="nx">from</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">current_page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">films_per_page</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">is_fetching_state</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="kr">const</span> <span class="nx">filter</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">search_aggs</span> <span class="o">||</span> <span class="o">&lt;</span><span class="nx">IAggsFilter</span><span class="o">&gt;</span><span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_es</span><span class="p">.</span><span class="nx">search</span><span class="p">({</span>
+      <span class="nx">q</span>: <span class="kt">this.search_query</span><span class="p">,</span> 
+      <span class="nx">from</span><span class="p">,</span> <span class="nx">size</span>: <span class="kt">this.films_per_page</span><span class="p">,</span>
+      <span class="nx">year</span>: <span class="kt">filter.year</span><span class="p">,</span> <span class="nx">month</span>: <span class="kt">filter.month</span><span class="p">,</span>
+      <span class="nx">star</span>: <span class="kt">filter.star</span><span class="p">,</span> <span class="nx">category</span>: <span class="kt">filter.category</span><span class="p">,</span> 
+      <span class="nx">director</span>: <span class="kt">filter.director</span>
+    <span class="p">}).</span><span class="nx">then</span><span class="p">(({</span><span class="nx">chunk</span><span class="p">,</span> <span class="nx">aggs</span><span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">is_fetching_state</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">films</span> <span class="o">=</span> <span class="nx">chunk</span><span class="p">.</span><span class="nx">items</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">total_pages</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nx">chunk</span><span class="p">.</span><span class="nx">total</span> <span class="o">/</span> <span class="k">this</span><span class="p">.</span><span class="nx">films_per_page</span><span class="p">);</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">aggs</span> <span class="o">=</span> <span class="nx">aggs</span><span class="p">;</span>
+    <span class="p">}).</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span> <span class="o">=&gt;</span> <span class="nx">alert</span><span class="p">(</span><span class="nx">e</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="nx">handlePerPage</span><span class="p">(</span><span class="nx">value</span>:<span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">films_per_page</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">handleQuery</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_query</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleNextPage() {</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">current_page</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_search</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">handlePrevPage() {</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">current_page</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_search</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleQuery</span><span class="p">(</span><span class="nx">query?</span> : <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">search_query</span> <span class="o">=</span> <span class="nx">query</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">current_page</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_search</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">ngOnInit() {</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">handleQuery</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="nx">handleAggs</span><span class="p">(</span><span class="nx">filter</span> : <span class="kt">IAggsFilter</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">search_aggs</span> <span class="o">=</span> <span class="nx">filter</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">handleQuery</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">search_query</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>src/app/films-search/films-search.component.html</em></p>
+<div class="highlight"><pre><span></span>&lt;div&gt;
+  &lt;p&gt;
+    &lt;auto-complete (q_change)=&quot;handleQuery($event)&quot;&gt;&lt;/auto-complete&gt;
+
+    &lt;select #perPage 
+      [disabled]=is_fetching_state
+      (change)=&quot;handlePerPage(perPage.value)&quot;&gt;
+      &lt;option *ngFor=&quot;let p of [3, 5, 10, 25]&quot;
+        [attr.selected]=&quot;p === films_per_page ? &#39;selected&#39; : null&quot;&gt;
+        {{p}}
+      &lt;/option&gt;
+    &lt;/select&gt;
+
+    &lt;button *ngIf=&quot;current_page &gt; 1&quot; 
+      [disabled]=is_fetching_state
+      (click)=&quot;handlePrevPage()&quot;&gt;{{&#39;&lt;&#39;}}
+    &lt;/button&gt;
+    &lt;button *ngIf=&quot;current_page &lt; total_pages&quot;
+      [disabled]=is_fetching_state
+      (click)=&quot;handleNextPage()&quot;&gt;{{&#39;&gt;&#39;}}
+    &lt;/button&gt;
+    &lt;span *ngIf=total_pages&gt;Страница {{current_page}} из {{total_pages}}&lt;/span&gt;
+  &lt;/p&gt;
+
+  &lt;p&gt;
+    &lt;aggregations [data]=aggs (aggs_change)=&quot;handleAggs($event)&quot;&gt;&lt;/aggregations&gt;
+  &lt;/p&gt;
+
+  &lt;films-list [films]=films&gt;&lt;/films-list&gt; 
+&lt;/div&gt;
+</pre></div>
+
+
+<p><em>src/app/films-search/films-search.component.css</em></p>
+<div class="highlight"><pre><span></span><span class="nt">div</span> <span class="p">{</span>
+  <span class="nb">font-size</span><span class="o">:</span> <span class="m">18px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">p</span> <span class="p">{</span>
+  <span class="nb">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">auto-complete</span><span class="o">,</span> <span class="nt">aggregations</span> <span class="p">{</span>
+  <span class="n">flex</span><span class="o">-</span><span class="n">grow</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">button</span> <span class="p">{</span>
+  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">7px</span><span class="p">;</span>
+  <span class="n">align</span><span class="o">-</span><span class="n">self</span><span class="o">:</span> <span class="n">stretch</span><span class="p">;</span>
+  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">span</span> <span class="p">{</span>
+  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
+  <span class="n">align</span><span class="o">-</span><span class="n">self</span><span class="o">:</span> <span class="nb">center</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">select</span> <span class="p">{</span>
+  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">7px</span><span class="p">;</span>
+  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
+  <span class="nb">text</span><span class="o">-</span><span class="nb">overflow</span><span class="o">:</span> <span class="n">ellipsis</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Сборка для демо на картинке:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>env<span class="o">)</span>~: ng build -prod
+</pre></div><p>There are <a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

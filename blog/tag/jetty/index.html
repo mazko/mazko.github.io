@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - Jetty</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene - курс молодого бойца</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2012-10-15T00:00:00+03:00">
+                Published: Пн. 15 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/jetty">Jetty</a> <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info --><p><a href="http://lucene.apache.org/" rel="nofollow">Lucene</a> - это библиотека для реализации высокоскоростного полнотекстового поиска с открытым исходным кодом, написанная полностью на <strong>Java</strong>. Вопреки некоторым ожиданиям и заблуждениям <em>Lucene</em> не является законченным приложением - это просто библиотека, которую можно (нужно) использовать для реализации поиска в приложениях, а каких именно -  <em>web</em>, <em>desktop</em> и т.д. не имеет значения. Проект активно развивается и поддерживается, кроме того, есть хорошие порты на другие языки программирования - а это уже о многом говорит в пользу проекта вцелом.</p>
+<p>В этом цикле статей мы поэтапно рассмотрим основные возможности <em>Lucene</em> на примере реализации законченного <strong>web-приложения</strong> - системы поиска для реального и уже давно существующего сайта. Поскольку, как уже было упомянуто ранее, <em>Lucene</em> написана на <em>Java</em>, то наше приложение будет тоже написано на <em>Java</em> и реализовано в виде <strong>Servlet</strong>, хостится всё это добро будет на <a href="https://ru.wikipedia.org/wiki/Jetty" rel="nofollow">Jetty</a>.</p>
+<p>В проекте будет несколько подпроектов, поэтому предлагаю сразу воспользоваться мульти-модульностью <a href="https://books.sonatype.com/mvnex-book/reference/multimodule.html" rel="nofollow">Maven</a>, где в корне намечается общая зависимость от Lucene. Начнём с сервера:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">cd</span> lucene-tutorial/
+~$ tree
+.
+├── pom.xml
+└── server
+    ├── pom.xml
+    ├── src
+    │   └── main
+    │       ├── java
+    │       │   └── server
+    │       │       └── SearchServlet.java
+    │       └── webapp
+    │           └── WEB-INF
+    │               └── web.xml
+    └── static.war
+
+<span class="m">7</span> directories, <span class="m">5</span> files
+</pre></div>
+
+
+<p><em>pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-core<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;modules&gt;</span>
+    <span class="nt">&lt;module&gt;</span>server<span class="nt">&lt;/module&gt;</span>
+  <span class="nt">&lt;/modules&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p><em>server/pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;parent&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;/parent&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>server<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>war<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;name&gt;</span>Lucene Tutorial Server<span class="nt">&lt;/name&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>javax.servlet<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>servlet-api<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.4<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.eclipse.jetty<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>9.3.8.v20160314<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;webApp&gt;</span>
+            <span class="nt">&lt;contextPath&gt;</span>/search<span class="nt">&lt;/contextPath&gt;</span>
+          <span class="nt">&lt;/webApp&gt;</span>
+          <span class="nt">&lt;contextHandlers&gt;</span>
+            <span class="nt">&lt;contextHandler</span> <span class="na">implementation=</span><span class="s">&quot;org.eclipse.jetty.maven.plugin.JettyWebAppContext&quot;</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;war&gt;</span>${project.basedir}/static.war<span class="nt">&lt;/war&gt;</span> --&gt;
+              <span class="nt">&lt;contextPath&gt;</span>/<span class="nt">&lt;/contextPath&gt;</span>
+            <span class="nt">&lt;/contextHandler&gt;</span>
+          <span class="nt">&lt;/contextHandlers&gt;</span> 
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>Имеется готовый статический <a href="http://www.turismy.com/" rel="nofollow">сайт</a>, для которого мы будем разрабатывать поиск в виде архива static.war. Мы возьмём некогда топовый в гугле сайт по ключевым словам <em>Семь Чудес Света</em>. Получить контент сайта можно с помощью <em>Linux</em>'овой утититы <em>wget</em>:</p>
+<div class="highlight"><pre><span></span>wget -r http://www.turismy.com/
+</pre></div>
+
+
+<p>Динамический контент будет генерироваться сервлетом, который будет предоставлять возможность поиска по сайту, разрабатываться он будет поэтапно. Для <strong>Servlet</strong> явно указан маршрут - <em>/search</em> в то время как статический контент в находится в корне сайта. Для начала реализуем очень простой сервлет, который отдаст какую-то элементарную информацию из <em>Lucene</em>:</p>
+<p><em>server/src/main/webapp/WEB-INF/web.xml</em></p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;web-app</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> 
+    <span class="na">xmlns=</span><span class="s">&quot;http://java.sun.com/xml/ns/j2ee&quot;</span> 
+    <span class="na">xmlns:web=</span><span class="s">&quot;http://xmlns.jcp.org/xml/ns/javaee&quot;</span> 
+    <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://xmlns.jcp.org/xml/ns/javaee </span>
+<span class="s">        http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&quot;</span> 
+    <span class="na">version=</span><span class="s">&quot;2.4&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;servlet&gt;</span>
+    <span class="nt">&lt;servlet-name&gt;</span>search<span class="nt">&lt;/servlet-name&gt;</span>
+    <span class="nt">&lt;servlet-class&gt;</span>server.SearchServlet<span class="nt">&lt;/servlet-class&gt;</span>
+  <span class="nt">&lt;/servlet&gt;</span>
+  <span class="nt">&lt;servlet-mapping&gt;</span>
+    <span class="nt">&lt;servlet-name&gt;</span>search<span class="nt">&lt;/servlet-name&gt;</span>
+    <span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+  <span class="nt">&lt;/servlet-mapping&gt;</span>
+<span class="nt">&lt;/web-app&gt;</span>
+</pre></div>
+
+
+<p><em>server/src/main/java/server/SearchServlet.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.PrintWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.util.Version</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SearchServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">luceneVersions</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">Version</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getFields</span><span class="o">());</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;HTML&gt;&quot;</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;BODY&gt;&quot;</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">luceneVersions</span><span class="o">.</span><span class="na">replace</span><span class="o">(</span><span class="s">&quot;,&quot;</span><span class="o">,</span> <span class="s">&quot;&lt;br /&gt;&quot;</span><span class="o">));</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;/BODY&gt;&quot;</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;&lt;/HTML&gt;&quot;</span><span class="o">);</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3>Сборка и первый запуск</h3>
+<div class="highlight"><pre><span></span>~$ apt install maven default-jdk
+~$ mvn -v
+Apache Maven 3.3.9
+Java version: 1.8.0_03-Ubuntu, vendor: Oracle Corporation
+~$ sudo netstat -tulpn <span class="p">|</span> grep -q <span class="m">8080</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s1">&#39;port 8080 is busy !&#39;</span>
+~$ mvn clean -pl server/ jetty:run
+</pre></div>
+
+
+<p><img alt="Linux Site" src="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Linux Site Search" src="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site_slash_search.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Теперь у нас в системе есть подопытный сайт <strong>http://localhost:8080/</strong> с которым мы и будем работать <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">далее</a>, где первым делом проиндексируем содержимое нашего сайта.</p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

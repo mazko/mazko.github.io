@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - Java</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/">Lucene - автозаполнение ввода пользователя</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-05-20T00:00:00+03:00">
+                Published: Пт. 20 Май 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">maven</a> <a href="http://mazko.github.io/blog/tag/ajax">AJAX</a> </p>
+</footer><!-- /.post-info --><p>Используя подсказки в процессе ввода <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">поискового</a> запроса можно быстрее искать нужную информацию. Поисковые подсказки - это схожие с вашим запросом термины. Они появляются на экране по мере того, как вы вводите в строку поиска запрос. Для данного процесса критически важна скорость реакции на ввод пользователя, поэтому на серверной части ускорить процесс поможет специально заточенный индекс / модель данных, а на стороне клиента неплохо бы использовать <a href="https://ru.wikipedia.org/wiki/AJAX" rel="nofollow">AJAX</a> дабы не перезагружать каждый раз HTML-страницу целиком при изменении поискового запроса. На картинке показан результат работы алгоритма <a href="https://lucene.apache.org/core/6_0_0/suggest/org/apache/lucene/search/suggest/analyzing/AnalyzingSuggester.html" rel="nofollow">AnalyzingSuggester</a>, который можно запустить скачав исходники в конце текущего материала.</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/suggest.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Первым делом нужно добавить в мульти-модульный <strong>maven</strong> проект новую зависимость <code>lucene-suggest</code>:</p>
+<p><em>src/pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;properties&gt;</span>
+  <span class="nt">&lt;lucene.version&gt;</span>6.0.0<span class="nt">&lt;/lucene.version&gt;</span>
+  <span class="nt">&lt;/properties&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-core<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${lucene.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-analyzers-common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${lucene.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-facet<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${lucene.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-suggest<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>${lucene.version}<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;modules&gt;</span>
+    <span class="nt">&lt;module&gt;</span>server<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>crawler<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>common<span class="nt">&lt;/module&gt;</span>
+  <span class="nt">&lt;/modules&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.5.1<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;source&gt;</span>1.8<span class="nt">&lt;/source&gt;</span>
+          <span class="nt">&lt;target&gt;</span>1.8<span class="nt">&lt;/target&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>С помощью методов <code>store</code> / <code>load</code> в классе <a href="https://lucene.apache.org/core/6_0_0/suggest/org/apache/lucene/search/suggest/analyzing/AnalyzingSuggester.html" rel="nofollow">AnalyzingSuggester</a> можно сохранить / восстанавливать модель данных автодополнения в файл для последующего быстрого старта. Поскольку эта логика используется как при индексации так и при поиске, она вынесена в их общий модуль <code>LuceneBinding</code>. С помощью метода <code>weight()</code> задаётся приоритет для фраз автодополнения - в данном случае наиболее короткие фразы будут первыми в списке:</p>
+<p><em>src/common/src/main/java/common/LuceneBinding.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">common</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.InputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.OutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Files</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Paths</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.Analyzer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.standard.StandardAnalyzer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.FacetsConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.spell.Dictionary</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.suggest.InputIterator</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.suggest.analyzing.AnalyzingSuggester</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.util.BytesRef</span><span class="o">;</span>
+
+<span class="cm">/* This class is used both by Crawler and SearchServlet */</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">LuceneBinding</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">ROOT</span> <span class="o">=</span> <span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;user.home&quot;</span><span class="o">),</span> <span class="s">&quot;lucene-tutorial-index&quot;</span><span class="o">);</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">SEARCH_INDEX_PATH</span> <span class="o">=</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">ROOT</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="s">&quot;search&quot;</span><span class="o">);</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">TAXO_INDEX_PATH</span> <span class="o">=</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">ROOT</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="s">&quot;taxo&quot;</span><span class="o">);</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">SUGGEST_INDEX_PATH</span> <span class="o">=</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">ROOT</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="s">&quot;suggest&quot;</span><span class="o">);</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_ID</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_TITLE</span> <span class="o">=</span> <span class="s">&quot;title&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_CONTENT</span> <span class="o">=</span> <span class="s">&quot;content&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_CATEGORY</span> <span class="o">=</span> <span class="s">&quot;category&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_DIRECTOR</span> <span class="o">=</span> <span class="s">&quot;director&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_RATE</span> <span class="o">=</span> <span class="s">&quot;rate&quot;</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FACET_DIRECTOR</span> <span class="o">=</span> <span class="s">&quot;Director&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FACET_DATE</span> <span class="o">=</span> <span class="s">&quot;Release Date&quot;</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FACET_CATEGORY</span> <span class="o">=</span> <span class="s">&quot;Category&quot;</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">SUGGEST_MAX_SHINGLES</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">FacetsConfig</span> <span class="nf">getFacetsConfig</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="n">FacetsConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FacetsConfig</span><span class="o">();</span>
+    <span class="n">config</span><span class="o">.</span><span class="na">setHierarchical</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_DATE</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+    <span class="n">config</span><span class="o">.</span><span class="na">setMultiValued</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_CATEGORY</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">config</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Analyzer</span> <span class="nf">getAnalyzer</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">StandardAnalyzer</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Suggester</span> <span class="kd">extends</span> <span class="n">AnalyzingSuggester</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">ser</span> <span class="o">=</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SUGGEST_INDEX_PATH</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="s">&quot;serialized&quot;</span><span class="o">);</span>
+
+    <span class="kd">private</span> <span class="nf">Suggester</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+      <span class="kd">super</span><span class="o">(</span><span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SUGGEST_INDEX_PATH</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="s">&quot;tmp&quot;</span><span class="o">)),</span> 
+        <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">store</span><span class="o">(</span><span class="kd">final</span> <span class="n">Dictionary</span> <span class="n">input</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+      <span class="kd">final</span> <span class="n">Suggester</span> <span class="n">suggester</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Suggester</span><span class="o">();</span>
+      <span class="n">suggester</span><span class="o">.</span><span class="na">build</span><span class="o">(</span><span class="k">new</span> <span class="n">InputIterator</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">InputIterator</span> <span class="n">i</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">getEntryIterator</span><span class="o">();</span>
+        <span class="kd">private</span> <span class="n">BytesRef</span> <span class="n">c</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX_TOKEN_LENGTH</span> <span class="o">=</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SUGGEST_MAX_SHINGLES</span>
+            <span class="o">*</span> <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">StandardAnalyzer</span><span class="o">.</span><span class="na">DEFAULT_MAX_TOKEN_LENGTH</span><span class="o">);</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">BytesRef</span> <span class="nf">next</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">c</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">c</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">weight</span><span class="o">()</span> <span class="o">{</span>
+          <span class="c1">// short phrases more important</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">MAX_TOKEN_LENGTH</span> <span class="o">-</span> <span class="k">this</span><span class="o">.</span><span class="na">c</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">BytesRef</span> <span class="nf">payload</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">payload</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasPayloads</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">hasPayloads</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">BytesRef</span><span class="o">&gt;</span> <span class="nf">contexts</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">contexts</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">hasContexts</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">i</span><span class="o">.</span><span class="na">hasContexts</span><span class="o">();</span>
+        <span class="o">}</span>
+      <span class="o">});</span>
+
+      <span class="k">try</span> <span class="o">(</span><span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">os</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">newOutputStream</span><span class="o">(</span><span class="n">Suggester</span><span class="o">.</span><span class="na">ser</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">suggester</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">os</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Suggester</span> <span class="nf">load</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+      <span class="kd">final</span> <span class="n">Suggester</span> <span class="n">suggester</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Suggester</span><span class="o">();</span>
+      <span class="k">try</span> <span class="o">(</span><span class="kd">final</span> <span class="n">InputStream</span> <span class="n">is</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="na">newInputStream</span><span class="o">(</span><span class="n">Suggester</span><span class="o">.</span><span class="na">ser</span><span class="o">))</span> <span class="o">{</span>
+        <span class="n">suggester</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">is</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="k">return</span> <span class="n">suggester</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Индекс для автодополнения будет строится по двум полям <code>suggestIndexer.add(title, description)</code>. Комбинации слов достигаются с помощью <a href="https://lucene.apache.org/core/6_0_0/analyzers-common/org/apache/lucene/analysis/shingle/ShingleAnalyzerWrapper.html" rel="nofollow">ShingleAnalyzerWrapper</a>:  </p>
+<p><em>src/crawler/src/main/java/crawler/SugestIndexer.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">crawler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.Closeable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.shingle.ShingleAnalyzerWrapper</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Field.Store</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.TextField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.DirectoryReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriterConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriterConfig.OpenMode</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.spell.LuceneDictionary</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">common.LuceneBinding.Suggester</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SugestIndexer</span> <span class="kd">implements</span> <span class="n">Closeable</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">IndexWriter</span> <span class="n">writer</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_SUGGEST</span> <span class="o">=</span> <span class="s">&quot;SUGGEST&quot;</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">SHINGLES_INDEX_PATH</span> <span class="o">=</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SUGGEST_INDEX_PATH</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="s">&quot;shingles&quot;</span><span class="o">);</span>
+
+  <span class="kd">public</span> <span class="nf">SugestIndexer</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="n">IndexWriterConfig</span> <span class="n">iwConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriterConfig</span><span class="o">(</span>
+        <span class="k">new</span> <span class="n">ShingleAnalyzerWrapper</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">(),</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SUGGEST_MAX_SHINGLES</span><span class="o">));</span>
+    <span class="n">iwConfig</span><span class="o">.</span><span class="na">setOpenMode</span><span class="o">(</span><span class="n">OpenMode</span><span class="o">.</span><span class="na">CREATE</span><span class="o">);</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">writer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriter</span><span class="o">(</span><span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">SugestIndexer</span><span class="o">.</span><span class="na">SHINGLES_INDEX_PATH</span><span class="o">),</span> <span class="n">iwConfig</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span><span class="o">...</span> <span class="n">items</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Document</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">item</span> <span class="o">:</span> <span class="n">items</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">TextField</span><span class="o">(</span><span class="n">SugestIndexer</span><span class="o">.</span><span class="na">FIELD_SUGGEST</span><span class="o">,</span> <span class="n">item</span><span class="o">,</span> <span class="n">Store</span><span class="o">.</span><span class="na">NO</span><span class="o">));</span>
+    <span class="o">}</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">writer</span><span class="o">.</span><span class="na">addDocument</span><span class="o">(</span><span class="n">doc</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">writer</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="k">try</span> <span class="o">(</span><span class="kd">final</span> <span class="n">IndexReader</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">DirectoryReader</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">writer</span><span class="o">.</span><span class="na">getDirectory</span><span class="o">()))</span> <span class="o">{</span>
+      <span class="n">Suggester</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="k">new</span> <span class="n">LuceneDictionary</span><span class="o">(</span><span class="n">reader</span><span class="o">,</span> <span class="n">SugestIndexer</span><span class="o">.</span><span class="na">FIELD_SUGGEST</span><span class="o">));</span>
+    <span class="o">}</span>
+    <span class="c1">// TODO: we can remove SHINGLES_INDEX_PATH directory now</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Сервлет отдаёт все варианты автодополнений в JSON-формате <code>http://localhost:8080/api/suggest?q=космос</code>:</p>
+<p><em>src/server/src/main/java/server/SuggestServlet.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.AbstractMap.SimpleEntry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.HashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.stream.Collectors</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.stream.Stream</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.ServletException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServlet</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.json.JSONArray</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding.Suggester</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SuggestServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="n">Suggester</span> <span class="n">suggester</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">MAX_SUGGESTS</span> <span class="o">=</span> <span class="mi">22</span><span class="o">;</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="kd">final</span> <span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="kd">final</span> <span class="n">HttpServletResponse</span> <span class="n">res</span><span class="o">)</span>
+      <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">SuggestServlet</span><span class="o">.</span><span class="na">suggester</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="kd">synchronized</span> <span class="o">(</span><span class="n">SuggestServlet</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">SuggestServlet</span><span class="o">.</span><span class="na">suggester</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">SuggestServlet</span><span class="o">.</span><span class="na">suggester</span> <span class="o">=</span> <span class="n">Suggester</span><span class="o">.</span><span class="na">load</span><span class="o">();</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">final</span> <span class="n">String</span> <span class="n">query</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;q&quot;</span><span class="o">);</span>
+    <span class="kd">final</span> <span class="n">Collection</span><span class="o">&lt;?&gt;</span> <span class="n">lookupResultList</span> <span class="o">=</span> <span class="n">SuggestServlet</span><span class="o">.</span><span class="na">suggester</span>
+        <span class="o">.</span><span class="na">lookup</span><span class="o">(</span><span class="n">query</span><span class="o">,</span> <span class="kc">false</span><span class="o">,</span> <span class="n">SuggestServlet</span><span class="o">.</span><span class="na">MAX_SUGGESTS</span><span class="o">).</span><span class="na">stream</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">sorted</span><span class="o">((</span><span class="n">e1</span><span class="o">,</span> <span class="n">e2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">Long</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">e2</span><span class="o">.</span><span class="na">value</span><span class="o">,</span> <span class="n">e1</span><span class="o">.</span><span class="na">value</span><span class="o">))</span>
+        <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">v</span> <span class="o">-&gt;</span> <span class="n">Stream</span>
+            <span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="k">new</span> <span class="n">SimpleEntry</span><span class="o">&lt;&gt;(</span><span class="s">&quot;key&quot;</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">key</span><span class="o">),</span> <span class="k">new</span> <span class="n">SimpleEntry</span><span class="o">&lt;&gt;(</span><span class="s">&quot;hi&quot;</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">highlightKey</span><span class="o">),</span>
+                <span class="k">new</span> <span class="n">SimpleEntry</span><span class="o">&lt;&gt;(</span><span class="s">&quot;val&quot;</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">value</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">HashMap</span><span class="o">::</span><span class="k">new</span><span class="o">,</span> <span class="o">(</span><span class="n">m</span><span class="o">,</span> <span class="n">e</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="n">e</span><span class="o">.</span><span class="na">getValue</span><span class="o">()),</span> <span class="n">Map</span><span class="o">::</span><span class="n">putAll</span><span class="o">))</span>
+        <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">Collectors</span><span class="o">.</span><span class="na">toCollection</span><span class="o">(</span><span class="n">ArrayList</span><span class="o">::</span><span class="k">new</span><span class="o">));</span>
+
+    <span class="kd">final</span> <span class="n">JSONArray</span> <span class="n">json</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JSONArray</span><span class="o">(</span><span class="n">lookupResultList</span><span class="o">);</span>
+    <span class="n">res</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">&quot;application/json&quot;</span><span class="o">);</span>
+    <span class="n">res</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">&quot;UTF-8&quot;</span><span class="o">);</span>
+    <span class="n">res</span><span class="o">.</span><span class="na">getWriter</span><span class="o">().</span><span class="na">write</span><span class="o">(</span><span class="n">json</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Сборка и запуск:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">cd</span> src
+~$ mvn clean install
+~$ mvn -pl crawler/ exec:java -Dexec.mainClass<span class="o">=</span><span class="s2">&quot;crawler.App&quot;</span>
+~$ mvn -pl server/ jetty:run
+</pre></div>
+
+
+<p><a href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/lucene-tutorial.zip">Исходники</a></p>
+<p><a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">ElasticSearch</a></p><p>There are <a href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/" rel="bookmark"
+                           title="Permalink to Lucene - фасетный поиск">Lucene - фасетный поиск</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-05-15T00:00:00+03:00">
+                Published: Вс. 15 Май 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">maven</a> <a href="http://mazko.github.io/blog/tag/jstl">JSTL</a> </p>
+</footer><!-- /.post-info -->                <p>После того, как пользователь получает первые результаты <a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/" rel="bookmark"
+                           title="Permalink to Расширение функциональности Weka своей реализацией Tokenizer">Расширение функциональности Weka своей реализацией Tokenizer</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-04-30T00:00:00+03:00">
+                Published: Сб. 30 Апрель 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/nlp">NLP</a> <a href="http://mazko.github.io/blog/tag/weka">Weka</a> <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->                <p>В случае классификации <a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">текстовой информации</a> качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается <a href="http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html" rel="nofollow">StringToWordVector</a> и одним из параметров у него задаётся тип <a href="http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html" rel="nofollow">токенайзера</a>. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/" rel="bookmark"
+                           title="Permalink to Анализ тональности текста с помощью Weka">Анализ тональности текста с помощью Weka</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-04-26T00:00:00+03:00">
+                Published: Вт. 26 Апрель 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/nlp">NLP</a> <a href="http://mazko.github.io/blog/tag/weka">Weka</a> <a href="http://mazko.github.io/blog/tag/repl">REPL</a> </p>
+</footer><!-- /.post-info -->                <p>Имеется <a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz">заданный</a> набор документов для которых уже заранее известна тональность: <strong>good</strong>, <strong>neutral</strong>, <strong>bad</strong>. Для <a href="http://ole.in.ua/">нового</a> документа необходимо определить какая у него тональность из трёх указанных.
+Идеального решения тут не существует ну хотябы потому, что понятие хороший/плохой/злой часто субъективно :) Но всё-же можно попробовать взять среднюю температуру по больнице <a href="https://habrahabr.ru/post/149605/" rel="nofollow">задействовав ...</a></p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="bookmark"
+                           title="Permalink to Автоматический определь языка в Apache Tika">Автоматический определь языка в Apache Tika</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-01-21T00:00:00+02:00">
+                Published: Пн. 21 Январь 2013
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/nlp">NLP</a> <a href="http://mazko.github.io/blog/tag/tika">Tika</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 3
+        <a href="http://mazko.github.io/blog/category/java/index2.html">&raquo;</a>
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

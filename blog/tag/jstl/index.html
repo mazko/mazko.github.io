@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - JSTL</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">Lucene - фасетный поиск</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-05-15T00:00:00+03:00">
+                Published: Вс. 15 Май 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">maven</a> <a href="http://mazko.github.io/blog/tag/jstl">JSTL</a> </p>
+</footer><!-- /.post-info --><p>После того, как пользователь получает первые результаты <a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый последующий запрос пользователя сужает выборку до тех пор пока цель поиска не будет достигнута.</p>
+<p>В файле <code>Top.json</code> хранится ~15k дамп фильмов с кинопоиска на май 2016, на котором будем тестировать качество фасетного поиска. В дампе хранится оценка, название, id, актёры, режиссёры, композиторы, жанр, дата выхода, страна производитель, слоган и краткое описание для каждого фильма.</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/facet.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Структура мульти-модульного <strong>maven</strong> проекта, где в корневом <code>pom.xml</code> обозначена общая зависимость от Lucene, а также указана минимальная версия Java 1.8 и выше:</p>
+<div class="highlight"><pre><span></span>~$ tree
+.
+├── src
+│   ├── common
+│   │   ├── pom.xml
+│   │   └── src
+│   │       └── main
+│   │           └── java
+│   │               └── common
+│   │                   └── LuceneBinding.java
+│   ├── crawler
+│   │   ├── pom.xml
+│   │   └── src
+│   │       └── main
+│   │           ├── java
+│   │           │   └── crawler
+│   │           │       ├── App.java
+│   │           │       └── LuceneIndexer.java
+│   │           └── resources
+│   │               └── log4j.properties
+│   ├── pom.xml
+│   └── server
+│       ├── pom.xml
+│       └── src
+│           └── main
+│               ├── java
+│               │   └── server
+│               │       ├── DefaultSearchItem.java
+│               │       ├── FacetTakeResult.java
+│               │       ├── HighlightedSearchItem.java
+│               │       ├── LuceneSearcher.java
+│               │       ├── QueryHelper.java
+│               │       ├── SearchServlet.java
+│               │       └── takeble
+│               │           ├── ITakeble.java
+│               │           └── TakeResult.java
+│               └── webapp
+│                   ├── index.jsp
+│                   └── WEB-INF
+│                       ├── tags
+│                       │   ├── hi.tag
+│                       │   └── nav.tag
+│                       └── web.xml
+└── Top.json
+
+<span class="m">21</span> directories, <span class="m">21</span> files
+</pre></div>
+
+
+<p><em>src/pom.xml</em></p>
+<div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
+  <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+  <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>tutorial.lucene<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>parent<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-core<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-analyzers-common<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-queryparser<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-highlighter<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.lucene<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>lucene-facet<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>6.0.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+  <span class="nt">&lt;/dependencies&gt;</span>
+  <span class="nt">&lt;modules&gt;</span>
+    <span class="nt">&lt;module&gt;</span>server<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>crawler<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;module&gt;</span>common<span class="nt">&lt;/module&gt;</span>
+  <span class="nt">&lt;/modules&gt;</span>
+  <span class="nt">&lt;build&gt;</span>
+    <span class="nt">&lt;plugins&gt;</span>
+      <span class="nt">&lt;plugin&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>3.5.1<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;configuration&gt;</span>
+          <span class="nt">&lt;source&gt;</span>1.8<span class="nt">&lt;/source&gt;</span>
+          <span class="nt">&lt;target&gt;</span>1.8<span class="nt">&lt;/target&gt;</span>
+        <span class="nt">&lt;/configuration&gt;</span>
+      <span class="nt">&lt;/plugin&gt;</span>
+    <span class="nt">&lt;/plugins&gt;</span>
+  <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</pre></div>
+
+
+<p>В подпроекте common объявлены общие константы используемые при поиске и индексации. Фасетный индекс состоит из трёх полей <code>FACET_DIRECTOR</code>, <code>FACET_DATE</code> и <code>FACET_CATEGORY</code>. Наиболее простой случай - режиссёр (director), поскольку для простоты предполагается что у одного фильма может быть он только один. Вместе с тем у одного фильма может быть уже несколько жанров, в этом случае <code>setMultiValued</code>. Ну и самый интересный случай - древовидная фильтрация по дате - <code>setHierarchical</code>:</p>
+<p><em>src/common/src/main/java/common/LuceneBinding.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">common</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.nio.file.Path</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.nio.file.Paths</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.Analyzer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.analysis.standard.StandardAnalyzer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.FacetsConfig</span><span class="o">;</span>
+
+<span class="cm">/* This class is used both by Crawler and SearchServlet */</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">LuceneBinding</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">SEARCH_INDEX_PATH</span> <span class="o">=</span> <span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;user.home&quot;</span><span class="o">),</span> <span class="s">&quot;lucene-tutorial-index&quot;</span><span class="o">,</span> <span class="s">&quot;search&quot;</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Path</span> <span class="n">TAXO_INDEX_PATH</span> <span class="o">=</span> <span class="n">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">getProperty</span><span class="o">(</span><span class="s">&quot;user.home&quot;</span><span class="o">),</span> <span class="s">&quot;lucene-tutorial-index&quot;</span><span class="o">,</span> <span class="s">&quot;taxo&quot;</span><span class="o">);</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_ID</span> <span class="o">=</span> <span class="s">&quot;id&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_TITLE</span> <span class="o">=</span> <span class="s">&quot;title&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_CONTENT</span> <span class="o">=</span> <span class="s">&quot;content&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_CATEGORY</span> <span class="o">=</span> <span class="s">&quot;category&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_DIRECTOR</span> <span class="o">=</span> <span class="s">&quot;director&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FIELD_RATE</span> <span class="o">=</span> <span class="s">&quot;rate&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FACET_DIRECTOR</span> <span class="o">=</span> <span class="s">&quot;Director&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FACET_DATE</span> <span class="o">=</span> <span class="s">&quot;Release Date&quot;</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">FACET_CATEGORY</span> <span class="o">=</span> <span class="s">&quot;Category&quot;</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">FacetsConfig</span> <span class="nf">getFacetsConfig</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">FacetsConfig</span> <span class="n">config</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FacetsConfig</span><span class="o">();</span>
+        <span class="n">config</span><span class="o">.</span><span class="na">setHierarchical</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_DATE</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+        <span class="n">config</span><span class="o">.</span><span class="na">setMultiValued</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_CATEGORY</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">config</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">Analyzer</span> <span class="nf">getAnalyzer</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">StandardAnalyzer</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>При индексации для фасетов создаётся параллельный индекс <code>DirectoryTaxonomyWriter</code>. Ещё в поле рейтинга фильма <code>FIELD_RATE</code> дополнительно добавлена возможность сортировки результатов поиска:</p>
+<p><em>src/crawler/src/main/java/crawler/LuceneIndexer.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">crawler</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.Closeable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.text.SimpleDateFormat</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.log4j.Logger</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Field.Store</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.FloatDocValuesField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.StringField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.TextField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.FacetField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriterConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexWriterConfig.OpenMode</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.Directory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">LuceneIndexer</span> <span class="kd">implements</span> <span class="n">Closeable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Logger</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">Logger</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+
+    <span class="cm">/* IndexWriter is completely thread safe */</span>
+
+    <span class="kd">private</span> <span class="n">IndexWriter</span> <span class="n">indexWriter</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">DirectoryTaxonomyWriter</span> <span class="n">taxoWriter</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span>
+                <span class="s">&quot;Closing Index &lt; &quot;</span> <span class="o">+</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SEARCH_INDEX_PATH</span> <span class="o">+</span> <span class="s">&quot; &gt; NumDocs: &quot;</span> <span class="o">+</span> 
+                <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span><span class="o">.</span><span class="na">numDocs</span><span class="o">());</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taxoWriter</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;Index closed OK!&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">new_index</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">Directory</span> <span class="n">directory</span> <span class="o">=</span> <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SEARCH_INDEX_PATH</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">IndexWriterConfig</span> <span class="n">iwConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriterConfig</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">());</span>
+        <span class="n">iwConfig</span><span class="o">.</span><span class="na">setOpenMode</span><span class="o">(</span><span class="n">OpenMode</span><span class="o">.</span><span class="na">CREATE</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexWriter</span><span class="o">(</span><span class="n">directory</span><span class="o">,</span> <span class="n">iwConfig</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taxoWriter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DirectoryTaxonomyWriter</span><span class="o">(</span>
+            <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TAXO_INDEX_PATH</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">content</span><span class="o">,</span> 
+            <span class="kd">final</span> <span class="n">String</span> <span class="n">director</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">cats</span><span class="o">,</span>
+            <span class="kd">final</span> <span class="n">Date</span> <span class="n">date</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">float</span> <span class="n">rate</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">&quot;***** &quot;</span> <span class="o">+</span> <span class="n">title</span> <span class="o">+</span> <span class="s">&quot; *****&quot;</span><span class="o">);</span>
+        <span class="n">LuceneIndexer</span><span class="o">.</span><span class="na">logger</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="n">content</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Document</span><span class="o">();</span>
+
+        <span class="c1">// A field that is indexed but not tokenized: the entire String value is</span>
+        <span class="c1">// indexed as a single token</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_ID</span><span class="o">,</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">id</span><span class="o">).</span><span class="na">toString</span><span class="o">(),</span> <span class="n">Store</span><span class="o">.</span><span class="na">YES</span><span class="o">));</span>
+
+        <span class="c1">// A field that is indexed and tokenized, without term vectors.</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">TextField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_TITLE</span><span class="o">,</span> <span class="n">title</span><span class="o">,</span> <span class="n">Store</span><span class="o">.</span><span class="na">YES</span><span class="o">));</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">TextField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_CONTENT</span><span class="o">,</span> <span class="n">content</span><span class="o">,</span> <span class="n">Store</span><span class="o">.</span><span class="na">YES</span><span class="o">));</span>
+
+        <span class="c1">// A field that is indexed but not tokenized</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_DIRECTOR</span><span class="o">,</span> <span class="n">director</span><span class="o">,</span> <span class="n">Store</span><span class="o">.</span><span class="na">YES</span><span class="o">));</span>
+
+        <span class="c1">// Field that stores a per-document long value for scoring, sorting or</span>
+        <span class="c1">// value retrieval</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">FloatDocValuesField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_RATE</span><span class="o">,</span> <span class="n">rate</span><span class="o">));</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_RATE</span><span class="o">,</span> <span class="n">Float</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">rate</span><span class="o">),</span> <span class="n">Store</span><span class="o">.</span><span class="na">YES</span><span class="o">));</span>
+
+        <span class="c1">// Facet</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">FacetField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_DIRECTOR</span><span class="o">,</span> <span class="n">director</span><span class="o">));</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">cat</span> <span class="o">:</span> <span class="n">cats</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">FacetField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_CATEGORY</span><span class="o">,</span> <span class="n">cat</span><span class="o">));</span>
+            <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">StringField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_CATEGORY</span><span class="o">,</span> <span class="n">cat</span><span class="o">,</span> <span class="n">Store</span><span class="o">.</span><span class="na">YES</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="n">doc</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="n">FacetField</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_DATE</span><span class="o">,</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;yyyy&quot;</span><span class="o">).</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span>
+                <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;MM&quot;</span><span class="o">).</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">),</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;dd&quot;</span><span class="o">).</span><span class="na">format</span><span class="o">(</span><span class="n">date</span><span class="o">)));</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">indexWriter</span><span class="o">.</span><span class="na">addDocument</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getFacetsConfig</span><span class="o">().</span><span class="na">build</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">taxoWriter</span><span class="o">,</span> <span class="n">doc</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>При поиске обычный <code>Query</code> заворачивается в фасетный <code>DrillDownQuery</code> а непосредственно поиск осуществляется через <code>DrillSideways</code>. Сортировка по рейтингу фильма:</p>
+<p><em>src/server/src/main/java/server/LuceneSearcher.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.AbstractMap.SimpleEntry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.DrillDownQuery</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.DrillSideways</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.DrillSideways.DrillSidewaysResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.taxonomy.TaxonomyReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.CorruptIndexException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.DirectoryReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.IndexReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.ParseException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.IndexSearcher</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.Query</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.ScoreDoc</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.Sort</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.SortField</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.TopDocs</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.TopFieldCollector</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.highlight.InvalidTokenOffsetsException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.Directory</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.store.FSDirectory</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">server.takeble.ITakeble</span><span class="o">;</span>
+
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">SearchAggregator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="n">Query</span> <span class="n">query</span><span class="o">;</span>
+    <span class="kd">protected</span> <span class="n">IndexSearcher</span> <span class="n">indexSearcher</span><span class="o">;</span>
+
+    <span class="kd">abstract</span> <span class="n">T</span> <span class="nf">aggregate</span><span class="o">(</span><span class="n">ScoreDoc</span> <span class="n">sd</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> 
+        <span class="n">CorruptIndexException</span><span class="o">,</span> <span class="n">InvalidTokenOffsetsException</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">LuceneSearcher</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">A</span> <span class="kd">extends</span> <span class="n">SearchAggregator</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="kd">implements</span> <span class="n">ITakeble</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">story</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SimpleEntry</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;&gt;</span> <span class="n">facets</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span> <span class="n">classA</span><span class="o">;</span>
+
+    <span class="cm">/* IndexReader is thread safe - one instance for all requests */</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="n">IndexReader</span> <span class="n">indexReader</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="n">TaxonomyReader</span> <span class="n">taxoReader</span><span class="o">;</span>
+
+    <span class="n">LuceneSearcher</span><span class="o">(</span><span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span> <span class="n">classA</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">story</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">SimpleEntry</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">[]&gt;&gt;</span> <span class="n">facets</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">story</span> <span class="o">=</span> <span class="n">story</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">facets</span> <span class="o">=</span> <span class="n">facets</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">classA</span> <span class="o">=</span> <span class="n">classA</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="kd">final</span> <span class="n">Directory</span> <span class="n">dir</span> <span class="o">=</span> <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">SEARCH_INDEX_PATH</span><span class="o">);</span>
+                    <span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span> <span class="o">=</span> <span class="n">DirectoryReader</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">dir</span><span class="o">);</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">taxoReader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">taxoReader</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">taxoReader</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DirectoryTaxonomyReader</span><span class="o">(</span>
+                            <span class="n">FSDirectory</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TAXO_INDEX_PATH</span><span class="o">));</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">FacetTakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">Take</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span> <span class="kd">throws</span> 
+            <span class="n">ParseException</span><span class="o">,</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InstantiationException</span><span class="o">,</span> 
+            <span class="n">IllegalAccessException</span><span class="o">,</span> <span class="n">InvalidTokenOffsetsException</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">nDocs</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">count</span><span class="o">;</span>
+
+        <span class="kd">final</span> <span class="n">DrillDownQuery</span> <span class="n">query</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrillDownQuery</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getFacetsConfig</span><span class="o">(),</span>
+                <span class="n">QueryHelper</span><span class="o">.</span><span class="na">generate</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">story</span><span class="o">));</span>
+
+        <span class="k">this</span><span class="o">.</span><span class="na">facets</span><span class="o">.</span><span class="na">forEach</span><span class="o">((</span><span class="n">i</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">query</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="na">getKey</span><span class="o">(),</span> <span class="n">i</span><span class="o">.</span><span class="na">getValue</span><span class="o">()));</span>
+
+        <span class="kd">final</span> <span class="n">IndexSearcher</span> <span class="n">indexSearcher</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IndexSearcher</span><span class="o">(</span><span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">indexReader</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">SortField</span> <span class="n">sortField</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SortField</span><span class="o">(</span>
+            <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FIELD_RATE</span><span class="o">,</span> <span class="n">SortField</span><span class="o">.</span><span class="na">Type</span><span class="o">.</span><span class="na">FLOAT</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">TopFieldCollector</span> <span class="n">topCollector</span> <span class="o">=</span> <span class="n">TopFieldCollector</span><span class="o">.</span><span class="na">create</span><span class="o">(</span>
+            <span class="k">new</span> <span class="n">Sort</span><span class="o">(</span><span class="n">sortField</span><span class="o">),</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">nDocs</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="kc">false</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">DrillSideways</span> <span class="n">facetDrill</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrillSideways</span><span class="o">(</span><span class="n">indexSearcher</span><span class="o">,</span> 
+                <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getFacetsConfig</span><span class="o">(),</span> <span class="n">LuceneSearcher</span><span class="o">.</span><span class="na">taxoReader</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">DrillSidewaysResult</span> <span class="n">drillResult</span> <span class="o">=</span> <span class="n">facetDrill</span><span class="o">.</span><span class="na">search</span><span class="o">(</span><span class="n">query</span><span class="o">,</span> <span class="n">topCollector</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">TopDocs</span> <span class="n">topDocs</span> <span class="o">=</span> <span class="n">topCollector</span><span class="o">.</span><span class="na">topDocs</span><span class="o">();</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">nDocs</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">FacetTakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">topDocs</span><span class="o">.</span><span class="na">totalHits</span><span class="o">,</span> <span class="n">drillResult</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="n">ScoreDoc</span><span class="o">[]</span> <span class="n">scoreDocs</span> <span class="o">=</span> <span class="n">topDocs</span><span class="o">.</span><span class="na">scoreDocs</span><span class="o">;</span>
+        <span class="kd">final</span> <span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">scoreDocs</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="n">start</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="n">FacetTakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">topDocs</span><span class="o">.</span><span class="na">totalHits</span><span class="o">,</span> <span class="n">drillResult</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">items</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">length</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">A</span> <span class="n">aggregator</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">classA</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+        <span class="n">aggregator</span><span class="o">.</span><span class="na">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">;</span>
+        <span class="n">aggregator</span><span class="o">.</span><span class="na">indexSearcher</span> <span class="o">=</span> <span class="n">indexSearcher</span><span class="o">;</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">start</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">scoreDocs</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">items</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">start</span><span class="o">,</span> <span class="n">aggregator</span><span class="o">.</span><span class="na">aggregate</span><span class="o">(</span><span class="n">scoreDocs</span><span class="o">[</span><span class="n">i</span><span class="o">]));</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="n">FacetTakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">topDocs</span><span class="o">.</span><span class="na">totalHits</span><span class="o">,</span> <span class="n">items</span><span class="o">,</span> <span class="n">drillResult</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>src/server/src/main/java/server/FacetTakeResult.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.AbstractMap.SimpleEntry</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collection</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Collections</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.LinkedHashMap</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Map</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.DrillSideways.DrillSidewaysResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.FacetResult</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.facet.Facets</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">server.takeble.TakeResult</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">FacetTakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">TakeResult</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">TOP</span> <span class="o">=</span> <span class="mi">333</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">directors</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">categories</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">SimpleEntry</span><span class="o">&lt;</span><span class="n">Number</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Number</span><span class="o">&gt;&gt;&gt;</span> <span class="n">dates</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="nf">getDirectors</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">directors</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="nf">getCategories</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">categories</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">SimpleEntry</span><span class="o">&lt;</span><span class="n">Number</span><span class="o">,</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Number</span><span class="o">&gt;&gt;&gt;</span> <span class="nf">getDates</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">dates</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">FacetResult</span> <span class="nf">bugHelper</span><span class="o">(</span><span class="kd">final</span> <span class="n">Facets</span> <span class="n">facets</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span><span class="o">...</span> <span class="n">path</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">facets</span><span class="o">.</span><span class="na">getTopChildren</span><span class="o">(</span><span class="n">FacetTakeResult</span><span class="o">.</span><span class="na">TOP</span><span class="o">,</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_DATE</span><span class="o">,</span> <span class="n">path</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="kd">final</span> <span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">RuntimeException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">FacetTakeResult</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">totalHits</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Collection</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">items</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="n">DrillSidewaysResult</span> <span class="n">facetDrill</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+
+        <span class="kd">super</span><span class="o">(</span><span class="n">totalHits</span><span class="o">,</span> <span class="n">items</span><span class="o">);</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">totalHits</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="c1">// Facets extraction: categories + date</span>
+
+            <span class="kd">final</span> <span class="n">Facets</span> <span class="n">facets</span> <span class="o">=</span> <span class="n">facetDrill</span><span class="o">.</span><span class="na">facets</span><span class="o">;</span>
+
+            <span class="k">this</span><span class="o">.</span><span class="na">directors</span> <span class="o">=</span> <span class="n">Collections</span>
+                    <span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">Arrays</span>
+                            <span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">facets</span><span class="o">.</span><span class="na">getTopChildren</span><span class="o">(</span><span class="n">FacetTakeResult</span><span class="o">.</span><span class="na">TOP</span><span class="o">,</span>
+                                    <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_DIRECTOR</span><span class="o">).</span><span class="na">labelValues</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">sorted</span><span class="o">((</span><span class="n">e1</span><span class="o">,</span> <span class="n">e2</span><span class="o">)</span> <span class="o">-&gt;</span> 
+                                <span class="n">Integer</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">e2</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">(),</span> <span class="n">e1</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">()))</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">LinkedHashMap</span><span class="o">::</span><span class="k">new</span><span class="o">,</span> 
+                                <span class="o">(</span><span class="n">m</span><span class="o">,</span> <span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">v</span><span class="o">.</span><span class="na">label</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">value</span><span class="o">),</span> 
+                                <span class="n">Map</span><span class="o">::</span><span class="n">putAll</span><span class="o">));</span>
+
+            <span class="k">this</span><span class="o">.</span><span class="na">categories</span> <span class="o">=</span> <span class="n">Collections</span>
+                    <span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">Arrays</span>
+                            <span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">facets</span><span class="o">.</span><span class="na">getTopChildren</span><span class="o">(</span><span class="n">FacetTakeResult</span><span class="o">.</span><span class="na">TOP</span><span class="o">,</span>
+                                    <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">FACET_CATEGORY</span><span class="o">).</span><span class="na">labelValues</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">sorted</span><span class="o">((</span><span class="n">e1</span><span class="o">,</span> <span class="n">e2</span><span class="o">)</span> <span class="o">-&gt;</span> 
+                                <span class="n">Integer</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">e2</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">(),</span> <span class="n">e1</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">()))</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">LinkedHashMap</span><span class="o">::</span><span class="k">new</span><span class="o">,</span> 
+                                <span class="o">(</span><span class="n">m</span><span class="o">,</span> <span class="n">v</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">v</span><span class="o">.</span><span class="na">label</span><span class="o">,</span> <span class="n">v</span><span class="o">.</span><span class="na">value</span><span class="o">),</span> 
+                                <span class="n">Map</span><span class="o">::</span><span class="n">putAll</span><span class="o">));</span>
+
+            <span class="k">this</span><span class="o">.</span><span class="na">dates</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span>
+                <span class="n">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">FacetTakeResult</span><span class="o">.</span><span class="na">bugHelper</span><span class="o">(</span><span class="n">facets</span><span class="o">).</span><span class="na">labelValues</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">sorted</span><span class="o">((</span><span class="n">y1</span><span class="o">,</span> <span class="n">y2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">Integer</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">y2</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">(),</span> <span class="n">y1</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">()))</span>
+                    <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">LinkedHashMap</span><span class="o">::</span><span class="k">new</span><span class="o">,</span> <span class="o">(</span><span class="n">ymap</span><span class="o">,</span> <span class="n">y</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">ymap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">y</span><span class="o">.</span><span class="na">label</span><span class="o">,</span> 
+                        <span class="k">new</span> <span class="n">SimpleEntry</span><span class="o">&lt;&gt;(</span><span class="n">y</span><span class="o">.</span><span class="na">value</span><span class="o">,</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">Arrays</span>
+                            <span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">FacetTakeResult</span><span class="o">.</span><span class="na">bugHelper</span><span class="o">(</span><span class="n">facets</span><span class="o">,</span> <span class="n">y</span><span class="o">.</span><span class="na">label</span><span class="o">).</span><span class="na">labelValues</span><span class="o">)</span>
+                            <span class="o">.</span><span class="na">sorted</span><span class="o">((</span><span class="n">m1</span><span class="o">,</span> <span class="n">m2</span><span class="o">)</span> <span class="o">-&gt;</span> 
+                                <span class="n">Integer</span><span class="o">.</span><span class="na">compare</span><span class="o">(</span><span class="n">m2</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">(),</span> <span class="n">m1</span><span class="o">.</span><span class="na">value</span><span class="o">.</span><span class="na">intValue</span><span class="o">()))</span>
+                            <span class="o">.</span><span class="na">collect</span><span class="o">(</span><span class="n">LinkedHashMap</span><span class="o">::</span><span class="k">new</span><span class="o">,</span> <span class="o">(</span><span class="n">mmap</span><span class="o">,</span> <span class="n">m</span><span class="o">)</span> <span class="o">-&gt;</span> 
+                                <span class="n">mmap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">m</span><span class="o">.</span><span class="na">label</span><span class="o">,</span> <span class="n">m</span><span class="o">.</span><span class="na">value</span><span class="o">),</span> <span class="n">Map</span><span class="o">::</span><span class="n">putAll</span><span class="o">)))),</span>
+                        <span class="n">Map</span><span class="o">::</span><span class="n">putAll</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">dates</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">directors</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">categories</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">FacetTakeResult</span><span class="o">(</span><span class="kd">final</span> <span class="kt">int</span> <span class="n">totalHits</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="n">DrillSidewaysResult</span> <span class="n">facetDrill</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">(</span><span class="n">totalHits</span><span class="o">,</span> <span class="o">(</span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="kc">null</span><span class="o">,</span> <span class="n">facetDrill</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>src/server/src/main/webapp/index.jsp</em></p>
+<div class="highlight"><pre><span></span>&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot;
+    pageEncoding=&quot;UTF-8&quot;%&gt;
+
+&lt;%@ page import=&quot;server.SearchServlet&quot;%&gt;
+
+&lt;%@ taglib tagdir=&quot;/WEB-INF/tags&quot; prefix=&quot;tag&quot;%&gt;
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/functions&quot; prefix=&quot;fn&quot;%&gt;
+
+&lt;c:set var=&quot;queryStr&quot;
+    value=&quot;${searchcontext[SearchServlet.QUERY_INPUT]}&quot; /&gt;
+&lt;c:set var=&quot;currentPageInt&quot;
+    value=&quot;${searchcontext[SearchServlet.CURRENT_PAGE]}&quot; /&gt;
+&lt;c:set var=&quot;perPageInt&quot;
+    value=&quot;${searchcontext[SearchServlet.RESULTS_PER_PAGE]}&quot; /&gt;
+&lt;c:set var=&quot;directedStr&quot;
+    value=&quot;${searchcontext[SearchServlet.DIRECTED]}&quot; /&gt;
+&lt;c:set var=&quot;categoryArr&quot;
+    value=&quot;${searchcontext[SearchServlet.CATEGORY]}&quot; /&gt;
+&lt;c:set var=&quot;dateStr&quot; value=&quot;${searchcontext[SearchServlet.DATE]}&quot; /&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Lucene Facet Example&lt;/title&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form name=&quot;search&quot; action=&quot;/&quot; accept-charset=&quot;UTF-8&quot;&gt;
+        &lt;p align=&quot;center&quot;&gt;
+            &lt;input name=&quot;${SearchServlet.QUERY_INPUT}&quot;
+                value=&quot;&lt;c:out value=&quot;${queryStr}&quot;/&gt;&quot;
+                style=&quot;text-align: center; width: 100%; font-size: 1.5em&quot; /&gt;
+        &lt;/p&gt;
+        &lt;p style=&quot;display: flex; justify-content: center&quot;&gt;
+            &lt;select title=&quot;Дерево: Год -&gt; Месяц&quot; name=&quot;${SearchServlet.DATE}&quot;&gt;
+                &lt;option value=&quot;&quot;&gt;-&lt;/option&gt;
+                &lt;c:forEach items=&quot;${searchmodel.dates}&quot; var=&quot;y&quot;&gt;
+                    &lt;option value=&quot;&lt;c:out value=&quot;${y.key}&quot;/&gt;&quot;
+                        ${y.key == dateStr ? &#39;selected&#39; : null}&gt;
+                        &lt;c:out value=&quot;${y.key} | ${y.value.key}&quot; /&gt;
+                    &lt;/option&gt;
+                    &lt;c:forEach items=&quot;${y.value.value}&quot; var=&quot;m&quot;&gt;
+                        &lt;c:set var=&quot;yyyymm&quot;&gt;&lt;c:out value=&quot;${y.key}-${m.key}&quot; /&gt;&lt;/c:set&gt;
+                        &lt;option value=&quot;&lt;c:out value=&quot;${yyyymm}&quot;/&gt;&quot;
+                            ${yyyymm == dateStr ? &#39;selected&#39; : null}&gt;
+                            &lt;c:out value=&quot;-&gt; ${m.key} | ${m.value}&quot; /&gt;
+                        &lt;/option&gt;
+                    &lt;/c:forEach&gt;
+                &lt;/c:forEach&gt;
+            &lt;/select&gt; &amp;nbsp; &lt;select title=&quot;Режиссёр&quot; name=&quot;${SearchServlet.DIRECTED}&quot;&gt;
+                &lt;option value=&quot;&quot;&gt;-&lt;/option&gt;
+                &lt;c:forEach items=&quot;${searchmodel.directors}&quot; var=&quot;entry&quot;&gt;
+                    &lt;option value=&quot;&lt;c:out value=&quot;${entry.key}&quot;/&gt;&quot;
+                        ${entry.key == directedStr ? &#39;selected&#39; : null}&gt;
+                        &lt;c:out value=&quot;${entry.value} | ${entry.key}&quot; /&gt;
+                    &lt;/option&gt;
+                &lt;/c:forEach&gt;
+            &lt;/select&gt; &amp;nbsp; 
+            &lt;select title=&quot;Мульти: Жанр&quot; multiple size=&quot;1&quot;
+                name=&quot;${SearchServlet.CATEGORY}&quot;&gt;
+                &lt;option value=&quot;&quot;&gt;-&lt;/option&gt;
+                &lt;c:forEach items=&quot;${searchmodel.categories}&quot; var=&quot;entry&quot;&gt;
+                    &lt;c:set var=&quot;isSelected&quot; value=&quot;false&quot; /&gt;
+                    &lt;c:forEach var=&quot;cat&quot; items=&quot;${categoryArr}&quot;&gt;
+                        &lt;c:if test=&quot;${cat == entry.key}&quot;&gt;
+                            &lt;c:set var=&quot;isSelected&quot; value=&quot;true&quot; /&gt;
+                        &lt;/c:if&gt;
+                    &lt;/c:forEach&gt;
+                    &lt;option value=&quot;&lt;c:out value=&quot;${entry.key}&quot;/&gt;&quot;
+                        ${isSelected ? &#39;selected&#39; : null}&gt;
+                        &lt;c:out value=&quot;${entry.value} | ${entry.key}&quot; /&gt;
+                    &lt;/option&gt;
+                &lt;/c:forEach&gt;
+            &lt;/select&gt; &amp;nbsp; &lt;select title=&quot;Показывать&quot;
+                name=&quot;${SearchServlet.RESULTS_PER_PAGE}&quot;&gt;
+                &lt;c:forTokens items=&quot;3,5,10,20,50&quot; delims=&quot;,&quot; var=&quot;per&quot;&gt;
+                    &lt;option ${per == perPageInt ? &#39;selected&#39; : null}&gt;
+                        &lt;c:out value=&quot;${per}&quot; /&gt;
+                    &lt;/option&gt;
+                &lt;/c:forTokens&gt;
+            &lt;/select&gt; &amp;nbsp; &lt;input type=&quot;submit&quot; value=&quot;Поиск!&quot; /&gt;
+        &lt;/p&gt;
+    &lt;/form&gt;
+
+    &lt;c:if test=&quot;${searchmodel != null}&quot;&gt;
+        &lt;c:choose&gt;
+            &lt;c:when test=&quot;${searchmodel.items != null}&quot;&gt;
+                &lt;div style=&quot;float: right;&quot;&gt;
+                    Page &lt;b&gt; ${currentPageInt} &lt;/b&gt; from 
+                    &lt;b&gt;${Math.ceil((1.0 * searchmodel.totalHits) / perPageInt).intValue()}&lt;/b&gt;
+                &lt;/div&gt;
+                &lt;c:if test=&quot;${currentPageInt &gt; 1}&quot;&gt;
+                    &lt;tag:nav current=&quot;${currentPageInt - 1}&quot; value=&quot;&lt;&quot; style=&quot; float:left;&quot; /&gt;
+                &lt;/c:if&gt;
+                &lt;c:if test=&quot;${searchmodel.totalHits &gt; currentPageInt * perPageInt}&quot;&gt;
+                    &lt;tag:nav current=&quot;${currentPageInt + 1}&quot; value=&quot;&gt;&quot; /&gt;
+                &lt;/c:if&gt;
+                &lt;div style=&quot;clear: both;&quot;&gt;
+                    &lt;c:forEach items=&quot;${searchmodel.items}&quot; var=&quot;item&quot;&gt;
+                        &lt;hr /&gt;
+                        &lt;p&gt;
+                            &lt;b&gt;Совпадение: &lt;/b&gt;${item.score} &lt;b&gt;Кинопоиск: &lt;/b&gt; &lt;a
+                                href=&quot;http://www.kinopoisk.ru/film/${item.id}/&quot;&gt;${item.rate}&lt;/a&gt; 
+                            &lt;b&gt;Режиссёр: &lt;/b&gt;
+                            &lt;c:out value=&quot;${item.director}&quot; /&gt;
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                            &lt;b&gt;Жанр: &lt;/b&gt;
+                            &lt;c:out value=&quot;${fn:join(item.categories, &#39;, &#39;)}&quot; /&gt;
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                            &lt;b&gt;Название: &lt;/b&gt;
+                            &lt;tag:hi value=&quot;${item.highlightedTitle}&quot; /&gt;
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                            &lt;b&gt;Описание: &lt;/b&gt;
+                            &lt;tag:hi value=&quot;${item.highlightedContent}&quot; /&gt;
+                        &lt;/p&gt;
+                    &lt;/c:forEach&gt;
+                &lt;/div&gt;
+            &lt;/c:when&gt;
+            &lt;c:otherwise&gt;
+                &lt;p align=&quot;center&quot;&gt;Ничего не найдено :(&lt;/p&gt;
+            &lt;/c:otherwise&gt;
+        &lt;/c:choose&gt;
+    &lt;/c:if&gt;
+    &lt;p align=&quot;center&quot;&gt;
+        &lt;a href=&quot;http://mazko.github.io/&quot;&gt;http://mazko.github.io/&lt;/a&gt;
+    &lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></div>
+
+
+<p><em>src/server/src/main/webapp/WEB-INF/tags/hi.tag</em></p>
+<div class="highlight"><pre><span></span>&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot; %&gt;
+&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/functions&quot; prefix=&quot;fn&quot; %&gt;
+
+&lt;%@ attribute name=&quot;value&quot; required=&quot;true&quot; %&gt;
+
+&lt;c:set var=&quot;esc&quot;&gt;&lt;c:out value=&quot;${value}&quot; /&gt;&lt;/c:set&gt;
+
+&lt;c:if test=&quot;${value != null}&quot;&gt;
+    ${esc.replaceAll(
+          &quot;\\[mazko\\.github\\.io\\](.*?)\\[/mazko\\.github\\.io\\]&quot;, 
+          &quot;&lt;b style=\&quot;color:red;\&quot;&gt;$1&lt;/b&gt;&quot;)}
+&lt;/c:if&gt;
+</pre></div>
+
+
+<p><em>src/server/src/main/webapp/WEB-INF/tags/nav.tag</em></p>
+<div class="highlight"><pre><span></span>&lt;%@ taglib uri=&quot;http://java.sun.com/jsp/jstl/core&quot; prefix=&quot;c&quot;%&gt;
+
+&lt;%@ attribute name=&quot;value&quot; required=&quot;true&quot;%&gt;
+&lt;%@ attribute name=&quot;style&quot; required=&quot;false&quot;%&gt;
+&lt;%@ attribute name=&quot;current&quot; required=&quot;true&quot;%&gt;
+
+&lt;%@ tag import=&quot;server.SearchServlet&quot;%&gt;
+
+&lt;form name=&quot;search&quot; action=&quot;/&quot; accept-charset=&quot;UTF-8&quot; style=&quot;${style}&quot;&gt;
+    &lt;c:forEach items=&quot;${searchcontext}&quot; var=&quot;entry&quot;&gt;
+        &lt;c:if
+            test=&quot;${entry.key != SearchServlet.CURRENT_PAGE &amp;&amp; entry.key != SearchServlet.CATEGORY}&quot;&gt;
+            &lt;input type=&quot;hidden&quot; name=&quot;${entry.key}&quot;
+                value=&quot;&lt;c:out value=&quot;${entry.value}&quot;/&gt;&quot; /&gt;
+        &lt;/c:if&gt;
+    &lt;/c:forEach&gt;
+
+    &lt;c:forEach items=&quot;${searchcontext[SearchServlet.CATEGORY]}&quot; var=&quot;item&quot;&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;${SearchServlet.CATEGORY}&quot;
+            value=&quot;&lt;c:out value=&quot;${item}&quot;/&gt;&quot; /&gt;
+    &lt;/c:forEach&gt;
+
+    &lt;input type=&quot;hidden&quot; name=&quot;${SearchServlet.CURRENT_PAGE}&quot;
+        value=&quot;&lt;c:out value=&quot;${current}&quot;/&gt;&quot; /&gt; 
+    &lt;input type=&quot;submit&quot;
+        value=&quot;&lt;c:out value=&quot;${value}&quot;/&gt;&quot; /&gt;
+&lt;/form&gt;
+</pre></div>
+
+
+<p>Сборка и запуск:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">cd</span> src
+~$ mvn clean install
+~$ mvn -pl crawler/ exec:java -Dexec.mainClass<span class="o">=</span><span class="s2">&quot;crawler.App&quot;</span>
+~$ mvn -pl server/ jetty:run
+</pre></div>
+
+
+<!-- <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/download-kinopoisk.es6"></a> -->
+
+<p><a href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/">Далее</a> автодополнение пользовательского ввода.</p>
+<p><a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

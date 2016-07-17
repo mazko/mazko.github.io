@@ -1,1 +1,313 @@
-My Page
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825;</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">Ищем свободные Wi-Fi каналы с помощью GnuPlot</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-07-17T00:00:00+03:00">
+                Published: Вс. 17 Июль 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/gnuplot">GnuPlot</a> </p>
+</footer><!-- /.post-info --><p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш. Для таких случаев в настройках роутера предусмотрена сетка каналов 1-13 (2.412GHz-2.472GHz). Соседей много, всем нужен хороший интернет. В данном материале мы научимся рисовать вот такую красивую картинку без стороннего ПО, т.е. исключительно средствами Linux и программы для построения графиков <a href="http://www.gnuplot.info/" rel="nofollow">gnuplot</a>.</p>
+<h2>TL;DR</h2>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/shot.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>~$ sudo iwlist wlo1 scanning <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
+
+<span class="s1">import re,sys</span>
+
+<span class="s1">def tokenize(code):</span>
+<span class="s1">    token_specification = [</span>
+<span class="s1">        (&quot;CELL&quot;,  r&quot;^\s+Cell \d+&quot;),</span>
+<span class="s1">        (&quot;FREQ&quot;,  r&quot;^\s+Frequency:(\d+(\.\d*)?)&quot;),</span>
+<span class="s1">        (&quot;CHNL&quot;,  r&quot;^\s+Channel:(\d+)&quot;),</span>
+<span class="s1">        (&quot;ESSID&quot;, r&quot;^\s+ESSID:\&quot;([-_ A-Za-z0-9]*)\&quot;&quot;),</span>
+<span class="s1">        (&quot;LEVEL&quot;, r&quot;\s+Signal level=(-\d+)&quot;),</span>
+<span class="s1">    ]</span>
+<span class="s1">    tok_regex = &quot;|&quot;.join(&quot;(?P&lt;%s&gt;%s)&quot; % pair for pair in token_specification)</span>
+
+<span class="s1">    for mo in re.finditer(tok_regex, code, re.M):</span>
+<span class="s1">        typ = mo.lastgroup</span>
+<span class="s1">        if typ == &quot;CELL&quot;:</span>
+<span class="s1">            if &quot;res&quot; in vars() and res:</span>
+<span class="s1">                yield res</span>
+<span class="s1">            res = {}</span>
+<span class="s1">        else:</span>
+<span class="s1">            grs = [v for v in mo.groups() if v not in [mo.group(typ), None]]</span>
+<span class="s1">            assert len(grs), &quot;Forgot capture value for %s ?&quot; % typ</span>
+<span class="s1">            res[typ] = grs[0]</span>
+<span class="s1">    if res:</span>
+<span class="s1">        yield res</span>
+
+<span class="s1">data = list(tokenize(sys.stdin.read()))</span>
+
+<span class="s1">print(</span>
+<span class="s1">&quot;&quot;&quot;</span>
+<span class="s1"># legend</span>
+<span class="s1">set key top left outside horizontal</span>
+<span class="s1">set xlabel &quot;Channel&quot;</span>
+<span class="s1">set ylabel &quot;Strength (dbm)&quot;</span>
+<span class="s1"># x axis step</span>
+<span class="s1">set xtics 1</span>
+<span class="s1"># show horizontal grid lines </span>
+<span class="s1">set grid ytics</span>
+<span class="s1">set xrange [-2:16]</span>
+<span class="s1">set yrange [%(bottom)d - 0.05:%(top)d]</span>
+<span class="s1">set term png truecolor size 1280,720</span>
+<span class="s1">plot for [IDX=0:%(total)d-1] &quot;-&quot; \</span>
+<span class="s1">    using 2:(%(bottom)d):(4):(2*abs(%(bottom)d - $1)) \</span>
+<span class="s1">    title columnheader(1) with ellipses \</span>
+<span class="s1">    fill transparent solid 0.5 </span>
+<span class="s1">&quot;&quot;&quot; </span>
+<span class="s1">% {</span>
+<span class="s1">    &quot;total&quot;: len(data), </span>
+<span class="s1">    &quot;top&quot;: max([int(tok[&quot;LEVEL&quot;]) for tok in data]) + 1, </span>
+<span class="s1">    &quot;bottom&quot;: min([int(tok[&quot;LEVEL&quot;]) for tok in data]) - 5, </span>
+<span class="s1">})</span>
+
+<span class="s1">for tok in data:</span>
+<span class="s1">    print(&quot;\&quot;%s\&quot;&quot; % (tok[&quot;ESSID&quot;] or &quot;&lt;HIDDEN&gt;&quot;))</span>
+<span class="s1">    print(tok[&quot;LEVEL&quot;], tok[&quot;CHNL&quot;])</span>
+<span class="s1">    print(&quot;e&quot;)</span>
+<span class="s1">    assert set((&quot;FREQ&quot;,&quot;CHNL&quot;,&quot;ESSID&quot;, &quot;LEVEL&quot;)) &lt;= set(tok)</span>
+<span class="s1">&#39;</span> <span class="p">|</span> gnuplot &gt; out.png
+</pre></div>
+
+
+<p>Часто полезно видеть график в реальном времени <code>while sleep 10; do sudo iwlist wlo1 scanning | python3 wifi.plot.py | gnuplot &gt; out.png; done</code> и какой нибудь периодический просмотрщик изображений типа <code>feh  --reload 1 out.png</code></p>
+<h2>GNUPLOT</h2>
+<p>В gnuplot можно рисовать графики как с помощью функций так и по заданным точкам. Нас интересует последний вариант:</p>
+<div class="highlight"><pre><span></span>~$ gnuplot --version
+gnuplot 4.6 patchlevel 6
+~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
+<span class="s1">plot for [IDX=0:1] &quot;-&quot; using 1:2 title columnheader(1) with lines</span>
+<span class="s1">hello</span>
+<span class="s1">1 1</span>
+<span class="s1">3 3</span>
+<span class="s1">e</span>
+<span class="s1">world</span>
+<span class="s1">1 3</span>
+<span class="s1">3 1</span>
+<span class="s1">e</span>
+<span class="s1">&#39;</span> <span class="p">|</span> gnuplot -p
+</pre></div>
+
+
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/hello.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
+<span class="s1">set term png truecolor size 1280,480</span>
+<span class="s1">set xrange [0:6]</span>
+<span class="s1">plot for [IDX=0:3] &quot;-&quot; using 2:1 title columnheader(1) with points pointsize 3</span>
+<span class="s1">&quot;Anna&quot;</span>
+<span class="s1">-93 1</span>
+<span class="s1">e</span>
+<span class="s1">&quot;Erika&quot;</span>
+<span class="s1">-73 1</span>
+<span class="s1">e</span>
+<span class="s1">&quot;Alina&quot;</span>
+<span class="s1">-84 1</span>
+<span class="s1">e</span>
+<span class="s1">&quot;Nast&quot;</span>
+<span class="s1">-93 5</span>
+<span class="s1">e</span>
+<span class="s1">&#39;</span> <span class="p">|</span> gnuplot &gt; wifi.points.png
+</pre></div>
+
+
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.points.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
+<span class="s1">set term png truecolor size 1280,480</span>
+<span class="s1">set xlabel &quot;Channel&quot;</span>
+<span class="s1">set ylabel &quot;Strength (dbm)&quot;</span>
+<span class="s1">set xrange [0:6]</span>
+<span class="s1">set yrange [-110:-60]</span>
+<span class="s1">set grid ytics</span>
+<span class="s1">plot for [IDX=0:3] &quot;-&quot; using 2:1:(2):(abs($1/3)) title columnheader(1) with ellipses</span>
+<span class="s1">&quot;Anna&quot;</span>
+<span class="s1">-93 1</span>
+<span class="s1">e</span>
+<span class="s1">&quot;Erika&quot;</span>
+<span class="s1">-73 1</span>
+<span class="s1">e</span>
+<span class="s1">&quot;Alina&quot;</span>
+<span class="s1">-84 1</span>
+<span class="s1">e</span>
+<span class="s1">&quot;Nast&quot;</span>
+<span class="s1">-93 5</span>
+<span class="s1">e</span>
+<span class="s1">&#39;</span> <span class="p">|</span> gnuplot &gt; wifi.ellipses.png
+</pre></div>
+
+
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.ellipses.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.05.</p><p>There are <a href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/" rel="bookmark"
+                           title="Permalink to ElasticSearch - одностраничное приложение на Angular2">ElasticSearch - одностраничное приложение на Angular2</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-07-06T00:00:00+03:00">
+                Published: Ср. 06 Июль 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/elastic">Elastic</a> <a href="http://mazko.github.io/blog/tag/angular2">Angular2</a> </p>
+</footer><!-- /.post-info -->                <p>Вооружившись знаниями приобретёнными в предыдущем материале по <a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">ElasticSearch</a> самое время сделать что-то полезное. В данном материале мы напишем <a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow">одностраничное</a> приложение (SPA) на <a href="https://angular.io/" rel="nofollow">Angular2</a>. Это будет полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам. Писать SPA будем на <a href="https://www.typescriptlang.org/" rel="nofollow">TypeScript</a> - это который JavaScript нового поколения ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
+                           title="Permalink to ElasticSearch - практическое введение">ElasticSearch - практическое введение</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-06-25T00:00:00+03:00">
+                Published: Сб. 25 Июнь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/elastic">Elastic</a> <a href="http://mazko.github.io/blog/tag/rest">REST</a> <a href="http://mazko.github.io/blog/tag/docker">Docker</a> </p>
+</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
+<a href="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку ...</a></p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/" rel="bookmark"
+                           title="Permalink to Lucene - автозаполнение ввода пользователя">Lucene - автозаполнение ввода пользователя</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-05-20T00:00:00+03:00">
+                Published: Пт. 20 Май 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">maven</a> <a href="http://mazko.github.io/blog/tag/ajax">AJAX</a> </p>
+</footer><!-- /.post-info -->                <p>Используя подсказки в процессе ввода <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">поискового</a> запроса можно быстрее искать нужную информацию. Поисковые подсказки - это схожие с вашим запросом термины. Они появляются на экране по мере того, как вы вводите в строку поиска запрос. Для данного процесса критически важна скорость реакции на ввод пользователя, поэтому на серверной части ускорить процесс ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/" rel="bookmark"
+                           title="Permalink to Lucene - фасетный поиск">Lucene - фасетный поиск</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-05-15T00:00:00+03:00">
+                Published: Вс. 15 Май 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">maven</a> <a href="http://mazko.github.io/blog/tag/jstl">JSTL</a> </p>
+</footer><!-- /.post-info -->                <p>После того, как пользователь получает первые результаты <a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый ...</p>
+                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">read more</a>
+<p>There are <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 7
+        <a href="http://mazko.github.io/index2.html">&raquo;</a>
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

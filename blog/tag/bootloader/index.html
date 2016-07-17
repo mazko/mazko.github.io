@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - Bootloader</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/">Замечательный Bootloader от Microchip для PIC16 / PIC18</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2012-10-03T00:00:00+03:00">
+                Published: Ср. 03 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/bootloader">Bootloader</a> <a href="http://mazko.github.io/blog/tag/mikrokontroller">Микроконтроллер</a> <a href="http://mazko.github.io/blog/tag/uart">UART</a> </p>
+</footer><!-- /.post-info --><p>Вы перепрошивали когда-нибудь <strong>BIOS</strong> ? Если нет, то Вам скорее всего, повезло... Вобщем представьте себе <strong>BIOS</strong>, который не умеет прошивать сам себя и если что-то не работает или работает плохо (его разрабатывают люди, точно такие же как и мы с Вами), нужно выключить компьютер, открутить пару шурупов, снять крышку, вытянуть микросхему <strong>BIOS</strong>, найти совместимый программатор, ПРОШИТЬ, после чего сделать всё то же самое в обратном порядке. Пару раз сделать можно, но хотелось бы что-нибудь поудобнее, особенно если предполагается этот процесс часто повторять в процессе разработки.</p>
+<p>После того, как микроконтроллеры <strong>Microchip</strong> научились программно считывать/записывать ячейки своей Flash-памяти (появились соответствующие инструкции ассемблера), появление <strong>Bootloader</strong>'ов - это был лишь вопрос времени. Очень хорошо, когда этим вопросом занимается непосредственно производитель микроконтроллеров - кто как не он лучше осведомлён о возможностях своей продукции. На одном из таких Bootloader'ов под названием <strong>AN1310</strong>, ориентированном на линейку <strong>PIC16</strong> / <strong>PIC18</strong> и использующим для коммуникации последовательный интерфейс <strong>UART</strong> давайте остановимся поподробнее. Скачать всё необходимое для работы ПО можно с сайта <a href="http://www.microchip.com/applicationnotes" rel="nofollow">производителя</a>.</p>
+<script type="text/javascript" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/jquery-1.11.2.min.js"> </script>
+
+<script type="text/javascript" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/slider/easySlider1.7.js"> </script>
+
+<script type="text/javascript" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/onload.js"> </script>
+
+<div id="slider_bootloder_shots" style="padding-top: .6em;">
+<ul>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/start.png" alt="start" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/settings.png" alt="settings" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/break.png" alt="break" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/bootloader_connected.png" alt="bootloader_connected" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/erase.png" alt="erase" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/write.png" alt="write" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/verify.png" alt="verify" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/read_main.png" alt="read_main" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/read_eeprom.png" alt="read_eeprom" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/read_config.png" alt="read_config" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/run.png" alt="run" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/validate_balance.png" alt="validate_balance" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/reboot.png" alt="reboot" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/reboot_1.png" alt="reboot_1" /></li>
+<li><img src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/reboot_2.png" alt="reboot_2" /></li>
+</ul>
+</div>
+
+<div style="clear: both;">
+</div>
+
+<p>Особенности <strong>AN1310</strong>:</p>
+<ul>
+<li>
+<p>Использует маленький объём Flash памяти микроконтроллера - в большинстве случаев менее 450 слов</p>
+</li>
+<li>
+<p>Автоматическое согласование скорости передачи данных UART между ПК (host) и микроконтроллером</p>
+</li>
+<li>
+<p>Широкий диапазон для выбора скорости передачи 1,200 Кбит/с - 3 Mбит/с</p>
+</li>
+<li>
+<p>Протокол обмена данными использует 16-бит CRC</p>
+</li>
+<li>
+<p>Имеется возможность записывать Flash только по тем адресам, которые изменились (<em>Incremental Bootloading</em>) - это значительно ускоряет процесс разработки</p>
+</li>
+<li>
+<p>Mинимум соединительных элементов - можно обойтись всего тремя проводниками</p>
+</li>
+<li>
+<p>ПО на стороне ПК кроссплатформенное - код написан на <strong>С</strong> / <strong>С++</strong> <strong>Qt</strong> <strong>SDK</strong>, есть исходники</p>
+</li>
+</ul>
+<h3>Шаг первый - схемотехника</h3>
+<p>В документации предлагаются две схемы. Для согласования уровней используется микросхема MAX3232:</p>
+<p><img alt="Скриншот" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/cheme_3.3v.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Если напряжение питания микроконтроллера отличается от напряжения питания MAX3232, то предлагается ввести дополнительный MOSFET транзистор:</p>
+<p><img alt="Скриншот" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/cheme_5v.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Однако представленные схемы можно значительно упростить / удешевить, если использовать переходник USB-to-serial (например на PL2303 или FT232BM). Уровень логической единицы у PL2303 - 3.3V и если напряжение питания микроконтроллера находится в пределах 3 ... 3.3V, MAX3232 не понадобится. В таком случае необходим только подтягивающий резистор с <strong>Vdd</strong> на <strong>RX</strong>, чтобы избежать случайной загрузки <strong>Bootloader</strong>'а при отключённом переходнике USB-to-serial. Что касается сигнала RTS (см. схемы), то он используется для сброса микроконтроллера (RESET), а поскольку такого же эффекта можно достичь просто отключив/включив питание, то его использование опционально. В случаее с USB-to-serial как правило имеется только RX, TX и GND, поэтому удобней сбрасывать микроконтроллер вручную.</p>
+<h3>Шаг второй - прошивка микроконтроллера</h3>
+<p><img alt="Скриншот" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/18f46k22.png" style="float:left; margin:.5em 1.3em .3em 0;" />Исходники <strong>AN1310</strong> упакованы в исполняемый <strong>*.exe</strong> файл, так что поначалу необходима ОС <em>Windows</em> (как вариант можно ещё попробовать установить <em>Wine</em> и запустить инсталляцию там, но Ваш покорный слуга этот способ на практике не проверял). Неприятная ситуация с <strong>Windows</strong> также повторяется и в процессе сборки <strong>Bootloader</strong>'а - для работы с <strong>MPasm</strong> / <strong>MPLAB</strong>, чтобы сгенерировать хекс. После того, как <strong>Bootloader</strong> будет уже в прошит кристалле, об ОС <strong>Windows</strong> можно спокойно забыть.</p>
+<p>Cкачанный с сайта <strong>Microchip</strong> инсталлятор <strong>Serial Bootloader AN1310 v1.05r.exe</strong> по умолчанию в процессе установки на ПК распаковывает исходные коды для создания прошивки микроконтроллера сюда:</p>
+<div style="clear:both;">
+</div>
+
+<div class="highlight"><pre><span></span>C:\Microchip Solutions\Serial Bootloader AN1310 vX.XX\PICxx Bootloader\
+</pre></div>
+
+
+<ol style="padding-top: 1em;">
+  <li>
+    <p style="padding-top:0; margin-top:0;">Код написан на ассемблере - MPasm, для его редактирования и сборки удобно использовать MPLAB IDE</p>
+  </li>
+  <li>
+    <p>В меню Configure -&gt; Select Device… выбрать модель микроконтроллера (например PIC18F46K22)</p>
+  </li>
+  <li>
+    <p>В меню Configure -&gt; Configuration Bits….</p>
+
+<table style="border: 4px double black; border-collapse: collapse; width: 100%; margin-top: 1.5em; margin-bottom: 1.5em;" cellpadding="5">
+<tbody>
+<tr>
+<td style="padding: .3em;border: 4px double black;">Watchdog Timer</td>
+<td style="padding: .3em;border: 4px double black;">“Disabled”, однако его можно задействовать программно</td>
+</tr>
+<tr>
+<td style="padding: .3em;border: 4px double black;">Extended Instruction Set Enable bit</td>
+<td style="padding: .3em;border: 4px double black;">“Disabled”</td>
+</tr>
+<tr>
+<td style="padding: .3em;border: 4px double black;">Oscillator Selection bits</td>
+<td style="padding: .3em;border: 4px double black;">Чем больше тактовая частота, тем выше предельная скорость UART</td>
+</tr>
+<tr>
+<td style="padding: .3em;border: 4px double black;">Fail-Safe Clock Monitor Enable bit</td>
+<td style="padding: .3em;border: 4px double black;">“Enabled”, если имеется</td>
+</tr>
+<tr>
+<td style="padding: .3em;border: 4px double black;">Low-Voltage Program (LVP)</td>
+<td style="padding: .3em;border: 4px double black;">“Disabled”, если имеется</td>
+</tr>
+<tr>
+<td style="padding: .3em;border: 4px double black;">Table Read-Protect</td>
+<td style="padding: .3em;border: 4px double black;">“Disabled”, если имеется</td>
+</tr>
+</tbody>
+</table>
+
+</li>
+
+  <li>
+    <p>Собрать проект и прошить микроконтроллер программатором )))</p>
+  </li>
+</ol>
+
+<p><img alt="Скриншот" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/mplab_config_bits.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>В случае необходимости можно отредактировать код <strong>bootconfig.inc</strong>. Например, <strong>PIC18F46K22</strong> имеет на борту два <strong>USART</strong> модуля, а <strong>Bootloader</strong> по умолчанию использует первый. В этом же файле можно выбрать один из двух режимов работы  <strong>Bootloader</strong>'а:</p>
+<ul>
+<li>
+<p>По умолчанию, хекс <strong>Bootloader</strong>'а располагается в конце Flash-памяти, в этом случае основная программа микроконтроллера может сама обслуживать прерывания, т.е. фактически её работа ничем не отличается от работы без <strong>Bootloader</strong>'а. Единственное, что необходимо знать компилятору основной программы - участок занятой Flash-памяти, при использовании HI-TECH С для этой цели можно указать в командной строке что-то вроде <code>--ROM=default,-F800-FBFF</code>. Однако подобная реализация <strong>Bootloader</strong>'а имеет один существенный недостаток - в случае аппаратного сбоя (например отключили питание) в процессе записи его прошивка может повредиться - в этом случае снова понадобится программатор. Даже если с помощью битов конфигурации аппаратно защитить конец Flash-памяти, остаётся как минимум одна инструкция (<strong>GOTO</strong>), расположенная по адресу 0000h, защитить которую не коснувшись обработки прерываний (0008h, 0018h) мы не можем - аппаратно защищать Flash-память от записи можно только блоками.</p>
+</li>
+<li>
+<p>В этой связи целесообразно задействовать второй вариант <strong>Bootloader</strong>'а, в документации он обозначен как <strong>REMAPPED</strong>. Он располагается в начале Flash-памяти и сам обслуживает прерывания, фактически пробрасывает их по другим адресам, например: 0008h =&gt; 0808h, 0018h =&gt; 0818h. Такой подход добавляет теоретическую(инструкция GOTO) задержку в процесс обработки прерываний, однако имеет два очевидных преимущества. Во-первых, практически у всех микроконтроллеров Flash имеет boot-блок, объём которого меньше других - он как раз ориентирован на <strong>Bootloader</strong>'ы. Это позволяет более рационально и экономно распределить ресурсы Flash-памяти между микроконтроллером и <strong>Bootloader</strong>'ом. Во-вторых, весь код, который необходим для работы <strong>Bootloader</strong>'а можно аппаратно защитить от записи, ничто не cможет его повредить.
+Чтобы задействовать <strong>REMAPPED Bootloader</strong>, необходимо в <strong>bootconfig.inc</strong> указать <code>#define BOOTLOADER_ADDRESS 0</code>. Также, исходя из размера boot-блока, необходимо указать, куда <strong>Bootloader</strong> должен пробрасывать прерывания, обозначив: <code>AppVector 0x800</code>, <code>AppHighIntVector 0x808</code>  и <code>AppLowIntVector 0x818</code>. Обо всём этом необходимо сообщить компилятору основной программы. Для HI-TECH С это будет выглядеть вот так: <code>--RUNTIME=default,+download --CODEOFFSET=800 --ROM=default,-0-7FF</code></p>
+</li>
+</ul>
+<p><em>bootconfig.inc</em></p>
+<div class="highlight"><pre><span></span>; Copyright (c) 2002-2011,  Microchip Technology Inc.
+;
+; Microchip licenses this software to you solely for use with Microchip
+; products.  The software is owned by Microchip and its licensors, and
+; is protected under applicable copyright laws.  All rights reserved.
+;
+; SOFTWARE IS PROVIDED &quot;AS IS.&quot;  MICROCHIP EXPRESSLY DISCLAIMS ANY
+; WARRANTY OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT
+; NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
+; FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.  IN NO EVENT SHALL
+; MICROCHIP BE LIABLE FOR ANY INCIDENTAL, SPECIAL, INDIRECT OR
+; CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, HARM TO YOUR
+; EQUIPMENT, COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY
+; OR SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT LIMITED
+; TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR CONTRIBUTION,
+; OR OTHER SIMILAR COSTS.
+;
+; To the fullest extent allowed by law, Microchip and its licensors
+; liability shall not exceed the amount of fees, if any, that you
+; have paid directly to Microchip to use this software.
+;
+; MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE
+; OF THESE TERMS.
+
+; Enable this to work around timing bug found in some PIC18Fxx20&#39;s
+;#define TBLWT_BUG
+
+; If you don&#39;t have an RS232 transceiver, you might want this option
+;#define INVERT_UART
+
+; Sets OSCCON&lt;IRCF2:IRCF0&gt; for maximum INTOSC frequency (8MHz)
+#define USE_MAX_INTOSC
+
+; Sets OSCTUNE.PLLEN bit at start up for frequency multiplication.
+#define USE_PLL
+
+; RB0 = 1 required to enable MAX3221 TX output on PICDEM LCD 2 demo board
+;#define PICDEM_LCD2
+
+; enable software boot block write protection
+#define USE_SOFTBOOTWP
+
+; enable software config words write protection
+;#define USE_SOFTCONFIGWP
+
+; Autobaud will be used by default. 
+; To save code space or to force a specific baud rate to be used, 
+; you can optionally define a BAUDRG value instead. 
+; Most PIC18&#39;s support BRG16 mode and use the 
+; following equation:
+;       BAUDRG = Fosc / (4 * Baud Rate) - 1
+;
+; Old PIC18&#39;s without BRG16 mode need this equation instead:
+;       BAUDRG = Fosc / (16 * Baud Rate) - 1
+;
+; Examples:
+;#define BAUDRG .51  ; 19.2Kbps from 4MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .103 ; 115.2Kbps from 48MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .85  ; 115.2Kbps from 40MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .68  ; 115.2Kbps from 32MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .16  ; 115.2Kbps from 8MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .11  ; 1Mbps from 48MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .9   ; 1Mbps from 40MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .4   ; 2Mbps from 40MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .3   ; 3Mbps from 48MHz (BRG16 = 1, BRGH = 1)
+;#define BAUDRG .12  ; 19.2Kbps from 4MHz (BRG16 = 0, BRGH = 1)
+;#define BAUDRG .10  ; 115.2Kbps from 19.6608MHz (BRG16 = 0, BRGH = 1)
+
+; Bootloader must start at the beginning of a FLASH Erase Block. 
+; If unspecified, bootloader will automatically be located at the 
+; end of program memory address space.
+
+; bootloader at beginning, application start/ISR vectors
+; require remapping
+#define BOOTLOADER_ADDRESS   0
+
+; useful for running under debugger 
+; (debug executive wants to reside at the end of memory space too)
+;#define BOOTLOADER_ADDRESS   END_FLASH - (ERASE_FLASH_BLOCKSIZE * 20)
+
+; use on J parts to locate inside flash config erase block
+;#define BOOTLOADER_ADDRESS  (END_FLASH - ERASE_FLASH_BLOCKSIZE)
+
+#ifdef BOOTLOADER_ADDRESS
+  #if BOOTLOADER_ADDRESS == 0
+    ; For Bootloader located at program memory address 0, 
+    ; the application firmware must provide remapped reset
+    ; and interrupt vectors outside of the Boot Block. The following 
+    ; #defines tell the bootloader firmware where application 
+    ; entry points are to be expected:
+
+    ; application start up code should be located here.
+    #define AppVector           0x800
+
+    ; application high priority interrupt should be located here
+    #define AppHighIntVector    0x808
+
+    ; application low priority interrupt should be located here
+    #define AppLowIntVector     0x818
+  #endif
+#endif
+
+; Define UART pins and registers. 
+; Modify the following lines if you want to use a different UART module.
+;
+; Note: If your UART&#39;s RX pin happens to be multiplexed with analog 
+;       ANx input functionality, you may need to edit the 
+;      &quot;preprocess.inc&quot; DigitalInput macro. Code there needs to 
+;       enable the digital input buffer (refer to ADC chapter 
+;       of your device&#39;s datasheet).
+;
+#define UARTNUM 2
+#if UARTNUM == 1
+    #define UxSPBRG         SPBRG
+    #define UxSPBRGH        SPBRGH
+    #define UxRCSTA         RCSTA
+    #define UxTXSTA         TXSTA
+    #define UxRCREG         RCREG
+    #define UxTXREG         TXREG
+    #define UxPIR           PIR1
+    #define UxRCIF          RCIF
+    #define UxTXIF          TXIF
+    #define UxBAUDCON       BAUDCON
+
+; RX on RC7 is used by default for most PIC18&#39;s.
+;    #define RXPORT         PORTC
+;    #define RXPIN          .7
+
+;    #define RXPORT          PORTB   ; PIC18F14K50: RX on RB5/AN11
+;    #define RXPIN           .5
+
+; RX/AN11 multiplexed -- must enable digital input buffer
+;    #define RXANSEL         ANSELH
+; ANSELH&lt;3&gt; controls AN11 digital input buffer
+;    #define RXAN            .3
+#endif
+
+#if UARTNUM == 2
+    #define UxSPBRG         SPBRG2
+    #define UxSPBRGH        SPBRGH2
+    #define UxRCSTA         RCSTA2
+    #define UxTXSTA         TXSTA2
+    #define UxRCREG         RCREG2
+    #define UxTXREG         TXREG2
+    #define UxPIR           PIR3
+    #define UxRCIF          RC2IF
+    #define UxTXIF          TX2IF
+    #define UxBAUDCON       BAUDCON2
+
+; RG2 is default RX2 pin for some high pin count PIC18&#39;s.
+;    #define RXPORT          PORTG
+;    #define RXPIN           .2
+
+; RX2 pin PPS&#39;ed to RD4/RP21 on PIC18F46J11 for example.
+    #define RXPORT          PORTD
+    #define RXPIN           .7
+
+; On PICs where RX is multiplexed with ANx analog inputs,
+    #define RXANSEL         ANSELD
+; the digital input buffer needs to be enabled via ANSELx SFRs
+    #define RXAN            .7
+
+; devices that use PPS to remap UART2 pins will need these 
+; lines defined:
+
+; PPS code for TX2/CK2 output function
+;    #define PPS_UTX         .5
+;    #define PPS_UTX_PIN     RPOR23  ; UART TX assigned to RP23 pin
+;    #define PPS_URX_PIN     .21     ; UART RX assigned to RP21 pin
+; PPS register for RX2/CK2 input function
+;    #define PPS_URX         RPINR16
+#endif
+
+; If you get linker errors complaining 
+; &quot;can not fit the absolute section,&quot; you might want to 
+; increase BOOTLOADERSIZE below or set the 
+; BOOTLOADER_ADDRESS above to a smaller address number.
+
+; Because we need to know the total size of the 
+; bootloader before the assembler has finished compiling
+; the source code, we have to estimate the final bootloader 
+; size and provide it here as BOOTLOADERSIZE. This number 
+; is in bytes (twice the instruction word count). 
+;
+; If you see the bootloader is reserving more FLASH memory 
+; than it really needs (you&#39;ll see a bunch of FFFF/NOP 
+; instructions at the end of the bootloader memory region),
+; you can try reducing BOOTLOADERSIZE.
+#define BOOTLOADERSIZE  .708
+
+#define MAJOR_VERSION   .1  ; Bootloader Firmware Version
+#define MINOR_VERSION   .5
+</pre></div>
+
+
+<h3>Шаг третий - запуск и работа с Bootloader'ом</h3>
+<p>Итак, может быть два режима работы микроконтроллера: режим выполнения основной программы и режим <strong>Bootloader</strong>'а. После подачи питания на микроконтроллер, либо после <em>Reset</em>, загрузчик <strong>Bootloader</strong>'а по некоторым признакам принимает решение, какой из них необходимо запустить. О необходимости запуска <strong>Bootloader</strong>'а говорят следующие признаки:</p>
+<ol>
+<li>
+<p>Oсновной программы нет, например первый запуск</p>
+</li>
+<li>
+<p>Если на входе RX логический ноль (в терминах RS-232 состояние “Break")</p>
+</li>
+</ol>
+<p>Таким образом, при необходимости запустить <strong>Bootloader</strong>, можно использавать следующую последовательность действий: физически подключить микроконтроллер к ПК, установить логический ноль на RX, это можно сделать посредством кнопочки <img alt="Кнопка Пауза" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/break_btn.png" />, после чего ввести микроконтроллер в состояние RESET (в простейшем случае - включить/выключить питание). С этого момента к нему можно подключаться со стороны ПК <img alt="Кнопка Пауза" src="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/boot_btn.png" /></p>
+<p>ПО для ПК поставляеncя в исходниках, при необходимости его можно подкорректировать в <strong>QTCreator</strong>, а для Windows уже есть готовый исполняемый .exe файл. Если при работе в Linux подозрительно работает переходник на PL2303, попробуйте сделать следующее:</p>
+<div class="highlight"><pre><span></span>~$ sudo modprobe -r pl2303
+~$ sudo modprobe pl2303
+</pre></div>
+
+
+<p>Если в <strong>Linux</strong> оболочка для работы с <strong>Bootloader</strong>'ом вообще не видит USB-to-serial переходника (например <code>/dev/ttyUSB0</code>), скорее всего текущий пользователь просто не обладает соответствующими правами. Поскольку постоянно запускать программу их-под <strong>root</strong>'a неудобно, ниже описан конкретный случай лечения OpenSUSE 12.1 - полными правами на USB-to-serial обладает группа <em>dialout</em>, поэтому в неё нужно добавить текущего пользователя системы, после чего, чтобы изменения вступили в силу, ОБЯЗАТЕЛЬНО перелогиниться:</p>
+<div class="highlight"><pre><span></span>oleg@linux-ubuc:~&gt; ls -l /dev/ttyUSB?
+crw-rw---- <span class="m">1</span> root dialout 188, <span class="m">0</span> марта  <span class="m">1</span> 10:13 /dev/ttyUSB0
+oleg@linux-ubuc:~&gt; sudo /usr/sbin/groupmod -A <span class="nv">$USER</span> dialout
+</pre></div>
+
+
+<p>В Ubuntu 12.04 добавить пользователя можно так: <code>sudo adduser $USER dialout</code></p>
+<p>На этом всё, надёжных девайсов Вам !</p>
+<p>На всякий пожарный исходники <a href="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/bootloader.zip">тут</a>.</p><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

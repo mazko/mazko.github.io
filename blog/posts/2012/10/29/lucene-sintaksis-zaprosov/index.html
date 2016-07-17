@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Lucene - синтаксис запросов</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/" rel="bookmark"
+           title="Permalink to Lucene - синтаксис запросов">Lucene - синтаксис запросов</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-29T00:00:00+02:00">
+                Published: Пн. 29 Октябрь 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> </p>
+</footer><!-- /.post-info -->      <p>Как уже упоминалось <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">ранее</a>, между строкой запроса, которую вводит пользователь для осуществления поиска и  методом, реализующим непосредственно сам поиск в <em>Lucene</em>, имеется промежуточный класс - <code>Query</code>. Этот класс можно создавать программно - причём можно создавать даже очень сложный  <code>Query</code>, используя комбинацию из нескольких из них, тем самым достигая наилучших результатов поиска. Однако последнее не всегда целесообразно делать вручную - в <em>Lucene</em> уже имеется определённый синтаксис запросов, который позволяет распарсить вводимую пользователем строку и тем самым автоматически создать сложный <code>Query</code>. До этого момента мы не использовали данный механизм, принудительно экранируя все запросы методом <code>QueryParser.escape</code>:</p>
+<p><em>server/src/main/java/server/QueryHelper.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.MultiFieldQueryParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.ParseException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.QueryParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.Query</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="nc">QueryHelper</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">Query</span> <span class="nf">generate</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">story</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ParseException</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">QueryParser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MultiFieldQueryParser</span><span class="o">(</span>
+                <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> 
+                        <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span><span class="o">,</span> 
+                        <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span><span class="o">,</span>
+                        <span class="cm">/* Russian */</span>
+                        <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">RUS_TITLE_FIELD</span><span class="o">,</span> 
+                        <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">RUS_CONTENT_FIELD</span><span class="o">,</span>
+                        <span class="cm">/* English */</span>
+                        <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">ENG_TITLE_FIELD</span><span class="o">,</span> 
+                        <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">ENG_CONTENT_FIELD</span> <span class="o">},</span>
+                <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">());</span>
+
+        <span class="cm">/* Operator OR is used by default */</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="na">setDefaultOperator</span><span class="o">(</span><span class="n">QueryParser</span><span class="o">.</span><span class="na">Operator</span><span class="o">.</span><span class="na">AND</span><span class="o">);</span>
+
+        <span class="cm">/* Here are some changes for SYNTAX DEMO */</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="na">setAllowLeadingWildcard</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">story</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Теперь можно откинуться на спинку кресла и насладиться результатами: </p>
+<div class="highlight"><pre><span></span>~$ mvn clean install -pl server/ jetty:run
+</pre></div>
+
+
+<p>Правда в нашем случае итоговую картину сильно смазывают языковые анализаторы - <code>RussianAnalyzer</code> и <code>EnglishAnalyzer</code>, поэтому предлагаю не полениться и вернуться на время освоения текущего материала к использованию в процессе поиска только одного анализатора - <code>StandardAnalyzer</code>. Так будет лучше видно, в чем именно соль того или иного запроса:</p>
+<p><em>server/src/main/java/server/QueryHelper.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.MultiFieldQueryParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.ParseException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.queryparser.classic.QueryParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.Query</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="nc">QueryHelper</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="n">Query</span> <span class="nf">generate</span><span class="o">(</span><span class="n">String</span> <span class="n">story</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ParseException</span> <span class="o">{</span>
+        <span class="n">QueryParser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MultiFieldQueryParser</span><span class="o">(</span>
+                <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span><span class="o">,</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span> <span class="o">},</span> 
+                <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">());</span>
+
+        <span class="cm">/* Operator OR is used by default */</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="na">setDefaultOperator</span><span class="o">(</span><span class="n">QueryParser</span><span class="o">.</span><span class="na">Operator</span><span class="o">.</span><span class="na">AND</span><span class="o">);</span>
+
+        <span class="cm">/* Here are some changes for SYNTAX DEMO */</span>
+
+        <span class="n">parser</span><span class="o">.</span><span class="na">setAllowLeadingWildcard</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">story</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p><em>server/src/main/java/server/HighlightedSearchItem.java</em></p>
+<div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.lucene.document.Document</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.index.CorruptIndexException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.ScoreDoc</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.highlight.Highlighter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.highlight.InvalidTokenOffsetsException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.highlight.QueryScorer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.highlight.SimpleHTMLFormatter</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.lucene.search.highlight.SimpleSpanFragmenter</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">common.LuceneBinding</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HighlightedSearchItem</span> <span class="kd">extends</span> <span class="n">DefaultSearchItem</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">highlightedTitle</span><span class="o">,</span> <span class="n">highlightedContent</span><span class="o">;</span>
+
+    <span class="n">HighlightedSearchItem</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">content</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">uri</span><span class="o">,</span> 
+        <span class="kd">final</span> <span class="kt">float</span> <span class="n">score</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">highlightedTitle</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">highlightedContent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">content</span><span class="o">,</span> <span class="n">uri</span><span class="o">,</span> <span class="n">score</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">highlightedContent</span> <span class="o">=</span> <span class="n">highlightedContent</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">highlightedTitle</span> <span class="o">=</span> <span class="n">highlightedTitle</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">HighlightedAgregator</span> <span class="kd">extends</span> <span class="n">Aggregator</span><span class="o">&lt;</span><span class="n">HighlightedSearchItem</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">Highlighter</span> <span class="n">highlighter</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span> <span class="nf">tryHighlight</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">fields</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">InvalidTokenOffsetsException</span> <span class="o">{</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">text</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">highlighter</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">QueryScorer</span> <span class="n">scorer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">QueryScorer</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">query</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">highlighter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Highlighter</span><span class="o">(</span>
+                <span class="k">new</span> <span class="n">SimpleHTMLFormatter</span><span class="o">(</span><span class="s">&quot;[mazko.github.io]&quot;</span><span class="o">,</span> <span class="s">&quot;[/mazko.github.io]&quot;</span><span class="o">),</span>
+                <span class="n">scorer</span><span class="o">);</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">highlighter</span><span class="o">.</span><span class="na">setTextFragmenter</span><span class="o">(</span><span class="k">new</span> <span class="n">SimpleSpanFragmenter</span><span class="o">(</span><span class="n">scorer</span><span class="o">,</span> <span class="mi">330</span><span class="o">));</span>
+        <span class="o">}</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">field</span> <span class="o">:</span> <span class="n">fields</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">String</span> <span class="n">highlighted</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">highlighter</span><span class="o">.</span><span class="na">getBestFragment</span><span class="o">(</span>
+                <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">getAnalyzer</span><span class="o">(),</span> <span class="n">field</span><span class="o">,</span> <span class="n">text</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">highlighted</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="n">highlighted</span><span class="o">;</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">text</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="n">HighlightedSearchItem</span> <span class="nf">aggregate</span><span class="o">(</span><span class="kd">final</span> <span class="n">ScoreDoc</span> <span class="n">sd</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">CorruptIndexException</span><span class="o">,</span> <span class="n">InvalidTokenOffsetsException</span> <span class="o">{</span>
+
+        <span class="kd">final</span> <span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">indexSearcher</span><span class="o">.</span><span class="na">doc</span><span class="o">(</span><span class="n">sd</span><span class="o">.</span><span class="na">doc</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">title</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">content</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">highlightedTitle</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">tryHighlight</span><span class="o">(</span>
+            <span class="n">title</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">TITLE_FIELD</span> <span class="o">});</span>
+        <span class="kd">final</span> <span class="n">String</span> <span class="n">highlightedContent</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">tryHighlight</span><span class="o">(</span>
+            <span class="n">content</span><span class="o">,</span> <span class="k">new</span> <span class="n">String</span><span class="o">[]</span> <span class="o">{</span> <span class="n">LuceneBinding</span><span class="o">.</span><span class="na">CONTENT_FIELD</span> <span class="o">});</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="n">HighlightedSearchItem</span><span class="o">(</span><span class="n">title</span><span class="o">,</span> <span class="n">content</span><span class="o">,</span> 
+            <span class="n">doc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">LuceneBinding</span><span class="o">.</span><span class="na">URI_FIELD</span><span class="o">),</span> 
+            <span class="n">sd</span><span class="o">.</span><span class="na">score</span><span class="o">,</span> <span class="n">highlightedTitle</span><span class="o">,</span> <span class="n">highlightedContent</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3>Синтаксис</h3>
+<p>Семейство <em>WildcardQuery</em>: <strong>бо?</strong> - вместо '?' может быть ОДИН любой символ; <strong>бо*</strong> любое количество <strong>0..n</strong> любых символов после 'бо'</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix1.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix2.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix3.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><em>FuzzyQuery</em> - ищутся похожие слова:</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/fuzzy.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Поиск по конкретным полям в индексе:</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/field.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Булевые запросы:</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/content_boolean.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/field_boolean_not.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><em>PhraseQuery</em> - поиск фразы. С помощью '~' можно задать максимальное расстояние между словами фразы.</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/phrase.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/phrase_fuzzy.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">Далее</a> рассмотрим фасетный поиск.</p>
+<p><a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/lucene-tutorial.zip">Исходники</a></p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2012/10/29/lucene-sintaksis-zaprosov/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
