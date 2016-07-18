@@ -19,7 +19,7 @@ tags: GnuPlot
             ("CELL",  r"^\s+Cell \d+"),
             ("FREQ",  r"^\s+Frequency:(\d+(\.\d*)?)"),
             ("CHNL",  r"^\s+Channel:(\d+)"),
-            ("ESSID", r"^\s+ESSID:\"([-_ A-Za-z0-9]*)\""),
+            ("ESSID", r"^\s+ESSID:\"([- A-Za-z0-9$@^`,|%;.~()/\\{}:?[\]=+_#!]*)\""),
             ("LEVEL", r"\s+Signal level=(-\d+)"),
         ]
         tok_regex = "|".join("(?P<%s>%s)" % pair for pair in token_specification)
