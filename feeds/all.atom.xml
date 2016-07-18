@@ -11,7 +11,7 @@
 &lt;span class="s1"&gt;        (&amp;quot;CELL&amp;quot;,  r&amp;quot;^\s+Cell \d+&amp;quot;),&lt;/span&gt;
 &lt;span class="s1"&gt;        (&amp;quot;FREQ&amp;quot;,  r&amp;quot;^\s+Frequency:(\d+(\.\d*)?)&amp;quot;),&lt;/span&gt;
 &lt;span class="s1"&gt;        (&amp;quot;CHNL&amp;quot;,  r&amp;quot;^\s+Channel:(\d+)&amp;quot;),&lt;/span&gt;
-&lt;span class="s1"&gt;        (&amp;quot;ESSID&amp;quot;, r&amp;quot;^\s+ESSID:\&amp;quot;([-_ A-Za-z0-9]*)\&amp;quot;&amp;quot;),&lt;/span&gt;
+&lt;span class="s1"&gt;        (&amp;quot;ESSID&amp;quot;, r&amp;quot;^\s+ESSID:\&amp;quot;([- A-Za-z0-9$@^`,|%;.~()/\\{}:?[\]=+_#!]*)\&amp;quot;&amp;quot;),&lt;/span&gt;
 &lt;span class="s1"&gt;        (&amp;quot;LEVEL&amp;quot;, r&amp;quot;\s+Signal level=(-\d+)&amp;quot;),&lt;/span&gt;
 &lt;span class="s1"&gt;    ]&lt;/span&gt;
 &lt;span class="s1"&gt;    tok_regex = &amp;quot;|&amp;quot;.join(&amp;quot;(?P&amp;lt;%s&amp;gt;%s)&amp;quot; % pair for pair in token_specification)&lt;/span&gt;

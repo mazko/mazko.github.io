@@ -51,7 +51,7 @@
 <span class="s1">        (&quot;CELL&quot;,  r&quot;^\s+Cell \d+&quot;),</span>
 <span class="s1">        (&quot;FREQ&quot;,  r&quot;^\s+Frequency:(\d+(\.\d*)?)&quot;),</span>
 <span class="s1">        (&quot;CHNL&quot;,  r&quot;^\s+Channel:(\d+)&quot;),</span>
-<span class="s1">        (&quot;ESSID&quot;, r&quot;^\s+ESSID:\&quot;([-_ A-Za-z0-9]*)\&quot;&quot;),</span>
+<span class="s1">        (&quot;ESSID&quot;, r&quot;^\s+ESSID:\&quot;([- A-Za-z0-9$@^`,|%;.~()/\\{}:?[\]=+_#!]*)\&quot;&quot;),</span>
 <span class="s1">        (&quot;LEVEL&quot;, r&quot;\s+Signal level=(-\d+)&quot;),</span>
 <span class="s1">    ]</span>
 <span class="s1">    tok_regex = &quot;|&quot;.join(&quot;(?P&lt;%s&gt;%s)&quot; % pair for pair in token_specification)</span>
