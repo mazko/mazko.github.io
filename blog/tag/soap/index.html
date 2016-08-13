@@ -53,7 +53,7 @@ UPnP - набор открытых бесплатных сетевых прот�
 <span class="s1">SSDP_ADDR = &quot;239.255.255.250&quot;</span>
 <span class="s1">SSDP_PORT = 1900</span>
 <span class="s1"># seconds to delay response</span>
-<span class="s1">SSDP_MX = 5</span>
+<span class="s1">SSDP_MX = 3</span>
 <span class="s1"># search target</span>
 <span class="s1">SSDP_ST = sys.argv[1] # upnp-scan &quot;ssdp:all&quot;</span>
 
@@ -63,15 +63,15 @@ UPnP - набор открытых бесплатных сетевых прот�
 <span class="s1">              &quot;MX: %d\r\n&quot; % (SSDP_MX, ) + \</span>
 <span class="s1">              &quot;ST: %s\r\n&quot; % (SSDP_ST, ) + &quot;\r\n&quot;</span>
 
-<span class="s1">sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span>
-<span class="s1">sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))</span>
-<span class="s1">sock.settimeout(SSDP_MX + 1)</span>
-<span class="s1">while True:</span>
-<span class="s1">  try:</span>
-<span class="s1">    data = sock.recv(1024)</span>
-<span class="s1">    print(data.decode()) </span>
-<span class="s1">  except socket.timeout:</span>
-<span class="s1">    break</span>
+<span class="s1">with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:</span>
+<span class="s1">  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))</span>
+<span class="s1">  sock.settimeout(SSDP_MX + 1)</span>
+<span class="s1">  while True:</span>
+<span class="s1">    try:</span>
+<span class="s1">      data = sock.recv(1024)</span>
+<span class="s1">      print(data.decode()) </span>
+<span class="s1">    except socket.timeout:</span>
+<span class="s1">      break</span>
 <span class="s1">  &#39;</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="p">|</span> <span class="se">\</span>
   tr -d <span class="s1">&#39;\r&#39;</span> <span class="c1"># normalize new lines \r\n =&gt; \n</span>
 <span class="o">}</span>
@@ -176,15 +176,15 @@ upnp-scan<span class="o">()</span> <span class="o">{</span>
 <span class="s1">              &quot;MX: %d\r\n&quot; % (SSDP_MX, ) + \</span>
 <span class="s1">              &quot;ST: %s\r\n&quot; % (SSDP_ST, ) + &quot;\r\n&quot;</span>
 
-<span class="s1">sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span>
-<span class="s1">sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))</span>
-<span class="s1">sock.settimeout(SSDP_MX + 1)</span>
-<span class="s1">while True:</span>
-<span class="s1">  try:</span>
-<span class="s1">    data = sock.recv(1024)</span>
-<span class="s1">    print(data.decode()) </span>
-<span class="s1">  except socket.timeout:</span>
-<span class="s1">    break</span>
+<span class="s1">with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:</span>
+<span class="s1">  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))</span>
+<span class="s1">  sock.settimeout(SSDP_MX + 1)</span>
+<span class="s1">  while True:</span>
+<span class="s1">    try:</span>
+<span class="s1">      data = sock.recv(1024)</span>
+<span class="s1">      print(data.decode()) </span>
+<span class="s1">    except socket.timeout:</span>
+<span class="s1">      break</span>
 <span class="s1">  &#39;</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="p">|</span> <span class="se">\</span>
   tr -d <span class="s1">&#39;\r&#39;</span> <span class="c1"># normalize new lines \r\n =&gt; \n</span>
 <span class="o">}</span>

@@ -13,7 +13,7 @@ UPnP - набор открытых бесплатных сетевых прот�
 &lt;span class="s1"&gt;SSDP_ADDR = &amp;quot;239.255.255.250&amp;quot;&lt;/span&gt;
 &lt;span class="s1"&gt;SSDP_PORT = 1900&lt;/span&gt;
 &lt;span class="s1"&gt;# seconds to delay response&lt;/span&gt;
-&lt;span class="s1"&gt;SSDP_MX = 5&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_MX = 3&lt;/span&gt;
 &lt;span class="s1"&gt;# search target&lt;/span&gt;
 &lt;span class="s1"&gt;SSDP_ST = sys.argv[1] # upnp-scan &amp;quot;ssdp:all&amp;quot;&lt;/span&gt;
 
@@ -23,15 +23,15 @@ UPnP - набор открытых бесплатных сетевых прот�
 &lt;span class="s1"&gt;              &amp;quot;MX: %d\r\n&amp;quot; % (SSDP_MX, ) + \&lt;/span&gt;
 &lt;span class="s1"&gt;              &amp;quot;ST: %s\r\n&amp;quot; % (SSDP_ST, ) + &amp;quot;\r\n&amp;quot;&lt;/span&gt;
 
-&lt;span class="s1"&gt;sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)&lt;/span&gt;
-&lt;span class="s1"&gt;sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))&lt;/span&gt;
-&lt;span class="s1"&gt;sock.settimeout(SSDP_MX + 1)&lt;/span&gt;
-&lt;span class="s1"&gt;while True:&lt;/span&gt;
-&lt;span class="s1"&gt;  try:&lt;/span&gt;
-&lt;span class="s1"&gt;    data = sock.recv(1024)&lt;/span&gt;
-&lt;span class="s1"&gt;    print(data.decode()) &lt;/span&gt;
-&lt;span class="s1"&gt;  except socket.timeout:&lt;/span&gt;
-&lt;span class="s1"&gt;    break&lt;/span&gt;
+&lt;span class="s1"&gt;with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.settimeout(SSDP_MX + 1)&lt;/span&gt;
+&lt;span class="s1"&gt;  while True:&lt;/span&gt;
+&lt;span class="s1"&gt;    try:&lt;/span&gt;
+&lt;span class="s1"&gt;      data = sock.recv(1024)&lt;/span&gt;
+&lt;span class="s1"&gt;      print(data.decode()) &lt;/span&gt;
+&lt;span class="s1"&gt;    except socket.timeout:&lt;/span&gt;
+&lt;span class="s1"&gt;      break&lt;/span&gt;
 &lt;span class="s1"&gt;  &amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
   tr -d &lt;span class="s1"&gt;&amp;#39;\r&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# normalize new lines \r\n =&amp;gt; \n&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
@@ -136,15 +136,15 @@ upnp-scan&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&
 &lt;span class="s1"&gt;              &amp;quot;MX: %d\r\n&amp;quot; % (SSDP_MX, ) + \&lt;/span&gt;
 &lt;span class="s1"&gt;              &amp;quot;ST: %s\r\n&amp;quot; % (SSDP_ST, ) + &amp;quot;\r\n&amp;quot;&lt;/span&gt;
 
-&lt;span class="s1"&gt;sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)&lt;/span&gt;
-&lt;span class="s1"&gt;sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))&lt;/span&gt;
-&lt;span class="s1"&gt;sock.settimeout(SSDP_MX + 1)&lt;/span&gt;
-&lt;span class="s1"&gt;while True:&lt;/span&gt;
-&lt;span class="s1"&gt;  try:&lt;/span&gt;
-&lt;span class="s1"&gt;    data = sock.recv(1024)&lt;/span&gt;
-&lt;span class="s1"&gt;    print(data.decode()) &lt;/span&gt;
-&lt;span class="s1"&gt;  except socket.timeout:&lt;/span&gt;
-&lt;span class="s1"&gt;    break&lt;/span&gt;
+&lt;span class="s1"&gt;with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.settimeout(SSDP_MX + 1)&lt;/span&gt;
+&lt;span class="s1"&gt;  while True:&lt;/span&gt;
+&lt;span class="s1"&gt;    try:&lt;/span&gt;
+&lt;span class="s1"&gt;      data = sock.recv(1024)&lt;/span&gt;
+&lt;span class="s1"&gt;      print(data.decode()) &lt;/span&gt;
+&lt;span class="s1"&gt;    except socket.timeout:&lt;/span&gt;
+&lt;span class="s1"&gt;      break&lt;/span&gt;
 &lt;span class="s1"&gt;  &amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
   tr -d &lt;span class="s1"&gt;&amp;#39;\r&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# normalize new lines \r\n =&amp;gt; \n&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
