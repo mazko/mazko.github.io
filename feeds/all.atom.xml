@@ -1,5 +1,1068 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-08-12T00:00:00+03:00</updated><entry><title>Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</title><link href="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/" rel="alternate"></link><published>2016-08-12T00:00:00+03:00</published><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-08-12:blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/</id><summary type="html">&lt;p&gt;Universal Plug and Play (&lt;a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow"&gt;UPnP&lt;/a&gt;) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-08-22T00:00:00+03:00</updated><entry><title>ElasticSearch - одностраничное приложение на ReactJS</title><link href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/" rel="alternate"></link><published>2016-08-22T00:00:00+03:00</published><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-08-22:blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/</id><summary type="html">&lt;p&gt;Продолжая тему &lt;a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; и &lt;a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow"&gt;одностраничных&lt;/a&gt; приложений (SPA) напишем полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам на &lt;a href="https://facebook.github.io/react/" rel="nofollow"&gt;ReactJS&lt;/a&gt; - идентичный тому, что уже был реализован ранее на &lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/"&gt;Angular2&lt;/a&gt;. Для работы с демо из браузера нужно в &lt;a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; нужно настроить &lt;code&gt;http.cors&lt;/code&gt; для &lt;strong&gt;http://mazko.github.io&lt;/strong&gt;, например &lt;code&gt;allow-origin: /https?:\/\/mazko\.github\.io/&lt;/code&gt;&lt;/p&gt;
+&lt;!-- cd ./dist/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Ddist/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
+
+&lt;!-- 
+&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/bundle.js"&gt;&lt;/a&gt;
+&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/bundle.js.map"&gt;&lt;/a&gt;
+&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/favicon.ico"&gt;&lt;/a&gt;
+&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/index.html"&gt;&lt;/a&gt;
+--&gt;
+
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/react-elastic-example.zip"&gt;Исходники&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/index.html"&gt;Демо&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/ui.gif" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;React, в отличие от Angular, это только библиотека, поэтому потребуются дополнительные телодвижения для старта. Собирать *.js файлы будет &lt;a href="https://webpack.github.io/" rel="nofollow"&gt;webpack&lt;/a&gt;: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~: mkdir react-elastic-example &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$_&lt;/span&gt;
+~: npm init -y
+~: npm i --save-dev &lt;span class="se"&gt;\&lt;/span&gt;
+      babel-loader babel-preset-es2015 babel-preset-react &lt;span class="se"&gt;\&lt;/span&gt;
+      css-loader react react-dom style-loader &lt;span class="se"&gt;\&lt;/span&gt;
+      webpack webpack-dev-server isomorphic-fetch
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;webpack.config.js&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="nx"&gt;entry&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;./src/main.js&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+   &lt;span class="nx"&gt;output&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;path&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;./dist&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;filename&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;bundle.js&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+   &lt;span class="p"&gt;},&lt;/span&gt;
+
+   &lt;span class="nx"&gt;devtool&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;source-map&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+
+   &lt;span class="nx"&gt;devServer&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;inline&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;port&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8080&lt;/span&gt;
+   &lt;span class="p"&gt;},&lt;/span&gt;
+
+   &lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;loaders&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+         &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nx"&gt;test&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="sr"&gt;/\.jsx?$/&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nx"&gt;exclude&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="sr"&gt;/node_modules/&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nx"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;babel&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="nx"&gt;query&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+               &lt;span class="nx"&gt;presets&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;es2015&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;react&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+         &lt;span class="p"&gt;},&lt;/span&gt;
+         &lt;span class="p"&gt;{&lt;/span&gt; 
+            &lt;span class="nx"&gt;test&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="sr"&gt;/\.css$/&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+            &lt;span class="nx"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;style-loader!css-loader?modules=true&amp;quot;&lt;/span&gt; 
+         &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;]&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Запуск в режиме разработки:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~: ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --content-base ./src/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Начнем с сервиса для получения данных из ElasticSearch:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/films-search/elastic.service.js&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;isomorphic-fetch&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;ELASTIC_URL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://localhost:9200/kinopoisk/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;kwargsDefs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;from&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;fields&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+  &lt;span class="nx"&gt;kwargs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Object&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;assign&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;kwargsDefs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;URL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ELASTIC_URL&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;film/_search&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="c1"&gt;// Elastic docs: &lt;/span&gt;
+  &lt;span class="c1"&gt;// For libraries that don’t accept a request body &lt;/span&gt;
+  &lt;span class="c1"&gt;// for non-POST requests, you can pass the request &lt;/span&gt;
+  &lt;span class="c1"&gt;// body as the source query string parameter instead.&lt;/span&gt;
+  &lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;searchParams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;source&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;stringify&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;from&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;size&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;size&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+      &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+      &lt;span class="s2"&gt;&amp;quot;starring&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;category&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;directed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;query&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;match_all&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+      &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;order&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;desc&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+     &lt;span class="p"&gt;],&lt;/span&gt;
+  &lt;span class="p"&gt;}));&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;then&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;response&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad response from server&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;response&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;json&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;})&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;then&lt;/span&gt;&lt;span class="p"&gt;(({&lt;/span&gt; &lt;span class="nx"&gt;hits&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;items&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;hits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;hits&lt;/span&gt;
+        &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;hit&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;hit&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;film&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;date&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;date&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;d&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+          &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;});&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;items&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nx"&gt;total&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;hits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;total&lt;/span&gt;
+      &lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kr"&gt;export&lt;/span&gt; &lt;span class="k"&gt;default&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Простейший ReactJS компонент для отображения фильмов:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/films-search/films-search.component.jsx&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+import elastic from &amp;#39;./elastic.service.js&amp;#39;;
+
+
+class Film extends React.Component {
+  render() {
+    const film = this.props.film,
+          opt = v =&amp;gt; v &amp;amp;&amp;amp; v.join(&amp;#39; | &amp;#39;),
+          date = v =&amp;gt; v &amp;amp;&amp;amp; v.map(d =&amp;gt; d.toLocaleDateString())
+
+    return (
+      &amp;lt;div&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Название: &amp;lt;/b&amp;gt;{film.name} {&amp;#39; | &amp;#39;}
+          &amp;lt;a href={&amp;quot;https://www.kinopoisk.ru/film/&amp;quot; + film.id}&amp;gt;{film.rate}&amp;lt;/a&amp;gt;
+          {&amp;#39; | &amp;#39;} {date(film.date)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Режиссёр: &amp;lt;/b&amp;gt;{opt(film.directed)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Жанр: &amp;lt;/b&amp;gt;{opt(film.category)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Актёры: &amp;lt;/b&amp;gt;{opt(film.starring)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Описание: &amp;lt;/b&amp;gt;{film.description}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;hr/&amp;gt;
+      &amp;lt;/div&amp;gt;
+    );
+  }
+}
+Film.propTypes = { 
+  film: React.PropTypes.shape({
+    id: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+    name: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    rate: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+    date: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Date)),
+    category: React.PropTypes.arrayOf(React.PropTypes.string),
+    starring: React.PropTypes.arrayOf(React.PropTypes.string),
+    directed: React.PropTypes.arrayOf(React.PropTypes.string),
+    description: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  }) 
+};
+
+class FilmsList extends React.Component {
+
+  render() {
+    const filmNodes = this.props.films.map(film =&amp;gt; (
+      &amp;lt;Film film={film} key={film.id} /&amp;gt;
+    ));
+    return (
+       &amp;lt;div&amp;gt;
+          {filmNodes}
+       &amp;lt;/div&amp;gt;
+    );
+  }
+}
+FilmsList.propTypes = {
+  films: React.PropTypes.array.isRequired
+};
+
+export default class extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { films: [] };
+  }
+
+  componentDidMount() {
+    elastic.search().catch(e =&amp;gt; alert(e)).then(
+      data =&amp;gt; this.setState({films: data.items})
+    );
+  }
+
+  render() {
+    return (
+       &amp;lt;FilmsList films={this.state.films}/&amp;gt;
+    );
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;JSX&lt;/strong&gt; это HTML подобный синтаксис, компилируемый в JavaScript. Разметка и код находятся в одном файле. Задавать &lt;code&gt;propTypes&lt;/code&gt; необязательно, но весьма полезно - это дополнительная проверка данных на этапе выполнения кода плюс самодокументирующийся код для описания компонентов и их взаимодействия.&lt;/p&gt;
+&lt;p&gt;Осталось самую малость, чтобы увидеть первые результаты в браузере:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/app.jsx&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+import FilmsSearch from &amp;#39;./films-search/films-search.component.jsx&amp;#39;
+
+export default class extends React.Component {
+   render() {
+      return (
+         &amp;lt;FilmsSearch/&amp;gt;
+      );
+   }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;src/index.html&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+   &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;meta&lt;/span&gt; &lt;span class="na"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;UTF-8&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;title&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;ElasticSearch React&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;title&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+   &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;head&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+   &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;app&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;div&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class="p"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt; &lt;span class="na"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;bundle.js&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;script&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+   &lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;body&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="nt"&gt;html&lt;/span&gt;&lt;span class="p"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;src/main.js&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;React&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;react&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;ReactDOM&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;react-dom&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;App&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;./app.jsx&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nx"&gt;ReactDOM&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nx"&gt;App&lt;/span&gt; &lt;span class="o"&gt;/&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;document&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;getElementById&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;app&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Результат !&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/hello-world-react.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Дальше интересней. Расширим Elastic сервис подсказками, агрегацией, подсветкой и.т.д.:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/films-search/elastic.service.js&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;isomorphic-fetch&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;ELASTIC_URL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://localhost:9200/kinopoisk/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;kwargsDefs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;from&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;fields&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;]&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+  &lt;span class="nx"&gt;kwargs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;Object&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;assign&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;kwargsDefs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;URL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ELASTIC_URL&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;film/_search&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;searchParams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;source&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;stringify&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;from&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;from&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;size&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;size&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+      &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+      &lt;span class="s2"&gt;&amp;quot;starring&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;category&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;directed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;query&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;bool&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;must&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+          &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;q&lt;/span&gt; 
+            &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;query_string&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                  &lt;span class="s2"&gt;&amp;quot;query&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;q&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                  &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                  &lt;span class="s2"&gt;&amp;quot;default_operator&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;and&amp;quot;&lt;/span&gt;
+                &lt;span class="p"&gt;}&lt;/span&gt;
+              &lt;span class="p"&gt;}&lt;/span&gt; 
+            &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;match_all&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="p"&gt;],&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;filter&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+          &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;year&lt;/span&gt;
+            &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+              &lt;span class="s2"&gt;&amp;quot;range&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="s2"&gt;&amp;quot;date&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                  &lt;span class="s2"&gt;&amp;quot;gte&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;month&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;year&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;month&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;year&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                  &lt;span class="s2"&gt;&amp;quot;lt&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;year&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;month&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;month&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;||+1M&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;||+1y&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+                  &lt;span class="s2"&gt;&amp;quot;format&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;yyyy-MM||yyyy&amp;quot;&lt;/span&gt;
+                &lt;span class="p"&gt;}&lt;/span&gt;
+              &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+         &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;category&lt;/span&gt; 
+           &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+             &lt;span class="s2"&gt;&amp;quot;match&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+               &lt;span class="s2"&gt;&amp;quot;category.raw&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;category&lt;/span&gt;
+             &lt;span class="p"&gt;}&lt;/span&gt;
+           &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+         &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;director&lt;/span&gt; 
+           &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+             &lt;span class="s2"&gt;&amp;quot;match&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+               &lt;span class="s2"&gt;&amp;quot;directed.raw&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;director&lt;/span&gt;
+             &lt;span class="p"&gt;}&lt;/span&gt;
+           &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+         &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;star&lt;/span&gt; 
+           &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+             &lt;span class="s2"&gt;&amp;quot;match&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+               &lt;span class="s2"&gt;&amp;quot;starring.raw&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;star&lt;/span&gt;
+             &lt;span class="p"&gt;}&lt;/span&gt;
+           &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="nx"&gt;filter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;v&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;v&lt;/span&gt; &lt;span class="o"&gt;!==&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;pre_tags&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[mazko.github.io]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;post_tags&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;[/mazko.github.io]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;reduce&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;result&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;item&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="nx"&gt;result&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nx"&gt;item&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;fragment_size&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;333&lt;/span&gt;
+          &lt;span class="p"&gt;};&lt;/span&gt;
+          &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;result&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt; &lt;span class="p"&gt;{})&lt;/span&gt;
+    &lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+      &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;order&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;desc&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+     &lt;span class="p"&gt;],&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;aggs&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;years&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;date_histogram&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="s2"&gt;&amp;quot;field&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+          &lt;span class="s2"&gt;&amp;quot;interval&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;year&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+          &lt;span class="s2"&gt;&amp;quot;min_doc_count&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+          &lt;span class="s2"&gt;&amp;quot;order&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;_count&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;desc&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;aggs&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="s2"&gt;&amp;quot;months&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="s2"&gt;&amp;quot;date_histogram&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+              &lt;span class="s2"&gt;&amp;quot;field&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;date&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+              &lt;span class="s2"&gt;&amp;quot;interval&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;month&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+              &lt;span class="s2"&gt;&amp;quot;min_doc_count&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+              &lt;span class="s2"&gt;&amp;quot;order&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;_count&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;desc&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+          &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;},&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;categories&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;terms&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;field&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;category.raw&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;size&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;},&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;directors&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;terms&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;field&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;directed.raw&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;size&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;},&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;stars&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;terms&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;field&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;starring.raw&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;size&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}));&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;then&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;response&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad response from server&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;response&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;json&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;})&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;then&lt;/span&gt;&lt;span class="p"&gt;(({&lt;/span&gt; &lt;span class="nx"&gt;hits&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;aggregations&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;chunk&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;items&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;hits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;hits&lt;/span&gt;
+          &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="nx"&gt;hit&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="nb"&gt;Object&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;assign&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;hit&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;hit&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;highlight&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+          &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;film&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;date&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;date&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;d&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;film&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+          &lt;span class="p"&gt;}),&lt;/span&gt;
+        &lt;span class="nx"&gt;total&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;hits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;total&lt;/span&gt;
+      &lt;span class="p"&gt;};&lt;/span&gt;
+      &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;aggs&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="nx"&gt;directors&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;aggregations&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;directors&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;buckets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nx"&gt;categories&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;aggregations&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;categories&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;buckets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nx"&gt;stars&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;aggregations&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;stars&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;buckets&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nx"&gt;years&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;aggregations&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;years&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;buckets&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="nx"&gt;doc_count&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;y&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;doc_count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+            &lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;y&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;getFullYear&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
+            &lt;span class="nx"&gt;months&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;y&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;months&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;buckets&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+              &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="nx"&gt;doc_count&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;doc_count&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                &lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;m&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;key&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;getMonth&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+              &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;})&lt;/span&gt;
+          &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;})&lt;/span&gt;
+      &lt;span class="p"&gt;};&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nx"&gt;chunk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;aggs&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="nx"&gt;suggest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;URL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ELASTIC_URL&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;_suggest&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;searchParams&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;source&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;stringify&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="s2"&gt;&amp;quot;kino&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;completion&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;field&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;suggest&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;size&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;size&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}));&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;then&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;response&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;status&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;400&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nb"&gt;Error&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Bad response from server&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;response&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;json&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;})&lt;/span&gt;
+    &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;then&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kr"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;opts&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;data&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;kino&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="nx"&gt;options&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;opts&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;opt&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="nx"&gt;opt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kr"&gt;export&lt;/span&gt; &lt;span class="k"&gt;default&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="nx"&gt;suggest&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Реальное React приложение состоит из множества компонентов, которые могут передавать данные как от родителя к дочернему элементу так и наоборот. Например компонент FilmsList получает данные от родителя в &lt;code&gt;props.films&lt;/code&gt; и в свою очередь передаёт свои данные в компонент подсветки Hi: &lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/app/films-search/films-list/films-list.component.jsx&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+import Hi from &amp;#39;../hi/hi.component.jsx&amp;#39;;
+
+class Film extends React.Component {
+  render() {
+    const film = this.props.film,
+          opt = (v, s=&amp;#39; | &amp;#39;) =&amp;gt; v &amp;amp;&amp;amp; v.join(s),
+          date = v =&amp;gt; v &amp;amp;&amp;amp; v.map(d =&amp;gt; d.toLocaleDateString())
+
+    return (
+      &amp;lt;div&amp;gt;
+        &amp;lt;hr/&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Название: &amp;lt;/b&amp;gt;&amp;lt;Hi content={film.name} /&amp;gt; {&amp;#39; | &amp;#39;}
+          &amp;lt;a href={&amp;#39;https://www.kinopoisk.ru/film/&amp;#39; + film.id}&amp;gt;{film.rate}&amp;lt;/a&amp;gt;
+          {&amp;#39; | &amp;#39;} {date(film.date)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Режиссёр: &amp;lt;/b&amp;gt;{opt(film.directed)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Жанр: &amp;lt;/b&amp;gt;{opt(film.category)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Актёры: &amp;lt;/b&amp;gt;{opt(film.starring)}
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p&amp;gt;
+          &amp;lt;b&amp;gt;Описание: &amp;lt;/b&amp;gt;&amp;lt;Hi content={opt(film.description, &amp;#39;...&amp;#39;)} /&amp;gt;
+        &amp;lt;/p&amp;gt;
+      &amp;lt;/div&amp;gt;
+    );
+  }
+}
+Film.propTypes = { 
+  film: React.PropTypes.shape({
+    id: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+    name: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+    rate: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+    date: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Date)),
+    category: React.PropTypes.arrayOf(React.PropTypes.string),
+    starring: React.PropTypes.arrayOf(React.PropTypes.string),
+    directed: React.PropTypes.arrayOf(React.PropTypes.string),
+    description: React.PropTypes.arrayOf(React.PropTypes.string).isRequired,
+  }) 
+};
+
+class FilmsList extends React.Component {
+
+  render() {
+    const filmNodes = this.props.films.map(film =&amp;gt; (
+      &amp;lt;Film film={film} key={film.id} /&amp;gt;
+    ));
+    return (
+       &amp;lt;div&amp;gt;
+          {filmNodes}
+       &amp;lt;/div&amp;gt;
+    );
+  }
+}
+FilmsList.propTypes = {
+  films: React.PropTypes.array.isRequired
+};
+
+export default FilmsList;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Компонент Hi:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/app/films-search/hi/hi.component.jsx&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+
+class Hi extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { hiHtml: &amp;#39;&amp;#39; };
+  }
+
+  updateHiHtml(){
+    const {me} = this.refs;
+    if (me) {
+      const hiHtml = me.innerHTML.replace(
+          /\[mazko\.github\.io\](.*?)\[\/mazko\.github\.io\]/g, 
+          &amp;quot;&amp;lt;b style=\&amp;quot;color:red;\&amp;quot;&amp;gt;$1&amp;lt;/b&amp;gt;&amp;quot;
+      );
+      if (me.innerHTML !== hiHtml) {
+        this.setState({hiHtml}); 
+      }
+    }  
+  }
+
+  componentDidUpdate() {
+    this.updateHiHtml();
+  }
+
+  componentDidMount() {
+    this.updateHiHtml();
+  }
+
+  componentWillReceiveProps() {
+    this.setState({hiHtml: &amp;#39;&amp;#39;});
+  }
+
+  render() {
+    return (
+      this.state.hiHtml 
+        ? &amp;lt;span dangerouslySetInnerHTML={{__html: this.state.hiHtml}} /&amp;gt;
+        : &amp;lt;span ref=&amp;#39;me&amp;#39;&amp;gt;{this.props.content}&amp;lt;/span&amp;gt;
+    );
+  }
+}
+Hi.propTypes = {
+  content : React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.arrayOf(React.PropTypes.string)
+  ]).isRequired
+};
+
+export default Hi;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Поле ввода поискового запроса в свою очередь уже отсылает данные родителю - событие onQueryChange:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/app/films-search/auto-complete/auto-complete.component.jsx&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+import elastic from &amp;#39;../elastic.service&amp;#39;;
+import styles from &amp;#39;./auto-complete.component.css&amp;#39;;
+
+class Autocomplete extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { suggestions: [], query: &amp;#39;&amp;#39; };
+  }
+
+  handleKeyUp(e) {
+    if (e.key === &amp;#39;Enter&amp;#39;) {
+      this.props.onQueryChange(e.target.value);
+    }
+    if ([&amp;#39;Enter&amp;#39;, &amp;#39;Escape&amp;#39;].indexOf(e.key) &amp;gt; -1) {
+      this.setState({suggestions: []});
+    }
+  }
+
+  handleChange(e) {
+    const query = e.target.value;
+    this.setState({query});
+    elastic.suggest(query).then( /* TODO: debounce */
+      suggestions =&amp;gt; this.setState({suggestions})
+    );
+  }
+
+  handleDocumentClick(e) {
+    if (this.refs.menu.contains(e.target)) {
+      const query = e.target.dataset[&amp;#39;val&amp;#39;];
+      this.props.onQueryChange(query);
+      this.setState({query});
+    } 
+    this.setState({suggestions: []});
+  }
+
+  componentWillMount() {
+    document.addEventListener(&amp;#39;click&amp;#39;, 
+      this.handleDocumentClick.bind(this), false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener(&amp;#39;click&amp;#39;, 
+      this.handleDocumentClick.bind(this), false);
+  }
+
+  render() {
+    const menu = this.state.suggestions.map(
+      v =&amp;gt; (
+        &amp;lt;li key={v} data-val={v} className={styles.ulli}&amp;gt;{v}&amp;lt;/li&amp;gt;
+      )
+    );
+    return (
+      &amp;lt;div className={styles.div}&amp;gt;
+        &amp;lt;span&amp;gt;
+          &amp;lt;input
+            type=&amp;quot;text&amp;quot; 
+            placeholder=&amp;quot;пример:космос&amp;quot; 
+            autoComplete=&amp;quot;off&amp;quot;
+            onChange={this.handleChange.bind(this)}
+            value={this.state.query}
+            onKeyUp={this.handleKeyUp.bind(this)} /&amp;gt;
+        &amp;lt;/span&amp;gt;
+        &amp;lt;ul ref=&amp;#39;menu&amp;#39;&amp;gt;
+          {menu}
+        &amp;lt;/ul&amp;gt;
+      &amp;lt;/div&amp;gt;
+    );
+  }
+}
+Autocomplete.propTypes = {
+  onQueryChange : React.PropTypes.func
+};
+
+export default Autocomplete;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;src/app/films-search/auto-complete/auto-complete.component.css&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;grow&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="nt"&gt;input&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;text-align&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;center&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;grow&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;font-size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;inherit&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="nt"&gt;span&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;display&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;height&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;100%&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="nt"&gt;ul&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;padding&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;0px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;0px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;border&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;solid&lt;/span&gt; &lt;span class="m"&gt;1px&lt;/span&gt; &lt;span class="m"&gt;#f1f1f1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;position&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;absolute&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;background&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;#FFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="nt"&gt;ul&lt;/span&gt; &lt;span class="nt"&gt;li&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;list-style&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;none&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;padding&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;5px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;0px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;color&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;#7E7E7E&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;cursor&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;pointer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="nt"&gt;ul&lt;/span&gt; &lt;span class="nt"&gt;li&lt;/span&gt;&lt;span class="nd"&gt;:hover&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;background-color&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;#f1f1f1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;color&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;#000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В компоненте Aggregations присутствуют оба случая:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/app/films-search/aggregations/aggregations.component.jsx&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+import styles from &amp;#39;./aggregations.component.css&amp;#39;;
+
+class AggregationsComponent extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let {aggs} = nextProps;
+
+    if (!aggs) return;
+    // clone
+    aggs = Object.assign({}, aggs);
+    // Flatten array easier to render
+    aggs.years = aggs.years.reduce(
+      (flat, toFlat) =&amp;gt; [
+        ...flat,
+        { year: toFlat.key, doc_count: toFlat.doc_count },
+        ...toFlat.months.map(m =&amp;gt; {
+          return {
+            year: toFlat.key,
+            month: m.key,
+            doc_count: m.doc_count
+          }
+        })
+      ], []);
+
+    // user friendly empty search results
+    const {
+      search_star, search_director, search_category,
+      search_month, search_year
+    } = this.state;
+
+    if (search_star &amp;amp;&amp;amp; aggs.stars.length === 0) {
+      aggs.stars = [{key: search_star, doc_count: 0}];
+    }
+    if (search_category &amp;amp;&amp;amp; aggs.categories.length === 0) {
+      aggs.categories = [{key: search_category, doc_count: 0}];
+    }
+    if (search_director &amp;amp;&amp;amp; aggs.directors.length === 0) {
+      aggs.directors = [{key: search_director, doc_count: 0}];
+    }
+    if (search_month &amp;amp;&amp;amp; aggs.years.length === 0) {
+      aggs.years = [
+        {year: search_year, doc_count: 0},
+        {year: search_year, month: search_month, doc_count: 0}
+      ];
+    } else if (search_year &amp;amp;&amp;amp; aggs.years.length === 0) {
+      aggs.years = [{year: search_year, doc_count: 0}];
+    }
+
+    this.setState({aggs});
+  }
+
+  handleStar(e) {
+    this.setState({search_star: e.target.value}, this._emit);
+  }
+
+  handleDirector(e) {
+    this.setState({search_director: e.target.value}, this._emit);
+  }
+
+  handleCaterory(e) {
+    this.setState({search_category: e.target.value}, this._emit);
+  }
+
+  handleYM(e) {
+    const idx = e.target.value, {aggs} = this.state;
+    if (idx &amp;gt;= 0) {
+      this.setState({
+          search_year: aggs.years[idx][&amp;#39;year&amp;#39;],
+          search_month: aggs.years[idx][&amp;#39;month&amp;#39;],
+        }, this._emit);
+    } else {
+      this.setState({
+          search_year: undefined,
+          search_month: undefined,
+        }, this._emit);
+    }
+  }
+
+  _emit() {
+    this.props.onAggsChange({
+      year: this.state.search_year,
+      month: this.state.search_month,
+      star: this.state.search_star,
+      category: this.state.search_category,
+      director: this.state.search_director
+    });
+  }
+
+  render() {
+    const {
+      aggs, search_star, search_director, search_category,
+      search_month, search_year
+    } = this.state;
+
+    const ym = aggs &amp;amp;&amp;amp; aggs.years.map((v, i) =&amp;gt; (
+      &amp;lt;option key={i} value={i}&amp;gt;
+        {(v.month &amp;gt;= 0 
+            ? &amp;#39;-&amp;gt; &amp;#39; + (&amp;quot;00&amp;quot; + v.month).slice(-2) 
+            : v.year) + &amp;#39; | &amp;#39; + v.doc_count}
+      &amp;lt;/option&amp;gt;
+      )
+    );
+
+    const stars = aggs &amp;amp;&amp;amp; aggs.stars.map(v =&amp;gt; (
+      &amp;lt;option key={v.key} value={v.key}&amp;gt;
+        {v.doc_count} | {v.key}
+      &amp;lt;/option&amp;gt;
+      )
+    );
+
+    const dirs = aggs &amp;amp;&amp;amp; aggs.directors.map(v =&amp;gt; (
+      &amp;lt;option key={v.key} value={v.key}&amp;gt;
+        {v.doc_count} | {v.key}
+      &amp;lt;/option&amp;gt;
+      )
+    );
+
+    const cats = aggs &amp;amp;&amp;amp; aggs.categories.map(v =&amp;gt; (
+      &amp;lt;option key={v.key} value={v.key}&amp;gt;
+        {v.doc_count} | {v.key}
+      &amp;lt;/option&amp;gt;
+      )
+    );
+
+    const search_ym_idx = aggs &amp;amp;&amp;amp; aggs.years.findIndex(v =&amp;gt; 
+      v.month === search_month &amp;amp;&amp;amp; v.year === search_year);
+
+    return (
+      &amp;lt;span className={styles.span}&amp;gt;
+        &amp;lt;select value={search_ym_idx}
+                onChange={this.handleYM.bind(this)}&amp;gt;
+          &amp;lt;option value=&amp;#39;-1&amp;#39;&amp;gt;&amp;amp;nbsp;&amp;lt;/option&amp;gt;
+          {ym}
+        &amp;lt;/select&amp;gt;
+        &amp;lt;select value={search_star} 
+                onChange={this.handleStar.bind(this)}&amp;gt;
+          &amp;lt;option value=&amp;#39;&amp;#39;&amp;gt;&amp;amp;nbsp;&amp;lt;/option&amp;gt;
+          {stars}
+        &amp;lt;/select&amp;gt;
+        &amp;lt;select value={search_director} 
+                onChange={this.handleDirector.bind(this)}&amp;gt;
+          &amp;lt;option value=&amp;#39;&amp;#39;&amp;gt;&amp;amp;nbsp;&amp;lt;/option&amp;gt;
+          {dirs}
+        &amp;lt;/select&amp;gt;
+        &amp;lt;select value={search_category} 
+                onChange={this.handleCaterory.bind(this)}&amp;gt;
+          &amp;lt;option value=&amp;#39;&amp;#39;&amp;gt;&amp;amp;nbsp;&amp;lt;/option&amp;gt;
+          {cats}
+        &amp;lt;/select&amp;gt;
+      &amp;lt;/span&amp;gt;
+    );
+  }
+}
+AggregationsComponent.propTypes = {
+  onAggsChange : React.PropTypes.func,
+  filter: React.PropTypes.shape({
+    year: React.PropTypes.number,
+    month: React.PropTypes.number,
+    star: React.PropTypes.string,
+    category: React.PropTypes.string,
+    director: React.PropTypes.string
+  }) 
+};
+
+export default AggregationsComponent;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;src/app/films-search/aggregations/aggregations.component.css&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nc"&gt;.span&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;display&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.span&lt;/span&gt; &lt;span class="nt"&gt;select&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;font-size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;inherit&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;text&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;overflow&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ellipsis&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.span&lt;/span&gt; &lt;span class="nt"&gt;select&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;grow&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.span&lt;/span&gt; &lt;span class="nt"&gt;select&lt;/span&gt;&lt;span class="nd"&gt;:not&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nd"&gt;:first-of-type&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;margin-left&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;7px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Последний штрих - связать всё в одном компоненте FilmsSearch:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/app/films-search/films-search.component.ts&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;import React from &amp;#39;react&amp;#39;;
+import elastic from &amp;#39;./elastic.service&amp;#39;;
+import FilmsList from &amp;#39;./films-list/films-list.component.jsx&amp;#39;;
+import Autocomplete from &amp;#39;./auto-complete/auto-complete.component.jsx&amp;#39;;
+import AggsComponent from &amp;#39;./aggregations/aggregations.component.jsx&amp;#39;;
+
+import styles from &amp;#39;./films-search.component.css&amp;#39;;
+
+export default class extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = { 
+      films: [],
+      films_per_page: 5,
+    };
+  }
+
+  componentDidMount() {
+    this.handleQuery();
+  }
+
+  handleQuery(search_query) {
+    this.setState(
+      {current_page: 1, search_query}, 
+      this._search
+    );
+  }
+
+  handlePerPage(e) {
+    this.setState(
+      {films_per_page: e.target.value},
+      () =&amp;gt; this.handleQuery(this.state.search_query)
+    );
+  }
+
+  handlePrevPage() {
+    this.setState(
+      {current_page: this.state.current_page -1},
+      this._search
+    );
+  }
+
+  handleNextPage() {
+    this.setState(
+      {current_page: this.state.current_page +1}, 
+      this._search
+    );
+  }
+
+  handleAggs(search_aggs) {
+    this.setState({search_aggs},
+      () =&amp;gt; this.handleQuery(this.state.search_query));
+  }
+
+  _search() {
+    const {
+      current_page, total_pages, films_per_page,
+      search_query, search_aggs
+    } = this.state, from = (current_page - 1) * films_per_page;
+    this.setState({is_fetching_state: true});
+    elastic.search(Object.assign({
+      from, size: films_per_page,
+      q: search_query
+    }, search_aggs)).catch(e =&amp;gt; alert(e)).then(
+      ({chunk, aggs}) =&amp;gt; {
+        this.setState({
+          aggs,
+          is_fetching_state: false,
+          films: chunk.items,
+          total_pages: Math.ceil(chunk.total / films_per_page)
+        })
+    }); 
+  }
+
+  render() {
+    const {
+      current_page, total_pages, films_per_page, is_fetching_state
+    } = this.state;
+    return (
+      &amp;lt;div className={styles.div}&amp;gt;
+        &amp;lt;div className={styles.row}&amp;gt;
+          &amp;lt;Autocomplete onQueryChange={this.handleQuery.bind(this)} /&amp;gt;
+          &amp;lt;span className={styles.span}&amp;gt;
+            &amp;lt;select className={styles.select} 
+                    disabled={is_fetching_state}
+                    value={films_per_page} 
+                    onChange={this.handlePerPage.bind(this)}&amp;gt;
+              { 
+                [3, 5, 10, 25].map(v =&amp;gt; 
+                (&amp;lt;option key={v} value={v}&amp;gt;{v}&amp;lt;/option&amp;gt;)) 
+              }
+            &amp;lt;/select&amp;gt;
+          &amp;lt;/span&amp;gt;
+
+          {
+            current_page &amp;gt; 1
+            ? &amp;lt;button className={styles.button}
+                      disabled={is_fetching_state}
+                      onClick={this.handlePrevPage.bind(this)}&amp;gt;
+                {&amp;#39;&amp;lt;&amp;#39;}
+              &amp;lt;/button&amp;gt;
+            : null
+          }
+
+          {
+            current_page &amp;lt; total_pages
+            ? &amp;lt;button className={styles.button} 
+                      disabled={is_fetching_state}
+                      onClick={this.handleNextPage.bind(this)}&amp;gt;
+                {&amp;#39;&amp;gt;&amp;#39;}
+              &amp;lt;/button&amp;gt;
+            : null
+          }
+
+          &amp;lt;span className={styles.span + &amp;#39; &amp;#39; + styles.center}&amp;gt;
+            Страница {current_page} из {total_pages}
+          &amp;lt;/span&amp;gt;
+
+        &amp;lt;/div&amp;gt;
+
+        &amp;lt;p&amp;gt;
+          &amp;lt;AggsComponent aggs={this.state.aggs} 
+              onAggsChange={this.handleAggs.bind(this)} /&amp;gt;
+        &amp;lt;/p&amp;gt;
+
+        &amp;lt;FilmsList films={this.state.films} /&amp;gt;
+      &amp;lt;/div&amp;gt;
+    );
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;src/app/films-search/films-search.component.css&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nc"&gt;.div&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;font-size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;18px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.row&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;display&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;margin&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;15px&lt;/span&gt; &lt;span class="m"&gt;0px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.select&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;margin-left&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;2px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;font-size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;inherit&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;text&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;overflow&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;ellipsis&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.button&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;margin-left&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;7px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;align&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;self&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;stretch&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;font-size&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;inherit&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.span&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nb"&gt;margin-left&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="m"&gt;5px&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;display&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;flex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="nc"&gt;.center&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;align&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;center&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;justify&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;content&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;center&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Сборка для демо на картинке &lt;code&gt;webpack --config webpack.config.prod.js&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;webpack.config.prod.js&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;dev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;./webpack.config.js&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="nx"&gt;webpack&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;webpack&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="nx"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;plugins&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;plugins&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+
+&lt;span class="nx"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;plugins&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;webpack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;DefinePlugin&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;process.env&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="s1"&gt;&amp;#39;NODE_ENV&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;stringify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;production&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="nx"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;plugins&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+  &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;webpack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;optimize&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;UglifyJsPlugin&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="nx"&gt;compress&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;warnings&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Elastic"></category><category term="React"></category></entry><entry><title>Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</title><link href="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/" rel="alternate"></link><published>2016-08-12T00:00:00+03:00</published><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-08-12:blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/</id><summary type="html">&lt;p&gt;Universal Plug and Play (&lt;a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow"&gt;UPnP&lt;/a&gt;) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.&lt;/p&gt;
 &lt;p&gt;Тут пожалуй стоит сделать риторическое отступление. Зачем нам &lt;a href="http://2gusia.livejournal.com/37929.html" rel="nofollow"&gt;две&lt;/a&gt; технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
 UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить &lt;a href="http://www.dlna.org/certification/certification" rel="nofollow"&gt;денюшку&lt;/a&gt;. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.&lt;/p&gt;
 &lt;p&gt;На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.&lt;/p&gt;
