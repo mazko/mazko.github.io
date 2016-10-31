@@ -38,4 +38,4 @@ tags: gEDA, ngspice
 
 ![screenshot]({attach}parallel-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далее диоды.
+Далее [полупроводники]({filename}../2016-10-31-ngspice-diode/2016-10-31-ngspice-diode.md).
