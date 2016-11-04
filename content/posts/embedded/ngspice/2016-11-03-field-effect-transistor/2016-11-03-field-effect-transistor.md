@@ -54,4 +54,4 @@ tags: gEDA, ngspice
 
 ![screenshot]({attach}all-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далее Тиристор
+[Далее]({filename}../2016-11-04-input-output-impedance/2016-11-04-input-output-impedance.md) о согласовании источника и нагрузки.
