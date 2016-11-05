@@ -1,0 +1,14 @@
+**********************************
+* Model created by               *
+*   Uni.Dipl.-Ing. Arpad Buermen *
+*   arpad.burmen@ieee.org        *
+* Copyright:                     *
+*   Thomatronik GmbH, Germany    *
+*   info@thomatronik.de          *
+**********************************
+* February 2001
+*   SPICE3
+.model d1n4007 d is = 1.09774E-008 n = 1.78309 rs = 0.0414388
++ eg = 1.11 xti = 3
++ cjo = 2.8173E-011 vj = 0.50772 m = 0.318974 fc = 0.5
++ tt = 9.85376E-006 bv = 1100 ibv = 0.1 af = 1 kf = 0

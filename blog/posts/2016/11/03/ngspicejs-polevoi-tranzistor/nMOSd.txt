@@ -1,0 +1,1 @@
+.model nMOSd nmos (vto=-1)

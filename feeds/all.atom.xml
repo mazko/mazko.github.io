@@ -1,5 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-10-30T00:00:00+03:00</updated><entry><title>NGSPICE.js - колебательный контур</title><link href="http://mazko.github.io/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/" rel="alternate"></link><published>2016-10-30T00:00:00+03:00</published><updated>2016-10-30T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-10-30:blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-11-04T00:00:00+02:00</updated><entry><title>NGSPICE.js - согласование источника с нагрузкой</title><link href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/" rel="alternate"></link><published>2016-11-04T00:00:00+02:00</published><updated>2016-11-04T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-04:blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Согласование источника и нагрузки - это выбор соотношения сопротивления нагрузки и внутреннего сопротивления источника с целью достижения заданных свойств полученной системы. Наиболее часто используются следующие типы согласования:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Согласование по мощности - оптимальное (с минимальными потерями) согласование по мощности источника сигнала и нагрузки. При условии &lt;strong&gt;Ri = Rn&lt;/strong&gt; коэффициент передачи по напряжению Ku равен &lt;code&gt;Un/Vi(max) = I*Rn/(I*Ri+I*Rn) = Rn/(Ri+Rn) = 0.5&lt;/code&gt;, коэффициент передачи тока Ki равен &lt;code&gt;In/Ii(max) = (Vi/(Ri+Rn))/(Vi/Ri) = Ri/(Ri+Rn)&lt;/code&gt;, коэффициент передачи по мощности Kp равен &lt;code&gt;Kp = Pn/Pi(max) = Ku*Ki = Ri*Rн/(Ri + Rn)^2 = 0.25&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Согласование по напряжению - получение максимального коэффициента передачи напряжения в нагрузку. Это имеет место при выполнении условия &lt;strong&gt;Rn &amp;gt;&amp;gt; Ri&lt;/strong&gt; (или Rn -&amp;gt; ∞). При этом Ku стремится к единице&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Согласование по току заключается в получении максимального коэффициента передачи тока Ki в нагрузку. При выполнении условия &lt;strong&gt;Ri &amp;gt;&amp;gt; Rn&lt;/strong&gt; (или Rn -&amp;gt; 0) Ki стремится к единице&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io.sch"&gt;схема источника и нагрузки&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=a6fae4b564d851c5f1759643dc279823"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/show-img-io.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source io.net
+ngspice 2 -&amp;gt; alter ri 3k
+ngspice 3 -&amp;gt; dc rn 1 10k 10
+ngspice 4 -&amp;gt; plot v(n)^2/&amp;quot;res-sweep&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;На картинке максимальная рассеиваемая мощность на нагрузке &lt;code&gt;Pn = Un*In = Un^2/Rn&lt;/code&gt; наблюдается при &lt;strong&gt;Rn = Ri&lt;/strong&gt;, пример &lt;a href="https://bc.js.org/"&gt;расчёта&lt;/a&gt;: &lt;code&gt;Pmax = Un*In = Vi^2*Rn/(Rn+Ri)^2 = Vi^2/(4*Rn) = 42^2/(4*3000) = 0.147&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas-u2.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source io.net
+ngspice 2 -&amp;gt; alter ri 5
+ngspice 3 -&amp;gt; dc rn 0 25 50m
+ngspice 4 -&amp;gt; plot 5*&amp;quot;res-sweep&amp;quot;/(5 + &amp;quot;res-sweep&amp;quot;)^2 &amp;quot;res-sweep&amp;quot;/(&amp;quot;res-sweep&amp;quot; + 5) 5/(&amp;quot;res-sweep&amp;quot; + 5)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Коэффициент &lt;a href="https://ngspice.js.org/?gist=02707f2545ae01e6202d6ed48ff10493"&gt;передачи&lt;/a&gt; по мощности Kp на максимуме равен 0.25 при &lt;strong&gt;Rn = Ri&lt;/strong&gt; и &lt;strong&gt;Ku = Ki = 0.5&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Далее усилительный каскад с общим эмиттером.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - полевой транзистор</title><link href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/" rel="alternate"></link><published>2016-11-03T00:00:00+02:00</published><updated>2016-11-03T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-03:blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Полевой (униполярный) транзистор - полупроводниковый прибор, работа которого основана на управлении электрическим сопротивлением токопроводящего канала поперечным электрическим полем, создаваемым приложенным к затвору напряжением. Также как и &lt;a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;биполярные транзисторы&lt;/a&gt; полевые транзисторы применяются в электронных устройствах для усиления или генерации электрических колебаний.&lt;/p&gt;
+&lt;p&gt;Электроды полевого транзистора называют &lt;strong&gt;истоком&lt;/strong&gt; (И), &lt;strong&gt;стоком&lt;/strong&gt; (С) и &lt;strong&gt;затвором&lt;/strong&gt; (З). Управляющее напряжение прикладывается между затвором и истоком. От напряжения между затвором и истоком зависит проводимость канала и, следовательно, величина тока стока. Таким образом полевой транзистор можно рассматривать как источник тока, управляемый напряжением затвор-исток. &lt;/p&gt;
+&lt;p&gt;По конструкции полевые транзисторы можно разбить на две группы:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;с управляющим p-n-переходом (JFET)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;с металлическим затвором, изолированным от канала диэлектриком (MOSFET). Транзисторы данного вида называют МДП-транзисторами (металл - диэлектрик - полупроводник). МДП-транзисторами также можно разделить на транзисторы с индуцированным (Enhancement) и встроенным (Depletion) каналом&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Проводимость канала полевого транзистора может быть электронной (n-канал)
+или дырочной (p-канал).&lt;/p&gt;
+&lt;p&gt;В следующих схемах для симуляции использовались SPICE модели полевых транзисторов с n-каналом: &lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nMOSd.txt"&gt;МДП встроенный канал&lt;/a&gt;  | &lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nMOSe.txt"&gt;МДП индуцированный канал&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nJFET.txt"&gt;JFET&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Поскольку входное сопротивление полевых транзисторов составляет десятки мегаом, то входные токи полевых транзисторов чрезвычайно малы и управление током в выходной цепи осуществляется входным напряжением. В этой связи усилительные свойства полевого транзистора, как и электронных ламп, целесообразно характеризовать крутизной проходной характеристики.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va.sch"&gt;крутизна полевого транзистора&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=fb28e1d10199273970066a5b30fdd454"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-va.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source va.net
+ngspice 2 -&amp;gt; set temp=0
+ngspice 3 -&amp;gt; dc vdd 0 10 10m
+ngspice 4 -&amp;gt; set temp=25
+ngspice 5 -&amp;gt; dc vdd 0 10 10m
+ngspice 6 -&amp;gt; set temp=50
+ngspice 7 -&amp;gt; dc vdd 0 10 10m
+ngspice 8 -&amp;gt; plot (-dc1.i(vdd)) (-dc2.i(vdd)) (-dc3.i(vdd))
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;На картинке 0...1В - напряжение насыщения сток-исток, после которого участок 1В...MAX является активным режимом работы транзистора. Крутизна ВАХ в идеале не зависит от напряжения сток-исток.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;МДП-транзистор с индуцированным каналом при нулевом напряжении затвор-исток закрыт (ток стока равен нулю) и именно поэтому на схемах его канал принято обозначать пунктиром.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all.sch"&gt;напряжение затвора/ток стока&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=af228d54e01cd660eb56d6851a960df2"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-all.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source all.net
+ngspice 2 -&amp;gt; dc vin -1 9 10m
+ngspice 3 -&amp;gt; plot (-i(VnMOSe)) (-i(VnMOSd)) (-i(Vnjfet))
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Как видно на графике у JFET транзисторов более крутая ВАХ и полярность усиливаемого напряжения затвор-исток JFET и MOSFET противоположная:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/"&gt;Далее&lt;/a&gt; о согласовании источника и нагрузки.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - биполярный транзистор</title><link href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/" rel="alternate"></link><published>2016-11-02T00:00:00+02:00</published><updated>2016-11-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-02:blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Также как и &lt;a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/"&gt;диод&lt;/a&gt; биполярный транзистор (&lt;strong&gt;B&lt;/strong&gt;ipolar &lt;strong&gt;J&lt;/strong&gt;unction &lt;strong&gt;T&lt;/strong&gt;ransistor - BJT)  основан на физических свойствах &lt;em&gt;p-n&lt;/em&gt; перехода. Прибор состоит из трёх полупроводниковых слоёв с чередующимся типом примесной проводимости: эмиттера - базы - коллектора. В зависимости от порядка чередования слоёв различают &lt;em&gt;n-p-n&lt;/em&gt; (эмиттер n-полупроводник, база p-полупроводник, коллектор n-полупроводник) и &lt;em&gt;p-n-p&lt;/em&gt; транзисторы. Поскольку биполярный транзистор состоит из двух p-n-переходов отсюда название «биполярный». Применяется транзистор в электронных устройствах для усиления или генерации электрических колебаний.&lt;/p&gt;
+&lt;p&gt;В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора &lt;a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/2N2222.LIB"&gt;2N2222&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha.sch"&gt;схема коэффициент передачи тока эмиттера&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=bb2492380d572bb61a545a6c474f3673"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Как вытекает из &lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;первого закона Кирхгофа&lt;/a&gt; Iэ=Iб + Iк, где Iэ Iб Iк токи эмиттера базы и коллектора транзистора. Коэффициент α, связывающий ток эмиттера и ток коллектора (Iк = α * Iэ), называется коэффициентом передачи тока эмиттера. Численное значение коэффициента α = 0,9...0,999. Чем больше коэффициент, тем эффективней транзистор передаёт ток. Этот коэффициент мало зависит от напряжения коллектор-база и база-эмиттер. Поэтому в широком диапазоне рабочих напряжений ток коллектора пропорционален току базы, коэффициент пропорциональности равен β = α/(1 − α) = Iк/Iб = Iк/(Iэ - Iк), обычно от 10 до 1000.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/show-img-alpha.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source alpha.net
+ngspice 2 -&amp;gt; set temp=0
+ngspice 3 -&amp;gt; dc v1 0 2 2m
+ngspice 4 -&amp;gt; set temp=25
+ngspice 5 -&amp;gt; dc v1 0 2 2m
+ngspice 6 -&amp;gt; set temp=50
+ngspice 7 -&amp;gt; dc v1 0 2 2m
+ngspice 8 -&amp;gt; plot (-dc1.i(v1)) (-dc2.i(v1)) (-dc3.i(v1)) ylimit 0 2m
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;На картинке 0...0.2В - напряжение насыщения коллектор-эмиттер, после которого участок 0.2В...MAX является активным режимом работы транзистора. Коэффициент передачи по току почти не зависит от напряжения коллектор-эмиттер.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Коэффициент передачи зависит от конкретной модели транзистора, температуры и частоты усиливаемого сигнала. Последний параметр называют предельной частотой коэффициента передачи тока базы.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source alpha.net
+ngspice 2 -&amp;gt; alter v1 10
+ngspice 3 -&amp;gt; set temp=0
+ngspice 4 -&amp;gt; dc i1 0 2m 2u
+ngspice 5 -&amp;gt; set temp=25
+ngspice 6 -&amp;gt; dc i1 0 2m 2u
+ngspice 7 -&amp;gt; set temp=50
+ngspice 8 -&amp;gt; dc i1 0 2m 2u
+ngspice 9 -&amp;gt; plot (-dc1.i(v1)) (-dc2.i(v1)) (-dc3.i(v1))
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В идеальном мире коэффициент передачи тока должен был бы быть константой, однако на &lt;a href="https://ngspice.js.org/?gist=9870d6a51429e0c4a779d228cc41dd62"&gt;картинке&lt;/a&gt; видно отклонение от прямой линии. На практике, если транзистор используется для усиления сигнала, это приводит к т.н. &lt;em&gt;нелинейным искажениям&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha-i-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/"&gt;Далее&lt;/a&gt; полевые транзисторы.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - выпрямитель переменного тока на диодах</title><link href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/" rel="alternate"></link><published>2016-11-01T00:00:00+02:00</published><updated>2016-11-01T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-01:blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE и конкретное применение &lt;a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/"&gt;полупроводниковых диодов&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;Выпрямитель электрического тока - преобразователь электрической энергии предназначенный для преобразования входного электрического тока переменного направления в ток постоянного направления. Выпрямители используются в большинстве современных электроприборах - от зарядки для мобильного телефона до телевизоров и ноутбуков. В следующих схемах для симуляции использовалась SPICE модель диода &lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/1n4007.txt"&gt;1n4007&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.sch"&gt;схема однополупериодного выпрямителя&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=fd2a88aab52c56f971179c9a1bd9a502"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-half-wave.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;У однополупериодных выпрямителей используется только одна полуволна постоянного тока на выходе при каждом полном цикле переменного тока на входе.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source half-wave.net
+ngspice 2 -&amp;gt; tran 0.5m 150m
+ngspice 3 -&amp;gt; alter r1 1
+ngspice 4 -&amp;gt; tran 0.5m 150m
+ngspice 5 -&amp;gt; plot tran1.v(n1) tran2.v(n1)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Куда более эффективными являются двухполупериодные выпрямители. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.sch"&gt;схема диодный мост&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=2cf3ee433d7f6ab178d903d7f1c8ecef"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-bridge.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source bridge.net
+ngspice 2 -&amp;gt; tran 0.5m 150m
+ngspice 3 -&amp;gt; alter r1 1
+ngspice 4 -&amp;gt; tran 0.5m 150m
+ngspice 5 -&amp;gt; plot tran1.v(n3) tran2.v(n3)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Диодный мост использует оба полупериода входного сигнала и поэтому имеем меньшую пульсацию напряжения на выходе и это есть очень хорошо:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Ещё одной интересной схемой выпрямителя является умножитель напряжения:&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul.sch"&gt;схема умножитель напряжения&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=b390ade98165e3b89c957c865dff87d2"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-mul.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source mul.net
+ngspice 2 -&amp;gt; tran 1m 500m
+ngspice 3 -&amp;gt; plot n2 n4
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Входное напряжение после каждой пары диодов умножается на ~2x (часть напряжения теряется на диодах). Величина выходного напряжения, достигнутая с помощью данной схемы, может быть весьма велика - например у люстры Чижевского это десятки тысяч вольт.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;Далее&lt;/a&gt; биполярный транзистор.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - полупроводниковый диод</title><link href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/" rel="alternate"></link><published>2016-10-31T00:00:00+02:00</published><updated>2016-10-31T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-10-31:blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Полупроводниковый диод - самый простой полупроводниковый прибор, состоящий из одного PN перехода. Основная его функция - это проводить электрический ток в одном направлении, и не пропускать его в обратном. Свойства диодов наглядно показывает вольт-амперная характеристика (ВАХ) - зависимость тока через двухполюсник от напряжения на этом двухполюснике. Как мы сейчас убедимся ВАХ зависит от конкретной модели диода и температуры окружающей среды.&lt;/p&gt;
+&lt;p&gt;Для симуляции диода в NGSPICE необходим найти (обычно на &lt;a href="https://www.centralsemi.com/content/engineering/spicemodels/" rel="nofollow"&gt;сайте производителя&lt;/a&gt;) его SPICE модель - например &lt;a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/1n4007.txt"&gt;1n4007&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ wget -nc http://www.vishay.com/docs/88000/1n4007.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward.sch"&gt;схема прямого включения диода&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=e93497542d39976cfcb6df1d193658c3"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/show-img-diode-forward.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source diode-forward.net
+ngspice 2 -&amp;gt; set temp=0
+ngspice 3 -&amp;gt; dc i1 0 1 0.001
+ngspice 4 -&amp;gt; set temp=25
+ngspice 5 -&amp;gt; dc i1 0 1 0.001
+ngspice 6 -&amp;gt; set temp=50
+ngspice 7 -&amp;gt; dc i1 0 1 0.001
+ngspice 8 -&amp;gt; plot dc1.v(n1) dc2.v(n1) dc3.v(n1)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Кремниевый диод открывается при напряжении ~0.6 В. Чем выше температура окружающей среды, тем этот порог открывания немного меньше.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;В учебниках по электронике дают обычно &lt;a href="https://ngspice.js.org/?gist=38b99db6363f932c6487c70c84502eb0"&gt;перевёрнутый&lt;/a&gt; график ВАХ &lt;code&gt;ngspice 8 -&amp;gt; plot "i-sweep" vs dc1.v(n1) "i-sweep" vs dc2.v(n1) "i-sweep" vs dc3.v(n1)&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;При &lt;a href="https://ngspice.js.org/?gist=31de19f98b10bfad7842b38ad3d99ce9"&gt;обратном напряжении&lt;/a&gt; через диод протекают незначительные токи утечки и таким образом его активное сопротивление очень большое. Однако при высоком напряжении, которое может варьироваться в широких пределах в зависимости от конкретной модели диода, наступает пробой и ток через резко возрастает:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source diode-forward.net
+ngspice 2 -&amp;gt; set temp=0
+ngspice 3 -&amp;gt; dc i1 -10m 0 10u
+ngspice 4 -&amp;gt; set temp=25
+ngspice 5 -&amp;gt; dc i1 -10m 0 10u
+ngspice 6 -&amp;gt; set temp=50
+ngspice 7 -&amp;gt; dc i1 -10m 0 10u
+ngspice 8 -&amp;gt; plot &amp;quot;i-sweep&amp;quot; vs dc1.v(n1) &amp;quot;i-sweep&amp;quot; vs dc2.v(n1) &amp;quot;i-sweep&amp;quot; vs dc3.v(n1)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-backward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Слишком большой ток вызовет необратимые изменения в кристалле диода, а вот для небольших токов явление пробоя оказывается весьма полезным. Существует целое подсемейство полупроводниковых диодов, называемых стабилитронами или диодами Зенера, для которых обратный режим работы является основным. В режиме пробоя напряжение на стабилитроне поддерживается с заданной точностью в широком диапазоне обратных токов.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/"&gt;Далее&lt;/a&gt; выпрямитель переменного тока на диодах. &lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - колебательный контур</title><link href="http://mazko.github.io/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/" rel="alternate"></link><published>2016-10-30T00:00:00+03:00</published><updated>2016-10-30T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-10-30:blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Колебательный контур (КК) - электрическая цепь, содержащая катушку индуктивности, конденсатор и источник электрической энергии. Если частота источника энергии совпадает с собственной частотой контура происходит замечательное явление, которое в физике называют резонансом. Резонансная частота контура определяется так называемой формулой Томсона: &lt;code&gt;f = 1/(2π√LC)&lt;/code&gt;. При последовательном соединении элементов цепи происходит резонанс напряжений, при параллельном - резонанс токов.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/serial.sch"&gt;схема последовательного КК&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/serial.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=5e3f4a6715af6a2a93ffb06da9f3d023"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/show-img-serial.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
@@ -26,7 +215,7 @@ ngspice 5 -&amp;gt; plot ac1.v(n1) ac2.v(n1)
 
 &lt;p&gt;При резонансе токов импеданс КК также стремится к величине R1, при этом полоса пропускания уменьшается при увеличении R1. &lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/parallel-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
-&lt;p&gt;Далее диоды.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - RC фильтр нижних частот</title><link href="http://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/" rel="alternate"></link><published>2016-10-29T00:00:00+03:00</published><updated>2016-10-29T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-10-29:blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Далее &lt;a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/"&gt;полупроводники&lt;/a&gt;.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - RC фильтр нижних частот</title><link href="http://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/" rel="alternate"></link><published>2016-10-29T00:00:00+03:00</published><updated>2016-10-29T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-10-29:blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Фильтр нижних частот (ФНЧ, low-pass filter) - электронный или любой другой фильтр, эффективно пропускающий частотный спектр сигнала ниже некоторой частоты (частоты среза) и подавляющий частоты сигнала выше этой частоты. ФВЧ - это соответственно high-pass filter.&lt;/p&gt;
 &lt;p&gt;RC-фильтры предстваляют собой цепочку, состоящую из резистора и конденсатора. В зависимости от их расположения фильтр пропускает или верхние или нижние частоты. Частота среза &lt;code&gt;f = 1/(2πRC)&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/rcSIN.sch"&gt;схема ФНЧ&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/rcSIN.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=1bc9e1a86a0a9de1d2d14ad8c7ed381e"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>NGSPICE.js - полевой транзистор</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/" rel="bookmark"
+           title="Permalink to NGSPICE.js - полевой транзистор">NGSPICE.js - полевой транзистор</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-03T00:00:00+02:00">
+                Published: Чт. 03 Ноябрь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>Полевой (униполярный) транзистор - полупроводниковый прибор, работа которого основана на управлении электрическим сопротивлением токопроводящего канала поперечным электрическим полем, создаваемым приложенным к затвору напряжением. Также как и <a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярные транзисторы</a> полевые транзисторы применяются в электронных устройствах для усиления или генерации электрических колебаний.</p>
+<p>Электроды полевого транзистора называют <strong>истоком</strong> (И), <strong>стоком</strong> (С) и <strong>затвором</strong> (З). Управляющее напряжение прикладывается между затвором и истоком. От напряжения между затвором и истоком зависит проводимость канала и, следовательно, величина тока стока. Таким образом полевой транзистор можно рассматривать как источник тока, управляемый напряжением затвор-исток. </p>
+<p>По конструкции полевые транзисторы можно разбить на две группы:</p>
+<ul>
+<li>
+<p>с управляющим p-n-переходом (JFET)</p>
+</li>
+<li>
+<p>с металлическим затвором, изолированным от канала диэлектриком (MOSFET). Транзисторы данного вида называют МДП-транзисторами (металл - диэлектрик - полупроводник). МДП-транзисторами также можно разделить на транзисторы с индуцированным (Enhancement) и встроенным (Depletion) каналом</p>
+</li>
+</ul>
+<p>Проводимость канала полевого транзистора может быть электронной (n-канал)
+или дырочной (p-канал).</p>
+<p>В следующих схемах для симуляции использовались SPICE модели полевых транзисторов с n-каналом: <a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nMOSd.txt">МДП встроенный канал</a>  | <a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nMOSe.txt">МДП индуцированный канал</a> | <a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nJFET.txt">JFET</a>.</p>
+<p>Поскольку входное сопротивление полевых транзисторов составляет десятки мегаом, то входные токи полевых транзисторов чрезвычайно малы и управление током в выходной цепи осуществляется входным напряжением. В этой связи усилительные свойства полевого транзистора, как и электронных ламп, целесообразно характеризовать крутизной проходной характеристики.</p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va.sch">крутизна полевого транзистора</a> | <a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fb28e1d10199273970066a5b30fdd454">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-va.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source va.net
+ngspice 2 -&gt; set temp=0
+ngspice 3 -&gt; dc vdd 0 10 10m
+ngspice 4 -&gt; set temp=25
+ngspice 5 -&gt; dc vdd 0 10 10m
+ngspice 6 -&gt; set temp=50
+ngspice 7 -&gt; dc vdd 0 10 10m
+ngspice 8 -&gt; plot (-dc1.i(vdd)) (-dc2.i(vdd)) (-dc3.i(vdd))
+</pre></div>
+
+
+<p>На картинке 0...1В - напряжение насыщения сток-исток, после которого участок 1В...MAX является активным режимом работы транзистора. Крутизна ВАХ в идеале не зависит от напряжения сток-исток.</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>МДП-транзистор с индуцированным каналом при нулевом напряжении затвор-исток закрыт (ток стока равен нулю) и именно поэтому на схемах его канал принято обозначать пунктиром.</p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all.sch">напряжение затвора/ток стока</a> | <a href="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all.net">netlist</a> | <a href="https://ngspice.js.org/?gist=af228d54e01cd660eb56d6851a960df2">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-all.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source all.net
+ngspice 2 -&gt; dc vin -1 9 10m
+ngspice 3 -&gt; plot (-i(VnMOSe)) (-i(VnMOSd)) (-i(Vnjfet))
+</pre></div>
+
+
+<p>Как видно на графике у JFET транзисторов более крутая ВАХ и полярность усиливаемого напряжения затвор-исток JFET и MOSFET противоположная:</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">Далее</a> о согласовании источника и нагрузки.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
