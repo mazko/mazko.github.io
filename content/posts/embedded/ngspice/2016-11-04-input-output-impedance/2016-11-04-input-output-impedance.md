@@ -36,4 +36,4 @@ tags: gEDA, ngspice
 
 ![screenshot]({attach}io-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далее усилительный каскад с общим эмиттером.
+[Далее]({filename}../2016-11-07-bipolar-common-emitter/2016-11-07-bipolar-common-emitter.md) усилительный каскад с общим эмиттером.
