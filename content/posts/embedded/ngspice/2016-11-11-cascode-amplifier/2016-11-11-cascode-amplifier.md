@@ -48,4 +48,4 @@ tags: gEDA, ngspice
     ngspice 3 -> tran 10n 5u
     ngspice 4 -> plot v(out) v(x_out)
 
-Контрольная [проверка](https://ngspice.js.org/?gist=764af0bb80c15e3de059ec33b65471fe) - рабочая точка выбрана верно, видимые искажения на выходе отсутствуют. Далее генераторы колебаний на транзисторах.
+Контрольная [проверка](https://ngspice.js.org/?gist=764af0bb80c15e3de059ec33b65471fe) - рабочая точка выбрана верно, видимые искажения на выходе отсутствуют. [Далее]({filename}../2016-11-13-transistor-oscillators/2016-11-13-transistor-oscillators.md) генераторы колебаний на транзисторах.
