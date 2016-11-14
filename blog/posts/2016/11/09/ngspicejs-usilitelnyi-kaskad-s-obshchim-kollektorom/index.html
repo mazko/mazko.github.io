@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>NGSPICE.js - усилительный каскад с общим коллектором</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/" rel="bookmark"
+           title="Permalink to NGSPICE.js - усилительный каскад с общим коллектором">NGSPICE.js - усилительный каскад с общим коллектором</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-09T00:00:00+02:00">
+                Published: Ср. 09 Ноябрь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>При схеме включения <a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярного транзистора</a> с общим коллектором (ОК) каскад усиливает только ток тогда как коэффициент передачи по напряжению близок к единице (теоретически немного меньше). Поскольку напряжение на выходе повторяет напряжение на входе то схему включения с ОК часто называют <em>эмиттерным повторителем</em>. Основные отличия от каскада с <a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>:</p>
+<ul>
+<li>
+<p>100% отрицательная обратная связь по напряжению  позволяет значительно уменьшить нелинейные искажения</p>
+</li>
+<li>
+<p>большое <a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное</a> и малое выходное сопротивление</p>
+</li>
+<li>
+<p>коэффициент передачи по напряжению близок к единице</p>
+</li>
+<li>
+<p>фазы входного и выходного сигнала совпадают</p>
+</li>
+</ul>
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора <a href="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/2N2222.LIB">2N2222</a></p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple.sch">простейший каскад с ОК</a> | <a href="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5ce99532a7aa87358fcdfc949e821a94">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/show-img-simple.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source simple.net
+ngspice 2 -&gt; set temp=0
+ngspice 3 -&gt; dc vin 0 11 0.1
+ngspice 4 -&gt; set temp=50
+ngspice 5 -&gt; dc vin 0 11 0.1
+ngspice 6 -&gt; alter r 1k
+ngspice 7 -&gt; dc vin 0 11 0.1
+ngspice 8 -&gt; plot dc1.v(out) dc2.v(out) dc3.v(out)
+ngspice 9 -&gt; alter vin 1
+ngspice 10 -&gt; op
+ngspice 11 -&gt; show q1
+ngspice 12 -&gt; alter vin 9
+ngspice 13 -&gt; op
+ngspice 14 -&gt; show q1
+</pre></div>
+
+
+<p>Команда <code>op</code> по двум точкам активного (линейного) режима работы транзистора фиксирует следующие значения - ie:-0.000373456 | ib:2.29529e-06 и ie:-0.00828277 | ib:3.71691e-05</p>
+<p>Усиление по напряжению каскада c ОК <a href="https://bc.js.org/">≈ 1 ≈ 0 дБ</a> <code>1000*(0.00828277-0.000373456)/(9-1) ≈ 0.9887</code></p>
+<p>Усиление по току <a href="https://bc.js.org/">≈ 227</a> <code>(0.00828277-0.000373456)/(3.71691*10^-05-2.29529*10^-06)</code> <a href="https://bc.js.org/">≈ 47 дБ</a> <code>20*log(227)=20*l(227)/l(10)</code> или исходя из <a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">первого закона Кирхгофа</a> <code>Ie/Ib = (Ic + Ib)/Ib = β + 1</code></p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">Входное</a> сопротивление <a href="https://bc.js.org/">≈ 230 кОм</a> <code>(9-1)/(3.71691*10^-05-2.29529*10^-06)</code> или упрощённо <code>β*R = (227-1)*1000 ≈ 230 кОм</code></p>
+<p>Выходное сопротивление очевидно ≈ R ≈ 1 кОм (42 Ом)</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>По аналогии с <a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> для того тобы усиливать переменный (синусоидальный) сигнал в схему обычно добавляют гальваническую развязку по входу и напряжение смещения.</p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">Далее</a> усилительный каскад с общей базой.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
