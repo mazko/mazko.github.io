@@ -54,4 +54,4 @@ tags: gEDA, ngspice
 
 ![screenshot]({attach}symmetric-multivibrator-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далее операционный усилитель.
+[Далее]({filename}../2016-11-18-op-amp-basics/2016-11-18-op-amp-basics.md) операционный усилитель.
