@@ -36,4 +36,4 @@ tags: gEDA, ngspice, ОУ
 
 ![screenshot]({attach}inverting-summator-single-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далее триггер Шмидта на ОУ.
+[Далее]({filename}../2016-11-24-op-amp-schmitt/2016-11-24-op-amp-schmitt.md) триггер Шмидта на ОУ.
