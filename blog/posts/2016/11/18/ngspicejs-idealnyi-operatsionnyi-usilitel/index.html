@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>NGSPICE.js - идеальный операционный усилитель</title>
+        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
+        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/" rel="bookmark"
+           title="Permalink to NGSPICE.js - идеальный операционный усилитель">NGSPICE.js - идеальный операционный усилитель</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-18T00:00:00+02:00">
+                Published: Пт. 18 Ноябрь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>Операционный усилитель (ОУ) - это модульный многокаскадный усилитель с дифференциальным входом. Для простоты расчётов удобно оперировать понятием <em>идеального ОУ</em> - такого себе непрозрачного ящичка с магией внутри. Дифференциальный вход предполагает два входа - инвертирующий и неинвертирующий. Также у ОУ есть две ноги для питания и обычно один выход, уровень напряжения на котором является функцией от разности напряжений на входах. Под идеальным подразумевают:</p>
+<ul>
+<li>
+<p>бесконечное <a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a></p>
+</li>
+<li>
+<p>нулевое выходное сопротивление</p>
+</li>
+<li>
+<p>бесконечная ширина <a href="http://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">полосы пропускания</a> и отсутствие задержки при прохождении сигнала через усилитель</p>
+</li>
+<li>
+<p>бесконечно большой коэффициент усиления по напряжению с разомкнутой петлей <a href="http://mazko.github.io/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/">обратной связи</a></p>
+</li>
+<li>
+<p>предположение о бесконечности коэффициента усиления идеального
+ОУ влечёт за собой предположение о том, что разность напряжений между входами стремится к нулю в активном режиме усиления</p>
+</li>
+</ul>
+<p>На текущий момент <a href="https://ngspice.js.org/">ngspice.js</a> собран без флага  <code>--enable-xspice</code>, поэтому в следующих схемах использовалась SPICE модель операционного усилителя <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/LT1007CS.txt">LT1007</a>, а не более широко известных и часто используемых LM321 или uA741/К140УД7 т.к. для симуляции они требуют наличия расширения <strong>xspice</strong> - в таких случаях стоит использовать нативный <strong>ngspice</strong>:</p>
+<div class="highlight"><pre><span></span>~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
+</pre></div>
+
+
+<p><a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/basic.sch">схема ОУ без обратной связи</a> | <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/basic.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2451008bf8176a886539a9f9b54a448c">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/show-img-basic.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source basic.net
+ngspice 2 -&gt; alter vn 0.1m
+ngspice 3 -&gt; dc vp 60u 0.1m 50n
+ngspice 4 -&gt; plot v(out)
+ngspice 5 -&gt; alter vp 0.1m
+ngspice 6 -&gt; op
+ngspice 7 -&gt; print i(vp) i(vn)
+</pre></div>
+
+
+<p>Результаты команды <code>op</code> следующие i(vp) = -8.96560e-09 | i(vn) = -2.09159e-08 из чего можно сделать <a href="https://bc.js.org/">вывод</a> что входное сопротивление <code>(10^-4)/(8.96560*10^-09) ≈ 10 кОм</code> | <code>(10^-4)/(2.09159*10^-08) ≈ 5 кОм</code> что вобщем немного. Что интересно для более высоких напряжений Vp и Vn входное сопротивление оказывается на <a href="https://ngspice.js.org/?gist=3793a35c63184e8a1d26c67a16888fc2">порядок</a> больше - десятки мегаом:</p>
+<div class="highlight"><pre><span></span>ngspice 8 -&gt; alter vp 1
+ngspice 9 -&gt; alter vn 1
+ngspice 10 -&gt; op
+ngspice 11 -&gt; print i(vp) i(vn)
+</pre></div>
+
+
+<p>Судя по документации LT1007 спроектирован на <a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярных транзисторах</a>, что возможно объясняет небольшое по меркам ОУ входное сопротивление.</p>
+<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/basic-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>На картинке пара микровольт активного режима ОУ на входе полностью переворачивают напряжение на выходе из нижнего режима а насыщения в верхний, что говорит об очень большом коэффициенте усиления по напряжению <code>(8+8)/(2*10^-6) = 8 миллионов = 20*log(8*10^6)=20*l(8*10^6)/l(10) = 138 дБ</code>. Поэтому для нормальной работы ОУ вводят обратную связь - как правило отрицательную.</p>
+<p><a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/">Далее</a> неинвертирующий усилитель на ОУ.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/';
+        var disqus_url = 'http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

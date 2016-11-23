@@ -1,5 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-11-13T00:00:00+02:00</updated><entry><title>NGSPICE.js - генераторы колебаний на транзисторах</title><link href="http://mazko.github.io/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/" rel="alternate"></link><published>2016-11-13T00:00:00+02:00</published><updated>2016-11-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-13:blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/all.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-11-24T00:00:00+02:00</updated><entry><title>NGSPICE.js - компаратор и триггер Шмитта на ОУ</title><link href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="alternate"></link><published>2016-11-24T00:00:00+02:00</published><updated>2016-11-24T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-24:blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;Компаратор сравнивает два &lt;em&gt;аналоговых&lt;/em&gt; сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал с датчика. Так как в схеме отсутствует обратная связь, то идеальный ОУ может быть только в режиме насыщения и соответственно либо с минимальным либо максимальным уровнем напряжения питания на выходе. В зависимости от того на какой из дифференциальных входов подаётся опорное напряжение компаратор может быть соответственно инвертирующим и неинвертирующим.&lt;/p&gt;
+&lt;p&gt;В следующих схемах использовалась SPICE модель операционного усилителя &lt;a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/LT1007CS.txt"&gt;LT1007&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.sch"&gt;неинвертирующий компаратор с однополярным питанием&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=d120122d336d4f1856b1582c12a9a205"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source comparator-single.net
+ngspice 2 -&amp;gt; tran 10u 4m
+ngspice 3 -&amp;gt; plot v(out) v(in)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Опорное напряжение задано делителем Rf1/Rf2 и очевидно равно 5В. При этом на вход поступает сигнал сложной формы. Компаратор отработал логически правильно сработав четырежды т.к. входное напряжение четырежды перевалило отметку 5В, однако на практике зачастую требуется иное поведение если предположить что провал напряжения посредине это была помеха. Для борьбы с этим неприятным явлением в компаратор с помощью ПОС добавляют &lt;em&gt;гистерезис&lt;/em&gt; и называется такое решение &lt;a href="http://www.pcbheaven.com/wikipages/The_Schmitt_Trigger/" rel="nofollow"&gt;триггером Шмитта&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Как видно на следующей схеме, триггер Шмитта очень похож на обычный компаратор за исключением положительной обратной связи через резистор &lt;strong&gt;Rf&lt;/strong&gt;. Гистерезис добавляет задержку выключения компаратора и тем самым обеспечивается более высокая помехоустойчивость схемы. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.sch"&gt;инвертирующий триггер Шмитта с однополярным питанием&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=22dbe97a1a4b121e6678a1b27ceffc12"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-shmitt-trigger-single.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source shmitt-trigger-single.net
+ngspice 2 -&amp;gt; tran 10u 4m
+ngspice 3 -&amp;gt; plot v(out) v(in)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Приблизительный &lt;a href="https://bc.js.org/"&gt;расчёт&lt;/a&gt; напряжений срабатывания с гистерезисом:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;верхний порог &lt;code&gt;V1*Rf2/(Rf2+Rx) = 15*15000/(15000+29876) ≈ 5 В&lt;/code&gt;, где &lt;code&gt;Rx = (Rf1*Rf)/(Rf1+Rf) = 47000*82000/(47000+82000) ≈ 29876 Ом&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;нижний порог &lt;code&gt;V1*Rx/(Rf1+Rx) = 15*12680/(47000+12680) ≈ 3.2 В&lt;/code&gt;, где &lt;code&gt;Rx = (Rf2*Rf)/(Rf2+Rf) = 15000*82000/(15000+82000) ≈ 12680 Ом&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ну а фактически на картинке верхний порог срабатывания получился чуть меньше 5 Вольт, тогда как нижний чуть больше 3 Вольт.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Далi буде.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - сумматоры напряжений на ОУ</title><link href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/" rel="alternate"></link><published>2016-11-23T00:00:00+02:00</published><updated>2016-11-23T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-23:blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;Наличие виртуальной земли в &lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/"&gt;инвертирующем&lt;/a&gt; усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или как ещё говорят вес. Данная схема включения получила название &lt;em&gt;инвертирующий сумматор&lt;/em&gt; и для идеального ОУ напряжение на выходе рассчитывается по простой формуле &lt;code&gt;Vout = -Rf*((Vin1/Rf1)+(Vin2/Rf2)+...)&lt;/code&gt; в зависимости от количества суммируемых входов.&lt;/p&gt;
+&lt;p&gt;В следующих схемах использовалась SPICE модель операционного усилителя &lt;a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/LT1007CS.txt"&gt;LT1007&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator.sch"&gt;схема инвертирующего сумматора + тестовый сумматор без ОУ&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=a4ad89b810370046865df1eb4beca38c"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source inverting-summator.net
+ngspice 2 -&amp;gt; dc vin1 -10 4 0.1
+ngspice 3 -&amp;gt; plot v(out) (-v(test))
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;При &lt;code&gt;Vin1=-10&lt;/code&gt; алгебраическая сумма входных напряжений &lt;code&gt;-10+3-5=-12&lt;/code&gt; или &lt;code&gt;12&lt;/code&gt; с инверсией и т.д. Как видно на картинке если бы мы не использовали ОУ а использовали обычные резисторы Rx то результат трудно назвать суммированием напряжений.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Так как в основе инвертирующего сумматора лежит инвертирующего усилитель то для однополярного питания в принципе всё так же. Классический случай применения следующей схемы - качественный микшер аудио сигналов от нескольких источников.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single.sch"&gt;инвертирующий сумматор с однополярным питанием&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=240fbcd9cd54346102e19984c5d24eba"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator-single.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source inverting-summator-single.net
+ngspice 2 -&amp;gt; tran 1u 0.5m
+ngspice 3 -&amp;gt; plot v(out) v(in1) v(in2) v(vgnd)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Коэффициент усиления подобран единице для красоты картинки - при желании его можно изменить.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/"&gt;Далее&lt;/a&gt; триггер Шмидта на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - инвертирующий усилитель на ОУ</title><link href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/" rel="alternate"></link><published>2016-11-22T00:00:00+02:00</published><updated>2016-11-22T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-22:blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;В инвертирующем усилителе входной сигнал подаётся на инвертирующий вход ОУ, туда же заведена ООС, при этом неинвертирующий вход заземлён. Отличительными особенностями данной схемы для идеального ОУ являются:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/"&gt;входное сопротивление&lt;/a&gt; эквивалентно величине резистора Rg&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;фаза сигнала на выходе сдвинута на 180° по отношению к входному&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;коэффициент усиления по напряжению &lt;code&gt;-Rf/Rg&lt;/code&gt;, т.е. может быть &amp;lt; 1 и соответственно диапазон шире чем у &lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/"&gt;неинвертирующего&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;В предположении, что разность напряжений между входами ОУ равна нулю, цепь обратной связи должна работать так, чтобы поддерживать потенциал инвертирующего входа также равным нулю. Этот потенциал иногда называют &lt;strong&gt;виртуальной землёй&lt;/strong&gt; &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;В следующих схемах использовалась SPICE модель операционного усилителя &lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/LT1007CS.txt"&gt;LT1007&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting.sch"&gt;схема инвертирующего усилителя&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=2b635c0b8bae28e0ab4152cde6eb475d"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source inverting.net
+ngspice 2 -&amp;gt; dc vin -10m 10m 20u
+ngspice 3 -&amp;gt; plot v(out) ylimit -10 10
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Коэффициент усиления схемы &lt;code&gt;365000/365 = 1000&lt;/code&gt;, т.е. при 10 мВ на входе на выходе будет 10 В.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;При однополярном питании необходимо подать стабильное напряжение смещения - в простейшем случае это конденсатор C2, наличие которого повышает устойчивость системы от самовозбуждения при просадках напряжения в неидеальном источнике питания.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single.sch"&gt;инвертирующий усилитель с однополярным питанием&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=fb963c63f640a5012853ae869a6ee912"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting-single.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source inverting-single.net
+ngspice 2 -&amp;gt; tran 1u 0.5m
+ngspice 3 -&amp;gt; plot v(out) v(in) v(vgnd)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Обратная связь обеспечивает коэффициент усиления &lt;code&gt;100k/50k = 2&lt;/code&gt;, напряжение смещение как обычно половина напряжения питания. В активном режиме напряжение в точке виртуальной земли равно напряжению смещения независимо от уровня входного сигнала. Фазы входного и выходного сигнала сдвинуты на 180°.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/"&gt;Далее&lt;/a&gt; сумматоры напряжений на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - неинвертирующий усилитель на ОУ</title><link href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="alternate"></link><published>2016-11-21T00:00:00+02:00</published><updated>2016-11-21T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-21:blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;В неинвертирующем усилителе входной сигнал подаётся на неинвертирующий вход ОУ, а ООС заведена с выхода на инвертирующий вход. Отличительными особенностями данной схемы для идеального ОУ являются:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;бесконечно большое &lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/"&gt;входное сопротивление&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;фаза сигнала на входе и на выходе совпадает&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;коэффициент усиления по напряжению &lt;code&gt;1+Rf/Rg&lt;/code&gt;, как не сложно догадаться он &lt;strong&gt;не может быть меньше 1&lt;/strong&gt; - усилитель с коэффициентом 1 иногда называют буфером&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;В следующих схемах использовалась SPICE модель операционного усилителя &lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/LT1007CS.txt"&gt;LT1007&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.sch"&gt;схема неинвертирующего усилителя&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=afbeb59caf6deff2cfead830a50cfb59"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source non-inverting.net
+ngspice 2 -&amp;gt; dc vin -10m 10m 20u
+ngspice 3 -&amp;gt; plot v(out) ylimit -10 10
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Коэффициент усиления схемы &lt;code&gt;1+365000/365 = 1001&lt;/code&gt;, т.е. при 10 мВ на входе на выходе будет 10.01 В. Для красоты картинки результат округлён до 10 с помощью &lt;code&gt;ylimit&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Классическая схема включения ОУ подразумевает биполярный источник питания, в предыдущем примере это ± 15В. Если в документации к ОУ не упомянуто обратное, то однополярное питание зачастую также возможно, однако потребуются дополнительные телодвижения - например подача напряжения смещения, гальваническая развязка и понимание зачем это надо. Идея такая же  как и в &lt;a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;транзисторных&lt;/a&gt; схемах усилителей:&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.sch"&gt;неинвертирующий усилитель с однополярным питанием&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=d07144c7716c6e14452bb449f8a4d129"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting-single.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source non-inverting-single.net
+ngspice 2 -&amp;gt; tran 1u 0.5m
+ngspice 3 -&amp;gt; plot v(out) v(in)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Обратная связь обеспечивает коэффициент усиления &lt;code&gt;1+100/50 = 3&lt;/code&gt; для высокочастотных сигналов и равный &lt;strong&gt;единице&lt;/strong&gt; для постоянной составляющей - в противном случае ОУ будет усиливать собственное напряжения смещения. Также несложно убедиться фаза входного и выходного сигнала совпадает. Напряжение смещение обычно задают равным половине напряжения питания.  &lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/"&gt;Далее&lt;/a&gt; инвертирующий усилитель на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - идеальный операционный усилитель</title><link href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/" rel="alternate"></link><published>2016-11-18T00:00:00+02:00</published><updated>2016-11-18T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-18:blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Операционный усилитель (ОУ) - это модульный многокаскадный усилитель с дифференциальным входом. Для простоты расчётов удобно оперировать понятием &lt;em&gt;идеального ОУ&lt;/em&gt; - такого себе непрозрачного ящичка с магией внутри. Дифференциальный вход предполагает два входа - инвертирующий и неинвертирующий. Также у ОУ есть две ноги для питания и обычно один выход, уровень напряжения на котором является функцией от разности напряжений на входах. Под идеальным подразумевают:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;бесконечное &lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/"&gt;входное сопротивление&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;нулевое выходное сопротивление&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;бесконечная ширина &lt;a href="http://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/"&gt;полосы пропускания&lt;/a&gt; и отсутствие задержки при прохождении сигнала через усилитель&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;бесконечно большой коэффициент усиления по напряжению с разомкнутой петлей &lt;a href="http://mazko.github.io/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/"&gt;обратной связи&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;предположение о бесконечности коэффициента усиления идеального
+ОУ влечёт за собой предположение о том, что разность напряжений между входами стремится к нулю в активном режиме усиления&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;На текущий момент &lt;a href="https://ngspice.js.org/"&gt;ngspice.js&lt;/a&gt; собран без флага  &lt;code&gt;--enable-xspice&lt;/code&gt;, поэтому в следующих схемах использовалась SPICE модель операционного усилителя &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/LT1007CS.txt"&gt;LT1007&lt;/a&gt;, а не более широко известных и часто используемых LM321 или uA741/К140УД7 т.к. для симуляции они требуют наличия расширения &lt;strong&gt;xspice&lt;/strong&gt; - в таких случаях стоит использовать нативный &lt;strong&gt;ngspice&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/basic.sch"&gt;схема ОУ без обратной связи&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/basic.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=2451008bf8176a886539a9f9b54a448c"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/show-img-basic.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source basic.net
+ngspice 2 -&amp;gt; alter vn 0.1m
+ngspice 3 -&amp;gt; dc vp 60u 0.1m 50n
+ngspice 4 -&amp;gt; plot v(out)
+ngspice 5 -&amp;gt; alter vp 0.1m
+ngspice 6 -&amp;gt; op
+ngspice 7 -&amp;gt; print i(vp) i(vn)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Результаты команды &lt;code&gt;op&lt;/code&gt; следующие i(vp) = -8.96560e-09 | i(vn) = -2.09159e-08 из чего можно сделать &lt;a href="https://bc.js.org/"&gt;вывод&lt;/a&gt; что входное сопротивление &lt;code&gt;(10^-4)/(8.96560*10^-09) ≈ 10 кОм&lt;/code&gt; | &lt;code&gt;(10^-4)/(2.09159*10^-08) ≈ 5 кОм&lt;/code&gt; что вобщем немного. Что интересно для более высоких напряжений Vp и Vn входное сопротивление оказывается на &lt;a href="https://ngspice.js.org/?gist=3793a35c63184e8a1d26c67a16888fc2"&gt;порядок&lt;/a&gt; больше - десятки мегаом:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 8 -&amp;gt; alter vp 1
+ngspice 9 -&amp;gt; alter vn 1
+ngspice 10 -&amp;gt; op
+ngspice 11 -&amp;gt; print i(vp) i(vn)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Судя по документации LT1007 спроектирован на &lt;a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;биполярных транзисторах&lt;/a&gt;, что возможно объясняет небольшое по меркам ОУ входное сопротивление.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/basic-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;На картинке пара микровольт активного режима ОУ на входе полностью переворачивают напряжение на выходе из нижнего режима а насыщения в верхний, что говорит об очень большом коэффициенте усиления по напряжению &lt;code&gt;(8+8)/(2*10^-6) = 8 миллионов = 20*log(8*10^6)=20*l(8*10^6)/l(10) = 138 дБ&lt;/code&gt;. Поэтому для нормальной работы ОУ вводят обратную связь - как правило отрицательную.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/"&gt;Далее&lt;/a&gt; неинвертирующий усилитель на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - генераторы колебаний на транзисторах</title><link href="http://mazko.github.io/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/" rel="alternate"></link><published>2016-11-13T00:00:00+02:00</published><updated>2016-11-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-13:blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Если некоторая часть выходного сигнала усилителя подаётся обратно на вход, так что усилитель усиливает часть своего собственного выходного сигнала, то мы получаем т.н.  обратную связь. Обратная связь существует в двух разновидностях: положительная (также называемая регенеративной) и отрицательная (ООС). При положительной обратной связи (ПОС) часть выходного сигнала складывается с входным сигналом тогда как при отрицательной вычитается. Типичные примеры ООС с применением транзисторов &lt;a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/"&gt;ОБ&lt;/a&gt; и &lt;a href="http://mazko.github.io/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/"&gt;ОК&lt;/a&gt;. ООС приводит к снижению коэффициента усиления, однако даёт и определённые преимущества: уменьшение искажений, увеличение полосы пропускания, температурная стабилизация. Сильную ПОС в основном используют в генераторах сигналов. Слабая ПОС также находит применение - например в регенеративных радиоприёмниках для достижения большого (огромного) усиления.&lt;/p&gt;
 &lt;p&gt;Простейший &lt;strong&gt;RC-генератор&lt;/strong&gt; состоит из одного транзистора и представляет из себя усилительный каскад с общим эмиттером &lt;a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt;, охваченный ПОС. Цепь ПОС состоит из трех фазовращающих RC-цепочек, каждая из которых обеспечивает сдвиг фаз 60 градусов т.е. в сумме. 180° и в результате ООС с коллектора на базу превращается в ПОС (180+180=360=0). При условии &lt;code&gt;Rph1=Rph2=Rph3=R&lt;/code&gt; и &lt;code&gt;Сph1=Сph2=Сph3=С&lt;/code&gt;
 такой генератор вырабатывает гармонические колебания с &lt;a href="https://bc.js.org/"&gt;частотой&lt;/a&gt; &lt;code&gt;f = 1/(2*π*sqrt(6)*R*C) ≈ 0.065/(R*C) = 0.065/(22000*10^-7) ≈ 29.5 Гц&lt;/code&gt;&lt;/p&gt;
@@ -36,7 +214,7 @@ ngspice 3 -&amp;gt; plot v(out)
 
 &lt;p&gt;&lt;a href="https://bc.js.org/"&gt;Частота&lt;/a&gt; мультивибратора &lt;code&gt;f = 1/(ln(2)*(R2*C1+R3*C2)) = 1/(l(2)*(47000*10^-7+47000*10^-7)) ≈ 153 Гц&lt;/code&gt; и фактическая частота &lt;code&gt;7/(50*10^-3) = 140 Гц&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/symmetric-multivibrator-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
-&lt;p&gt;Далее операционный усилитель.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - каскодный усилитель</title><link href="http://mazko.github.io/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/" rel="alternate"></link><published>2016-11-11T00:00:00+02:00</published><updated>2016-11-11T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-11:blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;Далее&lt;/a&gt; операционный усилитель.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - каскодный усилитель</title><link href="http://mazko.github.io/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/" rel="alternate"></link><published>2016-11-11T00:00:00+02:00</published><updated>2016-11-11T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-11-11:blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/</id><summary type="html">&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Основным недостатком усилительного каскада с общей базой (ОБ) является то что &lt;a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/"&gt;выходное&lt;/a&gt; сопротивление на порядок больше входного. Этого недостатка лишена &lt;em&gt;каскодная схема&lt;/em&gt; или &lt;em&gt;каскод&lt;/em&gt;, которая изображена на рисунке ниже. В такой схеме транзисторы соединены последовательно, при этом входной транзистор включен по схеме с общим эмиттером &lt;a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt;, а другой - по схеме с общей базой &lt;a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/"&gt;ОБ&lt;/a&gt;. Каскодная схема обеспечивает примерно такое же усиление по току и напряжению, что и схема с общим эмиттером. &lt;/p&gt;
 &lt;p&gt;Как известно на характеристиках каскада с общим эмиттером &lt;a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt;
 негативно сказывается эффект Миллера, при котором из-за сдвига фазы выходного напряжения на 180° по отношению к входному емкость коллектор-база создаёт отрицательную обратную связь по переменному току на высоких частотах. Такая паразитная обратная связь эквивалентна включению на входе усилителя шунтирующей емкости, величина которой пропорциональна коэффициенту усиления по напряжению каскада. &lt;/p&gt;
