@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - UML</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,29 +16,29 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/">Паттерны в чистом C. State</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/">Паттерны в чистом C. State</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2012-10-13T00:00:00+03:00">
                 Published: Сб. 13 Октябрь 2012
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/pattern">Паттерн</a> <a href="http://mazko.github.io/blog/tag/uml">UML</a> <a href="http://mazko.github.io/blog/tag/konechnyi-avtomat">Конечный Автомат</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> </p>
 </footer><!-- /.post-info --><blockquote>
 <p>"Шаблоны предназначены для объектно ориентированного проектирования и реализации."</p>
 <p>Это заблуждение относится к разряду тех, где возможности шаблонов чересчур ограничиваются.</p>
@@ -47,11 +47,11 @@
 </blockquote>
 <p>Наверно каждый специалист в процессе работы периодически испытывает чувство <a href="http://ru.wikipedia.org/wiki/%D0%94%D0%B5%D0%B6%D0%B0%D0%B2%D1%8E" rel="nofollow">дежавю</a>. Где-то уже решалась похожая задачка. В принципе большинство задач уже когда-то решалось. <em>Паттерн</em> - повторимая архитектурная конструкция, представляющая собой <em>удачное</em> решение проблемы проектирования в рамках некоторого часто возникающего контекста.</p>
 <p>Самый лучший способ разобраться в <a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow">шаблонах</a> проектирования, это попытаться их использовать, потому как дать чёткое неоспоримое определение паттерну непросто, ну разве что повторить слова <em>Alfred North Whitehead</em>, сказанные в 1943 году: "<em>Искусство — это наложение шаблона на опыт и наше эстетическое наслаждение от узнавания этого шаблона...</em>".</p>
-<p>Чистый (ANSI) <strong>С</strong> не является объектно ориентированным языком - из трёх китов <em>ООП</em> в нём напрямую не поддерживается наследование, полиморфизм представлен только в виде указателей на функцию. Инкапсуляции в большинстве случаев всё же можно добиться, например с помощью ключевого слова <code>static</code> или очень хитрых <code>typedef</code>. В общем негусто. Но давайте всё же рискнём и попытаемся реализовать один из паттернов - <strong>State</strong> на <strong>С</strong>. В <a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">прошлый</a> раз мы вспомнили теорию <em>конечных автоматов</em>, теперь продолжим поддерживать <span style="text-decoration: line-through;">китайскую</span> отечественную промышленность по производству гирлянд.</p>
+<p>Чистый (ANSI) <strong>С</strong> не является объектно ориентированным языком - из трёх китов <em>ООП</em> в нём напрямую не поддерживается наследование, полиморфизм представлен только в виде указателей на функцию. Инкапсуляции в большинстве случаев всё же можно добиться, например с помощью ключевого слова <code>static</code> или очень хитрых <code>typedef</code>. В общем негусто. Но давайте всё же рискнём и попытаемся реализовать один из паттернов - <strong>State</strong> на <strong>С</strong>. В <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">прошлый</a> раз мы вспомнили теорию <em>конечных автоматов</em>, теперь продолжим поддерживать <span style="text-decoration: line-through;">китайскую</span> отечественную промышленность по производству гирлянд.</p>
 <h3>Определение</h3>
 <p>С чего начать ? Начнём с определения. Официальная формулировка паттерна <em>Состояние</em> (<em>State</em>) от <a href="http://ru.wikipedia.org/wiki/Design_Patterns" rel="nofollow">Банды Четырёх</a> звучит так: "<em>Позволяет объекту варьировать свое поведение в зависимости от внутреннего состояния. Из­вне создается впечатление, что изменился класс объекта</em>".</p>
 <p>В <strong>С</strong> конечно нету классов, но пока для простоты можно считать что класс и модуль (файл) в нашем примере одно и тоже. Теперь попробуем набросать <a href="http://ru.wikipedia.org/wiki/UML" rel="nofollow">UML</a> - диаграмму для нашей гирлянды (если вы не очень сильны в <em>UML</em>, не волнуйтесь - я тоже):</p>
-<p><img alt="UML" src="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/UML.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/UML.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Изначально <em>UML</em> создавался с прицелом на <em>ООП</em>, поэтому "сишник" взглянув на данный рисунок может испугаться раньше времени. Не стоит волноваться, мы не будем погружаться в такую тёмную сторону <strong>С</strong> как <a href="http://www.cs.rit.edu/~ats/books/ooc.pdf" rel="nofollow">эмуляция</a> наследования или виртуальных функций. Этим должен заниматься компилятор. Самое время представить участников паттерна <em>State</em>:</p>
 <ul>
 <li>
@@ -65,7 +65,7 @@
 </li>
 </ul>
 <h3>Реализация</h3>
-<p>Как и в <a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">табличном</a> решении, полиморфизма можно добиться воспользовавшись указателями на функцию - это позволит менять поведение объекта в процессе выполнения. Интерфейс состояний в нашем случае состоит из двух функций:</p>
+<p>Как и в <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">табличном</a> решении, полиморфизма можно добиться воспользовавшись указателями на функцию - это позволит менять поведение объекта в процессе выполнения. Интерфейс состояний в нашем случае состоит из двух функций:</p>
 <p><em>/StatePatternC/Simple/src/GarlandState.h</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#ifndef __GARLAND_STATE_H</span>
 <span class="cp">#define __GARLAND_STATE_H</span>
@@ -230,7 +230,7 @@
 </pre></div>
 
 
-<p>По сравнению с <a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">предыдущими</a> реализациями размер <em>main.c</em> уменьшается до неприлично малого размера:</p>
+<p>По сравнению с <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">предыдущими</a> реализациями размер <em>main.c</em> уменьшается до неприлично малого размера:</p>
 <p><em>/StatePatternC/Simple/src/main.с</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;HAL.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;GarlandContext.h&quot;</span><span class="cp"></span>
@@ -400,7 +400,7 @@ GarlandContext.c HAL.c
 
 
 <p>После добавления ошибок на этапе выполнения можно наблюдать следующую картинку (<code>signalError</code> реализована в модуле HAL - выводит диагностические сообщения в <em>UART</em>. Эмуляция в  <em>Proteus VSM</em> ):</p>
-<p><img alt="UML" src="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternDebug.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternDebug.png" style="width:100%; border:1px solid #ddd;" /></p>
 <h3>Вариации шаблона State</h3>
 <p>В рассмотренном нами примере переключением состояния занимаются сами <em>состояния</em>. Экземпляр состояния хранится в <em>контексте</em> (переменная <code>_garlandState</code>). Что можно переделать:</p>
 <ul>
@@ -531,7 +531,7 @@ GarlandContext.c HAL.c
 <p>Паттерн <strong>State</strong> локализует зависящее от состояния поведение и делит его на части, соответствующие состояниям. Всё поведение, ассоциированное с конкретным состоянием <strong>изолировано</strong> в отдельном модуле. Такой подход даёт целый рад преимуществ: <em>расширяемость</em> - легко добавлять новые состояния; <em>инкапсуляция</em> - каждое состояние изолировано в отдельном модуле; <em>отладка</em> - удобно отлавливать ошибки в процессе выполнения; <em>надёжность</em> / <em>читабельность</em> - уменьшение количества операций условных переходов <code>switch</code> / <code>case</code> или <code>if</code> / <code>else</code>.</p>
 <h3>Принцип открытости / закрытости</h3>
 <p>Единственная константа в программировании - <strong>ИЗМЕНЕНИЯ</strong>. Каким образом можно разрабатывать программы, устойчивые к изменениям ? В 1988 году <em>Бертран Мейер</em> ответил на этот вопрос, предложив принцип <a href="http://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF_%D0%BE%D1%82%D0%BA%D1%80%D1%8B%D1%82%D0%BE%D1%81%D1%82%D0%B8/%D0%B7%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%BE%D1%81%D1%82%D0%B8" rel="nofollow">открытости / закрытости</a>: «программные сущности (классы, модули, функции и т. п.) должны быть открыты для расширения, но закрыты для изменения». В нашем случае добавление в систему нового состояния (алгоритма переключения гирлянд) требует минимум изменений в системе, т.е. использование паттерна <em>State</em> (как в принципе и большинство других, описываемых <em>GoF</em>) - это шаг навстречу к соблюдению принципа <em>открытости / закрытости</em>.</p>
-<p>Исходники <a href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternC.zip">тут</a>.</p>
+<p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternC.zip">тут</a>.</p>
 <h3>Мозговой штурм</h3>
 <ul>
 <li>
@@ -549,7 +549,7 @@ GarlandContext.c HAL.c
 <li>
 <p>Adam Petersen, "<a href="http://www.adampetersen.se/Patterns%20in%20C%202,%20STATE.pdf" rel="nofollow">Patterns in C, part 2: STATE</a>", C Vu 17.2</p>
 </li>
-</ul><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/#disqus_thread">comments</a>.</p>                </article>
+</ul><p>There are <a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -563,7 +563,7 @@ GarlandContext.c HAL.c
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

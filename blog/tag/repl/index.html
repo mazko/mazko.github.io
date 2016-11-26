@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - REPL</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,33 +16,33 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">Анализ тональности текста с помощью Weka</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">Анализ тональности текста с помощью Weka</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2016-04-26T00:00:00+03:00">
                 Published: Вт. 26 Апрель 2016
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/nlp">NLP</a> <a href="http://mazko.github.io/blog/tag/weka">Weka</a> <a href="http://mazko.github.io/blog/tag/repl">REPL</a> </p>
-</footer><!-- /.post-info --><p>Имеется <a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz">заданный</a> набор документов для которых уже заранее известна тональность: <strong>good</strong>, <strong>neutral</strong>, <strong>bad</strong>. Для нового документа необходимо определить какая у него тональность из трёх указанных.
+<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/weka">Weka</a> <a href="http://proiot.ru/blog/tag/repl">REPL</a> </p>
+</footer><!-- /.post-info --><p>Имеется <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz">заданный</a> набор документов для которых уже заранее известна тональность: <strong>good</strong>, <strong>neutral</strong>, <strong>bad</strong>. Для нового документа необходимо определить какая у него тональность из трёх указанных.
 Идеального решения тут не существует ну хотябы потому, что понятие хороший/плохой/злой часто субъективно :) Но всё-же можно попробовать взять среднюю температуру по больнице <a href="https://habrahabr.ru/post/149605/" rel="nofollow">задействовав</a> т.н. Машинное Обучение (ML). Причём в нашем случае это будет Машинное Обучение с учителем т.к. набор обучающих данных имеется изначально.</p>
 <p>Очевидно главный показатель работы классификатора - точность. Поскольку в ML обычно требуется много экспериментировать с различными параметрами, то наряду с множеством <em>open-source</em> проектов наличие какого-никакого UI не может не радовать и у <a href="http://www.cs.waikato.ac.nz/ml/weka/" rel="nofollow">Weka</a> UI есть.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/weka-ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/weka-ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Подробней процесс классификации в Weka расписан <a href="http://jmgomezhidalgo.blogspot.com/2013/01/text-mining-in-weka-chaining-filters.html" rel="nofollow">тут</a>. Теперь то же самое, что на картинке, но уже в терминале и без UI (фильтры Weka выглядят жутковато, но их необязательно набивать ручками - можно скопировать из UI что и сделано в конце анимации):</p>
 <div class="highlight"><pre><span></span>~$ <span class="nv">P1</span><span class="o">=</span>http://mazko.github.io/blog/posts/2016/04/26/ <span class="se">\</span>
    <span class="nv">P2</span><span class="o">=</span>analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz <span class="se">\</span>
@@ -233,7 +233,7 @@ Now print text to analyze!
 </pre></div>
 
 
-<p>В продолжение темы добавление функциональности Weka на примере <a href="http://mazko.github.io/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/">Lucene токенизаторов</a>.</p><p>There are <a href="http://mazko.github.io/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/#disqus_thread">comments</a>.</p>                </article>
+<p>В продолжение темы добавление функциональности Weka на примере <a href="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/">Lucene токенизаторов</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -247,7 +247,7 @@ Now print text to analyze!
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

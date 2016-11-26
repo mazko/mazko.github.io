@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>NGSPICE.js - усилительный каскад с общей базой</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/" rel="bookmark"
            title="Permalink to NGSPICE.js - усилительный каскад с общей базой">NGSPICE.js - усилительный каскад с общей базой</a></h1>
     </header>
 
@@ -40,15 +40,15 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> </p>
-</footer><!-- /.post-info -->      <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>При схеме включения <a href="http://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярного транзистора</a> с общей базой (ОБ) каскад усиливает только напряжение тогда как коэффициент передачи по току близок к единице (по факту немного меньше). Входной сигнал подаётся на эмиттер, а выходной снимается с коллектора. Основные отличия от каскада с <a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>:</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>При схеме включения <a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярного транзистора</a> с общей базой (ОБ) каскад усиливает только напряжение тогда как коэффициент передачи по току близок к единице (по факту немного меньше). Входной сигнал подаётся на эмиттер, а выходной снимается с коллектора. Основные отличия от каскада с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>:</p>
 <ul>
 <li>
-<p>малое <a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное</a> и большое выходное сопротивление</p>
+<p>малое <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное</a> и большое выходное сопротивление</p>
 </li>
 <li>
 <p>коэффициент передачи по току близок к единице</p>
@@ -57,12 +57,12 @@
 <p>фазы входного и выходного сигнала совпадают</p>
 </li>
 <li>
-<p>отсутствует «паразитная» отрицательная обратная связь на высоких частотах с выхода на вход через ёмкость между базой и коллектором (ёмкость <a href="http://mazko.github.io/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/">Миллера</a>), поэтому схема с общей базой наиболее часто используется для построения высокочастотных усилителей</p>
+<p>отсутствует «паразитная» отрицательная обратная связь на высоких частотах с выхода на вход через ёмкость между базой и коллектором (ёмкость <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/">Миллера</a>), поэтому схема с общей базой наиболее часто используется для построения высокочастотных усилителей</p>
 </li>
 </ul>
-<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора <a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/2N2222.LIB">2N2222</a></p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/simple.sch">простейший каскад с ОБ</a> | <a href="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/simple.net">netlist</a> | <a href="https://ngspice.js.org/?gist=44fd7de297163ea25acb498aecc87003">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/show-img-simple.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/2N2222.LIB">2N2222</a></p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/simple.sch">простейший каскад с ОБ</a> | <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/simple.net">netlist</a> | <a href="https://ngspice.js.org/?gist=44fd7de297163ea25acb498aecc87003">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/show-img-simple.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source simple.net
 ngspice 2 -&gt; dc i1 0 2.5m 5u
 ngspice 3 -&gt; plot -i(v1)
@@ -78,11 +78,11 @@ ngspice 9 -&gt; show q1
 <p>Команда <code>op</code> по двум точкам фиксирует следующие значения - ie:-0.000100001 | ic:9.90469e-05 | vbe:0.633027 и ie:-0.00200004 | ic:0.00198885 | vbe:0.712851</p>
 <p>Усиление по току каскада c ОБ <a href="https://bc.js.org/">≈ 1 ≈ 0 дБ</a> <code>(0.00198885-9.90469*10^-05)/(0.00200004-0.000100001) ≈ 0.995</code></p>
 <p>Усиление по напряжению <a href="https://bc.js.org/">≈ 111</a> <code>4700*(0.00198885-9.90469*10^-05)/(0.712851-0.633027)</code> <a href="https://bc.js.org/">≈ 40.9 дБ</a> <code>20*log(111)=20*l(111)/l(10)</code></p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">Входное</a> сопротивление <a href="https://bc.js.org/">≈ 42 Ом</a> <code>(0.712851-0.633027)/(0.00200004-0.000100001)</code></p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">Входное</a> сопротивление <a href="https://bc.js.org/">≈ 42 Ом</a> <code>(0.712851-0.633027)/(0.00200004-0.000100001)</code></p>
 <p>Выходное сопротивление очевидно ≈ Rc ≈ 4.7</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/simple-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>По аналогии с <a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> для того тобы усиливать переменный (синусоидальный) сигнал в схему обычно добавляют гальваническую развязку по входу и напряжение смещения.</p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/">Далее</a> каскодный усилитель.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/simple-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>По аналогии с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> для того тобы усиливать переменный (синусоидальный) сигнал в схему обычно добавляют гальваническую развязку по входу и напряжение смещения.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/">Далее</a> каскодный усилитель.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
@@ -90,7 +90,7 @@ ngspice 9 -&gt; show q1
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -114,7 +114,7 @@ ngspice 9 -&gt; show q1
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

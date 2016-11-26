@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - Jetty</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,29 +16,29 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene - курс молодого бойца</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene - курс молодого бойца</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2012-10-15T00:00:00+03:00">
                 Published: Пн. 15 Октябрь 2012
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/jetty">Jetty</a> <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/jetty">Jetty</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
 </footer><!-- /.post-info --><p><a href="http://lucene.apache.org/" rel="nofollow">Lucene</a> - это библиотека для реализации высокоскоростного полнотекстового поиска с открытым исходным кодом, написанная полностью на <strong>Java</strong>. Вопреки некоторым ожиданиям и заблуждениям <em>Lucene</em> не является законченным приложением - это просто библиотека, которую можно (нужно) использовать для реализации поиска в приложениях, а каких именно -  <em>web</em>, <em>desktop</em> и т.д. не имеет значения. Проект активно развивается и поддерживается, кроме того, есть хорошие порты на другие языки программирования - а это уже о многом говорит в пользу проекта вцелом.</p>
 <p>В этом цикле статей мы поэтапно рассмотрим основные возможности <em>Lucene</em> на примере реализации законченного <strong>web-приложения</strong> - системы поиска для реального и уже давно существующего сайта. Поскольку, как уже было упомянуто ранее, <em>Lucene</em> написана на <em>Java</em>, то наше приложение будет тоже написано на <em>Java</em> и реализовано в виде <strong>Servlet</strong>, хостится всё это добро будет на <a href="https://ru.wikipedia.org/wiki/Jetty" rel="nofollow">Jetty</a>.</p>
 <p>В проекте будет несколько подпроектов, поэтому предлагаю сразу воспользоваться мульти-модульностью <a href="https://books.sonatype.com/mvnex-book/reference/multimodule.html" rel="nofollow">Maven</a>, где в корне намечается общая зависимость от Lucene. Начнём с сервера:</p>
@@ -200,10 +200,10 @@ Java version: 1.8.0_03-Ubuntu, vendor: Oracle Corporation
 </pre></div>
 
 
-<p><img alt="Linux Site" src="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p><img alt="Linux Site Search" src="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site_slash_search.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Теперь у нас в системе есть подопытный сайт <strong>http://localhost:8080/</strong> с которым мы и будем работать <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">далее</a>, где первым делом проиндексируем содержимое нашего сайта.</p>
-<p><a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/#disqus_thread">comments</a>.</p>                </article>
+<p><img alt="Linux Site" src="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Linux Site Search" src="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site_slash_search.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Теперь у нас в системе есть подопытный сайт <strong>http://localhost:8080/</strong> с которым мы и будем работать <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">далее</a>, где первым делом проиндексируем содержимое нашего сайта.</p>
+<p><a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -217,7 +217,7 @@ Java version: 1.8.0_03-Ubuntu, vendor: Oracle Corporation
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

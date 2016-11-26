@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - Admin</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,35 +16,35 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/">Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/">Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2016-08-12T00:00:00+03:00">
                 Published: Пт. 12 Август 2016
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/upnp">UPnP</a> <a href="http://mazko.github.io/blog/tag/soap">SOAP</a> <a href="http://mazko.github.io/blog/tag/iot">IoT</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/upnp">UPnP</a> <a href="http://proiot.ru/blog/tag/soap">SOAP</a> <a href="http://proiot.ru/blog/tag/iot">IoT</a> </p>
 </footer><!-- /.post-info --><p>Universal Plug and Play (<a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow">UPnP</a>) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.</p>
 <p>Тут пожалуй стоит сделать риторическое отступление. Зачем нам <a href="http://2gusia.livejournal.com/37929.html" rel="nofollow">две</a> технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
 UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить <a href="http://www.dlna.org/certification/certification" rel="nofollow">денюшку</a>. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.</p>
 <p>На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно вкючать/выключать музыку в комнате комбинацией клавиш на <a href="http://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно вкючать/выключать музыку в комнате комбинацией клавиш на <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
 <p>Начнём с <a href="http://www.upnp-hacks.org/upnp.html" rel="nofollow">обнаружения</a> доступных UPnP устройств. Для этого нужно отправить M-SEARCH запрос на multicast-адрес 239.255.255.250 порт 1900 по UDP протоколу. Все устройства и программы, поддерживающие спецификацию UPnP обязаны ответить по UDP unicast:</p>
 <div class="highlight"><pre><span></span>~$ upnp-scan<span class="o">()</span> <span class="o">{</span>
   python3 -c <span class="s1">&#39;</span>
@@ -257,7 +257,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
 <span class="s1">      &lt;/s:Body&gt;</span>
 <span class="s1">    &lt;/s:Envelope&gt;&#39;</span>
 <span class="k">fi</span>
-</pre></div><p>There are <a href="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/#disqus_thread">comments</a>.</p>                </article>
+</pre></div><p>There are <a href="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -266,7 +266,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/" rel="bookmark"
                            title="Permalink to Ищем свободные Wi-Fi каналы с помощью GnuPlot">Ищем свободные Wi-Fi каналы с помощью GnuPlot</a></h1>
                 </header>
 
@@ -277,18 +277,18 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/gnuplot">GnuPlot</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
 </footer><!-- /.post-info -->                <p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш ...</p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
                            title="Permalink to ElasticSearch - практическое введение">ElasticSearch - практическое введение</a></h1>
                 </header>
 
@@ -299,19 +299,19 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/elastic">Elastic</a> <a href="http://mazko.github.io/blog/tag/rest">REST</a> <a href="http://mazko.github.io/blog/tag/docker">Docker</a> </p>
-</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
-<a href="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку ...</a></p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/elastic">Elastic</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/docker">Docker</a> </p>
+</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
+<a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку ...</a></p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/" rel="bookmark"
                            title="Permalink to Как соорудить удобный перевод текста всего за пару минут">Как соорудить удобный перевод текста всего за пару минут</a></h1>
                 </header>
 
@@ -322,10 +322,10 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/yandex">yandex</a> <a href="http://mazko.github.io/blog/tag/api">api</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/yandex">yandex</a> <a href="http://proiot.ru/blog/tag/api">api</a> </p>
 </footer><!-- /.post-info -->                <p>Стандартная ситуация: читаем какую-нибудь <em>e-book</em> на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:</p>
 <ul>
 <li>
@@ -336,8 +336,8 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
 </li>
 <li>
 <p>Параллельно скармливает текст веб-сервису переводчику, целевой язык ...</p></li></ul>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
@@ -353,7 +353,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

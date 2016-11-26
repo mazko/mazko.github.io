@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - JSP</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,30 +16,30 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">Lucene - подсветка вхождений в результатах выдачи</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">Lucene - подсветка вхождений в результатах выдачи</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2012-10-28T00:00:00+03:00">
                 Published: Вс. 28 Октябрь 2012
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsp">JSP</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
-</footer><!-- /.post-info --><p>Наш <a href="http://mazko.github.io/blog/posts/2012/10/27/lucene-iazykovye-analizatory/">поиск</a> работает вроде бы неплохо, но выглядит как-то не очень аппетитно. Для улучшения визуального восприятия слово или фразу, по которой документ был найден, желательно выделить - например покрасить в другой цвет. Кроме того, текущий способ отображения результатов очень примитивен - не факт, что в начале текста вообще встречается искомая фраза - необходимо показать пользователю именно тот фрагмент текста, в котором <em>Lucene</em> её нашёл, тогда точно будет что подсвечивать. Подобный функционал в <em>Lucene</em> уже реализован в виде отдельного модуля <code>Highlighter</code>, причём скорость его работы зависит от наличия в индексе Term Vectors (задаётся на этапе создания индекса):</p>
+<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">JSP</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info --><p>Наш <a href="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/">поиск</a> работает вроде бы неплохо, но выглядит как-то не очень аппетитно. Для улучшения визуального восприятия слово или фразу, по которой документ был найден, желательно выделить - например покрасить в другой цвет. Кроме того, текущий способ отображения результатов очень примитивен - не факт, что в начале текста вообще встречается искомая фраза - необходимо показать пользователю именно тот фрагмент текста, в котором <em>Lucene</em> её нашёл, тогда точно будет что подсвечивать. Подобный функционал в <em>Lucene</em> уже реализован в виде отдельного модуля <code>Highlighter</code>, причём скорость его работы зависит от наличия в индексе Term Vectors (задаётся на этапе создания индекса):</p>
 <p><em>pom.xml</em></p>
 <div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
   <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
@@ -394,11 +394,11 @@
 </pre></div>
 
 
-<p><img alt="Screenshot" src="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_sadov.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p><img alt="Screenshot" src="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_sadov1.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p><img alt="Screenshot" src="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_tested.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p><a href="http://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">Далее</a> рассмотрим синтаксис поисковых запросов в <em>Lucene</em>.</p>
-<p><a href="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/#disqus_thread">comments</a>.</p>                </article>
+<p><img alt="Screenshot" src="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_sadov.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Screenshot" src="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_sadov1.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Screenshot" src="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_tested.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">Далее</a> рассмотрим синтаксис поисковых запросов в <em>Lucene</em>.</p>
+<p><a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -407,7 +407,7 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/" rel="bookmark"
                            title="Permalink to Lucene - постраничный поиск">Lucene - постраничный поиск</a></h1>
                 </header>
 
@@ -418,18 +418,18 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsp">JSP</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
-</footer><!-- /.post-info -->                <p>С <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/">индексом</a> в <strong>Lucene</strong>, кажется, разобрались - на очереди поиск. Давайте немножко подумаем. Предположим, поиском будет заниматься класс <code>LuceneSearcher</code>, а результатом поиска должен быть класс <code>TakeResult</code>, в котором будет достаточно информации для реализации постраничной выдачи. Что может измениться в будущем ? На данном этапе мы можем предположить, что единицей поиска будет класс ...</p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">JSP</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->                <p>С <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/">индексом</a> в <strong>Lucene</strong>, кажется, разобрались - на очереди поиск. Давайте немножко подумаем. Предположим, поиском будет заниматься класс <code>LuceneSearcher</code>, а результатом поиска должен быть класс <code>TakeResult</code>, в котором будет достаточно информации для реализации постраничной выдачи. Что может измениться в будущем ? На данном этапе мы можем предположить, что единицей поиска будет класс ...</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/" rel="bookmark"
                            title="Permalink to Lucene - проверка индекса">Lucene - проверка индекса</a></h1>
                 </header>
 
@@ -440,13 +440,13 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsp">jsp</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
-</footer><!-- /.post-info -->                <p>Данный пост будет очень короткий - на данном этапе имеется <strong>Lucene</strong> - <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индекс</a>, необходимо доработать <code>SearchServlet</code> таким образом, чтобы можно было получить и отобразить краткую информацию об индексе. Для проверки индекса в <strong>Lucene</strong> существует уже готовый к использованию специальный класс - <code>CheckIndex</code>, который мы и задействуем. Чтобы со временем исходный код сервлета <code>SearchServlet ...</code></p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">jsp</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->                <p>Данный пост будет очень короткий - на данном этапе имеется <strong>Lucene</strong> - <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индекс</a>, необходимо доработать <code>SearchServlet</code> таким образом, чтобы можно было получить и отобразить краткую информацию об индексе. Для проверки индекса в <strong>Lucene</strong> существует уже готовый к использованию специальный класс - <code>CheckIndex</code>, который мы и задействуем. Чтобы со временем исходный код сервлета <code>SearchServlet ...</code></p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
@@ -462,7 +462,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

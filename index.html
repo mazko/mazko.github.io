@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825;</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,34 +16,34 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">NGSPICE.js - компаратор и триггер Шмитта  на ОУ</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">NGSPICE.js - компаратор и триггер Шмитта  на ОУ</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2016-11-24T00:00:00+02:00">
                 Published: Чт. 24 Ноябрь 2016
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info --><p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал с датчика. Так как в схеме отсутствует обратная связь, то идеальный ОУ может быть только в режиме насыщения и соответственно либо с минимальным либо максимальным уровнем напряжения питания на выходе. В зависимости от того на какой из дифференциальных входов подаётся опорное напряжение компаратор может быть соответственно инвертирующим и неинвертирующим.</p>
-<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/LT1007CS.txt">LT1007</a>.</p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.sch">неинвертирующий компаратор с однополярным питанием</a> | <a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d120122d336d4f1856b1582c12a9a205">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал с датчика. Так как в схеме отсутствует обратная связь, то идеальный ОУ может быть только в режиме насыщения и соответственно либо с минимальным либо максимальным уровнем напряжения питания на выходе. В зависимости от того на какой из дифференциальных входов подаётся опорное напряжение компаратор может быть соответственно инвертирующим и неинвертирующим.</p>
+<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/LT1007CS.txt">LT1007</a>.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.sch">неинвертирующий компаратор с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d120122d336d4f1856b1582c12a9a205">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source comparator-single.net
 ngspice 2 -&gt; tran 10u 4m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -51,10 +51,10 @@ ngspice 3 -&gt; plot v(out) v(in)
 
 
 <p>Опорное напряжение задано делителем Rf1/Rf2 и очевидно равно 5В. При этом на вход поступает сигнал сложной формы. Компаратор отработал логически правильно сработав четырежды т.к. входное напряжение четырежды перевалило отметку 5В, однако на практике зачастую требуется иное поведение если предположить что провал напряжения посредине это была помеха. Для борьбы с этим неприятным явлением в компаратор с помощью ПОС добавляют <em>гистерезис</em> и называется такое решение <a href="http://www.pcbheaven.com/wikipages/The_Schmitt_Trigger/" rel="nofollow">триггером Шмитта</a>.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Как видно на следующей схеме, триггер Шмитта очень похож на обычный компаратор за исключением положительной обратной связи через резистор <strong>Rf</strong>. Гистерезис добавляет задержку выключения компаратора и тем самым обеспечивается более высокая помехоустойчивость схемы. </p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.sch">инвертирующий триггер Шмитта с однополярным питанием</a> | <a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=22dbe97a1a4b121e6678a1b27ceffc12">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-shmitt-trigger-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.sch">инвертирующий триггер Шмитта с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=22dbe97a1a4b121e6678a1b27ceffc12">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-shmitt-trigger-single.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source shmitt-trigger-single.net
 ngspice 2 -&gt; tran 10u 4m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -71,8 +71,8 @@ ngspice 3 -&gt; plot v(out) v(in)
 </li>
 </ul>
 <p>Ну а фактически на картинке верхний порог срабатывания получился чуть меньше 5 Вольт, тогда как нижний чуть больше 3 Вольт.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Далi буде.</p><p>There are <a href="http://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/#disqus_thread">comments</a>.</p>                </article>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Далi буде.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -81,7 +81,7 @@ ngspice 3 -&gt; plot v(out) v(in)
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/" rel="bookmark"
                            title="Permalink to NGSPICE.js - сумматоры напряжений на ОУ">NGSPICE.js - сумматоры напряжений на ОУ</a></h1>
                 </header>
 
@@ -92,19 +92,19 @@ ngspice 3 -&gt; plot v(out) v(in)
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Наличие виртуальной земли в <a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">инвертирующем</a> усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или ...</p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>Наличие виртуальной земли в <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">инвертирующем</a> усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или ...</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/" rel="bookmark"
                            title="Permalink to NGSPICE.js - инвертирующий усилитель на ОУ">NGSPICE.js - инвертирующий усилитель на ОУ</a></h1>
                 </header>
 
@@ -115,25 +115,25 @@ ngspice 3 -&gt; plot v(out) v(in)
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>В инвертирующем усилителе входной сигнал подаётся на инвертирующий вход ОУ, туда же заведена ООС, при этом неинвертирующий вход заземлён. Отличительными особенностями данной схемы для идеального ОУ являются:</p>
 <ul>
 <li>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a> эквивалентно величине резистора Rg</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a> эквивалентно величине резистора Rg</p>
 </li>
 <li>
 <p>фаза сигнала на выходе сдвинута на 180° по отношению ...</p></li></ul>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="bookmark"
                            title="Permalink to NGSPICE.js - неинвертирующий усилитель на ОУ">NGSPICE.js - неинвертирующий усилитель на ОУ</a></h1>
                 </header>
 
@@ -144,28 +144,28 @@ ngspice 3 -&gt; plot v(out) v(in)
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>В неинвертирующем усилителе входной сигнал подаётся на неинвертирующий вход ОУ, а ООС заведена с выхода на инвертирующий вход. Отличительными особенностями данной схемы для идеального ОУ являются:</p>
 <ul>
 <li>
-<p>бесконечно большое <a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a></p>
+<p>бесконечно большое <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a></p>
 </li>
 <li>
 <p>фаза сигнала на входе и на выходе совпадает</p>
 </li>
 <li>
 <p>коэффициент усиления по напряжению ...</p></li></ul>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/" rel="bookmark"
                            title="Permalink to NGSPICE.js - идеальный операционный усилитель">NGSPICE.js - идеальный операционный усилитель</a></h1>
                 </header>
 
@@ -176,19 +176,19 @@ ngspice 3 -&gt; plot v(out) v(in)
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>Операционный усилитель (ОУ) - это модульный многокаскадный усилитель с дифференциальным входом. Для простоты расчётов удобно оперировать понятием <em>идеального ОУ</em> - такого себе непрозрачного ящичка с магией внутри. Дифференциальный вход предполагает два входа - инвертирующий и неинвертирующий. Также у ОУ есть две ноги для питания и обычно один выход, уровень напряжения ...</p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 11
-        <a href="http://mazko.github.io/index2.html">&raquo;</a>
+        <a href="http://proiot.ru/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->
         <section id="extras" class="body">
@@ -203,7 +203,7 @@ ngspice 3 -&gt; plot v(out) v(in)
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

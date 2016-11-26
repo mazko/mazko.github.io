@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>NGSPICE.js - неинвертирующий усилитель на ОУ</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="bookmark"
            title="Permalink to NGSPICE.js - неинвертирующий усилитель на ОУ">NGSPICE.js - неинвертирующий усилитель на ОУ</a></h1>
     </header>
 
@@ -40,15 +40,15 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="http://mazko.github.io/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->      <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>В неинвертирующем усилителе входной сигнал подаётся на неинвертирующий вход ОУ, а ООС заведена с выхода на инвертирующий вход. Отличительными особенностями данной схемы для идеального ОУ являются:</p>
 <ul>
 <li>
-<p>бесконечно большое <a href="http://mazko.github.io/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a></p>
+<p>бесконечно большое <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a></p>
 </li>
 <li>
 <p>фаза сигнала на входе и на выходе совпадает</p>
@@ -57,9 +57,9 @@
 <p>коэффициент усиления по напряжению <code>1+Rf/Rg</code>, как не сложно догадаться он <strong>не может быть меньше 1</strong> - усилитель с коэффициентом 1 иногда называют буфером</p>
 </li>
 </ul>
-<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/LT1007CS.txt">LT1007</a>.</p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.sch">схема неинвертирующего усилителя</a> | <a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.net">netlist</a> | <a href="https://ngspice.js.org/?gist=afbeb59caf6deff2cfead830a50cfb59">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/LT1007CS.txt">LT1007</a>.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.sch">схема неинвертирующего усилителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.net">netlist</a> | <a href="https://ngspice.js.org/?gist=afbeb59caf6deff2cfead830a50cfb59">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source non-inverting.net
 ngspice 2 -&gt; dc vin -10m 10m 20u
 ngspice 3 -&gt; plot v(out) ylimit -10 10
@@ -67,10 +67,10 @@ ngspice 3 -&gt; plot v(out) ylimit -10 10
 
 
 <p>Коэффициент усиления схемы <code>1+365000/365 = 1001</code>, т.е. при 10 мВ на входе на выходе будет 10.01 В. Для красоты картинки результат округлён до 10 с помощью <code>ylimit</code>.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Классическая схема включения ОУ подразумевает биполярный источник питания, в предыдущем примере это ± 15В. Если в документации к ОУ не упомянуто обратное, то однополярное питание зачастую также возможно, однако потребуются дополнительные телодвижения - например подача напряжения смещения, гальваническая развязка и понимание зачем это надо. Идея такая же  как и в <a href="http://mazko.github.io/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">транзисторных</a> схемах усилителей:</p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.sch">неинвертирующий усилитель с однополярным питанием</a> | <a href="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d07144c7716c6e14452bb449f8a4d129">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Классическая схема включения ОУ подразумевает биполярный источник питания, в предыдущем примере это ± 15В. Если в документации к ОУ не упомянуто обратное, то однополярное питание зачастую также возможно, однако потребуются дополнительные телодвижения - например подача напряжения смещения, гальваническая развязка и понимание зачем это надо. Идея такая же  как и в <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">транзисторных</a> схемах усилителей:</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.sch">неинвертирующий усилитель с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d07144c7716c6e14452bb449f8a4d129">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting-single.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source non-inverting-single.net
 ngspice 2 -&gt; tran 1u 0.5m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -78,8 +78,8 @@ ngspice 3 -&gt; plot v(out) v(in)
 
 
 <p>Обратная связь обеспечивает коэффициент усиления <code>1+100/50 = 3</code> для высокочастотных сигналов и равный <strong>единице</strong> для постоянной составляющей - в противном случае ОУ будет усиливать собственное напряжения смещения. Также несложно убедиться фаза входного и выходного сигнала совпадает. Напряжение смещение обычно задают равным половине напряжения питания.  </p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">Далее</a> инвертирующий усилитель на ОУ.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">Далее</a> инвертирующий усилитель на ОУ.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
@@ -87,7 +87,7 @@ ngspice 3 -&gt; plot v(out) v(in)
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -111,7 +111,7 @@ ngspice 3 -&gt; plot v(out) v(in)
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

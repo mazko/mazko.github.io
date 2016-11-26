@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Использование манчестерского кода на примере</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/" rel="bookmark"
            title="Permalink to Использование манчестерского кода на примере">Использование манчестерского кода на примере</a></h1>
     </header>
 
@@ -40,11 +40,11 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/manchesterskii-kod">Манчестерский код</a> <a href="http://mazko.github.io/blog/tag/uart">UART</a> <a href="http://mazko.github.io/blog/tag/mikrokontroller">Микроконтроллер</a> </p>
-</footer><!-- /.post-info -->      <p>В <a href="http://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">предыдущем</a> посте была подготовлена почва для работы с <em>Манчестерским кодом</em>. Теперь рассмотрим реальный пример с использованием микроконтроллеров <strong>Microchip</strong> - один будет кодировать и передавать данные, другой принимать, декодировать и выводить результат в <strong>UART</strong> - терминал. Поскольку это тестовый пример, то с выбором <strong>C</strong> - компилятора ничего выдумывать не будем и возьмём то, что по умолчанию даёт производитель - пробную версию <strong>mplabc18</strong> (<em>mplabc18_v3.40_windows_eval.exe</em>) на 60 дней, скачать можно с официального сайта с родной средой разработки <strong>MPLAB_IDE</strong> (<em>v8_70</em>).</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/manchesterskii-kod">Манчестерский код</a> <a href="http://proiot.ru/blog/tag/uart">UART</a> <a href="http://proiot.ru/blog/tag/mikrokontroller">Микроконтроллер</a> </p>
+</footer><!-- /.post-info -->      <p>В <a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">предыдущем</a> посте была подготовлена почва для работы с <em>Манчестерским кодом</em>. Теперь рассмотрим реальный пример с использованием микроконтроллеров <strong>Microchip</strong> - один будет кодировать и передавать данные, другой принимать, декодировать и выводить результат в <strong>UART</strong> - терминал. Поскольку это тестовый пример, то с выбором <strong>C</strong> - компилятора ничего выдумывать не будем и возьмём то, что по умолчанию даёт производитель - пробную версию <strong>mplabc18</strong> (<em>mplabc18_v3.40_windows_eval.exe</em>) на 60 дней, скачать можно с официального сайта с родной средой разработки <strong>MPLAB_IDE</strong> (<em>v8_70</em>).</p>
 <p>Как и в прошлый раз начнём с простого - реализуем устройство, которое преобразовывает последовательность данных в <em>Манчестерский Код</em> и передаёт их. Прежде всего необходимо создать новый проект в <strong>MPLAB</strong>, мастер попросит указать модель микроконтроллера - тут каких-либо особых требований нет, поэтому можно выбрать самый простой, например <strong>PIC18F1230</strong>. В результате должно получиться что-то вроде этого:</p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;p18cxxx.h&gt; </span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;timers.h&gt; </span><span class="cp"></span>
@@ -105,9 +105,9 @@
 </pre></div>
 
 
-<p><img alt="MPLab Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/mplab_man_tx.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="MPLab Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/mplab_man_tx.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Результатом сборки является файл с расширением <strong>.hex</strong>, в народе просто <em>хекс</em> - прошивка, которую необходимо записать в микроконтроллер с помощью специального оборудования (программатора). Поскольку последнего, наверно, у Вас нет, можно задействовать виртуальную среду, которая умеет эмулировать поведение электронных схем - <strong>Proteus VSM</strong> (v 7.9sp1). Как видно из рисунка на виртуальном осциллографе время логической 1 чуть больше 4 делений при шаге 0.2 мс. При скорости 1200 бит/с 1000 мс / 1200 = 0,83 мс это похоже на правду.</p>
-<p><img alt="Proteus Sim Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/proteus_tx_simulation.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Proteus Sim Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/proteus_tx_simulation.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Теперь реализуем приёмник, который будет анализировать состояние на входе (вывод <strong>RB0</strong>), декодировать сигнал из <em>Манчестерского Кода</em> в оригинальный и принимать решение о том, что передача полезных данных завершена. Самый простой способ отобразить данные при работе в <strong>Proteus VSM</strong> - использовать виртуальный <strong>UART</strong> - терминал.</p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;p18cxxx.h&gt; </span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;timers.h&gt; </span><span class="cp"></span>
@@ -186,9 +186,9 @@
 </pre></div>
 
 
-<p><img alt="MPLab Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/mplab_man_rx.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="MPLab Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/mplab_man_rx.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Как видно из кода, признаком окончания передачи данных в данном примере является комбинация символов <code>'\r'</code> и <code>'\n'</code>. Это очень простое решение, при использовании в реальных условиях этот механизм нужно доработать - иначе иногда можно получать ложный сигнал о завершении передачи данных. Также стоит обратить внимание на буфер <code>rxbuf</code>, в который программа записывает декодированные данные с помощью метода <code>shiftrxbuf()</code>. Етот метод делает операцию побитового сдвига для всего буфера, как если бы это был простой (примитивный) тип данных типа <code>char</code>, <code>long</code> и т.д.  Если всё это теперь запустить в <strong>Proteus VSM</strong>, то результат будет примерно таким:</p>
-<p><img alt="Proteus Sim Скриншот" src="http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/proteus_rx_simulation.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Proteus Sim Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/proteus_rx_simulation.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Вроде всё, исходники на <a href="https://github.com/mazko/Manchester-Code" rel="nofollow">GitHub</a>.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -197,7 +197,7 @@
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -221,7 +221,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

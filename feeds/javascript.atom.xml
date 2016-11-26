@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://mazko.github.io/" rel="alternate"></link><link href="http://mazko.github.io/feeds/javascript.atom.xml" rel="self"></link><id>http://mazko.github.io/</id><updated>2016-08-22T00:00:00+03:00</updated><entry><title>ElasticSearch - одностраничное приложение на ReactJS</title><link href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/" rel="alternate"></link><published>2016-08-22T00:00:00+03:00</published><updated>2016-08-22T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-08-22:blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/</id><summary type="html">&lt;p&gt;Продолжая тему &lt;a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; и &lt;a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow"&gt;одностраничных&lt;/a&gt; приложений (SPA) напишем полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам на &lt;a href="https://facebook.github.io/react/" rel="nofollow"&gt;ReactJS&lt;/a&gt; - идентичный тому, что уже был реализован ранее на &lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/"&gt;Angular2&lt;/a&gt;. Для работы с демо из браузера нужно в &lt;a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; нужно настроить &lt;code&gt;http.cors&lt;/code&gt; для &lt;strong&gt;http://mazko.github.io&lt;/strong&gt;, например &lt;code&gt;allow-origin: /https?:\/\/mazko\.github\.io/&lt;/code&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/javascript.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2016-08-22T00:00:00+03:00</updated><entry><title>ElasticSearch - одностраничное приложение на ReactJS</title><link href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/" rel="alternate"></link><published>2016-08-22T00:00:00+03:00</published><updated>2016-08-22T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-08-22:blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/</id><summary type="html">&lt;p&gt;Продолжая тему &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; и &lt;a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow"&gt;одностраничных&lt;/a&gt; приложений (SPA) напишем полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам на &lt;a href="https://facebook.github.io/react/" rel="nofollow"&gt;ReactJS&lt;/a&gt; - идентичный тому, что уже был реализован ранее на &lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/"&gt;Angular2&lt;/a&gt;. Для работы с демо из браузера нужно в &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; нужно настроить &lt;code&gt;http.cors&lt;/code&gt; для &lt;strong&gt;http://mazko.github.io&lt;/strong&gt;, например &lt;code&gt;allow-origin: /https?:\/\/mazko\.github\.io/&lt;/code&gt;&lt;/p&gt;
 &lt;!-- cd ./dist/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Ddist/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
 
 &lt;!-- 
-&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/bundle.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/bundle.js.map"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/favicon.ico"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/index.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/bundle.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/bundle.js.map"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/favicon.ico"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/index.html"&gt;&lt;/a&gt;
 --&gt;
 
-&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/react-elastic-example.zip"&gt;Исходники&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/index.html"&gt;Демо&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/ui.gif" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/react-elastic-example.zip"&gt;Исходники&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/dist/index.html"&gt;Демо&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/ui.gif" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;React, в отличие от Angular, это только библиотека, поэтому потребуются дополнительные телодвижения для старта. Собирать *.js файлы будет &lt;a href="https://webpack.github.io/" rel="nofollow"&gt;webpack&lt;/a&gt;: &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~: mkdir react-elastic-example &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$_&lt;/span&gt;
 ~: npm init -y
@@ -247,7 +247,7 @@ export default class extends React.Component {
 
 
 &lt;p&gt;Результат !&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/hello-world-react.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/hello-world-react.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;Дальше интересней. Расширим Elastic сервис подсказками, агрегацией, подсветкой и.т.д.:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;src/films-search/elastic.service.js&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="nx"&gt;fetch&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;isomorphic-fetch&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -1062,53 +1062,53 @@ export default class extends React.Component {
 &lt;span class="p"&gt;);&lt;/span&gt;
 
 &lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;dev&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Elastic"></category><category term="React"></category></entry><entry><title>ElasticSearch - одностраничное приложение на Angular2</title><link href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/" rel="alternate"></link><published>2016-07-06T00:00:00+03:00</published><updated>2016-07-06T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2016-07-06:blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/</id><summary type="html">&lt;p&gt;Вооружившись знаниями приобретёнными в предыдущем материале по &lt;a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; самое время сделать что-то полезное. В данном материале мы напишем &lt;a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow"&gt;одностраничное&lt;/a&gt; приложение (SPA) на &lt;a href="https://angular.io/" rel="nofollow"&gt;Angular2&lt;/a&gt;. Это будет полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам. Писать SPA будем на &lt;a href="https://www.typescriptlang.org/" rel="nofollow"&gt;TypeScript&lt;/a&gt; - это который JavaScript нового поколения плюс строгая типизация, умеющая обнаруживать многие типичные ошибки в коде программы ещё на этапе сборки приложения и соотвественно вежливо сообщать об этом ещё до неловкого момента &lt;em&gt;ой, не работает&lt;/em&gt;. Для работы демо в &lt;a href="http://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; нужно настроить &lt;code&gt;http.cors&lt;/code&gt; для &lt;strong&gt;http://mazko.github.io&lt;/strong&gt;, например &lt;code&gt;allow-origin: /https?:\/\/mazko\.github\.io/&lt;/code&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Elastic"></category><category term="React"></category></entry><entry><title>ElasticSearch - одностраничное приложение на Angular2</title><link href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/" rel="alternate"></link><published>2016-07-06T00:00:00+03:00</published><updated>2016-07-06T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-07-06:blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/</id><summary type="html">&lt;p&gt;Вооружившись знаниями приобретёнными в предыдущем материале по &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; самое время сделать что-то полезное. В данном материале мы напишем &lt;a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow"&gt;одностраничное&lt;/a&gt; приложение (SPA) на &lt;a href="https://angular.io/" rel="nofollow"&gt;Angular2&lt;/a&gt;. Это будет полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам. Писать SPA будем на &lt;a href="https://www.typescriptlang.org/" rel="nofollow"&gt;TypeScript&lt;/a&gt; - это который JavaScript нового поколения плюс строгая типизация, умеющая обнаруживать многие типичные ошибки в коде программы ещё на этапе сборки приложения и соотвественно вежливо сообщать об этом ещё до неловкого момента &lt;em&gt;ой, не работает&lt;/em&gt;. Для работы демо в &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; нужно настроить &lt;code&gt;http.cors&lt;/code&gt; для &lt;strong&gt;http://mazko.github.io&lt;/strong&gt;, например &lt;code&gt;allow-origin: /https?:\/\/mazko\.github\.io/&lt;/code&gt;&lt;/p&gt;
 &lt;!-- cd ./dist/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Ddist/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
 
 &lt;!-- sed -i '/&lt;base href="\/"&gt;/d' ./dist/index.html --&gt;
 
 &lt;!-- 
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/app.component.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/app.component.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/aggregations/aggregations.component.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/aggregations/aggregations.component.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/auto-complete/auto-complete.component.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/auto-complete/auto-complete.component.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-list/films-list.component.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-list/films-list.component.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-search.component.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-search.component.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/hi/hi.component.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/hi/hi.component.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/favicon.ico"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/index.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/main.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/system-config.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/es6-shim/es6-shim.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/Reflect.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/reflect-metadata.d.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/Reflect.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/harness.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-decorate.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-definemetadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-deletemetadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getmetadatakeys.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getmetadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getownmetadatakeys.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getownmetadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-hasmetadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-hasownmetadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-metadata.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/run.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/spec.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/typings.d.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/typings/node.d.ts"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/systemjs/dist/system.src.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/zone.js/dist/zone.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/app.component.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/app.component.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/aggregations/aggregations.component.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/aggregations/aggregations.component.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/auto-complete/auto-complete.component.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/auto-complete/auto-complete.component.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-list/films-list.component.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-list/films-list.component.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-search.component.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/films-search.component.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/hi/hi.component.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/app/films-search/hi/hi.component.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/favicon.ico"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/index.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/main.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/system-config.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/es6-shim/es6-shim.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/Reflect.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/reflect-metadata.d.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/Reflect.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/harness.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-decorate.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-definemetadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-deletemetadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getmetadatakeys.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getmetadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getownmetadatakeys.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-getownmetadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-hasmetadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-hasownmetadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/reflect/reflect-metadata.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/run.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/test/spec.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/typings.d.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/reflect-metadata/typings/node.d.ts"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/systemjs/dist/system.src.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/vendor/zone.js/dist/zone.js"&gt;&lt;/a&gt;
 --&gt;
 
-&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/elastic-angular2.zip"&gt;Исходники&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/index.html"&gt;Демо&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/ui.gif" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/elastic-angular2.zip"&gt;Исходники&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/dist/index.html"&gt;Демо&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/ui.gif" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;Очень простой и быстрый способ начать работать с Angular2 - воспользоваться генератором проектов &lt;a href="https://github.com/angular/angular-cli" rel="nofollow"&gt;angular-cli&lt;/a&gt;: &lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~: pip install nodeenv
 ~: mkdir angular2-elastic-tutorial &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$_&lt;/span&gt;
@@ -1509,7 +1509,7 @@ Executed &lt;span class="m"&gt;4&lt;/span&gt; of &lt;span class="m"&gt;4&lt;/spa
 
 
 &lt;p&gt;Вуаля !&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/hello-world-a2.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/hello-world-a2.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;Дальше интересней. Дополним Elastic сервис подсказками, агрегацией, подсветкой и.т.д.:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;src/app/films-search/elastic.service.ts&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kr"&gt;import&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="nx"&gt;Injectable&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="nx"&gt;from&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;@angular/core&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -2265,13 +2265,13 @@ Executed &lt;span class="m"&gt;4&lt;/span&gt; of &lt;span class="m"&gt;4&lt;/spa
 
 &lt;p&gt;Сборка для демо на картинке:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;env&lt;span class="o"&gt;)&lt;/span&gt;~: ng build -prod
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Elastic"></category><category term="Angular2"></category></entry><entry><title>Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)</title><link href="http://mazko.github.io/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/" rel="alternate"></link><published>2015-11-17T00:00:00+02:00</published><updated>2015-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2015-11-17:blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/</id><summary type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Elastic"></category><category term="Angular2"></category></entry><entry><title>Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)</title><link href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/" rel="alternate"></link><published>2015-11-17T00:00:00+02:00</published><updated>2015-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-11-17:blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/</id><summary type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://sed.js.org/"&gt;sed&lt;/a&gt; | &lt;a href="http://grep.js.org/"&gt;grep&lt;/a&gt;&lt;/p&gt;
 &lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;
 
-&lt;script type="text/javascript" src="http://mazko.github.io/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_sed.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_sed.js"&gt;&lt;/script&gt;
 
-&lt;script type="text/javascript" src="http://mazko.github.io/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_grep.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_grep.js"&gt;&lt;/script&gt;
 
 &lt;script type="text/javascript"&gt;
 (function() {
@@ -2519,8 +2519,8 @@ The quick brown fox!
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Процедура с портирования &lt;a href="http://ftp.gnu.org/gnu/grep/grep-2.22.tar.xz" rel="nofollow"&gt;grep&lt;/a&gt; мало чем отличается за исключением флага &lt;em&gt;--disable-threads&lt;/em&gt; на этапе &lt;code&gt;./configure&lt;/code&gt;.&lt;/p&gt;</summary><category term="Emscripten"></category><category term="Docker"></category></entry><entry><title>Как перестать беспокоиться и начать портировать</title><link href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="alternate"></link><published>2015-10-21T00:00:00+03:00</published><updated>2015-10-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2015-10-21:blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/</id><summary type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
-&lt;p&gt;&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Процедура с портирования &lt;a href="http://ftp.gnu.org/gnu/grep/grep-2.22.tar.xz" rel="nofollow"&gt;grep&lt;/a&gt; мало чем отличается за исключением флага &lt;em&gt;--disable-threads&lt;/em&gt; на этапе &lt;code&gt;./configure&lt;/code&gt;.&lt;/p&gt;</summary><category term="Emscripten"></category><category term="Docker"></category></entry><entry><title>Как перестать беспокоиться и начать портировать</title><link href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="alternate"></link><published>2015-10-21T00:00:00+03:00</published><updated>2015-10-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-10-21:blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/</id><summary type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;Процесс можно условно разделить на несколько этапов:&lt;/p&gt;
 &lt;ul&gt;
@@ -2542,7 +2542,7 @@ The quick brown fox!
 &lt;/ul&gt;
 &lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;
 
-&lt;script type="text/javascript" src="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;&lt;/script&gt;
 
 &lt;script type="text/javascript"&gt;
 (function() {
@@ -2729,51 +2729,51 @@ sed &lt;span class="s1"&gt;&amp;#39;s/\\\\u/\\u/g&amp;#39;&lt;/span&gt; &amp;gt;
 &lt;!-- cd ./src/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Dsrc/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
 
 &lt;!-- 
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/lucene-tokenizers.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/merge.sh"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/js.sh"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/BaseTokenStreamTestCase.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/blanket.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/lcov_reporter.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.css"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/stdTests.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/uaxTests.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/WordBreakTestUnicode_6_3_0.js"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Character.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Exception.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IOException.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Reader.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardAnalyzer.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizer.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StringReader.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/System.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Tokenizer.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/TokenModel.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/Test.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/BaseTokenStreamTestCase.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/Slow.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestStandardAnalyzer.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUAX29URLEmailTokenizer.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUtil.java"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/WordBreakTestUnicode_6_3_0.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/lucene-tokenizers.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/merge.sh"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/js.sh"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/BaseTokenStreamTestCase.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/blanket.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/lcov_reporter.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/stdTests.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/uaxTests.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/WordBreakTestUnicode_6_3_0.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Character.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Exception.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IOException.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Reader.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardAnalyzer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StringReader.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/System.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Tokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/TokenModel.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/Test.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/BaseTokenStreamTestCase.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/Slow.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestStandardAnalyzer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUAX29URLEmailTokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUtil.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/WordBreakTestUnicode_6_3_0.java"&gt;&lt;/a&gt;
  --&gt;
 
 &lt;!-- cd ./npm/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Dnpm/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
 
 &lt;!--
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/.gitignore"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/package.json"&gt;&lt;/a&gt;
-&lt;a href="http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/readme"&gt;&lt;/a&gt;
- --&gt;</summary><category term="NLP"></category><category term="Lucene"></category><category term="ES6"></category></entry><entry><title>PhantomJS - полный фарш для браузера в консоли</title><link href="http://mazko.github.io/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/" rel="alternate"></link><published>2013-08-21T00:00:00+03:00</published><updated>2013-08-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:mazko.github.io,2013-08-21:blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/</id><summary type="html">&lt;p&gt;&lt;a href="http://ru.wikipedia.org/wiki/WebKit" rel="nofollow"&gt;WebKit&lt;/a&gt; - свободный движок с открытым кодом для отображения веб-страниц, который лежит в основе таких популярных браузеров как &lt;em&gt;Chrome&lt;/em&gt; и &lt;em&gt;Safari&lt;/em&gt;. &lt;a href="http://www.phantomjs.org/" rel="nofollow"&gt;PhantomJS&lt;/a&gt; также основан на &lt;em&gt;WebKit&lt;/em&gt; и умеет делать всё то, что и обычный браузер, но:&lt;/p&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/.gitignore"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/package.json"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/readme"&gt;&lt;/a&gt;
+ --&gt;</summary><category term="NLP"></category><category term="Lucene"></category><category term="ES6"></category></entry><entry><title>PhantomJS - полный фарш для браузера в консоли</title><link href="http://proiot.ru/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/" rel="alternate"></link><published>2013-08-21T00:00:00+03:00</published><updated>2013-08-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2013-08-21:blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/</id><summary type="html">&lt;p&gt;&lt;a href="http://ru.wikipedia.org/wiki/WebKit" rel="nofollow"&gt;WebKit&lt;/a&gt; - свободный движок с открытым кодом для отображения веб-страниц, который лежит в основе таких популярных браузеров как &lt;em&gt;Chrome&lt;/em&gt; и &lt;em&gt;Safari&lt;/em&gt;. &lt;a href="http://www.phantomjs.org/" rel="nofollow"&gt;PhantomJS&lt;/a&gt; также основан на &lt;em&gt;WebKit&lt;/em&gt; и умеет делать всё то, что и обычный браузер, но:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Нет &lt;em&gt;GUI&lt;/em&gt; - действия программируются сценариями &lt;em&gt;JavaScript/CoffeeScript&lt;/em&gt;, а результат можно при желании рендерить в PNG, GIF, JPEG, PDF&lt;/p&gt;
@@ -2823,7 +2823,7 @@ sed &lt;span class="s1"&gt;&amp;#39;s/\\\\u/\\u/g&amp;#39;&lt;/span&gt; &amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="FF screenshot" src="http://mazko.github.io/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/dou.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="FF screenshot" src="http://proiot.ru/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/dou.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;h3&gt;МОДУЛЬНОСТЬ&lt;/h3&gt;
 &lt;p&gt;Наподобие с &lt;a href="http://nodejs.org/" rel="nofollow"&gt;Node&lt;/a&gt; в &lt;em&gt;PhantomJS&lt;/em&gt; поддерживается концепция модулей, а начиная с &lt;a href="https://github.com/ariya/phantomjs/wiki/API-Reference" rel="nofollow"&gt;PhantomJS 1.7&lt;/a&gt; можно создавать пользовательские модули. Для примера напишем модуль, который задает таймаут на загрузку страницы:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;pageex.js&lt;/em&gt;&lt;/p&gt;
@@ -2903,7 +2903,7 @@ sed &lt;span class="s1"&gt;&amp;#39;s/\\\\u/\\u/g&amp;#39;&lt;/span&gt; &amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="FF screenshot" src="http://mazko.github.io/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/dou_dom.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="FF screenshot" src="http://proiot.ru/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/dou_dom.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;Плюс полный контроль над файлами-ресурсов:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;resource.js&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;page&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;webpage&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;create&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt;
@@ -2946,7 +2946,7 @@ sed &lt;span class="s1"&gt;&amp;#39;s/\\\\u/\\u/g&amp;#39;&lt;/span&gt; &amp;gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="FF screenshot" src="http://mazko.github.io/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/dou_res.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="FF screenshot" src="http://proiot.ru/blog/posts/2013/08/21/phantomjs-polnyi-farsh-dlia-brauzera-v-konsoli/dou_res.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;h3&gt;ВСТРОЕННЫЙ WEB SERVER&lt;/h3&gt;
 &lt;p&gt;В &lt;em&gt;PhantomJS&lt;/em&gt; также имеется встроенный веб-сервер &lt;a href="https://github.com/ariya/phantomjs/wiki/API-Reference-WebServer" rel="nofollow"&gt;Mongoose&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;server.js&lt;/em&gt;&lt;/p&gt;

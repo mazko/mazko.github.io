@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - Идиома</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,38 +16,38 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">Автомат с конечным числом состояний</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">Автомат с конечным числом состояний</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2012-10-09T00:00:00+03:00">
                 Published: Вт. 09 Октябрь 2012
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/pattern">Паттерн</a> <a href="http://mazko.github.io/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://mazko.github.io/blog/tag/idioma">Идиома</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
 </footer><!-- /.post-info --><p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого <em>ANSI C</em>.</p>
 <p>Для экспериментов нам понадобиться какой-то тестовый макет, который можно запустить / эмулировать в виртуальной среде (выбор пал на <em>Proteus VSM</em>). Есть простенький микроконтроллер (PIC16F1823), который управляет лампочками (гирляндой) и может менять их яркость с помощью встроенного цифро-аналогового преобразователя ЦАП (в реальном устройстве для этого лучше использовать ШИМ, ЦАП лучше подходит для эмуляции в <em>Proteus VSM</em>). Быстро вникнуть в суть дела можно посмотрев следующее видео:</p>
 <video width="100%" controls>
-  <source src="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/video.mp4" type="video/mp4">
+  <source src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/video.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
 
 <p>Начнём с простого - напишем программу для гирлянды с <em>двумя</em> состояниями - в первом светодиоды поочерёдно вспыхивают слева направо, во втором справа налево. В системе два события - нажали кнопочку (NEXT) и внутреннее (недоступно пользователю гирлянды) событие от таймера (TICK). Событие NEXT изменяет состояние:</p>
-<p><img alt="Диаграмма состояний Скриншот" src="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Диаграмма состояний Скриншот" src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;" /></p>
 <h3>Операторы switch/case</h3>
 <p>Прибегнув к помощи условных операторов <code>if</code> / <code>else</code> или <code>switch</code> / <code>case</code> по-старинке задачу решили так:</p>
 <p><em>/FSM/Child/src/main.c</em></p>
@@ -240,7 +240,7 @@ Your browser does not support the video tag.
 <p>Давайте сравним данное решение с предыдущим:</p>
 <ul>
 <li>
-<p>Табличная реализация несколько медленнее - как минимум добавился цикл <code>while</code>. Для обхода элементов таблицы задействована идиома КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ, которая уже подробно описывалась <a href="http://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/">ранее</a>.</p>
+<p>Табличная реализация несколько медленнее - как минимум добавился цикл <code>while</code>. Для обхода элементов таблицы задействована идиома КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ, которая уже подробно описывалась <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">ранее</a>.</p>
 </li>
 <li>
 <p>Bся логика переходов сконцентрирована в одной таблице. Всё видно, как на ладони. Теперь можно быстрее разобраться / вспомнить, как всё это работает.</p>
@@ -359,8 +359,8 @@ Your browser does not support the video tag.
 
 <p>Несложно заметить, что код в суперцикле <code>for(;;)</code> остался без изменений, т.е. решение с использованием таблиц лучше расширяется.</p>
 <h3>Паттерн Состояние (State)</h3>
-<p>Не поверите, но у табличного решения тоже есть альтернатива - <em>Паттерн Состояние</em>, но об этом чуть <a href="http://mazko.github.io/blog/posts/2012/10/13/patterny-v-chistom-c-state/">позже</a>.</p>
-<p>Исходники <a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p><p>There are <a href="http://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/#disqus_thread">comments</a>.</p>                </article>
+<p>Не поверите, но у табличного решения тоже есть альтернатива - <em>Паттерн Состояние</em>, но об этом чуть <a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/">позже</a>.</p>
+<p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -369,7 +369,7 @@ Your browser does not support the video tag.
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/" rel="bookmark"
+                    <h1><a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/" rel="bookmark"
                            title="Permalink to Идиомы в ANSI C">Идиомы в ANSI C</a></h1>
                 </header>
 
@@ -380,13 +380,13 @@ Your browser does not support the video tag.
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/pattern">Паттерн</a> <a href="http://mazko.github.io/blog/tag/idioma">Идиома</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
 </footer><!-- /.post-info -->                <p><em>Шаблоны проектирования</em>, они же просто <a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow">паттерны</a>, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются <strong>идиомами</strong>, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот <strong>идиом</strong> в чистом <strong>С</strong> (<em>ANSI C</em>), по большей части это вольный перевод <a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow">Idiomatic Expressions in C</a> от ...</p>
-                <a class="readmore" href="http://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/">read more</a>
-<p>There are <a href="http://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
@@ -402,7 +402,7 @@ Your browser does not support the video tag.
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

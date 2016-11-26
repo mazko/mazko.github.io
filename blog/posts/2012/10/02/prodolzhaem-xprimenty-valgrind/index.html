@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Продолжаем XPрименты - Valgrind</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/" rel="bookmark"
            title="Permalink to Продолжаем XPрименты - Valgrind">Продолжаем XPрименты - Valgrind</a></h1>
     </header>
 
@@ -40,11 +40,11 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/tdd">TDD</a> <a href="http://mazko.github.io/blog/tag/mikrokontroller">Микроконтроллер</a> <a href="http://mazko.github.io/blog/tag/cppunit">CppUnit</a> <a href="http://mazko.github.io/blog/tag/valgrind">Valgrind</a> </p>
-</footer><!-- /.post-info -->      <p>В предыдущем <a href="http://mazko.github.io/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/">посте</a> было рассказано о пользе применения элементов <strong>экстремального программирования</strong> (<em>Extreme Programming</em> (<em>XP</em>)) в контексте разработки устройств на микроконтроллерах. Перед тем, как разворачивать приложение (прошивать микроконтроллер) в обязательном порядке на ПК запускаются тесты, представляющие собой обычный <strong>исполняемый файл</strong>, использующий тот же исходный код, что и конечный потребитель - микроконтроллер. Ключевое понятие сейчас для нас - <strong>исполняемый файл</strong>, фактически законченное консольное приложение. А значит можно задействовать дополнительные инструменты для проверки / анализа качества кода на этапе выполнения. Один из таких инструментов - <a href="http://valgrind.org/" rel="nofollow">Valgring</a> обладает просто-таки потрясающими возможностями, в чём мы сейчас и постараемся убедиться.</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/tdd">TDD</a> <a href="http://proiot.ru/blog/tag/mikrokontroller">Микроконтроллер</a> <a href="http://proiot.ru/blog/tag/cppunit">CppUnit</a> <a href="http://proiot.ru/blog/tag/valgrind">Valgrind</a> </p>
+</footer><!-- /.post-info -->      <p>В предыдущем <a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/">посте</a> было рассказано о пользе применения элементов <strong>экстремального программирования</strong> (<em>Extreme Programming</em> (<em>XP</em>)) в контексте разработки устройств на микроконтроллерах. Перед тем, как разворачивать приложение (прошивать микроконтроллер) в обязательном порядке на ПК запускаются тесты, представляющие собой обычный <strong>исполняемый файл</strong>, использующий тот же исходный код, что и конечный потребитель - микроконтроллер. Ключевое понятие сейчас для нас - <strong>исполняемый файл</strong>, фактически законченное консольное приложение. А значит можно задействовать дополнительные инструменты для проверки / анализа качества кода на этапе выполнения. Один из таких инструментов - <a href="http://valgrind.org/" rel="nofollow">Valgring</a> обладает просто-таки потрясающими возможностями, в чём мы сейчас и постараемся убедиться.</p>
 <p><strong>Valgrind</strong> обновляется довольно часто, поэтому в репозиториях <em>Ubuntu</em> / <em>openSUSE</em> и т.д. может быть более <em>древняя</em> версия программы. В этой связи возможно проще работать с исходниками - процесс сборки / установки <strong>Valgrind</strong> стандартный как для <strong>Unix</strong> и состоит из трёх этапов: ./<strong>configure</strong>, <strong>make</strong>, <strong>make install</strong>:</p>
 <div class="highlight"><pre><span></span>sudo zypper install make
 <span class="c1"># cd &#39;/home/embedded/Рабочий стол/vargrind/valgrind-3.7.0&#39;</span>
@@ -55,7 +55,7 @@ sudo make install
 
 
 <p>Вот что получится, если попросить <strong>Valgrind</strong> проверить нашу программу для расчёта расстояния между двумя GPS координатам:</p>
-<p><img alt="Первый запуск Скриншот" src="http://mazko.github.io/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_demo.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Первый запуск Скриншот" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_demo.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Основная утилита <strong>Valgrind</strong> - <strong>memcheck</strong>, она запускается по умолчанию. Для использования других утилит это необходимо явно указывать в параметрах командной строки, как продемонстрировано на вызове <strong>exp-sgcheck</strong> (ранее она называлась <strong>exp-ptrcheck</strong>). Как видно из рисунка, наш код ошибок при работе с памятью не имеет.</p>
 <h3>Valgrind - memcheck</h3>
 <p>Теперь рассмотрим более интересный пример. Необходимо разработать метод, который принимает в качестве входного параметра <strong>GPS</strong> строку в формате <strong>NMEA</strong> и извлекает дату и время принятого пакета. Чтобы было проще сортировать полученные данные по дате, возможно, понадобится соответственно изменить её формат:</p>
@@ -201,7 +201,7 @@ sudo make install
 
 
 <p>Код успешно компилируется и проходит тесты. Но что по этому поводу думает <strong>Valgrind</strong> ?</p>
-<p><img alt="Memcheck" src="http://mazko.github.io/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_memcheck_error.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Memcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_memcheck_error.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Строка должна всегда завершаться нулём, а в нашем случае последний символ bufD неопределён. Ниже представлен исправленный вариант.</p>
 <p><em>gps_valgrind/src/gps/gps.c</em>
     :::cpp
@@ -431,7 +431,7 @@ bool TryGetDateTimeRMCGPS(const char* rmc,
 
 
 <p>Код успешно компилируется и проходит тесты и никаких вопросов у <strong>memcheck</strong> не вызывает. Запускаем <strong>exp-sgcheck</strong>:</p>
-<p><img alt="exp-sgcheck" src="http://mazko.github.io/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_sgcheck_error.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="exp-sgcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_sgcheck_error.png" style="width:100%; border:1px solid grey;" /></p>
 <p>Программист допустил оплошность - при определённых обстоятельствах осуществляется выход за границы массива. Подобные ошибки трудно обнаружить, поскольку всё вроде как работает, но в самый неподходящий момент что-то сломается ;( Исправленный вариант выглядит так:</p>
 <p><em>gps_valgrind/src/gps/gpsUART.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;gps.h&quot;</span><span class="cp"></span>
@@ -529,7 +529,7 @@ OK <span class="o">(</span>12<span class="o">)</span>
 </pre></div>
 
 
-<p>Исходники <a href="http://mazko.github.io/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/gps_valgrind.zip">тут</a>.</p>
+<p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/gps_valgrind.zip">тут</a>.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
@@ -537,7 +537,7 @@ OK <span class="o">(</span>12<span class="o">)</span>
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -561,7 +561,7 @@ OK <span class="o">(</span>12<span class="o">)</span>
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

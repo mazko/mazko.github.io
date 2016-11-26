@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/" rel="bookmark"
            title="Permalink to Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA">Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</a></h1>
     </header>
 
@@ -40,16 +40,16 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/upnp">UPnP</a> <a href="http://mazko.github.io/blog/tag/soap">SOAP</a> <a href="http://mazko.github.io/blog/tag/iot">IoT</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/upnp">UPnP</a> <a href="http://proiot.ru/blog/tag/soap">SOAP</a> <a href="http://proiot.ru/blog/tag/iot">IoT</a> </p>
 </footer><!-- /.post-info -->      <p>Universal Plug and Play (<a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow">UPnP</a>) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.</p>
 <p>Тут пожалуй стоит сделать риторическое отступление. Зачем нам <a href="http://2gusia.livejournal.com/37929.html" rel="nofollow">две</a> технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
 UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить <a href="http://www.dlna.org/certification/certification" rel="nofollow">денюшку</a>. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.</p>
 <p>На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно вкючать/выключать музыку в комнате комбинацией клавиш на <a href="http://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно вкючать/выключать музыку в комнате комбинацией клавиш на <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
 <p>Начнём с <a href="http://www.upnp-hacks.org/upnp.html" rel="nofollow">обнаружения</a> доступных UPnP устройств. Для этого нужно отправить M-SEARCH запрос на multicast-адрес 239.255.255.250 порт 1900 по UDP протоколу. Все устройства и программы, поддерживающие спецификацию UPnP обязаны ответить по UDP unicast:</p>
 <div class="highlight"><pre><span></span>~$ upnp-scan<span class="o">()</span> <span class="o">{</span>
   python3 -c <span class="s1">&#39;</span>
@@ -270,7 +270,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -294,7 +294,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

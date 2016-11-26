@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>NGSPICE.js - полупроводниковый диод</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/" rel="bookmark"
            title="Permalink to NGSPICE.js - полупроводниковый диод">NGSPICE.js - полупроводниковый диод</a></h1>
     </header>
 
@@ -40,19 +40,19 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/geda">gEDA</a> <a href="http://mazko.github.io/blog/tag/ngspice">ngspice</a> </p>
-</footer><!-- /.post-info -->      <p><a href="http://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>Полупроводниковый диод - самый простой полупроводниковый прибор, состоящий из одного PN перехода. Основная его функция - это проводить электрический ток в одном направлении, и не пропускать его в обратном. Свойства диодов наглядно показывает вольт-амперная характеристика (ВАХ) - зависимость тока через двухполюсник от напряжения на этом двухполюснике. Как мы сейчас убедимся ВАХ зависит от конкретной модели диода и температуры окружающей среды.</p>
-<p>Для симуляции диода в NGSPICE необходим найти (обычно на <a href="https://www.centralsemi.com/content/engineering/spicemodels/" rel="nofollow">сайте производителя</a>) его SPICE модель - например <a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/1n4007.txt">1n4007</a>.</p>
+<p>Для симуляции диода в NGSPICE необходим найти (обычно на <a href="https://www.centralsemi.com/content/engineering/spicemodels/" rel="nofollow">сайте производителя</a>) его SPICE модель - например <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/1n4007.txt">1n4007</a>.</p>
 <div class="highlight"><pre><span></span>~$ wget -nc http://www.vishay.com/docs/88000/1n4007.txt
 </pre></div>
 
 
-<p><a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward.sch">схема прямого включения диода</a> | <a href="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward.net">netlist</a> | <a href="https://ngspice.js.org/?gist=e93497542d39976cfcb6df1d193658c3">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/show-img-diode-forward.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward.sch">схема прямого включения диода</a> | <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward.net">netlist</a> | <a href="https://ngspice.js.org/?gist=e93497542d39976cfcb6df1d193658c3">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/show-img-diode-forward.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source diode-forward.net
 ngspice 2 -&gt; set temp=0
 ngspice 3 -&gt; dc i1 0 1 0.001
@@ -65,9 +65,9 @@ ngspice 8 -&gt; plot dc1.v(n1) dc2.v(n1) dc3.v(n1)
 
 
 <p>Кремниевый диод открывается при напряжении ~0.6 В. Чем выше температура окружающей среды, тем этот порог открывания немного меньше.</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>В учебниках по электронике дают обычно <a href="https://ngspice.js.org/?gist=38b99db6363f932c6487c70c84502eb0">перевёрнутый</a> график ВАХ <code>ngspice 8 -&gt; plot "i-sweep" vs dc1.v(n1) "i-sweep" vs dc2.v(n1) "i-sweep" vs dc3.v(n1)</code>:</p>
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>При <a href="https://ngspice.js.org/?gist=31de19f98b10bfad7842b38ad3d99ce9">обратном напряжении</a> через диод протекают незначительные токи утечки и таким образом его активное сопротивление очень большое. Однако при высоком напряжении, которое может варьироваться в широких пределах в зависимости от конкретной модели диода, наступает пробой и ток через резко возрастает:</p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source diode-forward.net
 ngspice 2 -&gt; set temp=0
@@ -80,9 +80,9 @@ ngspice 8 -&gt; plot &quot;i-sweep&quot; vs dc1.v(n1) &quot;i-sweep&quot; vs dc2
 </pre></div>
 
 
-<p><img alt="screenshot" src="http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-backward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-backward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Слишком большой ток вызовет необратимые изменения в кристалле диода, а вот для небольших токов явление пробоя оказывается весьма полезным. Существует целое подсемейство полупроводниковых диодов, называемых стабилитронами или диодами Зенера, для которых обратный режим работы является основным. В режиме пробоя напряжение на стабилитроне поддерживается с заданной точностью в широком диапазоне обратных токов.</p>
-<p><a href="http://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/">Далее</a> выпрямитель переменного тока на диодах. </p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/">Далее</a> выпрямитель переменного тока на диодах. </p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
@@ -90,7 +90,7 @@ ngspice 8 -&gt; plot &quot;i-sweep&quot; vs dc1.v(n1) &quot;i-sweep&quot; vs dc2
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -114,7 +114,7 @@ ngspice 8 -&gt; plot &quot;i-sweep&quot; vs dc1.v(n1) &quot;i-sweep&quot; vs dc2
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

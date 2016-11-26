@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Lucene - проверка индекса</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,20 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li class="active"><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/" rel="bookmark"
+        <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/" rel="bookmark"
            title="Permalink to Lucene - проверка индекса">Lucene - проверка индекса</a></h1>
     </header>
 
@@ -40,11 +40,11 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="http://mazko.github.io/blog/tag/jsp">jsp</a> <a href="http://mazko.github.io/blog/tag/maven">Maven</a> </p>
-</footer><!-- /.post-info -->      <p>Данный пост будет очень короткий - на данном этапе имеется <strong>Lucene</strong> - <a href="http://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индекс</a>, необходимо доработать <code>SearchServlet</code> таким образом, чтобы можно было получить и отобразить краткую информацию об индексе. Для проверки индекса в <strong>Lucene</strong> существует уже готовый к использованию специальный класс - <code>CheckIndex</code>, который мы и задействуем. Чтобы со временем исходный код сервлета <code>SearchServlet</code> не превратился в <em>макароны</em> по-флотски, максимально приблизимся к паттерну <em>модель-представление-контроллер</em> (<strong>MVC</strong>), где сервлет будет выполнять функцию <em>контроллера</em>, <em>модель</em> будет иметь формат простой строки, а <em>представление</em> будет реализовано в виде <strong>jsp</strong>-страницы.</p>
+<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">jsp</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+</footer><!-- /.post-info -->      <p>Данный пост будет очень короткий - на данном этапе имеется <strong>Lucene</strong> - <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индекс</a>, необходимо доработать <code>SearchServlet</code> таким образом, чтобы можно было получить и отобразить краткую информацию об индексе. Для проверки индекса в <strong>Lucene</strong> существует уже готовый к использованию специальный класс - <code>CheckIndex</code>, который мы и задействуем. Чтобы со временем исходный код сервлета <code>SearchServlet</code> не превратился в <em>макароны</em> по-флотски, максимально приблизимся к паттерну <em>модель-представление-контроллер</em> (<strong>MVC</strong>), где сервлет будет выполнять функцию <em>контроллера</em>, <em>модель</em> будет иметь формат простой строки, а <em>представление</em> будет реализовано в виде <strong>jsp</strong>-страницы.</p>
 <p><em>server/pom.xml</em></p>
 <div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
   <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
@@ -169,9 +169,9 @@
 </pre></div>
 
 
-<p><img alt="Linux" src="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/linux_checkindex.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">Далее</a> реализуем простой поиск.</p>
-<p><a href="http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/lucene-tutorial.zip">Исходники</a></p>
+<p><img alt="Linux" src="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/linux_checkindex.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">Далее</a> реализуем простой поиск.</p>
+<p><a href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/lucene-tutorial.zip">Исходники</a></p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
@@ -179,7 +179,7 @@
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
         var disqus_identifier = 'blog/posts/2012/10/21/lucene-proverka-indeksa/';
-        var disqus_url = 'http://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
@@ -203,7 +203,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>

@@ -3,8 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>&#9996; Все Буде Добре &#9825; - Bluetooth</title>
-        <link rel="stylesheet" href="http://mazko.github.io/blog/theme/css/main.css" />
-        <link href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,29 +16,29 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://mazko.github.io/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://mazko.github.io/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/java/">Java</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://mazko.github.io/blog/category/python/">Python</a></li>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://mazko.github.io/blog/posts/2013/07/31/besplatnoe-opredelenie-koordinat-po-gsm-sotam/">Бесплатное определение координат по GSM сотам</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2013/07/31/besplatnoe-opredelenie-koordinat-po-gsm-sotam/">Бесплатное определение координат по GSM сотам</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2013-07-31T00:00:00+03:00">
                 Published: Ср. 31 Июль 2013
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://mazko.github.io/blog/category/python/">Python</a>.</p>
-<p>tags: <a href="http://mazko.github.io/blog/tag/gsm">GSM</a> <a href="http://mazko.github.io/blog/tag/google-maps">Google Maps</a> <a href="http://mazko.github.io/blog/tag/bluetooth">Bluetooth</a> <a href="http://mazko.github.io/blog/tag/socat">socat</a> </p>
+<p>In <a href="http://proiot.ru/blog/category/python/">Python</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/gsm">GSM</a> <a href="http://proiot.ru/blog/tag/google-maps">Google Maps</a> <a href="http://proiot.ru/blog/tag/bluetooth">Bluetooth</a> <a href="http://proiot.ru/blog/tag/socat">socat</a> </p>
 </footer><!-- /.post-info --><p>Сколько раз доводилось слышать, что криминальные элементы или правоохранительные органы могут определить местоположение телефона по его номеру. Это правда :) Изначально GSM стандарты не разрабатывались для этих целей, поэтому, безусловно, <em>точность</em> полученных координат конечно же уступает всем известным GPS / ГЛОНАСС. В густонаселенных местах, где плотность базовых станций (такие закрытые будки с антеннами) большая точность повышается, а в сельской местности, на трассе соответственно уменьшается. Не особо углубляясь в теорию предлагаю посмотреть как в любое время можно определить местоположение ручками с помощью обычных AT-команд.</p>
 <p>Итак, у каждого GSM модуля, зарегистрированного в сети мобильного оператора, всегда можно вполне легально запросить следующие параметры: </p>
 <ul>
@@ -266,7 +266,7 @@ AT
 </pre></div>
 
 
-<p>P.S. Совсем необязательно иметь ПК чтобы получить MCC, MNC, LAC, CID с телефона - просто так удобнее для текущей задачи. Большинство производителей предоставляют API для доступа к подобного рода данным из приложений, запускаемых в их телефонах. В этом случае можно (и даже нужно) обойтись без AT команд. Вот например API для мидлетов <a href="http://developer.nokia.com/Community/Wiki/CS000947_-_Getting_Cell_ID_in_Java_ME" rel="nofollow">Nokia</a> и т.д.</p><p>There are <a href="http://mazko.github.io/blog/posts/2013/07/31/besplatnoe-opredelenie-koordinat-po-gsm-sotam/#disqus_thread">comments</a>.</p>                </article>
+<p>P.S. Совсем необязательно иметь ПК чтобы получить MCC, MNC, LAC, CID с телефона - просто так удобнее для текущей задачи. Большинство производителей предоставляют API для доступа к подобного рода данным из приложений, запускаемых в их телефонах. В этом случае можно (и даже нужно) обойтись без AT команд. Вот например API для мидлетов <a href="http://developer.nokia.com/Community/Wiki/CS000947_-_Getting_Cell_ID_in_Java_ME" rel="nofollow">Nokia</a> и т.д.</p><p>There are <a href="http://proiot.ru/blog/posts/2013/07/31/besplatnoe-opredelenie-koordinat-po-gsm-sotam/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -280,7 +280,7 @@ AT
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a href="http://github.com/mazko">github</a></li>
                             <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
