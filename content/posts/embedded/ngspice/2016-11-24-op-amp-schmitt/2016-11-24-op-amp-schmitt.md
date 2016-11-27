@@ -1,4 +1,4 @@
-title: NGSPICE.js - компаратор и триггер Шмитта  на ОУ
+title: NGSPICE.js - компаратор и триггер Шмитта на ОУ
 category: Embedded 
 tags: gEDA, ngspice, ОУ
 
@@ -42,4 +42,4 @@ tags: gEDA, ngspice, ОУ
 
 ![screenshot]({attach}shmitt-trigger-single-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далi буде.
+[Далее]({filename}../2016-11-28-push-pull-output/2016-11-28-push-pull-output.md) немного о выходных каскадах усилителей.
