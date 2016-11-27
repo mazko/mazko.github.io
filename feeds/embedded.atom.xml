@@ -92,7 +92,11 @@ ngspice 3 -&amp;gt; plot v(out) v(in) v(vgnd)
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Обратная связь обеспечивает коэффициент усиления &lt;code&gt;100k/50k = 2&lt;/code&gt;, напряжение смещение как обычно половина напряжения питания. В активном режиме напряжение в точке виртуальной земли равно напряжению смещения независимо от уровня входного сигнала. Фазы входного и выходного сигнала сдвинуты на 180°.&lt;/p&gt;
+&lt;p&gt;Обратная связь обеспечивает коэффициент усиления &lt;code&gt;100k/50k = 2&lt;/code&gt;, напряжение смещение как обычно половина напряжения питания. В активном режиме напряжение в точке виртуальной земли равно напряжению смещения независимо от уровня входного сигнала. Фазы входного и выходного сигнала сдвинуты на 180°. Коэффициент нелинейных искажений для ОУ усилителей очень &lt;a href="https://ngspice.js.org/?gist=ba2f8531a36037d47487ce7074520f84"&gt;низкий&lt;/a&gt; THD: 5.6773e-05 %, что является следствием сильной ООС.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 4 -&amp;gt; fourier 10k v(out)
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/"&gt;Далее&lt;/a&gt; сумматоры напряжений на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - неинвертирующий усилитель на ОУ</title><link href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="alternate"></link><published>2016-11-21T00:00:00+02:00</published><updated>2016-11-21T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-21:blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
 &lt;p&gt;В неинвертирующем усилителе входной сигнал подаётся на неинвертирующий вход ОУ, а ООС заведена с выхода на инвертирующий вход. Отличительными особенностями данной схемы для идеального ОУ являются:&lt;/p&gt;
@@ -127,7 +131,11 @@ ngspice 3 -&amp;gt; plot v(out) v(in)
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Обратная связь обеспечивает коэффициент усиления &lt;code&gt;1+100/50 = 3&lt;/code&gt; для высокочастотных сигналов и равный &lt;strong&gt;единице&lt;/strong&gt; для постоянной составляющей - в противном случае ОУ будет усиливать собственное напряжения смещения. Также несложно убедиться фаза входного и выходного сигнала совпадает. Напряжение смещение обычно задают равным половине напряжения питания.  &lt;/p&gt;
+&lt;p&gt;Отрицательная обратная связь (ООС) обеспечивает коэффициент усиления &lt;code&gt;1+100/50 = 3&lt;/code&gt; для высокочастотных сигналов и равный &lt;strong&gt;единице&lt;/strong&gt; для постоянной составляющей - в противном случае ОУ будет усиливать собственное напряжения смещения. Также несложно убедиться фаза входного и выходного сигнала совпадает. Напряжение смещение обычно задают равным половине напряжения питания. Коэффициент нелинейных искажений для ОУ усилителей очень &lt;a href="https://ngspice.js.org/?gist=27956fb8325c49b6b8bf595ed3f49868"&gt;низкий&lt;/a&gt; THD: 0.00109449 %, что является следствием сильной ООС.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 4 -&amp;gt; fourier 10k v(out)
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/"&gt;Далее&lt;/a&gt; инвертирующий усилитель на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - идеальный операционный усилитель</title><link href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/" rel="alternate"></link><published>2016-11-18T00:00:00+02:00</published><updated>2016-11-18T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-18:blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Операционный усилитель (ОУ) - это модульный многокаскадный усилитель с дифференциальным входом. Для простоты расчётов удобно оперировать понятием &lt;em&gt;идеального ОУ&lt;/em&gt; - такого себе непрозрачного ящичка с магией внутри. Дифференциальный вход предполагает два входа - инвертирующий и неинвертирующий. Также у ОУ есть две ноги для питания и обычно один выход, уровень напряжения на котором является функцией от разности напряжений на входах. Под идеальным подразумевают:&lt;/p&gt;
@@ -423,6 +431,31 @@ ngspice 3 -&amp;gt; plot v(out)
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/h-bias-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Итак, мы провели временной анализ схемы с помощью команды &lt;code&gt;tran&lt;/code&gt;. Как насчёт оценки уровня искажений, вносимых системой по отношению к входному сигналу ?
+В SPICE для этих целей предусмотрен спектральный анализ Фурье. &lt;a href="https://ngspice.js.org/?gist=db86a12399a231108e27d323955eb7c3"&gt;Пробуем&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 4 -&amp;gt; fourier 3k v(out)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Результат довольно мудрёный THD: 5.7116 %. Команда &lt;code&gt;fourier&lt;/code&gt; работает в паре с &lt;code&gt;tran&lt;/code&gt;, а частота 3кГц - частота входного сигнала Vin. Высокие нелинейные искажения являются главным недостатком схемы с ОЭ на низких частотах. На высоких частотах добавляется ещё один недостаток, связанный с ёмкостью &lt;a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/"&gt;Миллера&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Fourier analysis for v(out):
+  No. Harmonics: 10, THD: 5.7116 %, Gridsize: 200, Interpolation Degree: 1
+
+Harmonic Frequency   Magnitude   Phase       Norm. Mag   Norm. Phase
+-------- ---------   ---------   -----       ---------   -----------
+ 0       0           4.91942     0           0           0          
+ 1       3000        2.57366     -178.92     1           0          
+ 2       6000        0.145903    79.9197     0.0566906   258.843    
+ 3       9000        0.0174992   -138.8      0.00679933  40.1225    
+ 4       12000       0.00350968  150.054     0.00136369  328.977    
+ 5       15000       0.00132934  54.0063     0.000516515 232.93     
+ 6       18000       0.000550078 -51.496     0.000213733 127.427    
+ 7       21000       0.000187626 -157.57     7.29022e-05 21.358     
+ 8       24000       7.55946e-05 79.2634     2.93724e-05 258.187    
+ 9       27000       3.78454e-05 3.827       1.47049e-05 182.75
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/"&gt;Далее&lt;/a&gt; усилительный каскад с общим коллектором.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - согласование источника с нагрузкой</title><link href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/" rel="alternate"></link><published>2016-11-04T00:00:00+02:00</published><updated>2016-11-04T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-04:blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Согласование источника и нагрузки - это выбор соотношения сопротивления нагрузки и внутреннего сопротивления источника с целью достижения заданных свойств полученной системы. Наиболее часто используются следующие типы согласования:&lt;/p&gt;
 &lt;ul&gt;

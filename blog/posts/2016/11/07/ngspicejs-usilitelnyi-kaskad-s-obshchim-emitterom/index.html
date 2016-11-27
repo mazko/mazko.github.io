@@ -130,6 +130,31 @@ ngspice 3 -&gt; plot v(out)
 </li>
 </ul>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/h-bias-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Итак, мы провели временной анализ схемы с помощью команды <code>tran</code>. Как насчёт оценки уровня искажений, вносимых системой по отношению к входному сигналу ?
+В SPICE для этих целей предусмотрен спектральный анализ Фурье. <a href="https://ngspice.js.org/?gist=db86a12399a231108e27d323955eb7c3">Пробуем</a>:</p>
+<div class="highlight"><pre><span></span>ngspice 4 -&gt; fourier 3k v(out)
+</pre></div>
+
+
+<p>Результат довольно мудрёный THD: 5.7116 %. Команда <code>fourier</code> работает в паре с <code>tran</code>, а частота 3кГц - частота входного сигнала Vin. Высокие нелинейные искажения являются главным недостатком схемы с ОЭ на низких частотах. На высоких частотах добавляется ещё один недостаток, связанный с ёмкостью <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/">Миллера</a>.</p>
+<div class="highlight"><pre><span></span>Fourier analysis for v(out):
+  No. Harmonics: 10, THD: 5.7116 %, Gridsize: 200, Interpolation Degree: 1
+
+Harmonic Frequency   Magnitude   Phase       Norm. Mag   Norm. Phase
+-------- ---------   ---------   -----       ---------   -----------
+ 0       0           4.91942     0           0           0          
+ 1       3000        2.57366     -178.92     1           0          
+ 2       6000        0.145903    79.9197     0.0566906   258.843    
+ 3       9000        0.0174992   -138.8      0.00679933  40.1225    
+ 4       12000       0.00350968  150.054     0.00136369  328.977    
+ 5       15000       0.00132934  54.0063     0.000516515 232.93     
+ 6       18000       0.000550078 -51.496     0.000213733 127.427    
+ 7       21000       0.000187626 -157.57     7.29022e-05 21.358     
+ 8       24000       7.55946e-05 79.2634     2.93724e-05 258.187    
+ 9       27000       3.78454e-05 3.827       1.47049e-05 182.75
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">Далее</a> усилительный каскад с общим коллектором.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
