@@ -12,8 +12,14 @@ tags: gEDA, ngspice, ОУ
 
   - коэффициент усиления по напряжению ```1+Rf/Rg```, как не сложно догадаться он **не может быть меньше 1** - усилитель с коэффициентом 1 иногда называют буфером
 
+<!-- 
+<a href="{attach}LT1007CS.txt"></a>
+-->
 
-В следующих схемах использовалась SPICE модель операционного усилителя [LT1007]({attach}LT1007CS.txt).
+В следующих схемах использовалась SPICE модель операционного усилителя LT1007:
+
+    :::bash
+    ~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
 
 [схема неинвертирующего усилителя]({attach}non-inverting.sch) | [netlist]({attach}non-inverting.net) | [ngspice.js](https://ngspice.js.org/?gist=afbeb59caf6deff2cfead830a50cfb59)
 

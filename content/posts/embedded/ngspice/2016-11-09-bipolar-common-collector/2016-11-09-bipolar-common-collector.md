@@ -14,7 +14,14 @@ tags: gEDA, ngspice
 
   - фазы входного и выходного сигнала совпадают
 
-В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора [2N2222]({attach}2N2222.LIB)
+<!-- 
+<a href="{attach}2N2222.LIB"></a>
+-->
+
+В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора 2N2222:
+
+    :::bash
+    ~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
 
 [простейший каскад с ОК]({attach}simple.sch) | [netlist]({attach}simple.net) | [ngspice.js](https://ngspice.js.org/?gist=5ce99532a7aa87358fcdfc949e821a94)
 
