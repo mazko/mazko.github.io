@@ -60,7 +60,15 @@
 <p>фазы входного и выходного сигнала совпадают</p>
 </li>
 </ul>
-<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/2N2222.LIB">2N2222</a></p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/2N2222.LIB"></a>
+-->
+
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора 2N2222:</p>
+<div class="highlight"><pre><span></span>~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple.sch">простейший каскад с ОК</a> | <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5ce99532a7aa87358fcdfc949e821a94">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/show-img-simple.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source simple.net

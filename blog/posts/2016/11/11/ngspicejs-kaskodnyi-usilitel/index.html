@@ -49,7 +49,15 @@
 <p>Как известно на характеристиках каскада с общим эмиттером <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>
 негативно сказывается эффект Миллера, при котором из-за сдвига фазы выходного напряжения на 180° по отношению к входному емкость коллектор-база создаёт отрицательную обратную связь по переменному току на высоких частотах. Такая паразитная обратная связь эквивалентна включению на входе усилителя шунтирующей емкости, величина которой пропорциональна коэффициенту усиления по напряжению каскада. </p>
 <p>В каскодной схеме коэффициент усиления по напряжению каскада с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> невелик - это обусловлено малым входным сопротивления каскада с общей базой <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a>. Небольшой коэффициент усиления по напряжению каскада с ОЭ значительно ослабляет эффект Миллера. Что касается каскада с <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a> то в нём эффект Миллера отсутствует как таковой. В итоге получаем усиление по току в ОЭ + усиление по напряжению в ОБ но без негативного влияния эффекта Миллера.</p>
-<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/2N2222.LIB">2N2222</a></p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/2N2222.LIB"></a>
+-->
+
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора 2N2222:</p>
+<div class="highlight"><pre><span></span>~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode.sch">каскодная схема(справа от IN)</a> | <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode.net">netlist</a> | <a href="https://ngspice.js.org/?gist=add2c348f915252851fa41fbd3afe97d">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/show-img-cascode.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source cascode.net

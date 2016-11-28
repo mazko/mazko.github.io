@@ -48,7 +48,15 @@
 <p>Если некоторая часть выходного сигнала усилителя подаётся обратно на вход, так что усилитель усиливает часть своего собственного выходного сигнала, то мы получаем т.н.  обратную связь. Обратная связь существует в двух разновидностях: положительная (также называемая регенеративной) и отрицательная (ООС). При положительной обратной связи (ПОС) часть выходного сигнала складывается с входным сигналом тогда как при отрицательной вычитается. Типичные примеры ООС с применением транзисторов <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a> и <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a>. ООС приводит к снижению коэффициента усиления, однако даёт и определённые преимущества: уменьшение искажений, увеличение полосы пропускания, температурная стабилизация. Сильную ПОС в основном используют в генераторах сигналов. Слабая ПОС также находит применение - например в регенеративных радиоприёмниках для достижения большого (огромного) усиления.</p>
 <p>Простейший <strong>RC-генератор</strong> состоит из одного транзистора и представляет из себя усилительный каскад с общим эмиттером <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>, охваченный ПОС. Цепь ПОС состоит из трех фазовращающих RC-цепочек, каждая из которых обеспечивает сдвиг фаз 60 градусов т.е. в сумме. 180° и в результате ООС с коллектора на базу превращается в ПОС (180+180=360=0). При условии <code>Rph1=Rph2=Rph3=R</code> и <code>Сph1=Сph2=Сph3=С</code>
 такой генератор вырабатывает гармонические колебания с <a href="https://bc.js.org/">частотой</a> <code>f = 1/(2*π*sqrt(6)*R*C) ≈ 0.065/(R*C) = 0.065/(22000*10^-7) ≈ 29.5 Гц</code></p>
-<p>В следующих схемах для симуляции использовалась SPICE модель транзистора <a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/2N2222.LIB">2N2222</a></p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/2N2222.LIB"></a>
+-->
+
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора 2N2222:</p>
+<div class="highlight"><pre><span></span>~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/rc-phase-shift.sch">схема RC-автогенератора с трехфазной фазирующей цепочкой</a> | <a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/rc-phase-shift.net">netlist</a> | <a href="https://ngspice.js.org/?gist=af9112f7d9ce726eb2b2b6dfb8695a99">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-rc-phase-shift.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source rc-phase-shift.net

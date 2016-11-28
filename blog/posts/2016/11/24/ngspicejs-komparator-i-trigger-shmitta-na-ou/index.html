@@ -30,7 +30,7 @@
     <header>
       <h1 class="entry-title">
         <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="bookmark"
-           title="Permalink to NGSPICE.js - компаратор и триггер Шмитта на ОУ">NGSPICE.js - компаратор и триггер Шмитта  на ОУ</a></h1>
+           title="Permalink to NGSPICE.js - компаратор и триггер Шмитта на ОУ">NGSPICE.js - компаратор и триггер Шмитта на ОУ</a></h1>
     </header>
 
     <div class="entry-content">
@@ -46,7 +46,15 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал с датчика. Так как в схеме отсутствует обратная связь, то идеальный ОУ может быть только в режиме насыщения и соответственно либо с минимальным либо максимальным уровнем напряжения питания на выходе. В зависимости от того на какой из дифференциальных входов подаётся опорное напряжение компаратор может быть соответственно инвертирующим и неинвертирующим.</p>
-<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/LT1007CS.txt">LT1007</a>.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/LT1007CS.txt"></a>
+-->
+
+<p>В следующих схемах использовалась SPICE модель операционного усилителя LT1007:</p>
+<div class="highlight"><pre><span></span>~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.sch">неинвертирующий компаратор с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d120122d336d4f1856b1582c12a9a205">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source comparator-single.net
@@ -77,7 +85,7 @@ ngspice 3 -&gt; plot v(out) v(in)
 </ul>
 <p>Ну а фактически на картинке верхний порог срабатывания получился чуть меньше 5 Вольт, тогда как нижний чуть больше 3 Вольт.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Далi буде.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/">Далее</a> немного о выходных каскадах усилителей.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>

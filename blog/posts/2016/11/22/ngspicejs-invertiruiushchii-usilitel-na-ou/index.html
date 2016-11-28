@@ -60,7 +60,15 @@
 <p>В предположении, что разность напряжений между входами ОУ равна нулю, цепь обратной связи должна работать так, чтобы поддерживать потенциал инвертирующего входа также равным нулю. Этот потенциал иногда называют <strong>виртуальной землёй</strong> </p>
 </li>
 </ul>
-<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/LT1007CS.txt">LT1007</a>.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/LT1007CS.txt"></a>
+-->
+
+<p>В следующих схемах использовалась SPICE модель операционного усилителя LT1007:</p>
+<div class="highlight"><pre><span></span>~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting.sch">схема инвертирующего усилителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2b635c0b8bae28e0ab4152cde6eb475d">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source inverting.net
@@ -80,12 +88,13 @@ ngspice 3 -&gt; plot v(out) v(in) v(vgnd)
 </pre></div>
 
 
-<p>Обратная связь обеспечивает коэффициент усиления <code>100k/50k = 2</code>, напряжение смещение как обычно половина напряжения питания. В активном режиме напряжение в точке виртуальной земли равно напряжению смещения независимо от уровня входного сигнала. Фазы входного и выходного сигнала сдвинуты на 180°. Коэффициент нелинейных искажений для ОУ усилителей очень <a href="https://ngspice.js.org/?gist=ba2f8531a36037d47487ce7074520f84">низкий</a> THD: 5.6773e-05 %, что является следствием сильной ООС.</p>
+<p>Обратная связь обеспечивает коэффициент усиления <code>100k/50k = 2</code>, напряжение смещение как обычно половина напряжения питания. В активном режиме напряжение в точке виртуальной земли равно напряжению смещения независимо от уровня входного сигнала. Фазы входного и выходного сигнала сдвинуты на 180°.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Коэффициент нелинейных искажений для ОУ усилителей очень <a href="https://ngspice.js.org/?gist=ba2f8531a36037d47487ce7074520f84">низкий</a> THD: 5.6773e-05 %, что является следствием сильной ООС.</p>
 <div class="highlight"><pre><span></span>ngspice 4 -&gt; fourier 10k v(out)
 </pre></div>
 
 
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/">Далее</a> сумматоры напряжений на ОУ.</p>
     </div><!-- /.entry-content -->
     <div class="comments">

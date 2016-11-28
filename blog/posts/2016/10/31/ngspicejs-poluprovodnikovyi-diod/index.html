@@ -46,7 +46,11 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>Полупроводниковый диод - самый простой полупроводниковый прибор, состоящий из одного PN перехода. Основная его функция - это проводить электрический ток в одном направлении, и не пропускать его в обратном. Свойства диодов наглядно показывает вольт-амперная характеристика (ВАХ) - зависимость тока через двухполюсник от напряжения на этом двухполюснике. Как мы сейчас убедимся ВАХ зависит от конкретной модели диода и температуры окружающей среды.</p>
-<p>Для симуляции диода в NGSPICE необходим найти (обычно на <a href="https://www.centralsemi.com/content/engineering/spicemodels/" rel="nofollow">сайте производителя</a>) его SPICE модель - например <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/1n4007.txt">1n4007</a>.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/1n4007.txt"></a>
+-->
+
+<p>Для симуляции диода в NGSPICE необходим найти (обычно на <a href="https://www.centralsemi.com/content/engineering/spicemodels/" rel="nofollow">сайте производителя</a>) его SPICE модель - например 1n4007:</p>
 <div class="highlight"><pre><span></span>~$ wget -nc http://www.vishay.com/docs/88000/1n4007.txt
 </pre></div>
 

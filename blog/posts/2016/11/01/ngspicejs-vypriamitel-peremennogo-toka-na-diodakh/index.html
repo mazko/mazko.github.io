@@ -45,7 +45,15 @@
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE и конкретное применение <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">полупроводниковых диодов</a> в частности.</p>
-<p>Выпрямитель электрического тока - преобразователь электрической энергии предназначенный для преобразования входного электрического тока переменного направления в ток постоянного направления. Выпрямители используются в большинстве современных электроприборах - от зарядки для мобильного телефона до телевизоров и ноутбуков. В следующих схемах для симуляции использовалась SPICE модель диода <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/1n4007.txt">1n4007</a>.</p>
+<p>Выпрямитель электрического тока - преобразователь электрической энергии предназначенный для преобразования входного электрического тока переменного направления в ток постоянного направления. Выпрямители используются в большинстве современных электроприборах - от зарядки для мобильного телефона до телевизоров и ноутбуков. В следующих схемах для симуляции использовалась SPICE модель диода 1n4007.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/1n4007.txt"></a>
+-->
+
+<div class="highlight"><pre><span></span>~$ wget -nc http://www.vishay.com/docs/88000/1n4007.txt
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.sch">схема однополупериодного выпрямителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fd2a88aab52c56f971179c9a1bd9a502">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-half-wave.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>У однополупериодных выпрямителей используется только одна полуволна постоянного тока на выходе при каждом полном цикле переменного тока на входе.</p>

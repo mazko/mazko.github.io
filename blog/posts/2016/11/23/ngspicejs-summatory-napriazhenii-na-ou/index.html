@@ -46,7 +46,15 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Наличие виртуальной земли в <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">инвертирующем</a> усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или как ещё говорят вес. Данная схема включения получила название <em>инвертирующий сумматор</em> и для идеального ОУ напряжение на выходе рассчитывается по простой формуле <code>Vout = -Rf*((Vin1/Rf1)+(Vin2/Rf2)+...)</code> в зависимости от количества суммируемых входов.</p>
-<p>В следующих схемах использовалась SPICE модель операционного усилителя <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/LT1007CS.txt">LT1007</a>.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/LT1007CS.txt"></a>
+-->
+
+<p>В следующих схемах использовалась SPICE модель операционного усилителя LT1007:</p>
+<div class="highlight"><pre><span></span>~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator.sch">схема инвертирующего сумматора + тестовый сумматор без ОУ</a> | <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator.net">netlist</a> | <a href="https://ngspice.js.org/?gist=a4ad89b810370046865df1eb4beca38c">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source inverting-summator.net

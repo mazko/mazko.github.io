@@ -64,7 +64,11 @@
 ОУ влечёт за собой предположение о том, что разность напряжений между входами стремится к нулю в активном режиме усиления</p>
 </li>
 </ul>
-<p>На текущий момент <a href="https://ngspice.js.org/">ngspice.js</a> собран без флага  <code>--enable-xspice</code>, поэтому в следующих схемах использовалась SPICE модель операционного усилителя <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/LT1007CS.txt">LT1007</a>, а не более широко известных и часто используемых LM321 или uA741/К140УД7 т.к. для симуляции они требуют наличия расширения <strong>xspice</strong> - в таких случаях стоит использовать нативный <strong>ngspice</strong>:</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/LT1007CS.txt"></a>
+-->
+
+<p>На текущий момент <a href="https://ngspice.js.org/">ngspice.js</a> собран без флага  <code>--enable-xspice</code>, поэтому в следующих схемах использовалась SPICE модель операционного усилителя LT1007, а не более широко известных и часто используемых LM321 или uA741/К140УД7 т.к. для симуляции они требуют наличия расширения <strong>xspice</strong> - в таких случаях стоит использовать нативный <strong>ngspice</strong>:</p>
 <div class="highlight"><pre><span></span>~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
 </pre></div>
 

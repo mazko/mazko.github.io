@@ -46,7 +46,15 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>При схеме включения <a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярного транзистора</a> с общим эмиттером (ОЭ) усилительный каскад усиливает как ток так и напряжение, т.е. данное включение транзистора позволяет получить наибольшее усиление по мощности. К недостаткам такой схемы стоит отнести нелинейные искажения сигнала (больше, чем в схемах с общей базой или с общим коллектором) и то что на характеристики усилителя значительное влияние оказывают внешние факторы, такие как напряжение питания или температура окружающей среды. Обычно для компенсации этих факторов применяют отрицательную обратную связь, но она снижает коэффициент усиления.</p>
-<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/2N2222.LIB">2N2222</a></p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/2N2222.LIB"></a>
+-->
+
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора 2N2222:</p>
+<div class="highlight"><pre><span></span>~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
+</pre></div>
+
+
 <p><a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/quick.sch">простейший каскад с ОЭ</a> | <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/quick.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5caf9c51187c6b94386582162a08f1dd">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-quick.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source quick.net
