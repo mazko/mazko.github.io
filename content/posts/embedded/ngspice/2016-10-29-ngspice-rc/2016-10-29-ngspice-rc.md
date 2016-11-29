@@ -32,16 +32,16 @@ Transient (tran) - анализ поведения системы во врем�
     ngspice 2 -> ac lin 1000 0.1 250kHz
     ngspice 3 -> plot n0 n1
 
+Частота среза по [формуле](https://bc.js.org/) ```1/(2*3.14*10000*10^-9) = 15923.57 Hz```
+
 ![screenshot]({attach}ac-canvas.png){:style="width:100%; border:1px solid #ddd;"}
-
-По [формуле](https://bc.js.org/) ```1/(2*3.14*10000*10^-9) = 15923.57 Hz```
-
-Для АЧХ [логарифмическая](https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141) шкала как правило выглядит нагляднее:
 
     :::text
     ngspice 1 -> source rcAC.net
     ngspice 2 -> ac lin 1000 0.1 250kHz
     ngspice 3 -> plot n1 xlog
+
+Для АЧХ [логарифмическая](https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141) шкала как правило выглядит нагляднее:
 
 ![screenshot]({attach}ac-xlog-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 

@@ -19,14 +19,14 @@ tags: gEDA, ngspice
 
 У однополупериодных выпрямителей используется только одна полуволна постоянного тока на выходе при каждом полном цикле переменного тока на входе.
 
+![screenshot]({attach}half-wave-canvas.png){:style="width:100%; border:1px solid #ddd;"}
+
     :::text
     ngspice 1 -> source half-wave.net
     ngspice 2 -> tran 0.5m 150m
     ngspice 3 -> alter r1 1
     ngspice 4 -> tran 0.5m 150m
     ngspice 5 -> plot tran1.v(n1) tran2.v(n1)
-
-![screenshot]({attach}half-wave-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
 Куда более эффективными являются двухполупериодные выпрямители. 
 
