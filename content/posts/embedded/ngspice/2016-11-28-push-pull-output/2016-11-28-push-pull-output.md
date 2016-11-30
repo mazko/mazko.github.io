@@ -72,4 +72,4 @@ tags: gEDA, ngspice, ОУ
 
 ![screenshot]({attach}op-amp-push-pull-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далi буде.
+[Далее]({filename}../2016-11-30-op-amp-integrator-differentiator/2016-11-30-op-amp-integrator-differentiator.md) интегратор и дифференциатор на ОУ.
