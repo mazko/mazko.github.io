@@ -1,5 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2016-11-28T00:00:00+02:00</updated><entry><title>NGSPICE.js - двухтактные усилители мощности</title><link href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/" rel="alternate"></link><published>2016-11-28T00:00:00+02:00</published><updated>2016-11-28T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-28:blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2016-11-30T00:00:00+02:00</updated><entry><title>NGSPICE.js - аналоговые интегратор и дифференциатор</title><link href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/" rel="alternate"></link><published>2016-11-30T00:00:00+02:00</published><updated>2016-11-30T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-30:blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;Интегратор - устройство, уровень выходного сигнала которого пропорционален &lt;em&gt;интегралу&lt;/em&gt; (суммы для бесконечного числа бесконечно малых слагаемых), обычно по времени, от входного сигнала. В свою очередь дифференциатор выполняет обратную функцию - уровень выходного сигнала пропорционален &lt;em&gt;скорости изменения&lt;/em&gt; сигнала на входе. Аналоговые интегратор и дифференциатор в простейшем случае могут быть реализованы на RC &lt;a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/"&gt;цепочке&lt;/a&gt;, т.е. при последовательном включении конденсатора и резистора, но обо всём по порядку. Кстати почему в &lt;a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/"&gt;предыдущем&lt;/a&gt; примере RC цепочки фазы входного и выходного сигнала сдвинуты на 90° ? Чему равен интеграл от sin(x) по x ? Чему равна производная от sin(x) ? &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;    set term png truecolor size 1280,720&lt;/span&gt;
+&lt;span class="s1"&gt;    set xrange [0:2*pi]&lt;/span&gt;
+&lt;span class="s1"&gt;    set xtics (0, &amp;quot;π/2&amp;quot; pi/2, &amp;quot;π&amp;quot; pi, &amp;quot;π3/2&amp;quot; 3*pi/2, &amp;quot;2π&amp;quot; 2*pi)&lt;/span&gt;
+&lt;span class="s1"&gt;    set grid ytics xtics&lt;/span&gt;
+&lt;span class="s1"&gt;    plot sin(x), -cos(x)&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; gnuplot &amp;gt; rc.sin.cos.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Рисовать графики удобно с помощью GnuPlot. Важнейшая особенность синусоидальных сигналов в том, что при дифференцировании/интегрировании форма сигнала не меняется - может измениться только фаза:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/rc.sin.cos.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Вспомним немного математики. Как известно из теории электрических цепей в случае &lt;em&gt;последовательного&lt;/em&gt; соединения &lt;em&gt;резистора&lt;/em&gt; и &lt;em&gt;конденсатора&lt;/em&gt; зависимость выходного напряжения от входного описывается дифференциальным уравнением:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/main-formula.svg" style="width:75%; margin: 0 auto; display:block;" /&gt;&lt;/p&gt;
+&lt;p&gt;Где &lt;code&gt;Uout&lt;/code&gt; - напряжение на резисторе в Вольтах, &lt;code&gt;С&lt;/code&gt; - ёмкость конденсатора в Фарадах, &lt;code&gt;R&lt;/code&gt; - сопротивление резистора в Омах, &lt;code&gt;dUin/dt&lt;/code&gt; и &lt;code&gt;dUout/dt&lt;/code&gt; - производные входного и выходного напряжений по времени. Какой физический смысл у данного уравнения ?&lt;/p&gt;
+&lt;p&gt;Самый простой случай - на входе постоянное напряжение, тогда производная &lt;code&gt;dUin/dt&lt;/code&gt; равна нулю и формула приводится к виду &lt;code&gt;dUout/Uout = -dt/RC&lt;/code&gt;. Проинтегрировав левую и правую часть имеем &lt;code&gt;∫dUout/Uout = ∫-dt/RC&lt;/code&gt;, где &lt;code&gt;∫dUout/Uout = ln|Uout| + const&lt;/code&gt; это табличный интеграл и его умные люди уже давно рассчитали, а &lt;code&gt;∫-dt/RC = (-t/RC) + const&lt;/code&gt;. Окончательно получаем &lt;code&gt;Uout = exp(-t/RC) * const&lt;/code&gt;. Порисуем:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;    set term png truecolor size 1280,720&lt;/span&gt;
+&lt;span class="s1"&gt;    R=42e3&lt;/span&gt;
+&lt;span class="s1"&gt;    C=1e-6&lt;/span&gt;
+&lt;span class="s1"&gt;    V=12&lt;/span&gt;
+&lt;span class="s1"&gt;    τ=R*C&lt;/span&gt;
+&lt;span class="s1"&gt;    set xrange [0:6*τ]&lt;/span&gt;
+&lt;span class="s1"&gt;    set xtics (&amp;quot;τ(f)&amp;quot; τ, &amp;quot;2τ&amp;quot; 2*τ, &amp;quot;3τ(%g)&amp;quot; 3*τ, &amp;quot;4τ&amp;quot; 4*τ, &amp;quot;5τ&amp;quot; 5*τ, &amp;quot;6τ&amp;quot; 6*τ)&lt;/span&gt;
+&lt;span class="s1"&gt;    set xlabel &amp;quot;Time(second)&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;    set ylabel &amp;quot;Voltage(Volt)&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;    set grid ytics xtics&lt;/span&gt;
+&lt;span class="s1"&gt;    set key center&lt;/span&gt;
+&lt;span class="s1"&gt;    plot V*(1-exp(-x/τ)), V*exp(-x/τ)&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; gnuplot &amp;gt; rc.tau.png
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Если измерять время величинами RC, то график будет всегда одинаков для любой RC цепи. Поэтому величину &lt;code&gt;τ = R*C&lt;/code&gt; принято называть &lt;em&gt;постоянной времени&lt;/em&gt;. Теоретически напряжение на конденсаторе никогда не достигнет напряжения питания, но на практике считается что времени 5τ и более уже достаточно: &lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/rc.tau.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;В противоположность к предыдущему случаю предположим, что входное напряжение изменилось с 0 до U за время много меньшее постоянной времени &lt;code&gt;dt &amp;lt;&amp;lt; τ&lt;/code&gt;. Тогда &lt;code&gt;Uout = τ*dUin/dt - τ*(Uout-0)/dt&lt;/code&gt; или &lt;code&gt;Uout = τ*dUin/dt - τ*Uout/dt&lt;/code&gt;, а учитывая &lt;code&gt;Uout &amp;lt;&amp;lt; τ*Uout/dt&lt;/code&gt; можно приблизительно приравнять &lt;code&gt;dUin/dt ≈ dUin/dt&lt;/code&gt;, т.е. всё напряжение на входе RC цепочки оседает на резисторе т.к. напряжение на конденсаторе не может измениться мгновенно.&lt;/p&gt;
+&lt;p&gt;А если входное напряжение изменилось с 0 до U за время много большее постоянной времени &lt;code&gt;dt &amp;gt;&amp;gt; τ&lt;/code&gt; ? Тогда &lt;code&gt;Uout &amp;gt;&amp;gt; τ*Uout/dt&lt;/code&gt; и можно приблизительно приравнять &lt;code&gt;Uout ≈ τ*dUin/dt&lt;/code&gt;, т.е. математически такая RC цепочка выполняет &lt;strong&gt;операцию дифференцирования&lt;/strong&gt; - напряжение на резисторе является &lt;em&gt;производной&lt;/em&gt; от функции входного напряжения по времени с коэффициентом τ:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/differentiator.svg" style="width:42%; margin: 0 auto; display:block;" /&gt;&lt;/p&gt;
+&lt;p&gt;Если теперь выходное напряжение снимать не с резистора, а с емкости, т.е. Uout = Uc, то дифференциальное уравнение примет вид &lt;code&gt;Uout + τ*dUout/dt = Uin&lt;/code&gt;. В случае &lt;code&gt;dt &amp;gt;&amp;gt; τ&lt;/code&gt; напряжение на конденсаторе повторяет напряжение на входе - по истечении большого промежутка времени &lt;code&gt;Uout ≈ Uin&lt;/code&gt;. В случае &lt;code&gt;dt &amp;lt;&amp;lt; τ&lt;/code&gt; имеем  &lt;code&gt;Uin ≈ τ*dUout/dt&lt;/code&gt;, такая RC цепочка выполняет &lt;strong&gt;операцию интегрирования&lt;/strong&gt; от функции входного напряжения c коэффициентом 1/τ:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/integrator.svg" style="width:55%; margin: 0 auto; display:block;" /&gt;&lt;/p&gt;
+&lt;p&gt;С учётом вышесказанного реальный аналоговый интегратор/дифференциатор должен побороть следующие недостатки простой RC цепочки:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;компенсировать ослабление сигнала, которое происходит при прохождении через RC цепь&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;дифференциальные уравнения не учитывают &lt;a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/"&gt;внутреннего&lt;/a&gt; сопротивления источника напряжения ровно как и влияния сопротивления нагрузки &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- 
+&lt;a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/LT1007CS.txt"&gt;&lt;/a&gt;
+--&gt;
+
+&lt;p&gt;С этими обязанностями прекрасно справляется операционный усилитель. В следующих схемах использовалась SPICE модель операционного усилителя LT1007:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/integrator.sch"&gt;инвертирующий интегратор на ОУ&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/integrator.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=fc93f44bdc51d7769320c239e98b86f7"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/show-img-integrator.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source integrator.net
+ngspice 2 -&amp;gt; tran 10u 100m 94m
+ngspice 3 -&amp;gt; plot v(out) v(in)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Конденсатор Сf, кроме заряда входным током заряжается различными токами утечки и смещения ОУ и для борьбы с этим явлением ставится шунтирующий резистор Rf, где &lt;code&gt;Rf &amp;gt;&amp;gt; Rg&lt;/code&gt;. Рассчитаем поведение интегратора исходя из входного сигнала прямоугольной формы амплитудой 3В и частотой 500Гц при Сf = 0.1мкФ и Rg = 5кОм. Проинтегрировав &lt;code&gt;Uout = -1/RC∫(Uin)dt = -Ut/RC&lt;/code&gt; или если человеческим языком, то изменение выходного напряжения во времени представляет собой наклонную прямую с полярностью, противоположной полярности входного сигнала. Интегрированием в пределах от 0 до &lt;code&gt;1/(2*500Гц)=1мс&lt;/code&gt; &lt;a href="https://bc.js.org/"&gt;получим&lt;/a&gt; значение &lt;code&gt;Uout = -3*10^-3/(10^-7*5*10^3) = -6 Вольт&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/integrator-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Если на предыдущей схеме всего-навсего поменять резистор и конденсатор местами получим дифференциатор. Для предотвращения самовозбуждения дифференциатора на высоких частотах дополнительно вводятся резистор Rg и конденсатор Cf обычно при соотношении &lt;code&gt;Rg*Cg = Rf*Cf&lt;/code&gt;: &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/differentiator.sch"&gt;инвертирующий дифференциатор на ОУ&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/differentiator.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=e7cdf966f76ff7eef4d726f3af2cae31"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/show-img-differentiator.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source differentiator.net
+ngspice 2 -&amp;gt; tran 0.25m 0.25
+ngspice 3 -&amp;gt; plot v(out) v(in)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;К недостаткам дифференциаторов прежде всего относится очень большая чувствительность к шумам у входного сигнала.  При резком изменении входного сигнала производная очень большая и ОУ входит в режим насыщения. Получаем такой вот кактус (шутка):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/differentiator-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
+&lt;p&gt;Классическим примером практического применения интегратора и дифференциатора является пропорционально-интегрально-дифференцирующий (ПИД) регулятор.&lt;/p&gt;
+&lt;p&gt;Далi буде.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category><category term="GnuPlot"></category></entry><entry><title>NGSPICE.js - двухтактные усилители мощности</title><link href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/" rel="alternate"></link><published>2016-11-28T00:00:00+02:00</published><updated>2016-11-28T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-28:blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
 &lt;p&gt;Из школьного курса по физике хорошо известна формула мощности &lt;code&gt;P = U*I = U*U/R = I*I*R&lt;/code&gt;, где последние две формулы элементарно выводятся из закона Ома, а R - не что иное, как сопротивление нагрузки. Таким образом, если взять усилитель по схеме с &lt;a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt; и пересчитать на меньшее выходное сопротивление, то мощность на выходе увеличится ? В теории да, однако на практике мы столкнёмся со следующими проблемами:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -9,21 +91,21 @@
 &lt;p&gt;в режиме покоя (при отсутствии входного сигнала) в схеме с &lt;a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt; через нагрузку R протекает ток &lt;code&gt;U/(2*R)&lt;/code&gt;, поэтому чем меньше R тем больше бесполезная трата электроэнергии&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Побороть эти недостатки призвана интересная схема, именуемая &lt;em&gt;двухтактным усилителем&lt;/em&gt;. Рассмотрим более детально одну из её реализаций на комплементарной паре &lt;a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;биполярных&lt;/a&gt; транзисторов - тоесть транзисторов противоположной структуры (p-n-p и n-p-n), но с максимально близкими параметрами.&lt;/p&gt;
+&lt;p&gt;Побороть эти недостатки призвана интересная схема, именуемая &lt;em&gt;двухтактным усилителем&lt;/em&gt;. Рассмотрим более детально одну из её реализаций на комплементарной паре &lt;a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;биполярных&lt;/a&gt; транзисторов - то есть транзисторов противоположной структуры (p-n-p и n-p-n), но с максимально близкими параметрами.&lt;/p&gt;
 &lt;!-- 
 &lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/LT1007CS.txt"&gt;&lt;/a&gt;
 &lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/2N5686.LIB"&gt;&lt;/a&gt;
 &lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/2N5684.LIB"&gt;&lt;/a&gt;
 --&gt;
 
-&lt;p&gt;В следующих схемах использовались SPICE модели операционного усилителя LT1007 и комплиментарной пары мощных транзисторов 2N5684 | 2N5686&lt;/p&gt;
+&lt;p&gt;В следующих схемах использовались SPICE модели операционного усилителя LT1007 и комплементарной пары мощных транзисторов 2N5684 | 2N5686&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
 ~$ wget http://www.onsemi.com/pub/Collateral/2N5686.LIB
 ~$ wget http://www.onsemi.com/pub/Collateral/2N5684.LIB
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.sch"&gt;двухтактных усилитель на комплиментарной паре&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.sch"&gt;двухтактных усилитель на комплементарной паре&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-push-pull.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source push-pull.net
 ngspice 2 -&amp;gt; tran 5u 2m
@@ -47,7 +129,7 @@ ngspice 7 -&amp;gt; print i(v1)
 
 &lt;p&gt;Коэффициент нелинейных искажений (КНН) - в терминах ngspice Total Harmonic Distortion (THD) &lt;a href="https://ngspice.js.org/?gist=267e04b8fa5e4a66ea82ccae2caf9c83"&gt;снизился&lt;/a&gt; до 0.0625869 %, в свою очередь по сравнению со схемой с &lt;a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt; КПД значительно повысился так как ток покоя данной схемы &lt;code&gt;print i(v1)&lt;/code&gt; ≈ 95 мА, что на порядок меньше чем &lt;code&gt;U/(2*R) = 30/16 ≈ 2 А&lt;/code&gt;. Но можно лучше !&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull-canvas-bias.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
-&lt;p&gt;При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с &lt;a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/"&gt;ОК&lt;/a&gt; для звуковых частот его ёмкость должна бить пару тысяч микрофарад - такой себе боченок внушительных размеров.&lt;/p&gt;
+&lt;p&gt;При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с &lt;a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/"&gt;ОК&lt;/a&gt; для звуковых частот его ёмкость должна быть пару тысяч микрофарад - такой себе бочонок внушительных размеров.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull.sch"&gt;двухтактных усилитель на ОУ с однополярным питанием&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=2d0f909cb8624234a0126fa2f3b094dd"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-op-amp-push-pull.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source op-amp-push-pull.net
@@ -61,7 +143,7 @@ ngspice 6 -&amp;gt; print i(v1)
 
 &lt;p&gt;Почему нет искажений в этой схеме ? Это магическое воздействие обратной связи - большой запас усиления вытягивает напряжение до необходимого уровня, заданного ООС, и тем самым убирает искажения. По замерам THD: 0.0387129 % тогда как ток, потребляемый при отсутствии входного сигнала, всего лишь 2.8 мА ! Очень красивое и практичное решение для портативных устройств, которые работают от батареек.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
-&lt;p&gt;Далi буде.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - компаратор и триггер Шмитта на ОУ</title><link href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="alternate"></link><published>2016-11-24T00:00:00+02:00</published><updated>2016-11-24T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-24:blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/"&gt;Далее&lt;/a&gt; интегратор и дифференциатор на ОУ.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category><category term="ОУ"></category></entry><entry><title>NGSPICE.js - компаратор и триггер Шмитта на ОУ</title><link href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="alternate"></link><published>2016-11-24T00:00:00+02:00</published><updated>2016-11-24T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-24:blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE вообще и &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; в частности.&lt;/p&gt;
 &lt;p&gt;Компаратор сравнивает два &lt;em&gt;аналоговых&lt;/em&gt; сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на &lt;a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/"&gt;ОУ&lt;/a&gt; мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал с датчика. Так как в схеме отсутствует обратная связь, то идеальный ОУ может быть только в режиме насыщения и соответственно либо с минимальным либо максимальным уровнем напряжения питания на выходе. В зависимости от того на какой из дифференциальных входов подаётся опорное напряжение компаратор может быть соответственно инвертирующим и неинвертирующим.&lt;/p&gt;
 &lt;!-- 
 &lt;a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/LT1007CS.txt"&gt;&lt;/a&gt;
@@ -380,7 +462,8 @@ ngspice 4 -&amp;gt; plot v(out) v(x_out)
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Контрольная &lt;a href="https://ngspice.js.org/?gist=764af0bb80c15e3de059ec33b65471fe"&gt;проверка&lt;/a&gt; - рабочая точка выбрана верно, видимые искажения на выходе отсутствуют. &lt;a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/"&gt;Далее&lt;/a&gt; генераторы колебаний на транзисторах.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - усилительный каскад с общей базой</title><link href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/" rel="alternate"></link><published>2016-11-10T00:00:00+02:00</published><updated>2016-11-10T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-10:blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Контрольная &lt;a href="https://ngspice.js.org/?gist=764af0bb80c15e3de059ec33b65471fe"&gt;проверка&lt;/a&gt; - даже визуально видно что нижняя полуволна немного уже верхней, т.е. сигнал немного но искажен. Зачастую для высокочастотного тракта это не столь критично, поскольку важна не столько форма сигнала сколько его производная - например по амплитуде (амплитудная модуляция) или частоте (частотная модуляция). При расчёте рабочей точки мы исходили из равных напряжений на Q2 и Q1, стоит попробовать отдать Q2 больше напряжения и снова проверить на наличие искажений. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/"&gt;Далее&lt;/a&gt; генераторы колебаний на транзисторах.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - усилительный каскад с общей базой</title><link href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/" rel="alternate"></link><published>2016-11-10T00:00:00+02:00</published><updated>2016-11-10T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-11-10:blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;При схеме включения &lt;a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;биполярного транзистора&lt;/a&gt; с общей базой (ОБ) каскад усиливает только напряжение тогда как коэффициент передачи по току близок к единице (по факту немного меньше). Входной сигнал подаётся на эмиттер, а выходной снимается с коллектора. Основные отличия от каскада с &lt;a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/"&gt;ОЭ&lt;/a&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -726,6 +809,7 @@ ngspice 9 -&amp;gt; plot (-dc1.i(v1)) (-dc2.i(v1)) (-dc3.i(v1))
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.sch"&gt;схема однополупериодного выпрямителя&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=fd2a88aab52c56f971179c9a1bd9a502"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-half-wave.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;У однополупериодных выпрямителей используется только одна полуволна постоянного тока на выходе при каждом полном цикле переменного тока на входе.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source half-wave.net
 ngspice 2 -&amp;gt; tran 0.5m 150m
 ngspice 3 -&amp;gt; alter r1 1
@@ -734,7 +818,6 @@ ngspice 5 -&amp;gt; plot tran1.v(n1) tran2.v(n1)
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;Куда более эффективными являются двухполупериодные выпрямители. &lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.sch"&gt;схема диодный мост&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=2cf3ee433d7f6ab178d903d7f1c8ecef"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-bridge.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
@@ -788,6 +871,7 @@ ngspice 8 -&amp;gt; plot dc1.v(n1) dc2.v(n1) dc3.v(n1)
 &lt;p&gt;В учебниках по электронике дают обычно &lt;a href="https://ngspice.js.org/?gist=38b99db6363f932c6487c70c84502eb0"&gt;перевёрнутый&lt;/a&gt; график ВАХ &lt;code&gt;ngspice 8 -&amp;gt; plot "i-sweep" vs dc1.v(n1) "i-sweep" vs dc2.v(n1) "i-sweep" vs dc3.v(n1)&lt;/code&gt;:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-forward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;При &lt;a href="https://ngspice.js.org/?gist=31de19f98b10bfad7842b38ad3d99ce9"&gt;обратном напряжении&lt;/a&gt; через диод протекают незначительные токи утечки и таким образом его активное сопротивление очень большое. Однако при высоком напряжении, которое может варьироваться в широких пределах в зависимости от конкретной модели диода, наступает пробой и ток через резко возрастает:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-backward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source diode-forward.net
 ngspice 2 -&amp;gt; set temp=0
 ngspice 3 -&amp;gt; dc i1 -10m 0 10u
@@ -799,7 +883,6 @@ ngspice 8 -&amp;gt; plot &amp;quot;i-sweep&amp;quot; vs dc1.v(n1) &amp;quot;i-sw
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/diode-backward-90-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;Слишком большой ток вызовет необратимые изменения в кристалле диода, а вот для небольших токов явление пробоя оказывается весьма полезным. Существует целое подсемейство полупроводниковых диодов, называемых стабилитронами или диодами Зенера, для которых обратный режим работы является основным. В режиме пробоя напряжение на стабилитроне поддерживается с заданной точностью в широком диапазоне обратных токов.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/"&gt;Далее&lt;/a&gt; выпрямитель переменного тока на диодах. &lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>NGSPICE.js - колебательный контур</title><link href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/" rel="alternate"></link><published>2016-10-30T00:00:00+03:00</published><updated>2016-10-30T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-10-30:blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Колебательный контур (КК) - электрическая цепь, содержащая катушку индуктивности, конденсатор и источник электрической энергии. Если частота источника энергии совпадает с собственной частотой контура происходит замечательное явление, которое в физике называют резонансом. Резонансная частота контура определяется так называемой формулой Томсона: &lt;code&gt;f = 1/(2π√LC)&lt;/code&gt;. При последовательном соединении элементов цепи происходит резонанс напряжений, при параллельном - резонанс токов.&lt;/p&gt;
@@ -850,18 +933,18 @@ ngspice 3 -&amp;gt; plot n0 n1
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Частота среза по &lt;a href="https://bc.js.org/"&gt;формуле&lt;/a&gt; &lt;code&gt;1/(2*3.14*10000*10^-9) = 15923.57 Hz&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
-&lt;p&gt;По &lt;a href="https://bc.js.org/"&gt;формуле&lt;/a&gt; &lt;code&gt;1/(2*3.14*10000*10^-9) = 15923.57 Hz&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Для АЧХ &lt;a href="https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141"&gt;логарифмическая&lt;/a&gt; шкала как правило выглядит нагляднее:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source rcAC.net
 ngspice 2 -&amp;gt; ac lin 1000 0.1 250kHz
 ngspice 3 -&amp;gt; plot n1 xlog
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Для АЧХ &lt;a href="https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141"&gt;логарифмическая&lt;/a&gt; шкала как правило выглядит нагляднее:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-xlog-canvas.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/"&gt;Далее&lt;/a&gt; явление резонанса.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>Введение в симуляцию электрических схем с помощью NGSPICE.js</title><link href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/" rel="alternate"></link><published>2016-10-28T00:00:00+03:00</published><updated>2016-10-28T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-10-28:blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/</id><summary type="html">&lt;p&gt;SPICE (&lt;strong&gt;S&lt;/strong&gt;imulation &lt;strong&gt;P&lt;/strong&gt;rogram with &lt;strong&gt;I&lt;/strong&gt;ntegrated &lt;strong&gt;C&lt;/strong&gt;ircuit &lt;strong&gt;E&lt;/strong&gt;mphasis) - алгоритм моделирования процессов, протекающих в электрических схемах, разработанный в конце 70-х годов в университете Беркли (Калифорния). NGSPICE является расширением оригинального Spice3f5 с открытым кодом.&lt;/p&gt;
-&lt;p&gt;Наиболее часто используются 4 вида анализа электронных схем:&lt;/p&gt;
+&lt;p&gt;Наиболее часто используются 5 видов анализа электронных схем:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;OP: Замер значений напряжения/тока при устойчивом состоянии системы. Например замер потребляемой мощности системы при отсутствии входного сигнала&lt;/p&gt;
@@ -875,22 +958,27 @@ ngspice 3 -&amp;gt; plot n1 xlog
 &lt;li&gt;
 &lt;p&gt;Transient: Анализ поведения системы во времени. Например подбор параметров схемы генератора электрических колебаний&lt;/p&gt;
 &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fourier: Разложение функции в ряд Фурье. Позволяет качественно оценить нелинейные искажения сигнала&lt;/p&gt;
+&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Начнём с проверки законов Кирхгофа с помощью простого OP анализа &lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch"&gt;схемы&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net"&gt;netlist&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Начнём с проверки законов Кирхгофа с помощью простого OP анализа.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/ui.gif" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;p&gt;На вход ngspice приходит схема в формате &lt;a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9" rel="nofollow"&gt;netlist&lt;/a&gt;. В данном материале для редактирования электрических схем используется &lt;a href="http://wiki.geda-project.org/geda:ngspice_and_gschem" rel="nofollow"&gt;gschem&lt;/a&gt; + gnetlist.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ gnetlist -g spice-sdb -o kirghof.net kirghof.sch
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch"&gt;схема&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=f416efb827fa91fd7badacc588c55bd8"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/show-img-kirghof.png" style="width:100%; border:1px solid #ddd;" /&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source kirghof.net
 ngspice 2 -&amp;gt; op
 ngspice 3 -&amp;gt; show v1 v2 v3
+ngspice 4 -&amp;gt; print i(v1) i(v2) i(v3)
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;a href="https://ngspice.js.org/?gist=fd96edf84ae94038dda6f2d22da4fee3"&gt;Результат&lt;/a&gt;: v1(-2.54545) | v2(-1.18182) | v3(-3.72727).&lt;/p&gt;
+&lt;p&gt;Результат: i(v1) = -2.54545 | i(v2) = -1.18182 | i(v3) = -3.72727&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Первый закон Кирхгофа&lt;/strong&gt;: &lt;em&gt;алгебраическая сумма токов, сходящихся в любом узле, равна нулю&lt;/em&gt; ( &lt;code&gt;-2.54545 -1.18182 = -3.72727&lt;/code&gt; )&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Второй закон Кирхгофа&lt;/strong&gt;: &lt;em&gt;алгебраическая сумма падений напряжений на отдельных участках замкнутого контура, произвольно выделенного в сложной разветвленной цепи, равна алгебраической сумме ЭДС в этом контуре&lt;/em&gt; ( &lt;code&gt;2.54545*10 - 1.18182*30 = 40-50&lt;/code&gt; )&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/"&gt;Далее&lt;/a&gt; RC - цепочка.&lt;/p&gt;</summary><category term="gEDA"></category><category term="ngspice"></category></entry><entry><title>ElasticSearch - одностраничное приложение на ReactJS</title><link href="http://proiot.ru/blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/" rel="alternate"></link><published>2016-08-22T00:00:00+03:00</published><updated>2016-08-22T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-08-22:blog/posts/2016/08/22/elasticsearch-odnostranichnoe-prilozhenie-na-reactjs/</id><summary type="html">&lt;p&gt;Продолжая тему &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; и &lt;a href="https://ru.wikipedia.org/wiki/%D0%9E%D0%B4%D0%BD%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%87%D0%BD%D0%BE%D0%B5_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5" rel="nofollow"&gt;одностраничных&lt;/a&gt; приложений (SPA) напишем полнотекстовый поиск фильмов с подсказками, подсветкой и агрегацией результатов по актёрам/режиссёрам/жанрам и датам на &lt;a href="https://facebook.github.io/react/" rel="nofollow"&gt;ReactJS&lt;/a&gt; - идентичный тому, что уже был реализован ранее на &lt;a href="http://proiot.ru/blog/posts/2016/07/06/elasticsearch-odnostranichnoe-prilozhenie-na-angular2/"&gt;Angular2&lt;/a&gt;. Для работы демо из браузера нужно на сервере &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/"&gt;ElasticSearch&lt;/a&gt; настроить &lt;code&gt;http.cors&lt;/code&gt; например &lt;code&gt;allow-origin: /https?:\/\/proiot\.ru/&lt;/code&gt;, либо просто звёздочка  &lt;code&gt;*&lt;/code&gt; - разрешить отовсюду.&lt;/p&gt;

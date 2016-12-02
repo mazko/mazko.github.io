@@ -57,6 +57,7 @@
 <p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.sch">схема однополупериодного выпрямителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fd2a88aab52c56f971179c9a1bd9a502">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-half-wave.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>У однополупериодных выпрямителей используется только одна полуволна постоянного тока на выходе при каждом полном цикле переменного тока на входе.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source half-wave.net
 ngspice 2 -&gt; tran 0.5m 150m
 ngspice 3 -&gt; alter r1 1
@@ -65,7 +66,6 @@ ngspice 5 -&gt; plot tran1.v(n1) tran2.v(n1)
 </pre></div>
 
 
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Куда более эффективными являются двухполупериодные выпрямители. </p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.sch">схема диодный мост</a> | <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2cf3ee433d7f6ab178d903d7f1c8ecef">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-bridge.png" style="width:100%; border:1px solid #ddd;" /></p>

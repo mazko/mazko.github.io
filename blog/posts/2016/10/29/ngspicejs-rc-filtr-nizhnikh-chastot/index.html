@@ -66,15 +66,15 @@ ngspice 3 -&gt; plot n0 n1
 </pre></div>
 
 
+<p>Частота среза по <a href="https://bc.js.org/">формуле</a> <code>1/(2*3.14*10000*10^-9) = 15923.57 Hz</code></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>По <a href="https://bc.js.org/">формуле</a> <code>1/(2*3.14*10000*10^-9) = 15923.57 Hz</code></p>
-<p>Для АЧХ <a href="https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141">логарифмическая</a> шкала как правило выглядит нагляднее:</p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source rcAC.net
 ngspice 2 -&gt; ac lin 1000 0.1 250kHz
 ngspice 3 -&gt; plot n1 xlog
 </pre></div>
 
 
+<p>Для АЧХ <a href="https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141">логарифмическая</a> шкала как правило выглядит нагляднее:</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-xlog-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/">Далее</a> явление резонанса.</p>
     </div><!-- /.entry-content -->

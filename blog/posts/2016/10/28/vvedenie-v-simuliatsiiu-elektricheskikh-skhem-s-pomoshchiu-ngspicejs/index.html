@@ -45,7 +45,7 @@
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
 </footer><!-- /.post-info -->      <p>SPICE (<strong>S</strong>imulation <strong>P</strong>rogram with <strong>I</strong>ntegrated <strong>C</strong>ircuit <strong>E</strong>mphasis) - алгоритм моделирования процессов, протекающих в электрических схемах, разработанный в конце 70-х годов в университете Беркли (Калифорния). NGSPICE является расширением оригинального Spice3f5 с открытым кодом.</p>
-<p>Наиболее часто используются 4 вида анализа электронных схем:</p>
+<p>Наиболее часто используются 5 видов анализа электронных схем:</p>
 <ul>
 <li>
 <p>OP: Замер значений напряжения/тока при устойчивом состоянии системы. Например замер потребляемой мощности системы при отсутствии входного сигнала</p>
@@ -59,22 +59,27 @@
 <li>
 <p>Transient: Анализ поведения системы во времени. Например подбор параметров схемы генератора электрических колебаний</p>
 </li>
+<li>
+<p>Fourier: Разложение функции в ряд Фурье. Позволяет качественно оценить нелинейные искажения сигнала</p>
+</li>
 </ul>
-<p>Начнём с проверки законов Кирхгофа с помощью простого OP анализа <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch">схемы</a> | <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net">netlist</a>.</p>
+<p>Начнём с проверки законов Кирхгофа с помощью простого OP анализа.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
 <p>На вход ngspice приходит схема в формате <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9" rel="nofollow">netlist</a>. В данном материале для редактирования электрических схем используется <a href="http://wiki.geda-project.org/geda:ngspice_and_gschem" rel="nofollow">gschem</a> + gnetlist.</p>
 <div class="highlight"><pre><span></span>~$ gnetlist -g spice-sdb -o kirghof.net kirghof.sch
 </pre></div>
 
 
+<p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch">схема</a> | <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net">netlist</a> | <a href="https://ngspice.js.org/?gist=f416efb827fa91fd7badacc588c55bd8">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/show-img-kirghof.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source kirghof.net
 ngspice 2 -&gt; op
 ngspice 3 -&gt; show v1 v2 v3
+ngspice 4 -&gt; print i(v1) i(v2) i(v3)
 </pre></div>
 
 
-<p><a href="https://ngspice.js.org/?gist=fd96edf84ae94038dda6f2d22da4fee3">Результат</a>: v1(-2.54545) | v2(-1.18182) | v3(-3.72727).</p>
+<p>Результат: i(v1) = -2.54545 | i(v2) = -1.18182 | i(v3) = -3.72727</p>
 <p><strong>Первый закон Кирхгофа</strong>: <em>алгебраическая сумма токов, сходящихся в любом узле, равна нулю</em> ( <code>-2.54545 -1.18182 = -3.72727</code> )</p>
 <p><strong>Второй закон Кирхгофа</strong>: <em>алгебраическая сумма падений напряжений на отдельных участках замкнутого контура, произвольно выделенного в сложной разветвленной цепи, равна алгебраической сумме ЭДС в этом контуре</em> ( <code>2.54545*10 - 1.18182*30 = 40-50</code> )</p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">Далее</a> RC - цепочка.</p>

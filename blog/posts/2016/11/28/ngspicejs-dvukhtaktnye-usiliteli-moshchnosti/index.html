@@ -54,21 +54,21 @@
 <p>в режиме покоя (при отсутствии входного сигнала) в схеме с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> через нагрузку R протекает ток <code>U/(2*R)</code>, поэтому чем меньше R тем больше бесполезная трата электроэнергии</p>
 </li>
 </ul>
-<p>Побороть эти недостатки призвана интересная схема, именуемая <em>двухтактным усилителем</em>. Рассмотрим более детально одну из её реализаций на комплементарной паре <a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярных</a> транзисторов - тоесть транзисторов противоположной структуры (p-n-p и n-p-n), но с максимально близкими параметрами.</p>
+<p>Побороть эти недостатки призвана интересная схема, именуемая <em>двухтактным усилителем</em>. Рассмотрим более детально одну из её реализаций на комплементарной паре <a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">биполярных</a> транзисторов - то есть транзисторов противоположной структуры (p-n-p и n-p-n), но с максимально близкими параметрами.</p>
 <!-- 
 <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/LT1007CS.txt"></a>
 <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/2N5686.LIB"></a>
 <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/2N5684.LIB"></a>
 -->
 
-<p>В следующих схемах использовались SPICE модели операционного усилителя LT1007 и комплиментарной пары мощных транзисторов 2N5684 | 2N5686</p>
+<p>В следующих схемах использовались SPICE модели операционного усилителя LT1007 и комплементарной пары мощных транзисторов 2N5684 | 2N5686</p>
 <div class="highlight"><pre><span></span>~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
 ~$ wget http://www.onsemi.com/pub/Collateral/2N5686.LIB
 ~$ wget http://www.onsemi.com/pub/Collateral/2N5684.LIB
 </pre></div>
 
 
-<p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.sch">двухтактных усилитель на комплиментарной паре</a> | <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.net">netlist</a> | <a href="https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d">ngspice.js</a></p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.sch">двухтактных усилитель на комплементарной паре</a> | <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.net">netlist</a> | <a href="https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-push-pull.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source push-pull.net
 ngspice 2 -&gt; tran 5u 2m
@@ -92,7 +92,7 @@ ngspice 7 -&gt; print i(v1)
 
 <p>Коэффициент нелинейных искажений (КНН) - в терминах ngspice Total Harmonic Distortion (THD) <a href="https://ngspice.js.org/?gist=267e04b8fa5e4a66ea82ccae2caf9c83">снизился</a> до 0.0625869 %, в свою очередь по сравнению со схемой с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> КПД значительно повысился так как ток покоя данной схемы <code>print i(v1)</code> ≈ 95 мА, что на порядок меньше чем <code>U/(2*R) = 30/16 ≈ 2 А</code>. Но можно лучше !</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull-canvas-bias.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> для звуковых частот его ёмкость должна бить пару тысяч микрофарад - такой себе боченок внушительных размеров.</p>
+<p>При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> для звуковых частот его ёмкость должна быть пару тысяч микрофарад - такой себе бочонок внушительных размеров.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull.sch">двухтактных усилитель на ОУ с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2d0f909cb8624234a0126fa2f3b094dd">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-op-amp-push-pull.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source op-amp-push-pull.net
@@ -106,7 +106,7 @@ ngspice 6 -&gt; print i(v1)
 
 <p>Почему нет искажений в этой схеме ? Это магическое воздействие обратной связи - большой запас усиления вытягивает напряжение до необходимого уровня, заданного ООС, и тем самым убирает искажения. По замерам THD: 0.0387129 % тогда как ток, потребляемый при отсутствии входного сигнала, всего лишь 2.8 мА ! Очень красивое и практичное решение для портативных устройств, которые работают от батареек.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Далi буде.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">Далее</a> интегратор и дифференциатор на ОУ.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
