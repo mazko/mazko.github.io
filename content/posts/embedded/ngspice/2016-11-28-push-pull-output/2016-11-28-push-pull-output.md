@@ -10,7 +10,7 @@ tags: gEDA, ngspice, ОУ
 
   - в режиме покоя (при отсутствии входного сигнала) в схеме с [ОЭ]({filename}../2016-11-07-bipolar-common-emitter/2016-11-07-bipolar-common-emitter.md) через нагрузку R протекает ток ```U/(2*R)```, поэтому чем меньше R тем больше бесполезная трата электроэнергии
 
-Побороть эти недостатки призвана интересная схема, именуемая *двухтактным усилителем*. Рассмотрим более детально одну из её реализаций на комплементарной паре [биполярных]({filename}../2016-11-02-bipolar-transistor/2016-11-02-bipolar-transistor.md) транзисторов - тоесть транзисторов противоположной структуры (p-n-p и n-p-n), но с максимально близкими параметрами.
+Побороть эти недостатки призвана интересная схема, именуемая *двухтактным усилителем*. Рассмотрим более детально одну из её реализаций на комплементарной паре [биполярных]({filename}../2016-11-02-bipolar-transistor/2016-11-02-bipolar-transistor.md) транзисторов - то есть транзисторов противоположной структуры (p-n-p и n-p-n), но с максимально близкими параметрами.
 
 <!-- 
 <a href="{attach}LT1007CS.txt"></a>
@@ -18,14 +18,14 @@ tags: gEDA, ngspice, ОУ
 <a href="{attach}2N5684.LIB"></a>
 -->
 
-В следующих схемах использовались SPICE модели операционного усилителя LT1007 и комплиментарной пары мощных транзисторов 2N5684 | 2N5686
+В следующих схемах использовались SPICE модели операционного усилителя LT1007 и комплементарной пары мощных транзисторов 2N5684 | 2N5686
 
     :::bash
     ~$ wget http://cds.linear.com/docs/en/software-and-simulation/LT1007CS.txt
     ~$ wget http://www.onsemi.com/pub/Collateral/2N5686.LIB
     ~$ wget http://www.onsemi.com/pub/Collateral/2N5684.LIB
 
-[двухтактных усилитель на комплиментарной паре]({attach}push-pull.sch) | [netlist]({attach}push-pull.net) | [ngspice.js](https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d)
+[двухтактных усилитель на комплементарной паре]({attach}push-pull.sch) | [netlist]({attach}push-pull.net) | [ngspice.js](https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d)
 
 ![screenshot]({attach}show-img-push-pull.png){:style="width:100%; border:1px solid #ddd;"}
 
@@ -54,7 +54,7 @@ tags: gEDA, ngspice, ОУ
 
 ![screenshot]({attach}push-pull-canvas-bias.png){:style="width:100%; border:1px solid #ddd;"}
 
-При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с [ОК]({filename}../2016-11-09-bipolar-common-collector/2016-11-09-bipolar-common-collector.md) для звуковых частот его ёмкость должна бить пару тысяч микрофарад - такой себе боченок внушительных размеров.
+При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с [ОК]({filename}../2016-11-09-bipolar-common-collector/2016-11-09-bipolar-common-collector.md) для звуковых частот его ёмкость должна быть пару тысяч микрофарад - такой себе бочонок внушительных размеров.
 
 [двухтактных усилитель на ОУ с однополярным питанием]({attach}op-amp-push-pull.sch) | [netlist]({attach}op-amp-push-pull.net) | [ngspice.js](https://ngspice.js.org/?gist=2d0f909cb8624234a0126fa2f3b094dd)
 
