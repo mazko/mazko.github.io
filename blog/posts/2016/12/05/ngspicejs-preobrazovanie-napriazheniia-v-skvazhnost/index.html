@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - Oleg Mazko</title>
+        <title>NGSPICE.js - преобразование напряжения в скважность</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -19,16 +19,21 @@
                 <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                     <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
                     <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/" rel="bookmark"
+           title="Permalink to NGSPICE.js - преобразование напряжения в скважность">NGSPICE.js - преобразование напряжения в скважность</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">NGSPICE.js - преобразование напряжения в скважность</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-12-05T00:00:00+02:00">
                 Published: Пн. 05 Декабрь 2016
@@ -39,7 +44,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная величина <code>S = 1/D</code>, где S - скважность, D - коэффициент заполнения от 0 до 100%. Если длина импульса равна половине периода, то такой симметричный сигнал называется меандром. Чем больше коэффициент заполнения, тем большая <em>средняя</em> мощность передаётся от источника к нагрузке и так вплоть до 100% (постоянное напряжение на нагрузке). Поскольку цепь работает по принципу включён/выключен, то отсутствуют потери при передаче энергии и в результате управляя скважностью можно регулировать мощность на нагрузке от 0 до 100% с очень высоким коэффициентом  полезного действия (КПД). Говоря более формальным языком мы имеем дело с широтно-импульсной модуляцией (ШИМ, англ. pulse-width modulation (PWM)) - процессом управления мощностью, подводимой к нагрузке, путём изменения скважности импульсов при постоянной частоте.</p>
 <!-- 
 <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/LT1007CS.txt"></a>
@@ -73,110 +78,26 @@ ngspice 3 -&gt; plot v(out)
 
 <p>Частота треугольных импульсов <a href="https://bc.js.org/">рассчитывается</a> по формуле <code>1/(2*R5*C1) = 1/(2*10^5*10^-8) = 500 Гц</code></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/triangle-generator-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Далi буде.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Далi буде.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - аналоговые интегратор и дифференциатор">NGSPICE.js - аналоговые интегратор и дифференциатор</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-30T00:00:00+02:00">
-                Published: Ср. 30 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Интегратор - устройство, уровень выходного сигнала которого пропорционален <em>интегралу</em> (суммы для бесконечного числа бесконечно малых слагаемых), обычно по времени, от входного сигнала. В свою очередь дифференциатор выполняет обратную функцию - уровень выходного сигнала пропорционален <em>скорости изменения</em> сигнала на входе. Аналоговые интегратор и дифференциатор в ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - двухтактные усилители мощности">NGSPICE.js - двухтактные усилители мощности</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-28T00:00:00+02:00">
-                Published: Пн. 28 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Из школьного курса по физике хорошо известна формула мощности <code>P = U*I = U*U/R = I*I*R</code>, где последние две формулы элементарно выводятся из закона Ома, а R - не что иное, как сопротивление нагрузки. Таким образом, если взять усилитель по схеме ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - компаратор и триггер Шмитта на ОУ">NGSPICE.js - компаратор и триггер Шмитта на ОУ</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-24T00:00:00+02:00">
-                Published: Чт. 24 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - сумматоры напряжений на ОУ">NGSPICE.js - сумматоры напряжений на ОУ</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-23T00:00:00+02:00">
-                Published: Ср. 23 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Наличие виртуальной земли в <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">инвертирующем</a> усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 11
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>
