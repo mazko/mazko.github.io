@@ -47,4 +47,4 @@ tags: gEDA, ngspice, ОУ, ШИМ
 
 ![screenshot]({attach}triangle-generator-canvas.png){:style="width:100%; border:1px solid #ddd;"}
 
-Далi буде.
+[Далее]({filename}../2016-12-06-voltage-regulator/2016-12-06-voltage-regulator.md) стабилизаторы напряжения
