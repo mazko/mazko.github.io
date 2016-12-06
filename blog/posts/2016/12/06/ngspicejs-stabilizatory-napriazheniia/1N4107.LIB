@@ -1,0 +1,34 @@
+******
+* Spice Model
+* Item: 1N4107
+* Date: 4/28/14
+* Revision History: REV A
+*==========================================================
+* This model was developed by: 
+* Central Semiconductor Corp.
+* 145 Adams Avenue
+* Hauppauge, NY 11788
+*
+* These models are subject to change without notice.
+* Users may not directly or indirectly re-sell or 
+* re-distribute this model. This model may not 
+* be modified, or altered without the consent of Central Semiconductor Corp. 
+*
+* For more information on this model contact
+* Central Semiconductor Corp. at:
+* (631) 435-1110 or Engineering@centralsemi.com
+* http://www.centralsemi.com
+*==========================================================
+******
+*SRC=1N4107;1N4107;Diodes;Zener 10V-50V;13.0V  0.250W  Central Semi Central Semi
+*SYM=HZEN
+.SUBCKT 1N4107  1 2
+*        Terminals    A   K
+D1 1 2 DF
+DZ 3 1 DR
+VZ 2 3 12.0
+.MODEL DF D ( IS=7.92p RS=2.09 N=1.10
++ CJO=31.4p VJ=1.00 M=0.330 TT=50.1n )
+.MODEL DR D ( IS=1.58f RS=46.0 N=1.49 )
+.ENDS
+******
