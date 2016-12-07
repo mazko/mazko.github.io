@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>NGSPICE.js - стабилизаторы напряжения</title>
+        <title>NGSPICE.js - линейные стабилизаторы</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -29,8 +29,8 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/" rel="bookmark"
-           title="Permalink to NGSPICE.js - стабилизаторы напряжения">NGSPICE.js - стабилизаторы напряжения</a></h1>
+        <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/" rel="bookmark"
+           title="Permalink to NGSPICE.js - линейные стабилизаторы">NGSPICE.js - линейные стабилизаторы</a></h1>
     </header>
 
     <div class="entry-content">
@@ -47,9 +47,9 @@
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>Стабилизаторы напряжения предназначены для поддержания постоянного значения напряжения на нагрузке независимо от его колебаний на входе и независимо от сопротивления самой нагрузки. Зачем это надо ? Расчёт многих электрических цепей производится с учётом постоянного напряжения питания. Например величина напряжение питания оказывает сильное влияние на рабочую точку усилителя с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>, тогда как в схеме с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> или при использовании <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">операционных усилителей</a> питание может оказаться не столь критично (в разумный пределах). Бывает так что из-за одной цепочки, критичной к напряжению питания, приходится впридачу к ней тащить стабилизатор напряжения.</p>
 <!-- 
-<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/2N5686.LIB"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/2N2222.LIB"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/1N4107.LIB"></a>
+<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/2N5686.LIB"></a>
+<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/2N2222.LIB"></a>
+<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/1N4107.LIB"></a>
 -->
 
 <p>В следующих схемах использовалась SPICE модели биполярных транзисторов 2N2222, 2N5686 и стабилитрона 1N4107:</p>
@@ -59,8 +59,8 @@
 </pre></div>
 
 
-<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/parametric.sch">параметрические стабилизаторы напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/parametric.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ec33abd90319afd299e4ace6588e4431">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/show-img-parametric.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/parametric.sch">параметрические стабилизаторы напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/parametric.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ec33abd90319afd299e4ace6588e4431">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/show-img-parametric.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source parametric.net
 ngspice 2 -&gt; dc r3 0 10k 100
 ngspice 2 -&gt; dc r5 0 10k 100
@@ -69,10 +69,10 @@ ngspice 3 -&gt; plot dc1.v(out_a) dc2.v(out_b)
 
 
 <p>На картинке ниже по большому счёту изображена вольт-амперная характеристика (ВАХ) одного и того же нелинейного компонента - <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">стабилитрона</a>, только во втором случае помноженная на коэффициент передачи составного транзистора <code>β = β1*β2</code>. Составной транзистор включён по схеме с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> и таким образом повторяет напряжение на стабилитроне. Подобные стабилизаторы напряжения принято называть <strong>параметрическими</strong>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/parametric-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/parametric-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Судя по графику параметрический стабилизатор с применением транзисторов вцелом достойно справляется со своей задачей, однако теряется часть напряжения на переходах эмиттер-база порядка <code>2*0.7</code> Вольта. Следующая хитрая схема позволит компенсировать эту разницу: </p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/compensation.sch">компенсационный стабилизатор напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/compensation.net">netlist</a> | <a href="https://ngspice.js.org/?gist=531926881037edfff328aa4fce22868a">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/show-img-compensation.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/compensation.sch">компенсационный стабилизатор напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/compensation.net">netlist</a> | <a href="https://ngspice.js.org/?gist=531926881037edfff328aa4fce22868a">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/show-img-compensation.png" style="width:100%; border:1px solid #ddd;" /></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source compensation.net
 ngspice 2 -&gt; dc r5 0 10k 100
 ngspice 3 -&gt; plot v(out)
@@ -80,7 +80,7 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>У <strong>компенсационных стабилизаторов</strong> практически идеальные показатели стабилизации и поэтому для них  существует специализированная линейка микросхем КР142ЕН5x-КР142ЕН18x, выполненных в одном корпусе, где 5 и 18 напряжения стабилизации (импортный аналог 7805-7818). Также в упомянутых микросхемах предусмотрена защита от короткого замыкания (КЗ) на выходе.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/compensation-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/compensation-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Всё это конечно хорошо, но у данных решений есть два очень серьёзных недостатка:</p>
 <ul>
 <li>
@@ -97,8 +97,8 @@ ngspice 3 -&gt; plot v(out)
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
-        var disqus_identifier = 'blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/';
-        var disqus_url = 'http://proiot.ru/blog/posts/2016/12/06/ngspicejs-stabilizatory-napriazheniia/';
+        var disqus_identifier = 'blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
