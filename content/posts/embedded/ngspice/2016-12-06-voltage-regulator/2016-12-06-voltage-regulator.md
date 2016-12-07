@@ -1,4 +1,4 @@
-title: NGSPICE.js - стабилизаторы напряжения
+title: NGSPICE.js - линейные стабилизаторы
 category: Embedded 
 tags: gEDA, ngspice
 
