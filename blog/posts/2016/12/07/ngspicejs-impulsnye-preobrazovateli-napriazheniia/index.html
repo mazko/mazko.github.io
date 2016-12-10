@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - gEDA</title>
+        <title>NGSPICE.js - импульсные преобразователи напряжения</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -19,16 +19,21 @@
                 <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                     <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
                     <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/" rel="bookmark"
+           title="Permalink to NGSPICE.js - импульсные преобразователи напряжения">NGSPICE.js - импульсные преобразователи напряжения</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/">NGSPICE.js - импульсные преобразователи напряжения</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-12-07T00:00:00+02:00">
                 Published: Ср. 07 Декабрь 2016
@@ -39,7 +44,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>В импульсных преобразователях входное напряжение нарезается порциями - импульсами c заданной <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> и чем меньше скважность тем большая часть энергии попадёт на выход. Если импульсы прямоугольной формы, то силовая часть схемы работает в ключевом режиме т.е. находится либо в режиме отсечки, когда сопротивление максимально, либо в режиме насыщения - с минимальным сопротивлением. Рассеиваемая мощность на ключе <code>P = I*U = 0*I = 0*U = 0</code> и выходит что у идеальных импульсных преобразователей коэффициент полезного действия (КПД) стремится к 100%. Сглаживание пульсаций выходного напряжения происходит благодаря наличию интегрирующих элементов, способных накапливать электрическую энергию и отдавать её в нагрузку. Если сравнивать импульсные преобразователи с <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">линейными</a> то первые как правило имеют большие размеры и больше шумят, но при этом обеспечивают значительно лучший КПД. Что интересно, импульсные преобразователи умеют не только понижать напряжение, но и повышать его !</p>
 <!-- 
 <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/irf530.lib"></a>
@@ -90,110 +95,26 @@ C = \frac{I_{out}*D}{f_{sw}*\Delta V_{out}}
 <p>Получаем минимальную ёмкость <code>2*(1-3.3/10)/(50000*0.25) = 107.2 мкФ</code></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
 <p>Компенсировать потери на транзисторе и диоде можно подтянув коэффициент заполнения D с 0.67 до 0.74.</p>
-<p>К сожалению выходное напряжение как понижающего так и повышающего импульсного преобразователя зависит от входного напряжения и величины сопротивления нагрузки R. Это несложно проверить командой <code>alter r 10k</code> - напряжение в обоих преобразователях поползёт вверх. Для стабилизации вводят обратную связь, в которой ошибка напряжения на выходе управляет <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> импульсов с каким-то заранее рассчитанным коэффициентом пропорциональности и получается П-регулятор. Для уменьшения временной задержки между ошибкой и её устранением добавляют <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегральную</a> и <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">дифференцирующую</a> составляющую и получается ПИД-регулятор. К счастью можно воспользоваться готовыми микросхемами DC/DC преобразователей, которые значительно упрощают жизнь, сводя количество расчётов к миниму. </p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>К сожалению выходное напряжение как понижающего так и повышающего импульсного преобразователя зависит от входного напряжения и величины сопротивления нагрузки R. Это несложно проверить командой <code>alter r 10k</code> - напряжение в обоих преобразователях поползёт вверх. Для стабилизации вводят обратную связь, в которой ошибка напряжения на выходе управляет <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> импульсов с каким-то заранее рассчитанным коэффициентом пропорциональности и получается П-регулятор. Для уменьшения временной задержки между ошибкой и её устранением добавляют <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегральную</a> и <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">дифференцирующую</a> составляющую и получается ПИД-регулятор. К счастью можно воспользоваться готовыми микросхемами DC/DC преобразователей, которые значительно упрощают жизнь, сводя количество расчётов к миниму. </p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - линейные стабилизаторы напряжения">NGSPICE.js - линейные стабилизаторы напряжения</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-06T00:00:00+02:00">
-                Published: Вт. 06 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>Стабилизаторы напряжения предназначены для поддержания постоянного значения напряжения на нагрузке независимо от его колебаний на входе и независимо от сопротивления самой нагрузки. Зачем это надо ? Расчёт многих электрических цепей производится с учётом постоянного напряжения питания. Например величина напряжение питания оказывает сильное влияние на рабочую точку усилителя с ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - преобразование напряжения в скважность">NGSPICE.js - преобразование напряжения в скважность</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-05T00:00:00+02:00">
-                Published: Пн. 05 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - аналоговые интегратор и дифференциатор">NGSPICE.js - аналоговые интегратор и дифференциатор</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-30T00:00:00+02:00">
-                Published: Ср. 30 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Интегратор - устройство, уровень выходного сигнала которого пропорционален <em>интегралу</em> (суммы для бесконечного числа бесконечно малых слагаемых), обычно по времени, от входного сигнала. В свою очередь дифференциатор выполняет обратную функцию - уровень выходного сигнала пропорционален <em>скорости изменения</em> сигнала на входе. Аналоговые интегратор и дифференциатор в ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - двухтактные усилители мощности">NGSPICE.js - двухтактные усилители мощности</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-28T00:00:00+02:00">
-                Published: Пн. 28 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Из школьного курса по физике хорошо известна формула мощности <code>P = U*I = U*U/R = I*I*R</code>, где последние две формулы элементарно выводятся из закона Ома, а R - не что иное, как сопротивление нагрузки. Таким образом, если взять усилитель по схеме ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 5
-        <a href="http://proiot.ru/blog/tag/geda/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>blogroll</h2>

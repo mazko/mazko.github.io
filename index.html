@@ -28,7 +28,82 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/">NGSPICE.js - линейные стабилизаторы</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/">NGSPICE.js - импульсные преобразователи напряжения</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-12-07T00:00:00+02:00">
+                Published: Ср. 07 Декабрь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>В импульсных преобразователях входное напряжение нарезается порциями - импульсами c заданной <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> и чем меньше скважность тем большая часть энергии попадёт на выход. Если импульсы прямоугольной формы, то силовая часть схемы работает в ключевом режиме т.е. находится либо в режиме отсечки, когда сопротивление максимально, либо в режиме насыщения - с минимальным сопротивлением. Рассеиваемая мощность на ключе <code>P = I*U = 0*I = 0*U = 0</code> и выходит что у идеальных импульсных преобразователей коэффициент полезного действия (КПД) стремится к 100%. Сглаживание пульсаций выходного напряжения происходит благодаря наличию интегрирующих элементов, способных накапливать электрическую энергию и отдавать её в нагрузку. Если сравнивать импульсные преобразователи с <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">линейными</a> то первые как правило имеют большие размеры и больше шумят, но при этом обеспечивают значительно лучший КПД. Что интересно, импульсные преобразователи умеют не только понижать напряжение, но и повышать его !</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/irf530.lib"></a>
+<a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/1n5822.txt"></a>
+-->
+
+<p>В следующих схемах использовались SPICE модели мощного <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/">полевого</a> транзистора IRF530 и <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">диода</a> Шоттки (с малым падением напряжения &lt; 0.5 В) 1n5822:</p>
+<div class="highlight"><pre><span></span>~$ wget http://www.vishay.com/docs/90181/irf530.lib
+~$ wget http://www.vishay.com/docs/88003/1n5822.txt
+</pre></div>
+
+
+<p><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck.sch">импульсный понижающий преобразователь</a> | <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck.net">netlist</a> | <a href="https://ngspice.js.org/?gist=3c337ca0b9b0733f8e5cf99197c23836">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/show-img-buck.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source buck.net
+ngspice 2 -&gt; tran 0.3u 1m
+ngspice 3 -&gt; plot v(out)
+</pre></div>
+
+
+<p>Номиналы понижающего преобразователя <a href="http://www.ti.com/lit/an/slva477b/slva477b.pdf" rel="nofollow">расчитаны</a> исходя из требуемого напряжения на выходе 3.3 В, напряжения на входе 10 В, тока нагрузки 2 А, частоты ключа 50кГц, пульсации тока через индуктивность 30% и допустимых пульсаций выходного напряжения 25 мВ.</p>
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-L.svg" style="width:25%; margin: 0 auto; display:block;" /></p>
+<p>Где <code>D = Vout/Vin</code> это коэффициент <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">заполнения</a> и тогда минимальная индуктивность <a href="https://bc.js.org/">равна</a> <code>(3.3*(1-3.3/10))/(50000*2*0.3) = 73.7 мкГн</code>. Конденсатор для сглаживания пульсаций напряжения на выходе рассчитывается по формуле:</p>
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-C.svg" style="width:26.5%; margin: 0 auto; display:block;" /></p>
+<p>Получаем минимальную необходимую ёмкость <code>(2*0.3)/(8*50000*0.025) = 60 мкФ</code></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Поскольку транзистор X1 неидеальный ключ и судя по документации его сопротивление в открытом состоянии составляет 0.16 мОм, то к примеру при токе 1 А на нём будет теряться 0.16 В и это легко проверить командой <code>plot v(cp1,cp3) ylimit 0 1 xlimit 0.5m 0.6m</code>. На диоде также происходят потери и чем слабее диод тем большее на нём прямое напряжение и тем хуже он справляется с функцией ключа. Из-за потерь напряжение на выходе не дотягивает до 3.3 В, но подправить ситуации можно увеличив D с 0.33 до приблизительно 0.37. Что касается скачка напряжения на старте то в цепи находится последовательный <a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/">колебательный</a> контур c периодом колебаний <code>2*3.14*sqrt(74*10^-6*60*10^-6) ≈ 0.42 мс</code>. Чем меньше сопротивление нагрузки R тем меньше амплитуда этих колебаний и тем быстрее они затухают.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost.sch">импульсный повышающий преобразователь</a> | <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost.net">netlist</a> | <a href="https://ngspice.js.org/?gist=8bc2e416c971a2d55fcdda0b6c113eaa">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/show-img-boost.png" style="width:100%; border:1px solid #ddd;" /></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source boost.net
+ngspice 2 -&gt; tran 0.5u 3m
+ngspice 3 -&gt; plot v(out) ylimit 2 10
+</pre></div>
+
+
+<p>Номиналы повышающего преобразователя <a href="http://www.ti.com/lit/an/slva372c/slva372c.pdf" rel="nofollow">расчитаны</a> исходя из требуемого напряжения на выходе 10 В, напряжения на входе 3.3 В, тока нагрузки 2 А, частоты ключа 50кГц, пульсации тока через индуктивность 30% и допустимых пульсаций выходного напряжения 250 мВ.</p>
+<!-- 
+L = \frac{V_{in}*D}{\Delta I_{L}*f_{sw}}
+-->
+
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-L.svg" style="width:19.4%; margin: 0 auto; display:block;" /></p>
+<p>Где <code>D = 1 - (Vin/Vout)</code> это коэффициент <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">заполнения</a> и тогда минимальная индуктивность <a href="https://bc.js.org/">равна</a> <code>(3.3*(1-3.3/10))/(50000*2*0.3) = 73.7 мкГн</code>. Конденсатор для сглаживания пульсаций напряжения на выходе рассчитывается по формуле:</p>
+<!-- 
+C = \frac{I_{out}*D}{f_{sw}*\Delta V_{out}}
+-->
+
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-C.svg" style="width:21.8%; margin: 0 auto; display:block;" /></p>
+<p>Получаем минимальную ёмкость <code>2*(1-3.3/10)/(50000*0.25) = 107.2 мкФ</code></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p>Компенсировать потери на транзисторе и диоде можно подтянув коэффициент заполнения D с 0.67 до 0.74.</p>
+<p>К сожалению выходное напряжение как понижающего так и повышающего импульсного преобразователя зависит от входного напряжения и величины сопротивления нагрузки R. Это несложно проверить командой <code>alter r 10k</code> - напряжение в обоих преобразователях поползёт вверх. Для стабилизации вводят обратную связь, в которой ошибка напряжения на выходе управляет <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> импульсов с каким-то заранее рассчитанным коэффициентом пропорциональности и получается П-регулятор. Для уменьшения временной задержки между ошибкой и её устранением добавляют <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегральную</a> и <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">дифференцирующую</a> составляющую и получается ПИД-регулятор. К счастью можно воспользоваться готовыми микросхемами DC/DC преобразователей, которые значительно упрощают жизнь, сводя количество расчётов к миниму. </p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - линейные стабилизаторы напряжения">NGSPICE.js - линейные стабилизаторы напряжения</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-12-06T00:00:00+02:00">
                 Published: Вт. 06 Декабрь 2016
@@ -39,58 +114,11 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>Стабилизаторы напряжения предназначены для поддержания постоянного значения напряжения на нагрузке независимо от его колебаний на входе и независимо от сопротивления самой нагрузки. Зачем это надо ? Расчёт многих электрических цепей производится с учётом постоянного напряжения питания. Например величина напряжение питания оказывает сильное влияние на рабочую точку усилителя с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>, тогда как в схеме с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> или при использовании <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">операционных усилителей</a> питание может оказаться не столь критично (в разумный пределах). Бывает так что из-за одной цепочки, критичной к напряжению питания, приходится впридачу к ней тащить стабилизатор напряжения.</p>
-<!-- 
-<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/2N5686.LIB"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/2N2222.LIB"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/1N4107.LIB"></a>
--->
-
-<p>В следующих схемах использовалась SPICE модели биполярных транзисторов 2N2222, 2N5686 и стабилитрона 1N4107:</p>
-<div class="highlight"><pre><span></span>~$ wget http://www.onsemi.com/pub/Collateral/2N5686.LIB
-~$ wget http://www.centralsemi.com/docs/csm/2N2222.LIB
-~$ wget http://www.centralsemi.com/docs/csm/1N4107.LIB
-</pre></div>
-
-
-<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/parametric.sch">параметрические стабилизаторы напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/parametric.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ec33abd90319afd299e4ace6588e4431">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/show-img-parametric.png" style="width:100%; border:1px solid #ddd;" /></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source parametric.net
-ngspice 2 -&gt; dc r3 0 10k 100
-ngspice 2 -&gt; dc r5 0 10k 100
-ngspice 3 -&gt; plot dc1.v(out_a) dc2.v(out_b)
-</pre></div>
-
-
-<p>На картинке ниже по большому счёту изображена вольт-амперная характеристика (ВАХ) одного и того же нелинейного компонента - <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">стабилитрона</a>, только во втором случае помноженная на коэффициент передачи составного транзистора <code>β = β1*β2</code>. Составной транзистор включён по схеме с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> и таким образом повторяет напряжение на стабилитроне. Подобные стабилизаторы напряжения принято называть <strong>параметрическими</strong>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/parametric-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Судя по графику параметрический стабилизатор с применением транзисторов вцелом достойно справляется со своей задачей, однако теряется часть напряжения на переходах эмиттер-база порядка <code>2*0.7</code> Вольта. Следующая хитрая схема позволит компенсировать эту разницу: </p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/compensation.sch">компенсационный стабилизатор напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/compensation.net">netlist</a> | <a href="https://ngspice.js.org/?gist=531926881037edfff328aa4fce22868a">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/show-img-compensation.png" style="width:100%; border:1px solid #ddd;" /></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source compensation.net
-ngspice 2 -&gt; dc r5 0 10k 100
-ngspice 3 -&gt; plot v(out)
-</pre></div>
-
-
-<p>У <strong>компенсационных стабилизаторов</strong> практически идеальные показатели стабилизации и поэтому для них  существует специализированная линейка микросхем КР142ЕН5x-КР142ЕН18x, выполненных в одном корпусе, где 5 и 18 напряжения стабилизации (импортный аналог 7805-7818). Также в упомянутых микросхемах предусмотрена защита от короткого замыкания (КЗ) на выходе.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/compensation-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
-<p>Всё это конечно хорошо, но у данных решений есть два очень серьёзных недостатка:</p>
-<ul>
-<li>
-<p>мощность <code>P=I*U</code>, где U обусловлено разницей между входным напряжением и выходным напряжением стабилизации, рассеивается в виде бесполезного тепла - при больших мощностях приходится ставить радиатор охлаждения, а при очень больших можно уже отапливать помещение</p>
-</li>
-<li>
-<p>данные стабилизаторы работают только на понижение напряжения, а в современной схемотехнике понапридумывали целый зоопарк различных микросхем, для которых часто требуется делать повышающее преобразование</p>
-</li>
-</ul>
-<p>Далi буде.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>Стабилизаторы напряжения предназначены для поддержания постоянного значения напряжения на нагрузке независимо от его колебаний на входе и независимо от сопротивления самой нагрузки. Зачем это надо ? Расчёт многих электрических цепей производится с учётом постоянного напряжения питания. Например величина напряжение питания оказывает сильное влияние на рабочую точку усилителя с ...</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -160,32 +188,9 @@ ngspice 3 -&gt; plot v(out)
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - компаратор и триггер Шмитта на ОУ">NGSPICE.js - компаратор и триггер Шмитта на ОУ</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-11-24T00:00:00+02:00">
-                Published: Чт. 24 Ноябрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал ...</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 11
+    Page 1 / 12
         <a href="http://proiot.ru/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->
