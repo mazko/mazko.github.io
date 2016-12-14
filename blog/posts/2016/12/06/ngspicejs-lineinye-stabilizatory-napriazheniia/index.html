@@ -60,7 +60,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/parametric.sch">параметрические стабилизаторы напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/parametric.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ec33abd90319afd299e4ace6588e4431">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/show-img-parametric.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/show-img-parametric.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source parametric.net
 ngspice 2 -&gt; dc r3 0 10k 100
 ngspice 3 -&gt; dc r5 0 10k 100
@@ -69,10 +69,10 @@ ngspice 4 -&gt; plot dc1.v(out_a) dc2.v(out_b)
 
 
 <p>На картинке ниже по большому счёту изображена вольт-амперная характеристика (ВАХ) одного и того же нелинейного компонента - <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">стабилитрона</a>, только во втором случае помноженная на коэффициент передачи составного транзистора <code>β = β1*β2</code>. Составной транзистор включён по схеме с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> и таким образом повторяет напряжение на стабилитроне. Подобные стабилизаторы напряжения принято называть <strong>параметрическими</strong>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/parametric-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/parametric-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Судя по графику параметрический стабилизатор с применением транзисторов вцелом достойно справляется со своей задачей, однако теряется часть напряжения на переходах эмиттер-база порядка <code>2*0.7</code> Вольта. Следующая хитрая схема позволит компенсировать эту разницу: </p>
 <p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/compensation.sch">компенсационный стабилизатор напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/compensation.net">netlist</a> | <a href="https://ngspice.js.org/?gist=531926881037edfff328aa4fce22868a">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/show-img-compensation.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/show-img-compensation.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source compensation.net
 ngspice 2 -&gt; dc r5 0 10k 100
 ngspice 3 -&gt; plot v(out)
@@ -80,7 +80,7 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>У <strong>компенсационных стабилизаторов</strong> практически идеальные показатели стабилизации и поэтому для них  существует специализированная линейка микросхем КР142ЕН5x-КР142ЕН18x, выполненных в одном корпусе, где 5 и 18 напряжения стабилизации (импортный аналог 7805-7818). Также в упомянутых микросхемах предусмотрена защита от короткого замыкания (КЗ) на выходе.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/compensation-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/compensation-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Всё это конечно хорошо, но у данных решений есть два очень серьёзных недостатка:</p>
 <ul>
 <li>
@@ -113,7 +113,7 @@ ngspice 3 -&gt; plot v(out)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

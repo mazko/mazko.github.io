@@ -48,7 +48,7 @@
 <p>Фильтр нижних частот (ФНЧ, low-pass filter) - электронный или любой другой фильтр, эффективно пропускающий частотный спектр сигнала ниже некоторой частоты (частоты среза) и подавляющий частоты сигнала выше этой частоты. ФВЧ - это соответственно high-pass filter.</p>
 <p>RC-фильтры предстваляют собой цепочку, состоящую из резистора и конденсатора. В зависимости от их расположения фильтр пропускает или верхние или нижние частоты. Частота среза <code>f = 1/(2πRC)</code></p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/rcSIN.sch">схема ФНЧ</a> | <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/rcSIN.net">netlist</a> | <a href="https://ngspice.js.org/?gist=1bc9e1a86a0a9de1d2d14ad8c7ed381e">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/show-img-sin.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/show-img-sin.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source rcSIN.net
 ngspice 2 -&gt; tran 0.05us 25us
 ngspice 3 -&gt; plot n0 n1
@@ -56,10 +56,10 @@ ngspice 3 -&gt; plot n0 n1
 
 
 <p>Transient (tran) - анализ поведения системы во времени. В данном случае шаг 0.05, общее время 25.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/sin-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/sin-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Амплитудно-частотная характеристика (АЧХ) - зависимость амплитуды выходного сигнала от частоты входного сигнала:</p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/rcAC.sch">схема ФНЧ</a> | <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/rcAC.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5e8d12da0a8572c0100f671b8fdfe348">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/show-img-ac.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/show-img-ac.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source rcAC.net
 ngspice 2 -&gt; ac lin 1000 0.1 250kHz
 ngspice 3 -&gt; plot n0 n1
@@ -67,7 +67,7 @@ ngspice 3 -&gt; plot n0 n1
 
 
 <p>Частота среза по <a href="https://bc.js.org/">формуле</a> <code>1/(2*3.14*10000*10^-9) = 15923.57 Hz</code></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source rcAC.net
 ngspice 2 -&gt; ac lin 1000 0.1 250kHz
 ngspice 3 -&gt; plot n1 xlog
@@ -75,7 +75,7 @@ ngspice 3 -&gt; plot n1 xlog
 
 
 <p>Для АЧХ <a href="https://ngspice.js.org/?gist=cb74cef950521d483073204ba92ce141">логарифмическая</a> шкала как правило выглядит нагляднее:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-xlog-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/ac-xlog-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/">Далее</a> явление резонанса.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -98,7 +98,7 @@ ngspice 3 -&gt; plot n1 xlog
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

@@ -48,7 +48,7 @@
 <p>Тут пожалуй стоит сделать риторическое отступление. Зачем нам <a href="http://2gusia.livejournal.com/37929.html" rel="nofollow">две</a> технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
 UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить <a href="http://www.dlna.org/certification/certification" rel="nofollow">денюшку</a>. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.</p>
 <p>На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно вкючать/выключать музыку в комнате комбинацией клавиш на <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
 <p>Начнём с <a href="http://www.upnp-hacks.org/upnp.html" rel="nofollow">обнаружения</a> доступных UPnP устройств. Для этого нужно отправить M-SEARCH запрос на multicast-адрес 239.255.255.250 порт 1900 по UDP протоколу. Все устройства и программы, поддерживающие спецификацию UPnP обязаны ответить по UDP unicast:</p>
 <div class="highlight"><pre><span></span>~$ upnp-scan<span class="o">()</span> <span class="o">{</span>
@@ -284,7 +284,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

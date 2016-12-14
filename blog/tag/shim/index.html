@@ -53,7 +53,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck.sch">импульсный понижающий преобразователь</a> | <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck.net">netlist</a> | <a href="https://ngspice.js.org/?gist=3c337ca0b9b0733f8e5cf99197c23836">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/show-img-buck.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/show-img-buck.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source buck.net
 ngspice 2 -&gt; tran 0.3u 1m
 ngspice 3 -&gt; plot v(out)
@@ -61,14 +61,14 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>Номиналы понижающего преобразователя <a href="http://www.ti.com/lit/an/slva477b/slva477b.pdf" rel="nofollow">расчитаны</a> исходя из требуемого напряжения на выходе 3.3 В, напряжения на входе 10 В, тока нагрузки 2 А, частоты ключа 50кГц, пульсации тока через индуктивность 30% и допустимых пульсаций выходного напряжения 25 мВ.</p>
-<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-L.svg" style="width:25%; margin: 0 auto; display:block;" /></p>
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-L.svg" style="width:25%; margin: 0 auto; display:block;"></p>
 <p>Где <code>D = Vout/Vin</code> это коэффициент <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">заполнения</a> и тогда минимальная индуктивность <a href="https://bc.js.org/">равна</a> <code>(3.3*(1-3.3/10))/(50000*2*0.3) = 73.7 мкГн</code>. Конденсатор для сглаживания пульсаций напряжения на выходе рассчитывается по формуле:</p>
-<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-C.svg" style="width:26.5%; margin: 0 auto; display:block;" /></p>
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-C.svg" style="width:26.5%; margin: 0 auto; display:block;"></p>
 <p>Получаем минимальную необходимую ёмкость <code>(2*0.3)/(8*50000*0.025) = 60 мкФ</code></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/buck-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Поскольку транзистор X1 неидеальный ключ и судя по документации его сопротивление в открытом состоянии составляет 0.16 мОм, то к примеру при токе 1 А на нём будет теряться 0.16 В и это легко проверить командой <code>plot v(cp1,cp3) ylimit 0 1 xlimit 0.5m 0.6m</code>. На диоде также происходят потери и чем слабее диод тем большее на нём прямое напряжение и тем хуже он справляется с функцией ключа. Из-за потерь напряжение на выходе не дотягивает до 3.3 В, но подправить ситуации можно увеличив D с 0.33 до приблизительно 0.37. Что касается скачка напряжения на старте то в цепи находится последовательный <a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/">колебательный</a> контур c периодом колебаний <code>2*3.14*sqrt(74*10^-6*60*10^-6) ≈ 0.42 мс</code>. Чем меньше сопротивление нагрузки R тем меньше амплитуда этих колебаний и тем быстрее они затухают.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost.sch">импульсный повышающий преобразователь</a> | <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost.net">netlist</a> | <a href="https://ngspice.js.org/?gist=8bc2e416c971a2d55fcdda0b6c113eaa">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/show-img-boost.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/show-img-boost.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source boost.net
 ngspice 2 -&gt; tran 0.5u 3m
 ngspice 3 -&gt; plot v(out) ylimit 2 10
@@ -80,17 +80,18 @@ ngspice 3 -&gt; plot v(out) ylimit 2 10
 L = \frac{V_{in}*D}{\Delta I_{L}*f_{sw}}
 -->
 
-<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-L.svg" style="width:19.4%; margin: 0 auto; display:block;" /></p>
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-L.svg" style="width:19.4%; margin: 0 auto; display:block;"></p>
 <p>Где <code>D = 1 - (Vin/Vout)</code> это коэффициент <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">заполнения</a> и тогда минимальная индуктивность <a href="https://bc.js.org/">равна</a> <code>(3.3*(1-3.3/10))/(50000*2*0.3) = 73.7 мкГн</code>. Конденсатор для сглаживания пульсаций напряжения на выходе рассчитывается по формуле:</p>
 <!-- 
 C = \frac{I_{out}*D}{f_{sw}*\Delta V_{out}}
 -->
 
-<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-C.svg" style="width:21.8%; margin: 0 auto; display:block;" /></p>
+<p><img alt="formula" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-C.svg" style="width:21.8%; margin: 0 auto; display:block;"></p>
 <p>Получаем минимальную ёмкость <code>2*(1-3.3/10)/(50000*0.25) = 107.2 мкФ</code></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/boost-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Компенсировать потери на транзисторе и диоде можно подтянув коэффициент заполнения D с 0.67 до 0.74.</p>
-<p>К сожалению выходное напряжение как понижающего так и повышающего импульсного преобразователя зависит от входного напряжения и величины сопротивления нагрузки R. Это несложно проверить командой <code>alter r 10k</code> - напряжение в обоих преобразователях поползёт вверх. Для стабилизации вводят обратную связь, в которой ошибка напряжения на выходе управляет <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> импульсов с каким-то заранее рассчитанным коэффициентом пропорциональности и получается П-регулятор. Для уменьшения временной задержки между ошибкой и её устранением добавляют <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегральную</a> и <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">дифференцирующую</a> составляющую и получается ПИД-регулятор. К счастью можно воспользоваться готовыми микросхемами DC/DC преобразователей, которые значительно упрощают жизнь, сводя количество расчётов к миниму. </p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/#disqus_thread">comments</a>.</p>                </article>
+<p>К сожалению выходное напряжение как понижающего так и повышающего импульсного преобразователя зависит от входного напряжения и величины сопротивления нагрузки R. Это несложно проверить командой <code>alter r 10k</code> - напряжение в обоих преобразователях поползёт вверх. Для стабилизации вводят обратную связь, в которой ошибка напряжения на выходе управляет <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">скважностью</a> импульсов с каким-то заранее рассчитанным коэффициентом пропорциональности и получается П-регулятор. Для уменьшения временной задержки между ошибкой и её устранением добавляют <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегральную</a> и <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">дифференцирующую</a> составляющую и получается ПИД-регулятор. К счастью можно воспользоваться готовыми микросхемами DC/DC преобразователей, которые значительно упрощают жизнь, сводя количество расчётов к миниму.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/">Далее</a> интегральный таймер 555.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -115,7 +116,7 @@ C = \frac{I_{out}*D}{f_{sw}*\Delta V_{out}}
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
 </footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная ...</p>
+<p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -123,7 +124,7 @@ C = \frac{I_{out}*D}{f_{sw}*\Delta V_{out}}
                 </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

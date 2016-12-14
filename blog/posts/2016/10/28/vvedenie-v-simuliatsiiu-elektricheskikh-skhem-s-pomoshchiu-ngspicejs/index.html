@@ -64,14 +64,14 @@
 </li>
 </ul>
 <p>Начнём с проверки законов Кирхгофа с помощью простого OP анализа.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>На вход ngspice приходит схема в формате <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9" rel="nofollow">netlist</a>. В данном материале для редактирования электрических схем используется <a href="http://wiki.geda-project.org/geda:ngspice_and_gschem" rel="nofollow">gschem</a> + gnetlist.</p>
 <div class="highlight"><pre><span></span>~$ gnetlist -g spice-sdb -o kirghof.net kirghof.sch
 </pre></div>
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch">схема</a> | <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net">netlist</a> | <a href="https://ngspice.js.org/?gist=f416efb827fa91fd7badacc588c55bd8">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/show-img-kirghof.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/show-img-kirghof.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source kirghof.net
 ngspice 2 -&gt; op
 ngspice 3 -&gt; show v1 v2 v3
@@ -104,7 +104,7 @@ ngspice 4 -&gt; print i(v1) i(v2) i(v3)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

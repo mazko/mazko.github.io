@@ -58,7 +58,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/rc-phase-shift.sch">схема RC-автогенератора с трехфазной фазирующей цепочкой</a> | <a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/rc-phase-shift.net">netlist</a> | <a href="https://ngspice.js.org/?gist=af9112f7d9ce726eb2b2b6dfb8695a99">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-rc-phase-shift.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-rc-phase-shift.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source rc-phase-shift.net
 ngspice 2 -&gt; tran 0.4m 0.8
 ngspice 3 -&gt; plot v(out)
@@ -66,10 +66,10 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>На картинке примерно 15 пупырышек за 400 миллисекунд что соответствует частоте 15/0.4 = 37.5 Гц, а разница с расчётами видимо связана с тем что входное сопротивление каскада явно &lt; 22 КОм (судя по <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">замерам</a> порядка 5 КОм). У <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/">полевых</a> транзисторов входное сопротивление значительно больше и поэтому они наверняка дадут лучшую расчётную точность в подобных схемах. Кстати по этой же причине выходное сопротивление Rc (и соответственно Re) тоже неплохо бы уменьшить эдак раз в 10, но тут главное не сорвать генерацию ведь от Rc зависит коэффициент усиления по напряжению.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/rc-phase-shift-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/rc-phase-shift-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>На высоких частотах широкое распространение получили <strong>LC-генераторы</strong>. Тут неплохо бы вспомнить об эффекте <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/">Миллера</a> и схеме с <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a>. Каскад с общей базой фазу не сдвигает поэтому сигнал поданный с коллектора в эмиттер порождает ПОС.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/colpitts.sch">схема генератор Колпитца (ёмкостная трёхточка)</a> | <a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/colpitts.net">netlist</a> | <a href="https://ngspice.js.org/?gist=eaf8b585ee3ffbcdbe09f75d77bf4bca">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-colpitts.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-colpitts.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source colpitts.net
 ngspice 2 -&gt; tran 1n 10u 9.5u
 ngspice 3 -&gt; plot v(out)
@@ -77,10 +77,10 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>Данная схема ввиду своей простоты и дешевизны часто применяется в бюджетных устройствах - радиоуправляемых моделях, жучках и т.д. <a href="https://bc.js.org/">Частота (scale=100)</a> <code>f = 1/(2*π*sqrt(L*C1*C2/(C1+C2))) = 1/(2*3.14*sqrt(150*10^-9*10^-10*10^-10/(10^-10+10^-10))) ≈ 58 МГц</code> а фактическая частота на картинке <code>18/(0.5*10^-6) = 36 МГц</code> - по всей видимости сказываются ёмкости p-n переходов транзистора.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/colpitts-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/colpitts-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Одним из самых распространённых генераторов импульсов почти прямоугольной формы является <strong>Мультивибратор</strong>, обычно представляет собой двухкаскадный резистивный усилитель, охваченный глубокой положительной обратной связью. При попарном равенстве сопротивлений резисторов R1 и R4, R2 и R3, ёмкостей конденсаторов C1 и C2, а также параметров транзисторов Q1 и Q2 мультивибратор становится <em>симметричным</em> - он генерирует прямоугольные колебания («меандр») со скважностью 2, то есть сигнал у которого длительность импульса и длительность паузы одинаковы.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/symmetric-multivibrator.sch">схема симметричный мультивибратор</a> | <a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/symmetric-multivibrator.net">netlist</a> | <a href="https://ngspice.js.org/?gist=16c76d4430f3f30c74e6779da48d1bf9">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-symmetric-multivibrator.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/show-img-symmetric-multivibrator.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source symmetric-multivibrator.net
 ngspice 2 -&gt; tran 50u 50m 5m
 ngspice 3 -&gt; plot v(out)
@@ -88,7 +88,7 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p><a href="https://bc.js.org/">Частота</a> мультивибратора <code>f = 1/(ln(2)*(R2*C1+R3*C2)) = 1/(l(2)*(47000*10^-7+47000*10^-7)) ≈ 153 Гц</code> и фактическая частота <code>7/(50*10^-3) = 140 Гц</code>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/symmetric-multivibrator-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/symmetric-multivibrator-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">Далее</a> операционный усилитель.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -111,7 +111,7 @@ ngspice 3 -&gt; plot v(out)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

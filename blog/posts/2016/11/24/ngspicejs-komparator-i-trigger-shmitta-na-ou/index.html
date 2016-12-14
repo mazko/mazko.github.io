@@ -56,7 +56,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.sch">неинвертирующий компаратор с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d120122d336d4f1856b1582c12a9a205">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source comparator-single.net
 ngspice 2 -&gt; tran 10u 4m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -64,10 +64,10 @@ ngspice 3 -&gt; plot v(out) v(in)
 
 
 <p>Опорное напряжение задано делителем Rf1/Rf2 и очевидно равно 5В. При этом на вход поступает сигнал сложной формы. Компаратор отработал логически правильно сработав четырежды т.к. входное напряжение четырежды перевалило отметку 5В, однако на практике зачастую требуется иное поведение если предположить что провал напряжения посредине это была помеха. Для борьбы с этим неприятным явлением в компаратор с помощью ПОС добавляют <em>гистерезис</em> и называется такое решение <a href="http://www.pcbheaven.com/wikipages/The_Schmitt_Trigger/" rel="nofollow">триггером Шмитта</a>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Как видно на следующей схеме, триггер Шмитта очень похож на обычный компаратор за исключением положительной обратной связи через резистор <strong>Rf</strong>. Гистерезис добавляет задержку выключения компаратора и тем самым обеспечивается более высокая помехоустойчивость схемы. </p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.sch">инвертирующий триггер Шмитта с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=22dbe97a1a4b121e6678a1b27ceffc12">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-shmitt-trigger-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/show-img-shmitt-trigger-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source shmitt-trigger-single.net
 ngspice 2 -&gt; tran 10u 4m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -84,7 +84,7 @@ ngspice 3 -&gt; plot v(out) v(in)
 </li>
 </ul>
 <p>Ну а фактически на картинке верхний порог срабатывания получился чуть меньше 5 Вольт, тогда как нижний чуть больше 3 Вольт.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/shmitt-trigger-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/">Далее</a> немного о выходных каскадах усилителей.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -107,7 +107,7 @@ ngspice 3 -&gt; plot v(out) v(in)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

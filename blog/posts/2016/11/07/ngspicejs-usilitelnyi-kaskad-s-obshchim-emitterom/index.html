@@ -56,7 +56,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/quick.sch">простейший каскад с ОЭ</a> | <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/quick.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5caf9c51187c6b94386582162a08f1dd">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-quick.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-quick.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source quick.net
 ngspice 2 -&gt; dc i1 0 18u 18n
 ngspice 3 -&gt; alter r 3.3k
@@ -72,7 +72,7 @@ ngspice 11 -&gt; show q1
 
 
 <p>Как видно на картинке ниже изменение выходного напряжения идёт в противофазе с изменением входного (180°). Чем больше сопротивление в цепи коллектора R, тем круче ВАХ и соответственно тем больший коэффициент усиления по напряжению, но <code>R(max) ≈ (V1-0.3)/(β*Ib(max)) ≈ (10-0.3)/(191*18*10^-6)</code> <a href="https://bc.js.org/">≈ 2821 Ом</a>. В нашем случае это условие нарушено т.к. <strong>R &gt; 2821</strong> и именно поэтому внизу висят две горизонтальные сопли, т.е при амплитуде входного сигнала 18мкА часть усиленного сигнала будет срезана :(</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/quick-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/quick-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Команда <code>op</code> по двум точкам активного (линейного) режима работы транзистора фиксирует следующие значения - ic:0.000268091 | ib:2.00001e-06 | vbe:0.659054 и ic:0.00255927 | ib:1.4e-05 | vbe:0.719389</p>
 <p>Усиление по току равно коэффициенту передачи по току β и <a href="https://bc.js.org/">≈ 191</a> <code>(0.00255927-0.000268091)/(1.4*10^-05-2.00001*10^-06)</code> <a href="https://bc.js.org/">≈ 45.6 дБ</a> <code>20*log(191)=20*l(191)/l(10)</code></p>
 <p>Усиление по напряжению <a href="https://bc.js.org/">≈ 125.3</a> <code>((10-0.000268091*3300)-(10-0.00255927*3300))/(0.719389-0.659054)</code> <a href="https://bc.js.org/">≈ 41.95 дБ</a> <code>20*l(125.3)/l(10)</code></p>
@@ -80,7 +80,7 @@ ngspice 11 -&gt; show q1
 <p>Выходное сопротивление очевидно ≈ R ≈ 3.3 kОм.</p>
 <p>Для того чтобы усиливать переменный (синусоидальный) ток, например звуковой сигнал, в схему необходимо ещё добавить гальваническую развязку по входу в виде конденсатора и напряжение смещения (Bias) база-эмиттер:</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/bias.sch">ОЭ со смещением и гальванической развязкой</a> | <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/bias.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d5d84f15744ea255196d136b735e6570">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-bias.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-bias.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source bias.net
 ngspice 2 -&gt; alter rbias 42meg
 ngspice 3 -&gt; tran 9u 3m
@@ -91,10 +91,10 @@ ngspice 6 -&gt; plot tran1.v(out) tran2.v(out)
 
 
 <p>Ток смещения в такой схеме обычно рассчитывается на половину максимального напряжения на коллекторе в режиме покоя (рабочая точка): <code>Ibias = U(max)/(2*R*β) = 10/(2*5100*191) ≈ 5.133 мкA</code> и тогда <code>Rbias ≈ (V1-0.7)/Ibias = (10-0.7)/(5.133*10^-6) ≈ 1.8 МОм</code>. При неправильном смещении сигнал на выходе будет искажен.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/bias-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/bias-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Главным недостатком вышеописанной схемы является слишком явная зависимость рабочей точки от внешних факторов - к примеру изменение модели транзистора, напряжения питания или температуры окружающей среды потребует пересчёта величины Rbias. В этой связи наибольшее применение получила модифицированная схема каскада с ОЭ, предполагающая наличие отрицательной обратной связью по постоянному току:</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/h-bias.sch">ОЭ с H-смещением</a> | <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/h-bias.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ff5ede71d7db3d4e17d0448c88f9443d">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-h-bias.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/show-img-h-bias.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source h-bias.net
 ngspice 2 -&gt; tran 9u 3m
 ngspice 3 -&gt; plot v(out)
@@ -137,7 +137,7 @@ ngspice 3 -&gt; plot v(out)
 <p><code>Rb1 = Rb*V1/Vbb = 19000*10/1.7975 ≈ 105702 Ом</code> | <code>Rb2 = Rb/(1-Vbb/V1) = 19000/(1-1.7975/10) ≈ 23164 Ом</code></p>
 </li>
 </ul>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/h-bias-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/h-bias-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Итак, мы провели временной анализ схемы с помощью команды <code>tran</code>. Как насчёт оценки уровня искажений, вносимых системой по отношению к входному сигналу ?
 В SPICE для этих целей предусмотрен спектральный анализ Фурье. <a href="https://ngspice.js.org/?gist=db86a12399a231108e27d323955eb7c3">Пробуем</a>:</p>
 <div class="highlight"><pre><span></span>ngspice 4 -&gt; fourier 3k v(out)
@@ -185,7 +185,7 @@ Harmonic Frequency   Magnitude   Phase       Norm. Mag   Norm. Phase
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

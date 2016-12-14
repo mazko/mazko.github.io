@@ -40,7 +40,7 @@
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">maven</a> <a href="http://proiot.ru/blog/tag/ajax">AJAX</a> </p>
 </footer><!-- /.post-info --><p>Используя подсказки в процессе ввода <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">поискового</a> запроса можно быстрее искать нужную информацию. Поисковые подсказки - это схожие с вашим запросом термины. Они появляются на экране по мере того, как вы вводите в строку поиска запрос. Для данного процесса критически важна скорость реакции на ввод пользователя, поэтому на серверной части ускорить процесс поможет специально заточенный индекс / модель данных, а на стороне клиента неплохо бы использовать <a href="https://ru.wikipedia.org/wiki/AJAX" rel="nofollow">AJAX</a> дабы не перезагружать каждый раз HTML-страницу целиком при изменении поискового запроса. На картинке показан результат работы алгоритма <a href="https://lucene.apache.org/core/6_0_0/suggest/org/apache/lucene/search/suggest/analyzing/AnalyzingSuggester.html" rel="nofollow">AnalyzingSuggester</a>, который можно запустить скачав исходники в конце текущего материала.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/suggest.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/suggest.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Первым делом нужно добавить в мульти-модульный <strong>maven</strong> проект новую зависимость <code>lucene-suggest</code>:</p>
 <p><em>src/pom.xml</em></p>
 <div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
@@ -364,7 +364,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">maven</a> <a href="http://proiot.ru/blog/tag/jstl">JSTL</a> </p>
-</footer><!-- /.post-info -->                <p>После того, как пользователь получает первые результаты <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый ...</p>
+</footer><!-- /.post-info -->                <p>После того, как пользователь получает первые результаты <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -386,7 +386,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/weka">Weka</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
-</footer><!-- /.post-info -->                <p>В случае классификации <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">текстовой информации</a> качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается <a href="http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html" rel="nofollow">StringToWordVector</a> и одним из параметров у него задаётся тип <a href="http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html" rel="nofollow">токенайзера</a>. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но ...</p>
+</footer><!-- /.post-info -->                <p>В случае классификации <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">текстовой информации</a> качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается <a href="http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html" rel="nofollow">StringToWordVector</a> и одним из параметров у него задаётся тип <a href="http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html" rel="nofollow">токенайзера</a>. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -414,7 +414,7 @@
 <p>Процесс можно условно разделить на несколько этапов:</p>
 <ul>
 <li>
-<p>Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше ...</p></li></ul>
+<p>Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше …</p></li></ul>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -436,7 +436,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> </p>
-</footer><!-- /.post-info -->                <p>Как уже упоминалось <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">ранее</a>, между строкой запроса, которую вводит пользователь для осуществления поиска и  методом, реализующим непосредственно сам поиск в <em>Lucene</em>, имеется промежуточный класс - <code>Query</code>. Этот класс можно создавать программно - причём можно создавать даже очень сложный  <code>Query</code>, используя комбинацию из нескольких из них, тем самым достигая наилучших результатов поиска. Однако ...</p>
+</footer><!-- /.post-info -->                <p>Как уже упоминалось <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">ранее</a>, между строкой запроса, которую вводит пользователь для осуществления поиска и  методом, реализующим непосредственно сам поиск в <em>Lucene</em>, имеется промежуточный класс - <code>Query</code>. Этот класс можно создавать программно - причём можно создавать даже очень сложный  <code>Query</code>, используя комбинацию из нескольких из них, тем самым достигая наилучших результатов поиска. Однако …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -448,7 +448,7 @@
                 </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

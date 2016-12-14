@@ -59,7 +59,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode.sch">каскодная схема(справа от IN)</a> | <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode.net">netlist</a> | <a href="https://ngspice.js.org/?gist=add2c348f915252851fa41fbd3afe97d">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/show-img-cascode.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/show-img-cascode.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source cascode.net
 ngspice 2 -&gt; ac dec 100 1k 50Meg
 ngspice 3 -&gt; plot db(out/in) db(x_out/in)
@@ -84,9 +84,9 @@ ngspice 5 -&gt; print out cp1 cp2 cp3 cp4
 </li>
 </ul>
 <p>Для снятия <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">АЧХ</a> амплитуда входного выбрана сигнала Vin 50мВ, на который мы рассчитали ранее схему с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Тогда как согласно графику АЧХ у каскодного усилителя коэффициент усиления только начинает заваливаться на частоте 1МГц/30дБ, каскад с ОЭ на этой частоте уже чувствует себя очень плохо &lt; 10 дБ.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode-canvas-tran.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode-canvas-tran.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source cascode.net
 ngspice 2 -&gt; alter @vin[sin] [ 0 50m 1meg ]
 ngspice 3 -&gt; tran 10n 5u
@@ -117,7 +117,7 @@ ngspice 4 -&gt; plot v(out) v(x_out)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

@@ -43,7 +43,7 @@
 <p>Тут пожалуй стоит сделать риторическое отступление. Зачем нам <a href="http://2gusia.livejournal.com/37929.html" rel="nofollow">две</a> технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
 UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить <a href="http://www.dlna.org/certification/certification" rel="nofollow">денюшку</a>. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.</p>
 <p>На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно вкючать/выключать музыку в комнате комбинацией клавиш на <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
 <p>Начнём с <a href="http://www.upnp-hacks.org/upnp.html" rel="nofollow">обнаружения</a> доступных UPnP устройств. Для этого нужно отправить M-SEARCH запрос на multicast-адрес 239.255.255.250 порт 1900 по UDP протоколу. Все устройства и программы, поддерживающие спецификацию UPnP обязаны ответить по UDP unicast:</p>
 <div class="highlight"><pre><span></span>~$ upnp-scan<span class="o">()</span> <span class="o">{</span>
@@ -281,7 +281,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
-</footer><!-- /.post-info -->                <p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш ...</p>
+</footer><!-- /.post-info -->                <p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -304,7 +304,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
 <p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/elastic">Elastic</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/docker">Docker</a> </p>
 </footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
-<a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку ...</a></p>
+<a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку …</a></p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -335,7 +335,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
 <p>Скармливает этот текст веб-сервису синтезатору речи, в ответ получает аудио файл и проигрывает. На слух как-то оно лучше запоминается :)</p>
 </li>
 <li>
-<p>Параллельно скармливает текст веб-сервису переводчику, целевой язык ...</p></li></ul>
+<p>Параллельно скармливает текст веб-сервису переводчику, целевой язык …</p></li></ul>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -343,7 +343,7 @@ curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
                 </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

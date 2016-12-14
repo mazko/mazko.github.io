@@ -46,7 +46,7 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
 </footer><!-- /.post-info -->      <p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш. Для таких случаев в настройках роутера предусмотрена сетка каналов 1-13 (2.412GHz-2.472GHz). Соседей много, всем нужен хороший интернет. В данном материале мы научимся рисовать вот такую красивую картинку без стороннего ПО, т.е. исключительно средствами Linux и программы для построения графиков <a href="http://www.gnuplot.info/" rel="nofollow">gnuplot</a>.</p>
 <h2>TL;DR</h2>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/shot.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/shot.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>~$ sudo iwlist wlo1 scanning <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
 
 <span class="s1">import re,sys</span>
@@ -128,7 +128,7 @@ gnuplot 4.6 patchlevel 6
 </pre></div>
 
 
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/hello.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/hello.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
 <span class="s1">set term png truecolor size 1280,480</span>
 <span class="s1">set xrange [0:6]</span>
@@ -149,7 +149,7 @@ gnuplot 4.6 patchlevel 6
 </pre></div>
 
 
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.points.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.points.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
 <span class="s1">set term png truecolor size 1280,480</span>
 <span class="s1">set xlabel &quot;Channel&quot;</span>
@@ -174,7 +174,7 @@ gnuplot 4.6 patchlevel 6
 </pre></div>
 
 
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.ellipses.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.ellipses.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -197,7 +197,7 @@ gnuplot 4.6 patchlevel 6
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

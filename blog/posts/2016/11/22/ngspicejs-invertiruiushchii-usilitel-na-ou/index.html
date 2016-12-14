@@ -70,7 +70,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting.sch">схема инвертирующего усилителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2b635c0b8bae28e0ab4152cde6eb475d">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source inverting.net
 ngspice 2 -&gt; dc vin -10m 10m 20u
 ngspice 3 -&gt; plot v(out) ylimit -10 10
@@ -78,10 +78,10 @@ ngspice 3 -&gt; plot v(out) ylimit -10 10
 
 
 <p>Коэффициент усиления схемы <code>365000/365 = 1000</code>, т.е. при 10 мВ на входе на выходе будет 10 В.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>При однополярном питании необходимо подать стабильное напряжение смещения - в простейшем случае это конденсатор C2, наличие которого повышает устойчивость системы от самовозбуждения при просадках напряжения в неидеальном источнике питания.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single.sch">инвертирующий усилитель с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fb963c63f640a5012853ae869a6ee912">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/show-img-inverting-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source inverting-single.net
 ngspice 2 -&gt; tran 1u 0.5m
 ngspice 3 -&gt; plot v(out) v(in) v(vgnd)
@@ -89,7 +89,7 @@ ngspice 3 -&gt; plot v(out) v(in) v(vgnd)
 
 
 <p>Обратная связь обеспечивает коэффициент усиления <code>100k/50k = 2</code>, напряжение смещение как обычно половина напряжения питания. В активном режиме напряжение в точке виртуальной земли равно напряжению смещения независимо от уровня входного сигнала. Фазы входного и выходного сигнала сдвинуты на 180°.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Коэффициент нелинейных искажений для ОУ усилителей очень <a href="https://ngspice.js.org/?gist=ba2f8531a36037d47487ce7074520f84">низкий</a> THD: 5.6773e-05 %, что является следствием сильной ООС.</p>
 <div class="highlight"><pre><span></span>ngspice 4 -&gt; fourier 10k v(out)
 </pre></div>
@@ -117,7 +117,7 @@ ngspice 3 -&gt; plot v(out) v(in) v(vgnd)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

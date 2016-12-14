@@ -56,7 +56,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator.sch">схема инвертирующего сумматора + тестовый сумматор без ОУ</a> | <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator.net">netlist</a> | <a href="https://ngspice.js.org/?gist=a4ad89b810370046865df1eb4beca38c">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source inverting-summator.net
 ngspice 2 -&gt; dc vin1 -10 4 0.1
 ngspice 3 -&gt; plot v(out) (-v(test))
@@ -64,10 +64,10 @@ ngspice 3 -&gt; plot v(out) (-v(test))
 
 
 <p>При <code>Vin1=-10</code> алгебраическая сумма входных напряжений <code>-10+3-5=-12</code> или <code>12</code> с инверсией и т.д. Как видно на картинке если бы мы не использовали ОУ а использовали обычные резисторы Rx то результат трудно назвать суммированием напряжений.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Так как в основе инвертирующего сумматора лежит инвертирующего усилитель то для однополярного питания в принципе всё так же. Классический случай применения следующей схемы - качественный микшер аудио сигналов от нескольких источников.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single.sch">инвертирующий сумматор с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=240fbcd9cd54346102e19984c5d24eba">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/show-img-inverting-summator-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source inverting-summator-single.net
 ngspice 2 -&gt; tran 1u 0.5m
 ngspice 3 -&gt; plot v(out) v(in1) v(in2) v(vgnd)
@@ -75,7 +75,7 @@ ngspice 3 -&gt; plot v(out) v(in1) v(in2) v(vgnd)
 
 
 <p>Коэффициент усиления подобран единице для красоты картинки - при желании его можно изменить.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/inverting-summator-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">Далее</a> триггер Шмидта на ОУ.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -98,7 +98,7 @@ ngspice 3 -&gt; plot v(out) v(in1) v(in2) v(vgnd)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

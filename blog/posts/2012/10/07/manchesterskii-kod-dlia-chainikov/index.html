@@ -45,7 +45,7 @@
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/tdd">TDD</a> <a href="http://proiot.ru/blog/tag/manchesterskii-kod">Манчестерский код</a> <a href="http://proiot.ru/blog/tag/gtest">gtest</a> <a href="http://proiot.ru/blog/tag/gmock">gmock</a> </p>
 </footer><!-- /.post-info -->      <p><em>Манчестерский Код</em> - это самосинхронизирующийся двоичный код без постоянной составляющей, в котором значение каждого передаваемого бита определяется направлением смены логического уровня в середине обусловленного заранее временного интервала. Поскольку логических уровней у самой маленькой единицы информации (бит) на данный момент известно всего два (1 и 0),  вариантов тут немного: либо смена 1 =&gt; 0 либо 0 =&gt; 1. Согласно общепринятым стандартам для <em>Манчестерского кода</em> переход от нуля к единице считается 1, а если наоборот, то 0. На самом деле последнее утверждение - это просто формальность - вопрос в том, с какой стороны посмотреть ;-) Главное, чтобы и приёмник и передатчик смотрели на жизнь одинаково.</p>
-<p><img alt="Код Манчестер" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/man_diagram.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Код Манчестер" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/man_diagram.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Введите число и нажмите "<strong>Encode Manchester!</strong>":</p>
 <script type="text/javascript" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/manchester.js"> </script>
 
@@ -538,7 +538,7 @@ main.exe
 </pre></div>
 
 
-<p><img alt="Windows Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/win-gtest-gmock-run.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Windows Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/win-gtest-gmock-run.png" style="width:100%; border:1px solid grey;"></p>
 <p>При использовании <strong>Linux</strong> + <strong>gcc g++</strong>:</p>
 <div class="highlight"><pre><span></span><span class="nv">GTEST_HOME</span><span class="o">=</span>gtest-1.6.0
 <span class="nv">GMOCK_HOME</span><span class="o">=</span>gmock-1.6.0
@@ -552,7 +552,7 @@ src/manchester/Man_Decode.cpp <span class="nv">$GTEST_HOME</span>/src/gtest-all.
 </pre></div>
 
 
-<p><img alt="Linux Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/suse_tests_run.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Linux Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/suse_tests_run.png" style="width:100%; border:1px solid grey;"></p>
 <p>Тестов много не бывает. Например, было бы неплохо добавить проверку для последовательности из двух байт и более, или проверку условия отсутствия невозможных для Манчестерского Кода комбинаций - например 111 или 000. Чем больше терпения и выдержки на этом этапе разработки - тем крепче будет сон после её сдачи в эксплуатацию.</p>
 <h3>Практика</h3>
 <p>Тесты это хорошо, но пока что всё это больше похоже на теорию - а теория без практики, как известно, скучна. Поэтому, если Вы дочитали до этого момента, милости прошу посетить <a href="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/">следующий</a> пост, в котором в качестве приёмника и передатчика используются два микроконтроллера, а сам процесс эмулируется в виртуальной среде, которая умеет моделировать поведение электрических цепей.</p>
@@ -578,7 +578,7 @@ src/manchester/Man_Decode.cpp <span class="nv">$GTEST_HOME</span>/src/gtest-all.
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

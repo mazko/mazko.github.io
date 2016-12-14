@@ -50,7 +50,7 @@ sudo make install
 
 
 <p>Вот что получится, если попросить <strong>Valgrind</strong> проверить нашу программу для расчёта расстояния между двумя GPS координатам:</p>
-<p><img alt="Первый запуск Скриншот" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_demo.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Первый запуск Скриншот" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_demo.png" style="width:100%; border:1px solid grey;"></p>
 <p>Основная утилита <strong>Valgrind</strong> - <strong>memcheck</strong>, она запускается по умолчанию. Для использования других утилит это необходимо явно указывать в параметрах командной строки, как продемонстрировано на вызове <strong>exp-sgcheck</strong> (ранее она называлась <strong>exp-ptrcheck</strong>). Как видно из рисунка, наш код ошибок при работе с памятью не имеет.</p>
 <h3>Valgrind - memcheck</h3>
 <p>Теперь рассмотрим более интересный пример. Необходимо разработать метод, который принимает в качестве входного параметра <strong>GPS</strong> строку в формате <strong>NMEA</strong> и извлекает дату и время принятого пакета. Чтобы было проще сортировать полученные данные по дате, возможно, понадобится соответственно изменить её формат:</p>
@@ -196,7 +196,7 @@ sudo make install
 
 
 <p>Код успешно компилируется и проходит тесты. Но что по этому поводу думает <strong>Valgrind</strong> ?</p>
-<p><img alt="Memcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_memcheck_error.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="Memcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_memcheck_error.png" style="width:100%; border:1px solid grey;"></p>
 <p>Строка должна всегда завершаться нулём, а в нашем случае последний символ bufD неопределён. Ниже представлен исправленный вариант.</p>
 <p><em>gps_valgrind/src/gps/gps.c</em>
     :::cpp
@@ -426,7 +426,7 @@ bool TryGetDateTimeRMCGPS(const char* rmc,
 
 
 <p>Код успешно компилируется и проходит тесты и никаких вопросов у <strong>memcheck</strong> не вызывает. Запускаем <strong>exp-sgcheck</strong>:</p>
-<p><img alt="exp-sgcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_sgcheck_error.png" style="width:100%; border:1px solid grey;" /></p>
+<p><img alt="exp-sgcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_sgcheck_error.png" style="width:100%; border:1px solid grey;"></p>
 <p>Программист допустил оплошность - при определённых обстоятельствах осуществляется выход за границы массива. Подобные ошибки трудно обнаружить, поскольку всё вроде как работает, но в самый неподходящий момент что-то сломается ;( Исправленный вариант выглядит так:</p>
 <p><em>gps_valgrind/src/gps/gpsUART.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;gps.h&quot;</span><span class="cp"></span>
@@ -549,7 +549,7 @@ OK <span class="o">(</span>12<span class="o">)</span>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/mikrokontroller">Микроконтроллер</a> <a href="http://proiot.ru/blog/tag/tdd">TDD</a> <a href="http://proiot.ru/blog/tag/gps">GPS</a> <a href="http://proiot.ru/blog/tag/cppunit">CppUnit</a> </p>
 </footer><!-- /.post-info -->                <blockquote>
-<p>Тестирование традиционно проводится в качестве финального аккорда разработки проекта, после того, как «всё заработало, просто для уверенности». Экстремальное программирование (<em style="color:darkred;">Extreme Programming</em> (<em style="color:darkred;">XP</em>)) революционизирует процесс тестирования, придавая ему равный (а то и больший) приоритет с программированием. Вообще, вы пишете тесты перед написанием программы, которая будет тестироваться, и эти тесты навсегда остаются ...</p></blockquote>
+<p>Тестирование традиционно проводится в качестве финального аккорда разработки проекта, после того, как «всё заработало, просто для уверенности». Экстремальное программирование (<em style="color:darkred;">Extreme Programming</em> (<em style="color:darkred;">XP</em>)) революционизирует процесс тестирования, придавая ему равный (а то и больший) приоритет с программированием. Вообще, вы пишете тесты перед написанием программы, которая будет тестироваться, и эти тесты навсегда остаются …</p></blockquote>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -557,7 +557,7 @@ OK <span class="o">(</span>12<span class="o">)</span>
                 </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

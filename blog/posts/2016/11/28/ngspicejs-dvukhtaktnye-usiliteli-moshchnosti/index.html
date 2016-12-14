@@ -69,7 +69,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.sch">двухтактных усилитель на комплементарной паре</a> | <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull.net">netlist</a> | <a href="https://ngspice.js.org/?gist=563e8f84d54d533ad33e0dd8d271145d">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-push-pull.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-push-pull.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source push-pull.net
 ngspice 2 -&gt; tran 5u 2m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -78,7 +78,7 @@ ngspice 4 -&gt; fourier 3k v(out)
 
 
 <p>Схема состоит из двух транзисторов противоположной структуры, включённых по схеме с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a>. При положительной полуволне входного сигнала открывается один транзистор, при отрицательной другой. Таким образом мощность распределяется на оба транзистора поровну. Схема с ОК обладает высоким входным сопротивлением, низким выходным и коэффициентом усиления по напряжению порядка единицы.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Сильные искажения выходного сигнала на рисунке (fourier 35 %) объясняются тем, что биполярный транзистор открывается не сразу, а только после 0.6 Вольт. Чтобы понизить искажения транзисторы необходимо постоянно держать в приоткрытом состоянии, задав сопротивление Rb3:</p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source push-pull.net
 ngspice 2 -&gt; alter rb3 1k
@@ -91,10 +91,10 @@ ngspice 7 -&gt; print i(v1)
 
 
 <p>Коэффициент нелинейных искажений (КНН) - в терминах ngspice Total Harmonic Distortion (THD) <a href="https://ngspice.js.org/?gist=267e04b8fa5e4a66ea82ccae2caf9c83">снизился</a> до 0.0625869 %, в свою очередь по сравнению со схемой с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> КПД значительно повысился так как ток покоя данной схемы <code>print i(v1)</code> ≈ 95 мА, что на порядок меньше чем <code>U/(2*R) = 30/16 ≈ 2 А</code>. Но можно лучше !</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull-canvas-bias.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/push-pull-canvas-bias.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>При однополярном питании на выходе усилителя ставят развязывающий конденсатор, причём учитывая небольшое выходное сопротивление каскада с <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">ОК</a> для звуковых частот его ёмкость должна быть пару тысяч микрофарад - такой себе бочонок внушительных размеров.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull.sch">двухтактных усилитель на ОУ с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2d0f909cb8624234a0126fa2f3b094dd">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-op-amp-push-pull.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/show-img-op-amp-push-pull.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source op-amp-push-pull.net
 ngspice 2 -&gt; tran 5u 2m
 ngspice 3 -&gt; plot v(out)
@@ -105,7 +105,7 @@ ngspice 6 -&gt; print i(v1)
 
 
 <p>Почему нет искажений в этой схеме ? Это магическое воздействие обратной связи - большой запас усиления вытягивает напряжение до необходимого уровня, заданного ООС, и тем самым убирает искажения. По замерам THD: 0.0387129 % тогда как ток, потребляемый при отсутствии входного сигнала, всего лишь 2.8 мА ! Очень красивое и практичное решение для портативных устройств, которые работают от батареек.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/op-amp-push-pull-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">Далее</a> интегратор и дифференциатор на ОУ.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -128,7 +128,7 @@ ngspice 6 -&gt; print i(v1)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

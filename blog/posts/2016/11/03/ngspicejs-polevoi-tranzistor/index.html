@@ -61,7 +61,7 @@
 <p>В следующих схемах для симуляции использовались SPICE модели полевых транзисторов с n-каналом: <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nMOSd.txt">МДП встроенный канал</a>  | <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nMOSe.txt">МДП индуцированный канал</a> | <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/nJFET.txt">JFET</a>.</p>
 <p>Поскольку входное сопротивление полевых транзисторов составляет десятки мегаом, то входные токи полевых транзисторов чрезвычайно малы и управление током в выходной цепи осуществляется входным напряжением. В этой связи усилительные свойства полевого транзистора, как и электронных ламп, целесообразно характеризовать крутизной проходной характеристики.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va.sch">крутизна полевого транзистора</a> | <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fb28e1d10199273970066a5b30fdd454">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-va.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-va.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source va.net
 ngspice 2 -&gt; set temp=0
 ngspice 3 -&gt; dc vdd 0 10 10m
@@ -74,10 +74,10 @@ ngspice 8 -&gt; plot (-dc1.i(vdd)) (-dc2.i(vdd)) (-dc3.i(vdd))
 
 
 <p>На картинке 0...1В - напряжение насыщения сток-исток, после которого участок 1В...MAX является активным режимом работы транзистора. Крутизна ВАХ в идеале не зависит от напряжения сток-исток.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/va-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>МДП-транзистор с индуцированным каналом при нулевом напряжении затвор-исток закрыт (ток стока равен нулю) и именно поэтому на схемах его канал принято обозначать пунктиром.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all.sch">напряжение затвора/ток стока</a> | <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all.net">netlist</a> | <a href="https://ngspice.js.org/?gist=af228d54e01cd660eb56d6851a960df2">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-all.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/show-img-all.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source all.net
 ngspice 2 -&gt; dc vin -1 9 10m
 ngspice 3 -&gt; plot (-i(VnMOSe)) (-i(VnMOSd)) (-i(Vnjfet))
@@ -85,7 +85,7 @@ ngspice 3 -&gt; plot (-i(VnMOSe)) (-i(VnMOSd)) (-i(Vnjfet))
 
 
 <p>Как видно на графике у JFET транзисторов более крутая ВАХ и полярность усиливаемого напряжения затвор-исток JFET и MOSFET противоположная:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/all-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">Далее</a> о согласовании источника и нагрузки.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -108,7 +108,7 @@ ngspice 3 -&gt; plot (-i(VnMOSe)) (-i(VnMOSd)) (-i(Vnjfet))
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

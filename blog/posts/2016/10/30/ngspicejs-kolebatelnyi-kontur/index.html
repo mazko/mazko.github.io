@@ -47,7 +47,7 @@
 </footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
 <p>Колебательный контур (КК) - электрическая цепь, содержащая катушку индуктивности, конденсатор и источник электрической энергии. Если частота источника энергии совпадает с собственной частотой контура происходит замечательное явление, которое в физике называют резонансом. Резонансная частота контура определяется так называемой формулой Томсона: <code>f = 1/(2π√LC)</code>. При последовательном соединении элементов цепи происходит резонанс напряжений, при параллельном - резонанс токов.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/serial.sch">схема последовательного КК</a> | <a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/serial.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5e3f4a6715af6a2a93ffb06da9f3d023">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/show-img-serial.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/show-img-serial.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source serial.net
 ngspice 2 -&gt; ac lin 1000 3780Hz 3800Hz
 ngspice 3 -&gt; alter r1 2m
@@ -57,10 +57,10 @@ ngspice 5 -&gt; plot ac1.i(v1) ac2.i(v1)
 
 
 <p>При резонансе напряжений электрический импеданс КК стремится к величине активного сопротивления R1. Добротность КК определяется величиной сопротивления R1 - чем оно меньше тем выше добротность и тем уже полоса пропускания. По формуле частота резонанса <a href="https://bc.js.org/">равна</a> <code>1/(2*3.14*sqrt(42*10^-6*42*10^-6)) = 3791.3</code> Гц.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/serial-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/serial-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>В следующей схеме для исследования работы параллельного КК источник переменного напряжения заменён на источник переменного тока:</p>
 <p><a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/parallel.sch">схема параллельного КК</a> | <a href="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/parallel.net">netlist</a> | <a href="https://ngspice.js.org/?gist=21c6cf0b8c1274661bf845c5313b6408">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/show-img-parallel.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/show-img-parallel.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source parallel.net
 ngspice 2 -&gt; ac lin 1000 3780Hz 3800Hz
 ngspice 3 -&gt; alter r1 2k
@@ -70,7 +70,7 @@ ngspice 5 -&gt; plot ac1.v(n1) ac2.v(n1)
 
 
 <p>При резонансе токов импеданс КК также стремится к величине R1, при этом полоса пропускания уменьшается при увеличении R1. </p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/parallel-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/30/ngspicejs-kolebatelnyi-kontur/parallel-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Далее <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">полупроводники</a>.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -93,7 +93,7 @@ ngspice 5 -&gt; plot ac1.v(n1) ac2.v(n1)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

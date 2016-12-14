@@ -56,7 +56,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/comparator-single.sch">линейный преобразователь напряжение - скважность</a> | <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=9a661744aef8b6f491f7664f18f79a51">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source comparator-single.net
 ngspice 2 -&gt; tran 10m 4
 ngspice 3 -&gt; plot v(out) v(triangle)
@@ -64,12 +64,12 @@ ngspice 3 -&gt; plot v(out) v(triangle)
 
 
 <p>В основе лежет очень простая идея - сигнал с генератора треугольных импульсов поступает на вход <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компаратора</a>. Задавая опорное напряжение компаратора нарезаются <em>подобные треугольники</em> (углы равны). Как мы знаем (да да) из школьного курса по геометрии подобные треугольники характеризуются <em>коэффициентом подобия</em>  k, равным отношению сходственных сторон. При этом отношение длин  высот также равно коэффициенту подобия. В нашем случае высота это опорное напряжение компаратора, она опущена на сторону треугольника, которая является периодом следования треугольных импульсов. В итоге имеем <em>линейную зависимость</em> скважности от опорного напряжения на компараторе !</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>На картинке сверху получился меандр т.к. скважность 0.5. Треугольник может быть с любыми углами. Для проверки <a href="https://ngspice.js.org/?gist=86f37ddc1a91384f8a7e88988986c8d8">поднимем</a> опорное напряжение с 5 до 7.5 командой <code>alter v2 7.5</code>, чтобы скважность <a href="https://bc.js.org/">была</a> <code>(3.75-1.5)/(3.75-0.75) = 0.75</code>:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/comparator-single-canvas-75.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/comparator-single-canvas-75.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Осталось научиться генерировать треугольные импульсы и дело в шляпе. Один из вариантов использовать два ОУ - первый работает как триггер <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">Шмитта</a>, а второй - как <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегратор</a>.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/triangle-generator.sch">генератор треугольных импульсов на ОУ</a> | <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/triangle-generator.net">netlist</a> | <a href="https://ngspice.js.org/?gist=7eb81126c9ae10683180e8213c3e0099">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/show-img-triangle-generator.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/show-img-triangle-generator.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source triangle-generator.net
 ngspice 2 -&gt; tran 10u 5m
 ngspice 3 -&gt; plot v(out)
@@ -77,7 +77,7 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>Частота треугольных импульсов <a href="https://bc.js.org/">рассчитывается</a> по формуле <code>1/(2*R5*C1) = 1/(2*10^5*10^-8) = 500 Гц</code></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/triangle-generator-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-preobrazovanie-napriazheniia-v-skvazhnost/triangle-generator-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">Далее</a> стабилизаторы напряжения</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -100,7 +100,7 @@ ngspice 3 -&gt; plot v(out)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

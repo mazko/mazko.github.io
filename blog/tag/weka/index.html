@@ -40,7 +40,7 @@
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/weka">Weka</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
 </footer><!-- /.post-info --><p>В случае классификации <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">текстовой информации</a> качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается <a href="http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html" rel="nofollow">StringToWordVector</a> и одним из параметров у него задаётся тип <a href="http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html" rel="nofollow">токенайзера</a>. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но как нетрудно убедиться на картинке ниже если не полениться и задействовать более качественный <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">токенизатор</a>, взятый например из <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>, итоговая точность определения категорий в Weka-классификаторе повышается:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Итак <a href="https://maven.apache.org/guides/getting-started/" rel="nofollow">приступим</a>:</p>
 <div class="highlight"><pre><span></span>~$ apt install maven
 ~$ mvn -B archetype:generate <span class="se">\</span>
@@ -515,7 +515,7 @@
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/weka">Weka</a> <a href="http://proiot.ru/blog/tag/repl">REPL</a> </p>
 </footer><!-- /.post-info -->                <p>Имеется <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz">заданный</a> набор документов для которых уже заранее известна тональность: <strong>good</strong>, <strong>neutral</strong>, <strong>bad</strong>. Для нового документа необходимо определить какая у него тональность из трёх указанных.
-Идеального решения тут не существует ну хотябы потому, что понятие хороший/плохой/злой часто субъективно :) Но всё-же можно попробовать взять среднюю температуру по больнице <a href="https://habrahabr.ru/post/149605/" rel="nofollow">задействовав ...</a></p>
+Идеального решения тут не существует ну хотябы потому, что понятие хороший/плохой/злой часто субъективно :) Но всё-же можно попробовать взять среднюю температуру по больнице <a href="https://habrahabr.ru/post/149605/" rel="nofollow">задействовав …</a></p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -523,7 +523,7 @@
                 </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

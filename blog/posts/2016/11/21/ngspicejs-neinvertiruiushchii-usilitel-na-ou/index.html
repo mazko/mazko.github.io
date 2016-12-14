@@ -67,7 +67,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.sch">схема неинвертирующего усилителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting.net">netlist</a> | <a href="https://ngspice.js.org/?gist=afbeb59caf6deff2cfead830a50cfb59">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source non-inverting.net
 ngspice 2 -&gt; dc vin -10m 10m 20u
 ngspice 3 -&gt; plot v(out) ylimit -10 10
@@ -75,10 +75,10 @@ ngspice 3 -&gt; plot v(out) ylimit -10 10
 
 
 <p>Коэффициент усиления схемы <code>1+365000/365 = 1001</code>, т.е. при 10 мВ на входе на выходе будет 10.01 В. Для красоты картинки результат округлён до 10 с помощью <code>ylimit</code>.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Классическая схема включения ОУ подразумевает биполярный источник питания, в предыдущем примере это ± 15В. Если в документации к ОУ не упомянуто обратное, то однополярное питание зачастую также возможно, однако потребуются дополнительные телодвижения - например подача напряжения смещения, гальваническая развязка и понимание зачем это надо. Идея такая же  как и в <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">транзисторных</a> схемах усилителей:</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.sch">неинвертирующий усилитель с однополярным питанием</a> | <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=d07144c7716c6e14452bb449f8a4d129">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting-single.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/show-img-non-inverting-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source non-inverting-single.net
 ngspice 2 -&gt; tran 1u 0.5m
 ngspice 3 -&gt; plot v(out) v(in)
@@ -86,7 +86,7 @@ ngspice 3 -&gt; plot v(out) v(in)
 
 
 <p>Отрицательная обратная связь (ООС) обеспечивает коэффициент усиления <code>1+100/50 = 3</code> для высокочастотных сигналов и равный <strong>единице</strong> для постоянной составляющей - в противном случае ОУ будет усиливать собственное напряжения смещения. Также несложно убедиться фаза входного и выходного сигнала совпадает. Напряжение смещение обычно задают равным половине напряжения питания.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/non-inverting-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Коэффициент нелинейных искажений для ОУ усилителей очень <a href="https://ngspice.js.org/?gist=27956fb8325c49b6b8bf595ed3f49868">низкий</a> THD: 0.00109449 %, что является следствием сильной ООС.</p>
 <div class="highlight"><pre><span></span>ngspice 4 -&gt; fourier 10k v(out)
 </pre></div>
@@ -114,7 +114,7 @@ ngspice 3 -&gt; plot v(out) v(in)
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

@@ -57,7 +57,7 @@
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha.sch">схема коэффициент передачи тока эмиттера</a> | <a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha.net">netlist</a> | <a href="https://ngspice.js.org/?gist=bb2492380d572bb61a545a6c474f3673">ngspice.js</a></p>
 <p>Как вытекает из <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">первого закона Кирхгофа</a> Iэ=Iб + Iк, где Iэ Iб Iк токи эмиттера базы и коллектора транзистора. Коэффициент α, связывающий ток эмиттера и ток коллектора (Iк = α * Iэ), называется коэффициентом передачи тока эмиттера. Численное значение коэффициента α = 0,9...0,999. Чем больше коэффициент, тем эффективней транзистор передаёт ток. Этот коэффициент мало зависит от напряжения коллектор-база и база-эмиттер. Поэтому в широком диапазоне рабочих напряжений ток коллектора пропорционален току базы, коэффициент пропорциональности равен β = α/(1 − α) = Iк/Iб = Iк/(Iэ - Iк), обычно от 10 до 1000.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/show-img-alpha.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/show-img-alpha.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source alpha.net
 ngspice 2 -&gt; set temp=0
 ngspice 3 -&gt; dc v1 0 2 2m
@@ -70,7 +70,7 @@ ngspice 8 -&gt; plot (-dc1.i(v1)) (-dc2.i(v1)) (-dc3.i(v1)) ylimit 0 2m
 
 
 <p>На картинке 0...0.2В - напряжение насыщения коллектор-эмиттер, после которого участок 0.2В...MAX является активным режимом работы транзистора. Коэффициент передачи по току почти не зависит от напряжения коллектор-эмиттер.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Коэффициент передачи зависит от конкретной модели транзистора, температуры и частоты усиливаемого сигнала. Последний параметр называют предельной частотой коэффициента передачи тока базы.</p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source alpha.net
 ngspice 2 -&gt; alter v1 10
@@ -85,7 +85,7 @@ ngspice 9 -&gt; plot (-dc1.i(v1)) (-dc2.i(v1)) (-dc3.i(v1))
 
 
 <p>В идеальном мире коэффициент передачи тока должен был бы быть константой, однако на <a href="https://ngspice.js.org/?gist=9870d6a51429e0c4a779d228cc41dd62">картинке</a> видно отклонение от прямой линии. На практике, если транзистор используется для усиления сигнала, это приводит к т.н. <em>нелинейным искажениям</em>. </p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha-i-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/alpha-i-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/">Далее</a> полевые транзисторы.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -108,7 +108,7 @@ ngspice 9 -&gt; plot (-dc1.i(v1)) (-dc2.i(v1)) (-dc3.i(v1))
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

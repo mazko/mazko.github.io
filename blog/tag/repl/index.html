@@ -42,7 +42,7 @@
 </footer><!-- /.post-info --><p>Имеется <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz">заданный</a> набор документов для которых уже заранее известна тональность: <strong>good</strong>, <strong>neutral</strong>, <strong>bad</strong>. Для нового документа необходимо определить какая у него тональность из трёх указанных.
 Идеального решения тут не существует ну хотябы потому, что понятие хороший/плохой/злой часто субъективно :) Но всё-же можно попробовать взять среднюю температуру по больнице <a href="https://habrahabr.ru/post/149605/" rel="nofollow">задействовав</a> т.н. Машинное Обучение (ML). Причём в нашем случае это будет Машинное Обучение с учителем т.к. набор обучающих данных имеется изначально.</p>
 <p>Очевидно главный показатель работы классификатора - точность. Поскольку в ML обычно требуется много экспериментировать с различными параметрами, то наряду с множеством <em>open-source</em> проектов наличие какого-никакого UI не может не радовать и у <a href="http://www.cs.waikato.ac.nz/ml/weka/" rel="nofollow">Weka</a> UI есть.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/weka-ui.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/weka-ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Подробней процесс классификации в Weka расписан <a href="http://jmgomezhidalgo.blogspot.com/2013/01/text-mining-in-weka-chaining-filters.html" rel="nofollow">тут</a>. Теперь то же самое, что на картинке, но уже в терминале и без UI (фильтры Weka выглядят жутковато, но их необязательно набивать ручками - можно скопировать из UI что и сделано в конце анимации):</p>
 <div class="highlight"><pre><span></span>~$ <span class="nv">P1</span><span class="o">=</span>http://mazko.github.io/blog/posts/2016/04/26/ <span class="se">\</span>
    <span class="nv">P2</span><span class="o">=</span>analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz <span class="se">\</span>
@@ -237,7 +237,7 @@ Now print text to analyze!
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

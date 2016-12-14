@@ -101,12 +101,12 @@
 </ul>
 <h3>Шаг первый - схемотехника</h3>
 <p>В документации предлагаются две схемы. Для согласования уровней используется микросхема MAX3232:</p>
-<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/cheme_3.3v.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/cheme_3.3v.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Если напряжение питания микроконтроллера отличается от напряжения питания MAX3232, то предлагается ввести дополнительный MOSFET транзистор:</p>
-<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/cheme_5v.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/cheme_5v.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Однако представленные схемы можно значительно упростить / удешевить, если использовать переходник USB-to-serial (например на PL2303 или FT232BM). Уровень логической единицы у PL2303 - 3.3V и если напряжение питания микроконтроллера находится в пределах 3 ... 3.3V, MAX3232 не понадобится. В таком случае необходим только подтягивающий резистор с <strong>Vdd</strong> на <strong>RX</strong>, чтобы избежать случайной загрузки <strong>Bootloader</strong>'а при отключённом переходнике USB-to-serial. Что касается сигнала RTS (см. схемы), то он используется для сброса микроконтроллера (RESET), а поскольку такого же эффекта можно достичь просто отключив/включив питание, то его использование опционально. В случаее с USB-to-serial как правило имеется только RX, TX и GND, поэтому удобней сбрасывать микроконтроллер вручную.</p>
 <h3>Шаг второй - прошивка микроконтроллера</h3>
-<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/18f46k22.png" style="float:left; margin:.5em 1.3em .3em 0;" />Исходники <strong>AN1310</strong> упакованы в исполняемый <strong>*.exe</strong> файл, так что поначалу необходима ОС <em>Windows</em> (как вариант можно ещё попробовать установить <em>Wine</em> и запустить инсталляцию там, но Ваш покорный слуга этот способ на практике не проверял). Неприятная ситуация с <strong>Windows</strong> также повторяется и в процессе сборки <strong>Bootloader</strong>'а - для работы с <strong>MPasm</strong> / <strong>MPLAB</strong>, чтобы сгенерировать хекс. После того, как <strong>Bootloader</strong> будет уже в прошит кристалле, об ОС <strong>Windows</strong> можно спокойно забыть.</p>
+<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/18f46k22.png" style="float:left; margin:.5em 1.3em .3em 0;">Исходники <strong>AN1310</strong> упакованы в исполняемый <strong>*.exe</strong> файл, так что поначалу необходима ОС <em>Windows</em> (как вариант можно ещё попробовать установить <em>Wine</em> и запустить инсталляцию там, но Ваш покорный слуга этот способ на практике не проверял). Неприятная ситуация с <strong>Windows</strong> также повторяется и в процессе сборки <strong>Bootloader</strong>'а - для работы с <strong>MPasm</strong> / <strong>MPLAB</strong>, чтобы сгенерировать хекс. После того, как <strong>Bootloader</strong> будет уже в прошит кристалле, об ОС <strong>Windows</strong> можно спокойно забыть.</p>
 <p>Cкачанный с сайта <strong>Microchip</strong> инсталлятор <strong>Serial Bootloader AN1310 v1.05r.exe</strong> по умолчанию в процессе установки на ПК распаковывает исходные коды для создания прошивки микроконтроллера сюда:</p>
 <div style="clear:both;">
 </div>
@@ -161,7 +161,7 @@
   </li>
 </ol>
 
-<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/mplab_config_bits.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="Скриншот" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/mplab_config_bits.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>В случае необходимости можно отредактировать код <strong>bootconfig.inc</strong>. Например, <strong>PIC18F46K22</strong> имеет на борту два <strong>USART</strong> модуля, а <strong>Bootloader</strong> по умолчанию использует первый. В этом же файле можно выбрать один из двух режимов работы  <strong>Bootloader</strong>'а:</p>
 <ul>
 <li>
@@ -378,7 +378,7 @@
 <p>Если на входе RX логический ноль (в терминах RS-232 состояние “Break")</p>
 </li>
 </ol>
-<p>Таким образом, при необходимости запустить <strong>Bootloader</strong>, можно использавать следующую последовательность действий: физически подключить микроконтроллер к ПК, установить логический ноль на RX, это можно сделать посредством кнопочки <img alt="Кнопка Пауза" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/break_btn.png" />, после чего ввести микроконтроллер в состояние RESET (в простейшем случае - включить/выключить питание). С этого момента к нему можно подключаться со стороны ПК <img alt="Кнопка Пауза" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/boot_btn.png" /></p>
+<p>Таким образом, при необходимости запустить <strong>Bootloader</strong>, можно использавать следующую последовательность действий: физически подключить микроконтроллер к ПК, установить логический ноль на RX, это можно сделать посредством кнопочки <img alt="Кнопка Пауза" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/break_btn.png">, после чего ввести микроконтроллер в состояние RESET (в простейшем случае - включить/выключить питание). С этого момента к нему можно подключаться со стороны ПК <img alt="Кнопка Пауза" src="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/shots/boot_btn.png"></p>
 <p>ПО для ПК поставляеncя в исходниках, при необходимости его можно подкорректировать в <strong>QTCreator</strong>, а для Windows уже есть готовый исполняемый .exe файл. Если при работе в Linux подозрительно работает переходник на PL2303, попробуйте сделать следующее:</p>
 <div class="highlight"><pre><span></span>~$ sudo modprobe -r pl2303
 ~$ sudo modprobe pl2303
@@ -416,7 +416,7 @@ oleg@linux-ubuc:~&gt; sudo /usr/sbin/groupmod -A <span class="nv">$USER</span> d
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

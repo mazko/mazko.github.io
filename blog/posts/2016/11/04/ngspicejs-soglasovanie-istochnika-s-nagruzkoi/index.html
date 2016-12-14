@@ -58,7 +58,7 @@
 </li>
 </ul>
 <p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io.sch">схема источника и нагрузки</a> | <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io.net">netlist</a> | <a href="https://ngspice.js.org/?gist=a6fae4b564d851c5f1759643dc279823">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/show-img-io.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/show-img-io.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source io.net
 ngspice 2 -&gt; alter ri 3k
 ngspice 3 -&gt; dc rn 1 10k 10
@@ -67,7 +67,7 @@ ngspice 4 -&gt; plot v(n)^2/&quot;res-sweep&quot;
 
 
 <p>На картинке максимальная рассеиваемая мощность на нагрузке <code>Pn = Un*In = Un^2/Rn</code> наблюдается при <strong>Rn = Ri</strong>, пример <a href="https://bc.js.org/">расчёта</a>: <code>Pmax = Un*In = Vi^2*Rn/(Rn+Ri)^2 = Vi^2/(4*Rn) = 42^2/(4*3000) = 0.147</code>:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas-u2.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas-u2.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source io.net
 ngspice 2 -&gt; alter ri 5
 ngspice 3 -&gt; dc rn 0 25 50m
@@ -76,7 +76,7 @@ ngspice 4 -&gt; plot 5*&quot;res-sweep&quot;/(5 + &quot;res-sweep&quot;)^2 &quot
 
 
 <p>Коэффициент <a href="https://ngspice.js.org/?gist=02707f2545ae01e6202d6ed48ff10493">передачи</a> по мощности Kp на максимуме равен 0.25 при <strong>Rn = Ri</strong> и <strong>Ku = Ki = 0.5</strong>:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">Далее</a> усилительный каскад с общим эмиттером.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
@@ -99,7 +99,7 @@ ngspice 4 -&gt; plot 5*&quot;res-sweep&quot;/(5 + &quot;res-sweep&quot;)^2 &quot
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

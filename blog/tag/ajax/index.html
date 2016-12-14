@@ -40,7 +40,7 @@
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">maven</a> <a href="http://proiot.ru/blog/tag/ajax">AJAX</a> </p>
 </footer><!-- /.post-info --><p>Используя подсказки в процессе ввода <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">поискового</a> запроса можно быстрее искать нужную информацию. Поисковые подсказки - это схожие с вашим запросом термины. Они появляются на экране по мере того, как вы вводите в строку поиска запрос. Для данного процесса критически важна скорость реакции на ввод пользователя, поэтому на серверной части ускорить процесс поможет специально заточенный индекс / модель данных, а на стороне клиента неплохо бы использовать <a href="https://ru.wikipedia.org/wiki/AJAX" rel="nofollow">AJAX</a> дабы не перезагружать каждый раз HTML-страницу целиком при изменении поискового запроса. На картинке показан результат работы алгоритма <a href="https://lucene.apache.org/core/6_0_0/suggest/org/apache/lucene/search/suggest/analyzing/AnalyzingSuggester.html" rel="nofollow">AnalyzingSuggester</a>, который можно запустить скачав исходники в конце текущего материала.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/suggest.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/suggest.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Первым делом нужно добавить в мульти-модульный <strong>maven</strong> проект новую зависимость <code>lucene-suggest</code>:</p>
 <p><em>src/pom.xml</em></p>
 <div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 
@@ -344,7 +344,7 @@
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

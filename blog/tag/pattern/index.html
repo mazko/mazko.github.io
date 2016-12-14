@@ -51,7 +51,7 @@
 <h3>Определение</h3>
 <p>С чего начать ? Начнём с определения. Официальная формулировка паттерна <em>Состояние</em> (<em>State</em>) от <a href="http://ru.wikipedia.org/wiki/Design_Patterns" rel="nofollow">Банды Четырёх</a> звучит так: "<em>Позволяет объекту варьировать свое поведение в зависимости от внутреннего состояния. Из­вне создается впечатление, что изменился класс объекта</em>".</p>
 <p>В <strong>С</strong> конечно нету классов, но пока для простоты можно считать что класс и модуль (файл) в нашем примере одно и тоже. Теперь попробуем набросать <a href="http://ru.wikipedia.org/wiki/UML" rel="nofollow">UML</a> - диаграмму для нашей гирлянды (если вы не очень сильны в <em>UML</em>, не волнуйтесь - я тоже):</p>
-<p><img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/UML.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/UML.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Изначально <em>UML</em> создавался с прицелом на <em>ООП</em>, поэтому "сишник" взглянув на данный рисунок может испугаться раньше времени. Не стоит волноваться, мы не будем погружаться в такую тёмную сторону <strong>С</strong> как <a href="http://www.cs.rit.edu/~ats/books/ooc.pdf" rel="nofollow">эмуляция</a> наследования или виртуальных функций. Этим должен заниматься компилятор. Самое время представить участников паттерна <em>State</em>:</p>
 <ul>
 <li>
@@ -400,7 +400,7 @@ GarlandContext.c HAL.c
 
 
 <p>После добавления ошибок на этапе выполнения можно наблюдать следующую картинку (<code>signalError</code> реализована в модуле HAL - выводит диагностические сообщения в <em>UART</em>. Эмуляция в  <em>Proteus VSM</em> ):</p>
-<p><img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternDebug.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternDebug.png" style="width:100%; border:1px solid #ddd;"></p>
 <h3>Вариации шаблона State</h3>
 <p>В рассмотренном нами примере переключением состояния занимаются сами <em>состояния</em>. Экземпляр состояния хранится в <em>контексте</em> (переменная <code>_garlandState</code>). Что можно переделать:</p>
 <ul>
@@ -573,7 +573,7 @@ GarlandContext.c HAL.c
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
-</footer><!-- /.post-info -->                <p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться ...</p>
+</footer><!-- /.post-info -->                <p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -595,7 +595,7 @@ GarlandContext.c HAL.c
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
-</footer><!-- /.post-info -->                <p><em>Шаблоны проектирования</em>, они же просто <a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow">паттерны</a>, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются <strong>идиомами</strong>, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот <strong>идиом</strong> в чистом <strong>С</strong> (<em>ANSI C</em>), по большей части это вольный перевод <a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow">Idiomatic Expressions in C</a> от ...</p>
+</footer><!-- /.post-info -->                <p><em>Шаблоны проектирования</em>, они же просто <a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow">паттерны</a>, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются <strong>идиомами</strong>, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот <strong>идиом</strong> в чистом <strong>С</strong> (<em>ANSI C</em>), по большей части это вольный перевод <a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow">Idiomatic Expressions in C</a> от …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -603,7 +603,7 @@ GarlandContext.c HAL.c
                 </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

@@ -70,7 +70,7 @@
 
 
 <p><a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple.sch">простейший каскад с ОК</a> | <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple.net">netlist</a> | <a href="https://ngspice.js.org/?gist=5ce99532a7aa87358fcdfc949e821a94">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/show-img-simple.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/show-img-simple.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source simple.net
 ngspice 2 -&gt; set temp=0
 ngspice 3 -&gt; dc vin 0 11 0.1
@@ -93,7 +93,7 @@ ngspice 14 -&gt; show q1
 <p>Усиление по току <a href="https://bc.js.org/">≈ 227</a> <code>(0.00828277-0.000373456)/(3.71691*10^-05-2.29529*10^-06)</code> <a href="https://bc.js.org/">≈ 47 дБ</a> <code>20*log(227)=20*l(227)/l(10)</code> или исходя из <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">первого закона Кирхгофа</a> <code>Ie/Ib = (Ic + Ib)/Ib = β + 1</code></p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">Входное</a> сопротивление <a href="https://bc.js.org/">≈ 230 кОм</a> <code>(9-1)/(3.71691*10^-05-2.29529*10^-06)</code> или упрощённо <code>β*R = (227-1)*1000 ≈ 230 кОм</code></p>
 <p>Выходное сопротивление очевидно ≈ R ≈ 1 кОм (42 Ом)</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple-canvas.png" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/simple-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>По аналогии с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> для того тобы усиливать переменный (синусоидальный) сигнал в схему обычно добавляют гальваническую развязку по входу и напряжение смещения.</p>
 <p><a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">Далее</a> усилительный каскад с общей базой.</p>
     </div><!-- /.entry-content -->
@@ -117,7 +117,7 @@ ngspice 14 -&gt; show q1
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>

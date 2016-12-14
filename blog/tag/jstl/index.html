@@ -41,7 +41,7 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">maven</a> <a href="http://proiot.ru/blog/tag/jstl">JSTL</a> </p>
 </footer><!-- /.post-info --><p>После того, как пользователь получает первые результаты <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый последующий запрос пользователя сужает выборку до тех пор пока цель поиска не будет достигнута.</p>
 <p>В файле <code>Top.json</code> хранится ~15k дамп фильмов с кинопоиска на май 2016, на котором будем тестировать качество фасетного поиска. В дампе хранится оценка, название, id, актёры, режиссёры, композиторы, жанр, дата выхода, страна производитель, слоган и краткое описание для каждого фильма.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/facet.gif" style="width:100%; border:1px solid #ddd;" /></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/facet.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Структура мульти-модульного <strong>maven</strong> проекта, где в корневом <code>pom.xml</code> обозначена общая зависимость от Lucene, а также указана минимальная версия Java 1.8 и выше:</p>
 <div class="highlight"><pre><span></span>~$ tree
 .
@@ -718,7 +718,7 @@
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
-                        <h2>blogroll</h2>
+                        <h2>links</h2>
                         <ul>
                             <li><a href="http://getpelican.com/">Pelican</a></li>
                             <li><a href="http://python.org/">Python.org</a></li>
