@@ -5,8 +5,9 @@
     ~$ virtualenv ~/virtualenvs/pelican
     ~$ cd ~/virtualenvs/pelican && . bin/activate ; cd -
     ~$ pip install pelican markdown
+    ~$ git clone -b src https://github.com/mazko/mazko.github.io.git
     ~$ cd mazko.github.io
-    ~$ pelican content && \
+    ~$ pelican --fatal warnings content && \
          [[ "`ls -A -1 -I 'index?*.html' output/ | cksum`" == "1224166325 28" ]] && \
          bash -c 'cd output/ && python -m pelican.server'
 
