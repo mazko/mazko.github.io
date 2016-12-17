@@ -1,4 +1,4 @@
-title: NGSPICE.js - преобразование напряжения в скважность
+title: NGSPICE.js - скважность управляемая напряжением
 category: Embedded 
 tags: gEDA, ngspice, ОУ, ШИМ
 
