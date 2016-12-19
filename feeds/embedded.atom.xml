@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2016-12-13T00:00:00+02:00</updated><entry><title>NGSPICE.js - интегральные таймеры</title><link href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/" rel="alternate"></link><published>2016-12-13T00:00:00+02:00</published><updated>2016-12-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-13:/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2016-12-18T00:00:00+02:00</updated><entry><title>NGSPICE.js - логические вентили</title><link href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/" rel="alternate"></link><published>2016-12-18T00:00:00+02:00</published><updated>2016-12-18T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-18:/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Аналоговый сигнал изменяется непрерывно - аналогично физической величине и может принимать любые значения в любой момент времени. Дискретный сигнал имеет конечное число значений. Обычно цифровой сигнал может принимать только два дискретных значения 0 и 1 - например за ноль принимается уровень напряжения в пределах от 0 до 0,5 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;Аналоговый сигнал изменяется непрерывно - аналогично физической величине и может принимать любые значения в любой момент времени. Дискретный сигнал имеет конечное число значений. Обычно цифровой сигнал может принимать только два дискретных значения 0 и 1 - например за ноль принимается уровень напряжения в пределах от 0 до 0,5 В, а всё что выше считается единицей. На этапе преобразования аналогового сигнала в цифровой физическая величина фиксируются только в определённые моменты времени и только в определённых пределах (ограниченных разрядностью) и в результате неизбежно происходит какая-то частичная потеря информации, однако цифровые сигналы на порядок лучше защищены от действия шумов, наводок и помех, ведь что 0.1 В, что 0.3 В это ведь всё тот же 0. Поведение цифровых устройств всегда можно абсолютно точно рассчитать и предсказать математически с помощью Булевой алгебры. В основе данной алгебраической системы лежат следующие функции: конъюнкция (логическое умножение, оператор «AND»), дизъюнкция (логическое сложение, оператор «OR») и отрицание (оператор «NOT»). Цифровые схемы, реализующие эти функции принято называть логическими вентилями.&lt;/p&gt;
+&lt;p&gt;Подавляющее большинство современных логических микросхем, в том числе процессоров, используют КМОП (CMOS) технологию на &lt;a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/"&gt;полевых&lt;/a&gt; транзисторах, т.к. она выгодно выделяется очень малым энергопотреблением на фоне других обитателей зоопарка (ТТЛ, ДТЛ, РТЛ, ЭСЛ и т.д.).&lt;/p&gt;
+&lt;p&gt;В следующих схемах для симуляции использовались SPICE модели комплементарных &lt;a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/"&gt;MOSFET&lt;/a&gt; транзисторов: &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/pMOSe.txt"&gt;p-канал&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nMOSe.txt"&gt;n-канал&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/logic-gate.sch"&gt;КМОП вентили&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/logic-gate.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=97f3ffa9bf4ef930231b1efb3fe04c58"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/show-img-logic-gate.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source logic-gate.net
+ngspice 2 -&amp;gt; dc v2 0 3 3 v3 0 3 3
+ngspice 3 -&amp;gt; print in1 in2 nor
+ngspice 4 -&amp;gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(nor-0.5,0)/2.5)
+ngspice 5 -&amp;gt; print in1 in2 nand
+ngspice 6 -&amp;gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(nand-0.5,0)/2.5)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;На схеме слева вентиль ИЛИ-НЕ, а рядом И-НЕ. Поскольку маломощные полевые транзисторы очень чувствительны к статистическому электричеству, на входах дополнительно ставят ограничительные диоды, которые на логику не влияют. Ещё если присмотреться, то очевидно &lt;a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/"&gt;входное&lt;/a&gt; сопротивление транзистора Q7 &amp;gt; Q8 (ровно как и Q2 &amp;gt; Q1) и для симметрии подложку Q7(Q2) можно было бы соединить с подложкой Q8(Q1). Но с учётом очень большого входного сопротивления у полевых транзисторов в учебных целях асимметрией можно спокойно пренебречь. Таблица истинности:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;---------------------------------------------------------------------------------
+Index             in1                 in2                 nor                nand
+---------------------------------------------------------------------------------
+0        0.000000e+00        0.000000e+00        1.000000e+00        1.000000e+00
+1        1.000000e+00        0.000000e+00        0.000000e+00        1.000000e+00
+2        0.000000e+00        1.000000e+00        0.000000e+00        1.000000e+00
+3        1.000000e+00        1.000000e+00        0.000000e+00        0.000000e+00
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вентили ИЛИ-НЕ, И-НЕ являются универсальными и взаимозаменяемыми - при наличии достаточного их количества можно синтезировать любую логику. Для дальнейших экспериментов удобно вынести каждый вентиль в отдельную подсхему SUBCKT.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;nand.lib&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;.SUBCKT NAND IN1 IN2 OUT Vcc GND
+.model nMOSe nmos (vto=1)
+.model pMOSe pmos (vto=-1)
+MQ7 OUT IN1 2 2 nMOSe
+MQ8 2 IN2 GND GND nMOSe
+MQ6 OUT IN2 Vcc Vcc pMOSe
+MQ5 OUT IN1 Vcc Vcc pMOSe
+.ENDS NAND
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;nor.lib&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;.SUBCKT NOR IN1 IN2 OUT Vcc GND
+.model nMOSe nmos (vto=1)
+.model pMOSe pmos (vto=-1)
+MQ3 OUT IN2 GND GND nMOSe
+MQ4 OUT IN1 GND GND nMOSe
+MQ1 1 IN2 Vcc Vcc pMOSe
+MQ2 OUT IN1 1 1 pMOSe
+.ENDS NOR
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;!-- 
+&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nand42.sym"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nor42.sym"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nor.lib"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nand.lib"&gt;&lt;/a&gt;
+--&gt;
+
+&lt;!-- 
+sudo cp nor42.sym nand42.sym /usr/share/gEDA/sym/local/
+--&gt;
+
+&lt;p&gt;Правила де Моргана в краткой форме - &lt;em&gt;отрицание конъюнкции есть дизъюнкция отрицаний, отрицание дизъюнкции есть конъюнкция отрицаний&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/demorgan.sch"&gt;правила де Моргана&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/demorgan.net"&gt;netlist&lt;/a&gt; | &lt;a href="https://ngspice.js.org/?gist=03e138a7ac3b861e69b685358b862539"&gt;ngspice.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/show-img-demorgan.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ngspice 1 -&amp;gt; source demorgan.net
+ngspice 2 -&amp;gt; dc v2 0 3 3 v3 0 3 3
+ngspice 3 -&amp;gt; print in1 in2 &amp;quot;or&amp;quot;
+ngspice 4 -&amp;gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(&amp;quot;or&amp;quot;-0.5,0)/2.5)
+ngspice 5 -&amp;gt; print in1 in2 &amp;quot;and&amp;quot;
+ngspice 6 -&amp;gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(&amp;quot;and&amp;quot;-0.5,0)/2.5)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Как ни странно таблица истинности подтверждает справедливость правил Моргана в действии:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;---------------------------------------------------------------------------------
+Index             in1                 in2                  or                 and
+---------------------------------------------------------------------------------
+0        0.000000e+00        0.000000e+00        0.000000e+00        0.000000e+00
+1        1.000000e+00        0.000000e+00        1.000000e+00        0.000000e+00
+2        0.000000e+00        1.000000e+00        1.000000e+00        0.000000e+00
+3        1.000000e+00        1.000000e+00        1.000000e+00        1.000000e+00
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Далее триггеры.&lt;/p&gt;</content><category term="gEDA"></category><category term="ngspice"></category><category term="gate"></category></entry><entry><title>NGSPICE.js - интегральные таймеры</title><link href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/" rel="alternate"></link><published>2016-12-13T00:00:00+02:00</published><updated>2016-12-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-13:/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Первые микросхемы интегральных таймеров появились в 1971 г. и были представлены фирмой Signetics Corporation (SE555 и NE555), позволяя формировать достаточно точные временные интервалы путём добавления времязадающих резисторов и конденсаторов. Интегральные таймеры сочетают в себе как элементы аналоговой схемотехники - &lt;a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/"&gt;компараторы&lt;/a&gt;, так и цифровой - триггеры. В настоящее время существует …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;Первые микросхемы интегральных таймеров появились в 1971 г. и были представлены фирмой Signetics Corporation (SE555 и NE555), позволяя формировать достаточно точные временные интервалы путём добавления времязадающих резисторов и конденсаторов. Интегральные таймеры сочетают в себе как элементы аналоговой схемотехники - &lt;a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/"&gt;компараторы&lt;/a&gt;, так и цифровой - триггеры. В настоящее время существует две разновидности 555-таймеров - классические, изготовленные на основе &lt;a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/"&gt;биполярных&lt;/a&gt; транзисторов, и их современные аналоги с меньшим энергопотреблением на &lt;a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/"&gt;полевых&lt;/a&gt; транзисторах. Несмотря на различия в принципиальных схемах и технологиях изготовления 555-таймеров от различных производителей все они полностью совместимы по номерам и назначению выводов и работают аналогично. На блок-схеме классического 555-таймера  присутствует делитель напряжения из трёх последовательных резисторов 5 кОм - отсюда и название 555. В современных модификациях на полевых транзисторах номиналы сопротивлений могут отличаться.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/LM555_diagram.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
@@ -71,7 +157,8 @@ ngspice 3 -&amp;gt; plot v(out)
 
 &lt;p&gt;В отличие от мультивибратора на &lt;a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/"&gt;транзисторах&lt;/a&gt; на выходе имеем чёткие прямоугольные импульсы правильной формы. Частота колебаний &lt;code&gt;f = 1/(ln(2)*C*(Ra+2*Rb)) = 1/(l(2)*0.15*10^-6*(5000+2*3000)) ≈ 874 Гц&lt;/code&gt; | &lt;code&gt;HIGH = ln(2)*C*(Ra+Rb) = l(2)*0.15*10^-6*(5000+3000) ≈ 0.83 мс&lt;/code&gt; | &lt;code&gt;LOW = ln(2)*C*Rb = l(2)*0.15*10^-6*3000 ≈ 0.31 мс&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/astable-canvas.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;p&gt;P.S. в документации к TLC555 нагрузку R подключают к Vdd а не к земле. &lt;/p&gt;</content><category term="gEDA"></category><category term="ngspice"></category><category term="555"></category></entry><entry><title>NGSPICE.js - импульсные преобразователи напряжения</title><link href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/" rel="alternate"></link><published>2016-12-07T00:00:00+02:00</published><updated>2016-12-07T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-07:/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
+&lt;p&gt;P.S. в документации к TLC555 нагрузку R подключают к Vdd а не к земле.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/"&gt;Далее&lt;/a&gt; цифровая электроника.&lt;/p&gt;</content><category term="gEDA"></category><category term="ngspice"></category><category term="555"></category></entry><entry><title>NGSPICE.js - импульсные преобразователи напряжения</title><link href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/" rel="alternate"></link><published>2016-12-07T00:00:00+02:00</published><updated>2016-12-07T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-07:/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;В импульсных преобразователях входное напряжение нарезается порциями - импульсами c заданной &lt;a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/"&gt;скважностью&lt;/a&gt; и чем меньше скважность тем большая часть энергии попадёт на выход. Если импульсы прямоугольной формы, то силовая часть схемы работает в ключевом режиме т.е. находится либо в режиме отсечки, когда сопротивление максимально, либо в режиме …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE.&lt;/p&gt;
 &lt;p&gt;В импульсных преобразователях входное напряжение нарезается порциями - импульсами c заданной &lt;a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/"&gt;скважностью&lt;/a&gt; и чем меньше скважность тем большая часть энергии попадёт на выход. Если импульсы прямоугольной формы, то силовая часть схемы работает в ключевом режиме т.е. находится либо в режиме отсечки, когда сопротивление максимально, либо в режиме насыщения - с минимальным сопротивлением. Рассеиваемая мощность на ключе &lt;code&gt;P = I*U = 0*I = 0*U = 0&lt;/code&gt; и выходит что у идеальных импульсных преобразователей коэффициент полезного действия (КПД) стремится к 100%. Сглаживание пульсаций выходного напряжения происходит благодаря наличию интегрирующих элементов, способных накапливать электрическую энергию и отдавать её в нагрузку. Если сравнивать импульсные преобразователи с &lt;a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/"&gt;линейными&lt;/a&gt; то первые как правило имеют большие размеры и больше шумят, но при этом обеспечивают значительно лучший КПД. Что интересно, импульсные преобразователи умеют не только понижать напряжение, но и повышать его !&lt;/p&gt;
 &lt;!-- 

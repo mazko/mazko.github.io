@@ -1,0 +1,8 @@
+.SUBCKT NAND IN1 IN2 OUT Vcc GND
+.model nMOSe nmos (vto=1)
+.model pMOSe pmos (vto=-1)
+MQ7 OUT IN1 2 2 nMOSe 
+MQ8 2 IN2 GND GND nMOSe 
+MQ6 OUT IN2 Vcc Vcc pMOSe 
+MQ5 OUT IN1 Vcc Vcc pMOSe 
+.ENDS NAND
