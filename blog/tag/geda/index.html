@@ -28,7 +28,76 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">NGSPICE.js - логические вентили</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">NGSPICE.js - триггеры как элементы памяти</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-12-20T00:00:00+02:00">
+                Published: Вт. 20 Декабрь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/gate">gate</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE в целом и <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">цифровую</a> схемотехнику в частности.</p>
+<p>Триггер (бистабильный мультивибратор) выполняет <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">логическую</a> функцию с обратной связью, в следствие которой имеет только два устойчивых состояния и способен под действием входных сигналов скачком переходить из одного устойчивого состояния в другое. Важной особенностью триггера как функционального устройства является способность оставаться в одном из двух состояний и по окончании действия переключающего сигнала. Приняв одно из состояний за «1», а другое за «0», можно считать, что триггер хранит (помнит) один разряд числа, записанного в двоичной форме и таким образом является элементарной битовой ячейкой для хранения двоичной информации. Такую память называют статической поскольку данные сохраняются только пока есть питание. При включении питания триггер с какой-то степенью  вероятности принимает одно из двух возможных состояний и поэтому для первоначальной установки триггера в требуемое исходное состояние обычно предусматривается дополнительный механизм аппаратного сброса.</p>
+<p>В следующих схемах для симуляции использовались SPICE модели логических <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">вентилей</a>: <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nor.lib">ИЛИ-НЕ</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nand.lib">И-НЕ</a>.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nand42.sym"></a>
+<a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nor42.sym"></a>
+-->
+
+<!-- 
+sudo cp nor42.sym nand42.sym /usr/share/gEDA/sym/local/
+-->
+
+<p><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/rs.sch">RS-триггер</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/rs.net">netlist</a> | <a href="https://ngspice.js.org/?gist=56043bc5c92e810905fe7f0c7c9d05e8">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/show-img-rs.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source rs.net
+ngspice 2 -&gt; tran 5m 5
+ngspice 3 -&gt; plot reset+3.5 set+7 q
+</pre></div>
+
+
+<p>RS-триггер является базовым при создании более сложных триггеров. В простейшем случае RS-триггер имеет два входа: S (Set) - вход установки триггера в единичное состояние, R (Reset) - вход установки триггера в нулевое состояние. В нормальном режиме выход nQ является инверсным по отношению к Q. Активный сигнал по входу S в момент появления (говорят по переднему фронту) заставляет выход Q перейти в единичное состояние. Активный сигнал по входу R переводит Q в нулевое состояние. При нулевом сигнале на обоих входах триггер хранит предыдущее состояние, а вот логика, при которой на оба входа R и S одновременно поданы логические единицы зависит от реализации RS-триггера - в приведенной схеме оба выхода перестают быть инверсными и переходят в состояние логического «0», однако данное состояние является неустойчивым и переходит в одно из устойчивых состояний при снятии управляющего сигнала с одного из входов.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/rs-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>RS-триггер, основанный на И-НЕ вентилях ведёт себя аналогично, только переключение происходит при логическом «0» на каком-либо из входов, а комбинация «0» на обоих входах порождает провалы в памяти. Избежать нежелательную логику позволяет нехитрый D-триггер:</p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d.sch">D-триггер</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d.net">netlist</a> | <a href="https://ngspice.js.org/?gist=4c52e4ee25294c4321a8cb554e4a9591">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/show-img-d.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source d.net
+ngspice 2 -&gt; tran 9m 9
+ngspice 3 -&gt; plot clock+3.5 data+7 q
+</pre></div>
+
+
+<p>В D-триггере бит данных поступает на информационный вход Data, а для осуществления записи данных необходимо подать импульс синхронизации Clock и поэтому подобные триггеры ещё называют тактируемыми (синхронными).</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Приведенная схемы D-триггера также известна под названием «прозрачный фиксатор», т.к. выход Q насквозь просматривает (повторяет) информационный вход Data в течение интервала действия тактового сигнала (8 секунда на картинке). В некоторых случаях такая прозрачность нежелательна и тогда применяют двухступенчатые D-триггеры.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-master-slave.sch">двухступенчатый D-триггер</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-master-slave.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ad5bb0c4d5c93b521ff59cd6bbb619c4">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/show-img-d-master-slave.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source d-master-slave.net
+ngspice 2 -&gt; tran 10m 10
+ngspice 3 -&gt; plot clock+3.5 data+7 q
+</pre></div>
+
+
+<p>Двухступенчатый D-триггер состоит из двух синхронных триггеров - RS-триггера на вентилях U7-U10 и D-триггера на U1-U5. D-триггер является ведущим (master), а второй ведомым (slave).</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-master-slave-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>При нуле на Clock ведущий триггер работает как «прозрачный фиксатор» и записывает/повторяет данные на входе Data, тогда как на ведомом отключён режим записи и он просто хранит своё предыдущее состояние. По переднему фронту на Clock теперь уже запись на ведущем отключена, он хранит своё предыдущее состояние, а ведомый в свою очередь копирует данные от ведущего. До тех пор пока на Clock продолжает действовать логическая единица уровень на Data не имеет значения (8 секунда на картинке). Что же произойдёт по заднему фронту Clock ? На картинке это 9 секунда, при этом на Data приходит уровень единицы. Выходит так что запись заблокируется на ведомом раньше, чем ведущий успеет переключиться.</p>
+<p>Далее цифровые счётчики.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - логические вентили">NGSPICE.js - логические вентили</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-12-18T00:00:00+02:00">
                 Published: Вс. 18 Декабрь 2016
@@ -39,97 +108,11 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/gate">gate</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>Аналоговый сигнал изменяется непрерывно - аналогично физической величине и может принимать любые значения в любой момент времени. Дискретный сигнал имеет конечное число значений. Обычно цифровой сигнал может принимать только два дискретных значения 0 и 1 - например за ноль принимается уровень напряжения в пределах от 0 до 0,5 В, а всё что выше считается единицей. На этапе преобразования аналогового сигнала в цифровой физическая величина фиксируются только в определённые моменты времени и только в определённых пределах (ограниченных разрядностью) и в результате неизбежно происходит какая-то частичная потеря информации, однако цифровые сигналы на порядок лучше защищены от действия шумов, наводок и помех, ведь что 0.1 В, что 0.3 В это ведь всё тот же 0. Поведение цифровых устройств всегда можно абсолютно точно рассчитать и предсказать математически с помощью Булевой алгебры. В основе данной алгебраической системы лежат следующие функции: конъюнкция (логическое умножение, оператор «AND»), дизъюнкция (логическое сложение, оператор «OR») и отрицание (оператор «NOT»). Цифровые схемы, реализующие эти функции принято называть логическими вентилями.</p>
-<p>Подавляющее большинство современных логических микросхем, в том числе процессоров, используют КМОП (CMOS) технологию на <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/">полевых</a> транзисторах, т.к. она выгодно выделяется очень малым энергопотреблением на фоне других обитателей зоопарка (ТТЛ, ДТЛ, РТЛ, ЭСЛ и т.д.).</p>
-<p>В следующих схемах для симуляции использовались SPICE модели комплементарных <a href="http://proiot.ru/blog/posts/2016/11/03/ngspicejs-polevoi-tranzistor/">MOSFET</a> транзисторов: <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/pMOSe.txt">p-канал</a> | <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nMOSe.txt">n-канал</a>.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/logic-gate.sch">КМОП вентили</a> | <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/logic-gate.net">netlist</a> | <a href="https://ngspice.js.org/?gist=97f3ffa9bf4ef930231b1efb3fe04c58">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/show-img-logic-gate.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source logic-gate.net
-ngspice 2 -&gt; dc v2 0 3 3 v3 0 3 3
-ngspice 3 -&gt; print in1 in2 nor
-ngspice 4 -&gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(nor-0.5,0)/2.5)
-ngspice 5 -&gt; print in1 in2 nand
-ngspice 6 -&gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(nand-0.5,0)/2.5)
-</pre></div>
-
-
-<p>На схеме слева вентиль ИЛИ-НЕ, а рядом И-НЕ. Поскольку маломощные полевые транзисторы очень чувствительны к статистическому электричеству, на входах дополнительно ставят ограничительные диоды, которые на логику не влияют. Ещё если присмотреться, то очевидно <a href="http://proiot.ru/blog/posts/2016/11/09/ngspicejs-usilitelnyi-kaskad-s-obshchim-kollektorom/">входное</a> сопротивление транзистора Q7 &gt; Q8 (ровно как и Q2 &gt; Q1) и для симметрии подложку Q7(Q2) можно было бы соединить с подложкой Q8(Q1). Но с учётом очень большого входного сопротивления у полевых транзисторов в учебных целях асимметрией можно спокойно пренебречь. Таблица истинности:</p>
-<div class="highlight"><pre><span></span>---------------------------------------------------------------------------------
-Index             in1                 in2                 nor                nand
----------------------------------------------------------------------------------
-0        0.000000e+00        0.000000e+00        1.000000e+00        1.000000e+00
-1        1.000000e+00        0.000000e+00        0.000000e+00        1.000000e+00
-2        0.000000e+00        1.000000e+00        0.000000e+00        1.000000e+00
-3        1.000000e+00        1.000000e+00        0.000000e+00        0.000000e+00
-</pre></div>
-
-
-<p>Вентили ИЛИ-НЕ, И-НЕ являются универсальными и взаимозаменяемыми - при наличии достаточного их количества можно синтезировать любую логику. Для дальнейших экспериментов удобно вынести каждый вентиль в отдельную подсхему SUBCKT.</p>
-<p><em>nand.lib</em></p>
-<div class="highlight"><pre><span></span>.SUBCKT NAND IN1 IN2 OUT Vcc GND
-.model nMOSe nmos (vto=1)
-.model pMOSe pmos (vto=-1)
-MQ7 OUT IN1 2 2 nMOSe
-MQ8 2 IN2 GND GND nMOSe
-MQ6 OUT IN2 Vcc Vcc pMOSe
-MQ5 OUT IN1 Vcc Vcc pMOSe
-.ENDS NAND
-</pre></div>
-
-
-<p><em>nor.lib</em></p>
-<div class="highlight"><pre><span></span>.SUBCKT NOR IN1 IN2 OUT Vcc GND
-.model nMOSe nmos (vto=1)
-.model pMOSe pmos (vto=-1)
-MQ3 OUT IN2 GND GND nMOSe
-MQ4 OUT IN1 GND GND nMOSe
-MQ1 1 IN2 Vcc Vcc pMOSe
-MQ2 OUT IN1 1 1 pMOSe
-.ENDS NOR
-</pre></div>
-
-
-<!-- 
-<a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nand42.sym"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nor42.sym"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nor.lib"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/nand.lib"></a>
--->
-
-<!-- 
-sudo cp nor42.sym nand42.sym /usr/share/gEDA/sym/local/
--->
-
-<p>Правила де Моргана в краткой форме - <em>отрицание конъюнкции есть дизъюнкция отрицаний, отрицание дизъюнкции есть конъюнкция отрицаний</em>.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/demorgan.sch">правила де Моргана</a> | <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/demorgan.net">netlist</a> | <a href="https://ngspice.js.org/?gist=03e138a7ac3b861e69b685358b862539">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/show-img-demorgan.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source demorgan.net
-ngspice 2 -&gt; dc v2 0 3 3 v3 0 3 3
-ngspice 3 -&gt; print in1 in2 &quot;or&quot;
-ngspice 4 -&gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(&quot;or&quot;-0.5,0)/2.5)
-ngspice 5 -&gt; print in1 in2 &quot;and&quot;
-ngspice 6 -&gt; print ceil(max(in1-0.5,0)/2.5) ceil(max(in2-0.5,0)/2.5) ceil(max(&quot;and&quot;-0.5,0)/2.5)
-</pre></div>
-
-
-<p>Как ни странно таблица истинности подтверждает справедливость правил Моргана в действии:</p>
-<div class="highlight"><pre><span></span>---------------------------------------------------------------------------------
-Index             in1                 in2                  or                 and
----------------------------------------------------------------------------------
-0        0.000000e+00        0.000000e+00        0.000000e+00        0.000000e+00
-1        1.000000e+00        0.000000e+00        1.000000e+00        0.000000e+00
-2        0.000000e+00        1.000000e+00        1.000000e+00        0.000000e+00
-3        1.000000e+00        1.000000e+00        1.000000e+00        1.000000e+00
-</pre></div>
-
-
-<p>Далее триггеры.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>Аналоговый сигнал изменяется непрерывно - аналогично физической величине и может принимать любые значения в любой момент времени. Дискретный сигнал имеет конечное число значений. Обычно цифровой сигнал может принимать только два дискретных значения 0 и 1 - например за ноль принимается уровень напряжения в пределах от 0 до 0,5 …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -149,7 +132,7 @@ Index             in1                 in2                  or                 an
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/555">555</a> </p>
 </footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>Первые микросхемы интегральных таймеров появились в 1971 г. и были представлены фирмой Signetics Corporation (SE555 и NE555), позволяя формировать достаточно точные временные интервалы путём добавления времязадающих резисторов и конденсаторов. Интегральные таймеры сочетают в себе как элементы аналоговой схемотехники - <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компараторы</a>, так и цифровой - триггеры. В настоящее время существует …</p>
+<p>Первые микросхемы интегральных таймеров появились в 1971 г. и были представлены фирмой Signetics Corporation (SE555 и NE555), позволяя формировать достаточно точные временные интервалы путём добавления времязадающих резисторов и конденсаторов. Интегральные таймеры сочетают в себе как элементы аналоговой схемотехники - <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компараторы</a>, так и цифровой - <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">триггеры</a>. В настоящее время существует …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
@@ -199,32 +182,9 @@ Index             in1                 in2                  or                 an
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - скважность управляемая напряжением">NGSPICE.js - скважность управляемая напряжением</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-05T00:00:00+02:00">
-                Published: Пн. 05 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
-<p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 5
+    Page 1 / 6
         <a href="http://proiot.ru/blog/tag/geda/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->

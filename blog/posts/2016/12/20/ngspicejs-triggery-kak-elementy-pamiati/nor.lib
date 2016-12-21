@@ -1,0 +1,8 @@
+.SUBCKT NOR IN1 IN2 OUT Vcc GND
+.model nMOSe nmos (vto=1)
+.model pMOSe pmos (vto=-1)
+MQ3 OUT IN2 GND GND nMOSe
+MQ4 OUT IN1 GND GND nMOSe
+MQ1 1 IN2 Vcc Vcc pMOSe
+MQ2 OUT IN1 1 1 pMOSe
+.ENDS NOR

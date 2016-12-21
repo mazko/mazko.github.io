@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>NGSPICE.js - триггеры как элементы памяти</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/" rel="bookmark"
+           title="Permalink to NGSPICE.js - триггеры как элементы памяти">NGSPICE.js - триггеры как элементы памяти</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-12-20T00:00:00+02:00">
+                Published: Вт. 20 Декабрь 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/gate">gate</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE в целом и <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">цифровую</a> схемотехнику в частности.</p>
+<p>Триггер (бистабильный мультивибратор) выполняет <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">логическую</a> функцию с обратной связью, в следствие которой имеет только два устойчивых состояния и способен под действием входных сигналов скачком переходить из одного устойчивого состояния в другое. Важной особенностью триггера как функционального устройства является способность оставаться в одном из двух состояний и по окончании действия переключающего сигнала. Приняв одно из состояний за «1», а другое за «0», можно считать, что триггер хранит (помнит) один разряд числа, записанного в двоичной форме и таким образом является элементарной битовой ячейкой для хранения двоичной информации. Такую память называют статической поскольку данные сохраняются только пока есть питание. При включении питания триггер с какой-то степенью  вероятности принимает одно из двух возможных состояний и поэтому для первоначальной установки триггера в требуемое исходное состояние обычно предусматривается дополнительный механизм аппаратного сброса.</p>
+<p>В следующих схемах для симуляции использовались SPICE модели логических <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">вентилей</a>: <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nor.lib">ИЛИ-НЕ</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nand.lib">И-НЕ</a>.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nand42.sym"></a>
+<a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/nor42.sym"></a>
+-->
+
+<!-- 
+sudo cp nor42.sym nand42.sym /usr/share/gEDA/sym/local/
+-->
+
+<p><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/rs.sch">RS-триггер</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/rs.net">netlist</a> | <a href="https://ngspice.js.org/?gist=56043bc5c92e810905fe7f0c7c9d05e8">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/show-img-rs.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source rs.net
+ngspice 2 -&gt; tran 5m 5
+ngspice 3 -&gt; plot reset+3.5 set+7 q
+</pre></div>
+
+
+<p>RS-триггер является базовым при создании более сложных триггеров. В простейшем случае RS-триггер имеет два входа: S (Set) - вход установки триггера в единичное состояние, R (Reset) - вход установки триггера в нулевое состояние. В нормальном режиме выход nQ является инверсным по отношению к Q. Активный сигнал по входу S в момент появления (говорят по переднему фронту) заставляет выход Q перейти в единичное состояние. Активный сигнал по входу R переводит Q в нулевое состояние. При нулевом сигнале на обоих входах триггер хранит предыдущее состояние, а вот логика, при которой на оба входа R и S одновременно поданы логические единицы зависит от реализации RS-триггера - в приведенной схеме оба выхода перестают быть инверсными и переходят в состояние логического «0», однако данное состояние является неустойчивым и переходит в одно из устойчивых состояний при снятии управляющего сигнала с одного из входов.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/rs-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>RS-триггер, основанный на И-НЕ вентилях ведёт себя аналогично, только переключение происходит при логическом «0» на каком-либо из входов, а комбинация «0» на обоих входах порождает провалы в памяти. Избежать нежелательную логику позволяет нехитрый D-триггер:</p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d.sch">D-триггер</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d.net">netlist</a> | <a href="https://ngspice.js.org/?gist=4c52e4ee25294c4321a8cb554e4a9591">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/show-img-d.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source d.net
+ngspice 2 -&gt; tran 9m 9
+ngspice 3 -&gt; plot clock+3.5 data+7 q
+</pre></div>
+
+
+<p>В D-триггере бит данных поступает на информационный вход Data, а для осуществления записи данных необходимо подать импульс синхронизации Clock и поэтому подобные триггеры ещё называют тактируемыми (синхронными).</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Приведенная схемы D-триггера также известна под названием «прозрачный фиксатор», т.к. выход Q насквозь просматривает (повторяет) информационный вход Data в течение интервала действия тактового сигнала (8 секунда на картинке). В некоторых случаях такая прозрачность нежелательна и тогда применяют двухступенчатые D-триггеры.</p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-master-slave.sch">двухступенчатый D-триггер</a> | <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-master-slave.net">netlist</a> | <a href="https://ngspice.js.org/?gist=ad5bb0c4d5c93b521ff59cd6bbb619c4">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/show-img-d-master-slave.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source d-master-slave.net
+ngspice 2 -&gt; tran 10m 10
+ngspice 3 -&gt; plot clock+3.5 data+7 q
+</pre></div>
+
+
+<p>Двухступенчатый D-триггер состоит из двух синхронных триггеров - RS-триггера на вентилях U7-U10 и D-триггера на U1-U5. D-триггер является ведущим (master), а второй ведомым (slave).</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/d-master-slave-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>При нуле на Clock ведущий триггер работает как «прозрачный фиксатор» и записывает/повторяет данные на входе Data, тогда как на ведомом отключён режим записи и он просто хранит своё предыдущее состояние. По переднему фронту на Clock теперь уже запись на ведущем отключена, он хранит своё предыдущее состояние, а ведомый в свою очередь копирует данные от ведущего. До тех пор пока на Clock продолжает действовать логическая единица уровень на Data не имеет значения (8 секунда на картинке). Что же произойдёт по заднему фронту Clock ? На картинке это 9 секунда, при этом на Data приходит уровень единицы. Выходит так что запись заблокируется на ведомом раньше, чем ведущий успеет переключиться.</p>
+<p>Далее цифровые счётчики.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
