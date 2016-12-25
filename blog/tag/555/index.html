@@ -88,10 +88,10 @@ Index       s               r               q
 </li>
 </ul>
 <p>В ждущем мультивибраторе система находится в устойчивом состоянии до тех пор пока на вход не поступит импульс, продолжительность которого не имеет особого значения, порождая выходной импульс рассчитанной при проектировании схемы длительности. Нажали кнопку, отработали нужное время и выключилось.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/monostable.sch">ждущий мультивибратор</a> | <a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/monostable.net">netlist</a> | <a href="https://ngspice.js.org/?gist=9af5adf562e3f9ed20b4544f7b58accd">ngspice.js</a></p>
+<p><a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/monostable.sch">ждущий мультивибратор</a> | <a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/monostable.net">netlist</a> | <a href="https://ngspice.js.org/?gist=8a127f27d515e1f0b46146afa194fd18">ngspice.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/show-img-monostable.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source monostable.net
-ngspice 2 -&gt; tran 5m 5
+ngspice 2 -&gt; tran 2.5m 5
 ngspice 3 -&gt; plot (v(in)+3) v(out)
 </pre></div>
 
