@@ -28,7 +28,103 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">NGSPICE.js - счетчики и делители частоты</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">Симуляция микроконтроллеров PICSim.js</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-13T00:00:00+02:00">
+                Published: Пт. 13 Январь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
+</footer><!-- /.post-info --><p>PIC (<strong>P</strong>eripheral <strong>I</strong>nterface <strong>C</strong>ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности. В свою очередь PIC32 на данный момент является флагманом компании Microchip на рынке микроконтроллеров, обладая наиболее высокой производительностью и наиболее продвинутой периферией на борту. Ниже изображена блок-схема микроконтроллера PIC16F648. В принципе за исключением количества портов ввода-вывода PORTA, PORTB... и набора периферийных модулей Timer, CCP1... этот рисунок у большинства современных PIC16 будет идентичен.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/PIC16F648.svg" style="width:100%;"></p>
+<p>Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=16f628A blink.c</span>
+<span class="cm">*/</span>
+
+<span class="c1">// __delay_ms legacy code</span>
+<span class="cp">#include</span> <span class="cpf">&lt;htc.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// http://microchip.wikidot.com/faq:26</span>
+<span class="c1">// The delay amount must be a constant (cannot be a variable).</span>
+<span class="cp">#define _XTAL_FREQ 5e4 </span><span class="c1">// 50 kHz</span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="n">RB0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>             <span class="c1">// RB0 initial value</span>
+  <span class="n">TRISB</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>      <span class="c1">// RB0 as Output PIN</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">RB0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>           <span class="c1">// LED ON</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>  <span class="c1">// 1 Second Delay</span>
+    <span class="n">RB0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>           <span class="c1">// LED OFF</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>  <span class="c1">// 1 Second Delay</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Макрос <code>#define _XTAL_FREQ 1e6</code> нужен компилятору для расчёта <code>__delay_ms</code>. При старте микроконтроллера все порты ввода-вывода настроены на вход, а чтобы мигать лампочкой RB0 должен работать на выход поэтому <code>TRISB = 0xFF-1</code>. Далее бесконечных цикл - переключение, временная задержка. На выходах RA1-RA3 подтягивающие резисторы, поэтому лампочки такие зелёные.</p>
+<p>Если не полениться и взглянуть на <code>blink.asm</code> файл (ассемблерный листинг), сгенерированный компилятором xc8 рядом с blink.hex, то можно увидеть команды типа <code>bcf</code>, <code>movlw</code> и т.д. которые собственно и входят в те 35, упомянутых ранее.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=16f628A buttons.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">RB0</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">RB0</span> <span class="o">=</span> <span class="n">RB1</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">RB0</span> <span class="o">=</span> <span class="n">RB1</span> <span class="o">=</span> <span class="n">RB2</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">RB0</span> <span class="o">=</span> <span class="n">RB1</span> <span class="o">=</span> <span class="n">RB2</span> <span class="o">=</span> <span class="n">RB3</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">PORTB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui-b.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>P.S. Таблица периферийных модулей реализованных в симуляторе <a href="https://github.com/lcgamboa/picsim" rel="nofollow">PICSim</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - счетчики и делители частоты">NGSPICE.js - счетчики и делители частоты</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-12-22T00:00:00+02:00">
                 Published: Чт. 22 Декабрь 2016
@@ -39,59 +135,12 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/gate">gate</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE в целом и <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">цифровую</a> схемотехнику в частности.</p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE в целом и <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">цифровую</a> схемотехнику в частности.</p>
 <p>В цифровой схемотехнике понятия «счетчик импульсов» и «делитель частоты» тесно связаны. 
-Под делителем частоты понимается устройство, которое принимает входной сигнал с заданной частотой и генерирует выходной сигнал, частота которого меньше входной в n раз. На каждые n импульсов на входе формируется один импульс на выходе. Простейший двоичный счётчик может быть построен на основе T-триггера, который является модифицированным двухступенчатым <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">D-триггером</a> с обратной связью. Такой триггер делит частоту поступающих на вход импульсов на два по модулю. Один триггер считает до двух, два соединенных последовательно до четырех, n до 2^n импульсов. Результат счета формируется в двоичном коде, где каждый разряд храниться в памяти соответствующего триггера. Двоичный код при необходимости может быть считан и преобразован другим узлами - например двоично-десятичным дешифратором. </p>
-<p>В следующих схемах для симуляции использовались SPICE модели логических вентилей <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/nand.lib">И-НЕ</a> | <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/nor.lib">ИЛИ-НЕ</a>. SPICE модель двухступенчатого <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/dtrigger.lib">D-триггера</a> выделена как подсхема из <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">предыдущего</a> материала (плюс-минус парочка резисторов для красивой симуляции) по аналогии с <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">вентилями</a>.</p>
-<!-- 
-<a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/nand42.sym"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/nor42.sym"></a>
-<a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/d42.sym"></a>
--->
-
-<!-- 
-sudo cp d42.sym nand42.sym nor42.sym /usr/share/gEDA/sym/local/
--->
-
-<p><a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/t.sch">асинхронный двоичный счётчик на T-триггерах</a> | <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/t.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fc70f8faa3373df6736221deddf16cff">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/show-img-t.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source t.net
-ngspice 2 -&gt; tran 18m 18
-ngspice 3 -&gt; plot clock+7 out2+3.5 out4
-</pre></div>
-
-
-<p>На принципиальной схеме при условном графическом обозначении (УГО) триггера треугольничек указывает на то, что тот переключается по фронту импульса и в данном конкретном случае это передний фронт. Если же к треугольнику дорисовать кружочек как на инверсном выходе Q, то переключение триггера происходит по заднему фронту. Двухступенчатый D-триггер, у которого инверсный выход замкнут на собственный вход для данных Data, называется T-триггером. Такой триггер называют счетным триггером, он имеет только один вход (без учёта аппаратного сброса) и делит количество входных импульсов на два т.к. переключается только по одному из двух фронтов.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/t-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Главным недостатком у асинхронных счётчиков является то, что каждый T-триггер переключаются последовательно, ожидая соседа, т.е. в различные моменты времени с задержкой по мере распространения цифрового сигнала - отсюда и название асинхронный. Например чтобы построить цифровой таймер, используя кварц на 32768 Гц (<a href="https://bc.js.org/">2^15</a>), для получения на выходе счётчика 1 Гц необходимо 15 включённых последовательно T-триггеров, а каждый триггер добавляет свою задержку и как результат переключения на выходе будут запаздывать уже на 15*x по отношению к входному сигналу. Данный недостаток устранён у синхронных счётчиков.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/st.sch">синхронный счётчик</a> | <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/st.net">netlist</a> | <a href="https://ngspice.js.org/?gist=9c65b6d93df67c99c99efd09e45b1f4f">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/show-img-st.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source st.net
-ngspice 2 -&gt; tran 18m 18
-ngspice 3 -&gt; plot clock+7 out2+3.5 out4
-</pre></div>
-
-
-<p>Вентили U3-U6 образуют исключающее «ИЛИ» (XOR) - если логические уровни на входах равны между собой, то на выходе «0», в противном случае «1».</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/st-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Временная диаграмма выхода OUT4 у синхронного счётчика немного отличается от асинхронного. Входной сигнал Clock поступает на оба триггера в одинаковые моменты времени. По первому переднему фронту Clock на OUT2 и OUT4 логические «0», т.к. до этого был аппаратный сброс. При «0» на всех входах XOR выдаёт «0» и триггер U2 запомнит «0». По второму переднему фронту Clock на OUT2 уже «1», на OUT4 по-прежнему «0» и XOR даст «1», триггер U2 переключается. В итоге частота Clock всё также делится на 4 на выходе U2, но все триггеры переключаются одновременно без нежелательных задержек.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/3.sch">счётчик до 3</a> | <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/3.net">netlist</a> | <a href="https://ngspice.js.org/?gist=709d6dad0810bf936168a28e8afe7393">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/show-img-3.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>ngspice 1 -&gt; source 3.net
-ngspice 2 -&gt; tran 18m 18
-ngspice 3 -&gt; plot clock+3.5 out3
-</pre></div>
-
-
-<p>Можно даже смастерить синхронный делитель не кратный двум, например 3. Правда в данном случае на выходе получится не меандр - коэффициент заполнения выходных импульсов не равен 50%.   </p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/3-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Цифровые счетчики импульсов являются неотъемлемыми узлами современной электротехники.
-Они находят широкое применение в микропроцессорах, электронных часах, таймерах, частотомерах, системах с фазовой автоподстройкой частоты (ФАПЧ) и многих других устройствах.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+Под делителем частоты понимается устройство, которое принимает входной сигнал с заданной частотой и генерирует выходной сигнал, частота которого меньше входной в n раз. На каждые n импульсов на входе …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -160,29 +209,6 @@ ngspice 3 -&gt; plot clock+3.5 out3
 <p>Первые микросхемы интегральных таймеров появились в 1971 г. и были представлены фирмой Signetics Corporation (SE555 и NE555), позволяя формировать достаточно точные временные интервалы путём добавления времязадающих резисторов и конденсаторов. Интегральные таймеры сочетают в себе как элементы аналоговой схемотехники - <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компараторы</a>, так и цифровой - <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">триггеры</a>. В настоящее время существует …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - импульсные преобразователи напряжения">NGSPICE.js - импульсные преобразователи напряжения</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-07T00:00:00+02:00">
-                Published: Ср. 07 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>В импульсных преобразователях входное напряжение нарезается порциями - импульсами c заданной <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">скважностью</a> и чем меньше скважность тем большая часть энергии попадёт на выход. Если импульсы прямоугольной формы, то силовая часть схемы работает в ключевом режиме т.е. находится либо в режиме отсечки, когда сопротивление максимально, либо в режиме …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">

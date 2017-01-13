@@ -1,5 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2016-12-22T00:00:00+02:00</updated><entry><title>NGSPICE.js - счетчики и делители частоты</title><link href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/" rel="alternate"></link><published>2016-12-22T00:00:00+02:00</published><updated>2016-12-22T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-22:/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE в целом и &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/"&gt;цифровую&lt;/a&gt; схемотехнику в частности.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-01-13T00:00:00+02:00</updated><entry><title>Симуляция микроконтроллеров PICSim.js</title><link href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/" rel="alternate"></link><published>2017-01-13T00:00:00+02:00</published><updated>2017-01-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-13:/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/</id><summary type="html">&lt;p&gt;PIC (&lt;strong&gt;P&lt;/strong&gt;eripheral &lt;strong&gt;I&lt;/strong&gt;nterface &lt;strong&gt;C&lt;/strong&gt;ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности …&lt;/p&gt;</summary><content type="html">&lt;p&gt;PIC (&lt;strong&gt;P&lt;/strong&gt;eripheral &lt;strong&gt;I&lt;/strong&gt;nterface &lt;strong&gt;C&lt;/strong&gt;ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности. В свою очередь PIC32 на данный момент является флагманом компании Microchip на рынке микроконтроллеров, обладая наиболее высокой производительностью и наиболее продвинутой периферией на борту. Ниже изображена блок-схема микроконтроллера PIC16F648. В принципе за исключением количества портов ввода-вывода PORTA, PORTB... и набора периферийных модулей Timer, CCP1... этот рисунок у большинства современных PIC16 будет идентичен.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/PIC16F648.svg" style="width:100%;"&gt;&lt;/p&gt;
+&lt;p&gt;Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f628A blink.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="c1"&gt;// __delay_ms legacy code&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;htc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// http://microchip.wikidot.com/faq:26&lt;/span&gt;
+&lt;span class="c1"&gt;// The delay amount must be a constant (cannot be a variable).&lt;/span&gt;
+&lt;span class="cp"&gt;#define _XTAL_FREQ 5e4 &lt;/span&gt;&lt;span class="c1"&gt;// 50 kHz&lt;/span&gt;
+
+&lt;span class="cp"&gt;#pragma config WDTE = OFF&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;             &lt;span class="c1"&gt;// RB0 initial value&lt;/span&gt;
+  &lt;span class="n"&gt;TRISB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;      &lt;span class="c1"&gt;// RB0 as Output PIN&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;           &lt;span class="c1"&gt;// LED ON&lt;/span&gt;
+    &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;// 1 Second Delay&lt;/span&gt;
+    &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;           &lt;span class="c1"&gt;// LED OFF&lt;/span&gt;
+    &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;// 1 Second Delay&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Макрос &lt;code&gt;#define _XTAL_FREQ 1e6&lt;/code&gt; нужен компилятору для расчёта &lt;code&gt;__delay_ms&lt;/code&gt;. При старте микроконтроллера все порты ввода-вывода настроены на вход, а чтобы мигать лампочкой RB0 должен работать на выход поэтому &lt;code&gt;TRISB = 0xFF-1&lt;/code&gt;. Далее бесконечных цикл - переключение, временная задержка. На выходах RA1-RA3 подтягивающие резисторы, поэтому лампочки такие зелёные.&lt;/p&gt;
+&lt;p&gt;Если не полениться и взглянуть на &lt;code&gt;blink.asm&lt;/code&gt; файл (ассемблерный листинг), сгенерированный компилятором xc8 рядом с blink.hex, то можно увидеть команды типа &lt;code&gt;bcf&lt;/code&gt;, &lt;code&gt;movlw&lt;/code&gt; и т.д. которые собственно и входят в те 35, упомянутых ранее.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f628A buttons.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdbool.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#pragma config WDTE = OFF&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RB1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RB1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RB2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;RB0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RB1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RB2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RB3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui-b.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;P.S. Таблица периферийных модулей реализованных в симуляторе &lt;a href="https://github.com/lcgamboa/picsim" rel="nofollow"&gt;PICSim&lt;/a&gt;.&lt;/p&gt;</content><category term="picsim"></category></entry><entry><title>NGSPICE.js - счетчики и делители частоты</title><link href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/" rel="alternate"></link><published>2016-12-22T00:00:00+02:00</published><updated>2016-12-22T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-22:/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE в целом и &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/"&gt;цифровую&lt;/a&gt; схемотехнику в частности.&lt;/p&gt;
 &lt;p&gt;В цифровой схемотехнике понятия «счетчик импульсов» и «делитель частоты» тесно связаны. 
 Под делителем частоты понимается устройство, которое принимает входной сигнал с заданной частотой и генерирует выходной сигнал, частота которого меньше входной в n раз. На каждые n импульсов на входе …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE в целом и &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/"&gt;цифровую&lt;/a&gt; схемотехнику в частности.&lt;/p&gt;
 &lt;p&gt;В цифровой схемотехнике понятия «счетчик импульсов» и «делитель частоты» тесно связаны. 
