@@ -28,7 +28,132 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">Симуляция микроконтроллеров PICSim.js</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">PICSim.js - широтно-импульсная модуляция</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-14T00:00:00+02:00">
+                Published: Сб. 14 Январь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
+</footer><!-- /.post-info --><p>В <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">предыдущем</a> примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
+Широтно-импульсная <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">модуляция</a> (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать аналоговый сигнал любой формы. Высокий КПД ШИМ также позволяет эффективно управлять и мощной нагрузкой - моторами, нагревательными элементами. К недостаткам ШИМ стоит в первую очередь высокий уровень помех, для устранения которых можно использовать даже самую простую интегрирующую <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">RC-цепочку</a>.</p>
+<p>Наиболее простой реализацией ШИМ на микроконтроллере является <em>программная</em> реализация, однако также программный метод получения ШИМ сигнала очень требователен к частоте работы микроконтроллера и занимает достаточно много процессорного времени. В связи с этим большинство современных микроконтроллеров имеет на борту отдельный периферийных модуль аппаратного ШИМ, работающего параллельно с основной программой, но обо всём по порядку.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/soft-pwm.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/99041ddce996943a1f04ec2c88b65ecd">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=16f628A blink.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="cp">#define DUTY_MAX 12</span>
+
+<span class="cp">#define _DUTY_CYCLE_RB0(value)                      \</span>
+<span class="cp">  do {                                              \</span>
+<span class="cp">    for (unsigned char i = 0; i &lt; DUTY_MAX; i++) {  \</span>
+<span class="cp">      RB0 = i &lt; value;                              \</span>
+<span class="cp">    }                                               \</span>
+<span class="cp">  } while(0)</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">/</span><span class="mi">4</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">*</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// Do something useful</span>
+    <span class="c1">// for (unsigned char i=0; --i;);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Каждая кнопка RA1-RA4 при нажатии устанавливает свою яркость светодиода RB0. Поскольку частота переключения RB0 достаточно большая, человеческий глаз видит среднее значение яркости. Точно расчитать частоту переключения RB0 затруднительно т.к. тут многое зависит от компилятора - нужно смотреть в ассемблерный листинг. Также очевидно что любая дополнительная логика в <code>// Do something useful</code> окажет <a href="http://mazko.github.io/picsim.js/dab4ea8ec9d49164ac8630482e9b84ec">сильное</a> влияние на итоговую скважность импульсов на выходе RB0. Аппаратный ШИМ лишен всех этих недостатков.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Для работы модуля ШИМ требуется один таймер и модуль CCP1. На <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">блок-схеме</a>  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. </p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/hw-pwm.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/27d4e6ff0c8004700dc62985d6f8be93">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=16f628A blink.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="c1">// ignore two least significant bits PWMxDCL </span>
+<span class="cp">#define _DUTY_CYCLE(value) \</span>
+<span class="cp">  CCPR1L = (4*(249+1)*value)&gt;&gt;2</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// http://microchip.wikidot.com/8bit:10bitpwm</span>
+
+  <span class="c1">// 0b01 Prescaler is 4; 0b1xx TMR2 on</span>
+  <span class="n">T2CON</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b00000101</span><span class="p">;</span>
+
+  <span class="c1">// Desired PWM frequency 250Hz</span>
+  <span class="c1">// PR2=[(Fosc)/(4∗TMR2Prescale∗PWMFrequency)]−1</span>
+  <span class="c1">// PR2=(1Mhz/(4*4*250Hz))-1=249</span>
+  <span class="n">PR2</span> <span class="o">=</span> <span class="mi">249</span><span class="p">;</span>
+
+  <span class="c1">// 0b11xx - PWM mode;</span>
+  <span class="c1">// assert log(1e6/249)/log(2) &gt; 8 bit</span>
+
+  <span class="n">CCP1CON</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b00001100</span><span class="p">;</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// Do something useful</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">;);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Аппаратный ШИМ не расходует ресурсы процессора и логика <code>// Do something useful</code> никак не влияет на яркость свечения светодиодов.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui-hw.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>К тому же частоту аппаратного ШИМ в отличие от программного можно совершенно точно рассчитать на этапе проектирования системы. </p>
+<p>Далее прерывания.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/" rel="bookmark"
+                           title="Permalink to Симуляция микроконтроллеров PICSim.js">Симуляция микроконтроллеров PICSim.js</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-01-13T00:00:00+02:00">
                 Published: Пт. 13 Январь 2017
@@ -39,84 +164,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info --><p>PIC (<strong>P</strong>eripheral <strong>I</strong>nterface <strong>C</strong>ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности. В свою очередь PIC32 на данный момент является флагманом компании Microchip на рынке микроконтроллеров, обладая наиболее высокой производительностью и наиболее продвинутой периферией на борту. Ниже изображена блок-схема микроконтроллера PIC16F648. В принципе за исключением количества портов ввода-вывода PORTA, PORTB... и набора периферийных модулей Timer, CCP1... этот рисунок у большинства современных PIC16 будет идентичен.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/PIC16F648.svg" style="width:100%;"></p>
-<p>Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1">picsim.js</a></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 --chip=16f628A blink.c</span>
-<span class="cm">*/</span>
-
-<span class="c1">// __delay_ms legacy code</span>
-<span class="cp">#include</span> <span class="cpf">&lt;htc.h&gt;</span><span class="cp"></span>
-
-<span class="c1">// http://microchip.wikidot.com/faq:26</span>
-<span class="c1">// The delay amount must be a constant (cannot be a variable).</span>
-<span class="cp">#define _XTAL_FREQ 5e4 </span><span class="c1">// 50 kHz</span>
-
-<span class="cp">#pragma config WDTE = OFF</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="n">RB0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>             <span class="c1">// RB0 initial value</span>
-  <span class="n">TRISB</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>      <span class="c1">// RB0 as Output PIN</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">RB0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>           <span class="c1">// LED ON</span>
-    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>  <span class="c1">// 1 Second Delay</span>
-    <span class="n">RB0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>           <span class="c1">// LED OFF</span>
-    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>  <span class="c1">// 1 Second Delay</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Макрос <code>#define _XTAL_FREQ 1e6</code> нужен компилятору для расчёта <code>__delay_ms</code>. При старте микроконтроллера все порты ввода-вывода настроены на вход, а чтобы мигать лампочкой RB0 должен работать на выход поэтому <code>TRISB = 0xFF-1</code>. Далее бесконечных цикл - переключение, временная задержка. На выходах RA1-RA3 подтягивающие резисторы, поэтому лампочки такие зелёные.</p>
-<p>Если не полениться и взглянуть на <code>blink.asm</code> файл (ассемблерный листинг), сгенерированный компилятором xc8 рядом с blink.hex, то можно увидеть команды типа <code>bcf</code>, <code>movlw</code> и т.д. которые собственно и входят в те 35, упомянутых ранее.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3">picsim.js</a></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 --chip=16f628A buttons.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
-
-<span class="cp">#pragma config WDTE = OFF</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">RB0</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">RB0</span> <span class="o">=</span> <span class="n">RB1</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">RB0</span> <span class="o">=</span> <span class="n">RB1</span> <span class="o">=</span> <span class="n">RB2</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">RB0</span> <span class="o">=</span> <span class="n">RB1</span> <span class="o">=</span> <span class="n">RB2</span> <span class="o">=</span> <span class="n">RB3</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">PORTB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui-b.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>P.S. Таблица периферийных модулей реализованных в симуляторе <a href="https://github.com/lcgamboa/picsim" rel="nofollow">PICSim</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>PIC (<strong>P</strong>eripheral <strong>I</strong>nterface <strong>C</strong>ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -186,29 +237,6 @@
 <p>Аналоговый сигнал изменяется непрерывно - аналогично физической величине и может принимать любые значения в любой момент времени. Дискретный сигнал имеет конечное число значений. Обычно цифровой сигнал может принимать только два дискретных значения 0 и 1 - например за ноль принимается уровень напряжения в пределах от 0 до 0,5 …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - интегральные таймеры">NGSPICE.js - интегральные таймеры</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-13T00:00:00+02:00">
-                Published: Вт. 13 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/555">555</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
-<p>Первые микросхемы интегральных таймеров появились в 1971 г. и были представлены фирмой Signetics Corporation (SE555 и NE555), позволяя формировать достаточно точные временные интервалы путём добавления времязадающих резисторов и конденсаторов. Интегральные таймеры сочетают в себе как элементы аналоговой схемотехники - <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компараторы</a>, так и цифровой - <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">триггеры</a>. В настоящее время существует …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/13/ngspicejs-integralnye-taimery/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
