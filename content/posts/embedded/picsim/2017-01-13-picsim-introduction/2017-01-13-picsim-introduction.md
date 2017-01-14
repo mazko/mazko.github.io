@@ -86,10 +86,14 @@ PIC (**P**eripheral **I**nterface **C**ontroller) - серия микрокон�
       return 0;
     }
 
+Данный код не будет одинаково корректно функционировать в широком диапазоне тактовых частот т.к. не содержит зависимостей от __delay-подобных функций.
+
 [comment]: <> (byzanz-record -c --x=240 --y=100 -w 950 --delay 3 -d 15 ui.flv)
 [comment]: <> (ffmpeg -i ui.flv -pix_fmt rgb24 -r 10 "frames/frame-%05d.png")
 [comment]: <> (convert -monitor -limit memory 1024MiB -limit map 2048MiB -layers removeDups -layers Optimize -delay 10 -loop 0 "frames/*.png" ui.gif)
 
 ![screenshot]({attach}ui-b.gif){:style="width:100%; border:1px solid #ddd;"}
+
+[Далее]({filename}../2017-01-14-pwm/2017-01-14-pwm.md) ШИМ.
 
 P.S. Таблица периферийных модулей реализованных в симуляторе [PICSim](https://github.com/lcgamboa/picsim){:rel="nofollow"}.

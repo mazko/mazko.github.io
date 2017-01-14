@@ -10,14 +10,14 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="201.22777mm"
-   height="204.62836mm"
+   height="205.62836mm"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.92.0 unknown"
    sodipodi:docname="PIC16F648.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.1"
-   viewBox="0 0 713.01178 725.06111">
+   viewBox="0 0 713.01178 728.60442">
   <defs
      id="defs4">
     <marker
@@ -106,17 +106,17 @@
     </marker>
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 526.1811 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="744.09447 : 526.1811 : 1"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 999.99999 : 0"
+       inkscape:vp_z="744.09447 : 526.18109 : 1"
        inkscape:persp3d-origin="372.04724 : 350.7874 : 1"
        id="perspective10" />
     <inkscape:perspective
        id="perspective2428"
        inkscape:persp3d-origin="372.04724 : 350.7874 : 1"
-       inkscape:vp_z="744.09447 : 526.1811 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.1811 : 1"
+       inkscape:vp_z="744.09447 : 526.18109 : 1"
+       inkscape:vp_y="0 : 999.99999 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
        sodipodi:type="inkscape:persp3d" />
     <marker
        inkscape:stockid="Arrow2Mstart"
@@ -350,9 +350,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.5347378"
-     inkscape:cx="341.62236"
-     inkscape:cy="655.50138"
+     inkscape:zoom="1.0852235"
+     inkscape:cx="344.94223"
+     inkscape:cy="640.54701"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -382,7 +382,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -391,7 +391,7 @@
      id="layer2"
      inkscape:label="dibujo"
      style="display:inline"
-     transform="translate(-25.829065,-104.24592)">
+     transform="translate(-25.829065,-100.7026)">
     <rect
        id="rect2442"
        width="69.285713"
