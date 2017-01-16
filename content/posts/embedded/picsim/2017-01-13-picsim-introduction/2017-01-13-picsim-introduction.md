@@ -13,7 +13,7 @@ PIC (**P**eripheral **I**nterface **C**ontroller) - серия микрокон�
     :::c
 
     /*
-      xc8 --chip=16f628A blink.c
+      xc8 --chip=16f648A blink.c
     */
 
     // __delay_ms legacy code
@@ -57,7 +57,7 @@ PIC (**P**eripheral **I**nterface **C**ontroller) - серия микрокон�
     :::c
 
     /*
-      xc8 --chip=16f628A buttons.c
+      xc8 --chip=16f648A buttons.c
     */
 
     #include <xc.h>
