@@ -43,13 +43,13 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
 </footer><!-- /.post-info -->      <p>В <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">предыдущем</a> примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
 Широтно-импульсная <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">модуляция</a> (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать аналоговый сигнал любой формы. Высокий КПД ШИМ также позволяет эффективно управлять и мощной нагрузкой - моторами, нагревательными элементами. К недостаткам ШИМ стоит в первую очередь высокий уровень помех, для устранения которых можно использовать даже самую простую интегрирующую <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">RC-цепочку</a>.</p>
 <p>Наиболее простой реализацией ШИМ на микроконтроллере является <em>программная</em> реализация, однако также программный метод получения ШИМ сигнала очень требователен к частоте работы микроконтроллера и занимает достаточно много процессорного времени. В связи с этим большинство современных микроконтроллеров имеет на борту отдельный периферийных модуль аппаратного ШИМ, работающего параллельно с основной программой, но обо всём по порядку.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/soft-pwm.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/99041ddce996943a1f04ec2c88b65ecd">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f628A blink.c</span>
+<span class="cm">  xc8 -Werror --chip=16f648A pwm.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
@@ -90,10 +90,10 @@
 
 <p>Каждая кнопка RA1-RA4 при нажатии устанавливает свою яркость светодиода RB0. Поскольку частота переключения RB0 достаточно большая, человеческий глаз видит среднее значение яркости. Точно расчитать частоту переключения RB0 затруднительно т.к. тут многое зависит от компилятора - нужно смотреть в ассемблерный листинг. Также очевидно что любая дополнительная логика в <code>// Do something useful</code> окажет <a href="http://mazko.github.io/picsim.js/dab4ea8ec9d49164ac8630482e9b84ec">сильное</a> влияние на итоговую скважность импульсов на выходе RB0. Аппаратный ШИМ лишен всех этих недостатков.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Для работы модуля ШИМ требуется один таймер и модуль CCP1. На <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">блок-схеме</a>  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. </p>
+<p>Для работы модуля ШИМ требуется один <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">таймер</a> и модуль CCP1. На <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">блок-схеме</a>  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. </p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/hw-pwm.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/27d4e6ff0c8004700dc62985d6f8be93">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f628A blink.c</span>
+<span class="cm">  xc8 -Werror --chip=16f648A pwm.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
@@ -142,10 +142,10 @@
 </pre></div>
 
 
-<p>Аппаратный ШИМ не расходует ресурсы процессора и логика <code>// Do something useful</code> никак не влияет на яркость свечения светодиодов.</p>
+<p>Аппаратный ШИМ не расходует ресурсы процессора и логика <code>// Do something useful</code> никак не влияет на яркость свечения светодиодов. Для уменьшения энергопотребления можно спокойно уменьшить тактовую частоту микроконтроллера, просто пересчитав значения регистров ШИМ.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui-hw.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>К тому же частоту аппаратного ШИМ в отличие от программного можно совершенно точно рассчитать на этапе проектирования системы. </p>
-<p>Далее прерывания.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">Далее</a> прерывания.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>

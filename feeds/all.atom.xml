@@ -1,11 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-01-14T00:00:00+02:00</updated><entry><title>PICSim.js - широтно-импульсная модуляция</title><link href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/" rel="alternate"></link><published>2017-01-14T00:00:00+02:00</published><updated>2017-01-14T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-14:/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/</id><summary type="html">&lt;p&gt;В &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;предыдущем&lt;/a&gt; примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-01-16T00:00:00+02:00</updated><entry><title>PICSim.js - семисегментный индикатор и прерывания</title><link href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/" rel="alternate"></link><published>2017-01-16T00:00:00+02:00</published><updated>2017-01-16T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-16:/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/</id><summary type="html">&lt;p&gt;Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются относительно высокое энергопотребление и слабая видимость при ярком освещении, хотя на нашем модном цветном мобильном телефоне тоже ничего не видно на солнышке днём :)&lt;/p&gt;
+&lt;p&gt;Конструктивно светодиодный семисегментный индикатор представляет собой группу из семи светодиодов, расположенных в определенном порядке. Включая их в различных комбинациях можно составить упрощённые изображения цифр 0..9. Индикаторы различаются по размеру, типу соединения светодиодов - общий анод, общий катод, по количеству отображаемых разрядов - одноразрядные, двухразрядные и более, по яркости свечения и по цвету - красные, желтые, зеленые и т.д. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/7.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/69cc6064062b774abdb3734521cf01a8"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;display7.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="nf"&gt;display7&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xEE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x28&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xCD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x6D&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x2B&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x67&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xE7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x2C&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xEF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x6F&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xAF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;11&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xE3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xC6&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xE9&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0xC7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mh"&gt;0x87&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;display7.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#pragma config WDTE = OFF&lt;/span&gt;
+
+&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;porta_btn_mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11110&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+          &lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;porta_btn_mask&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;display7&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0xF&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В данном примере используется наиболее простой вид индикации - &lt;em&gt;статическая индикация&lt;/em&gt;, в таком режиме каждый сегмент индикатора постоянно находится в одном из двух состояний - включен или выключен. Функция &lt;code&gt;display7&lt;/code&gt; приводит двоичное число в код семисегментного индикатора и позволяет отображать шестнадцатиричное число 0..F.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Для одновременной работы нескольких разрядов семисегментного индикаторов часто используют &lt;em&gt;динамическую индикацию&lt;/em&gt; (динамическое управление), которое подразумевает поочередное переключение разрядов с частотой, не воспринимаемой человеческим глазом. Для динамической индикации требуется меньшее количество ног микроконтроллера и меньшее количество внешних элементов. На исследуемой плате нога RB4 как раз и занимается поочерёдным переключением двух разрядов - при нуле на RB4 данные с PORTB попадают на левый индикатор, при единице соответственно на правый.&lt;/p&gt;
+&lt;p&gt;Задача переключения разрядов семисегментных довольно критична ко времени - при его неравномерном распределении один разряд будет ярче другого, что приведёт к неприятным для человеческого глаза эффектам, мерцаниям. Для задач, критичных ко времени реакции на возникшие события в микроконтроллерах предусмотрены прерывания - основной цикл &lt;code&gt;main()&lt;/code&gt; приостанавливается (прерывается), сохраняя свой контекст выполнения, отрабатывает логика обработчика прерывания, после чего управление снова передаётся &lt;code&gt;main()&lt;/code&gt;, при этом сохранённый ранее контекст выполнения восстанавливается.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/2f4ae7c6427fe65ef0ccb2aaa07ee744"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;isr.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdbool.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;display7.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// C89, section 6.5.7 Initialization.&lt;/span&gt;
+&lt;span class="c1"&gt;// If an object that has static storage duration is not initialized explicitly, then:&lt;/span&gt;
+&lt;span class="c1"&gt;// - if it has arithmetic type, it is initialized to (positive or unsigned) zero;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// interface&lt;/span&gt;
+&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;display_data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// http://microchip.wikidot.com/faq:31&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;interrupt&lt;/span&gt; &lt;span class="nf"&gt;_int_7&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;   &lt;span class="c1"&gt;// interrupt function &lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;current_7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IF&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+  &lt;span class="p"&gt;{&lt;/span&gt;                           &lt;span class="c1"&gt;// if timer flag is set &amp;amp; interrupt enabled&lt;/span&gt;
+    &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IF&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;      &lt;span class="c1"&gt;// clear the interrupt flag&lt;/span&gt;
+
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;display7&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;current_7&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0xF&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;RB4&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;current_7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;current_7&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;current_7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c isr.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#pragma config WDTE = OFF&lt;/span&gt;
+
+&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;porta_btn_mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11110&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;display_data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;OPTION_REGbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0CS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;     &lt;span class="c1"&gt;// Timer increments on instruction clock by default 1 : 1&lt;/span&gt;
+  &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;         &lt;span class="c1"&gt;// Enable interrupt on TMR0 overflow&lt;/span&gt;
+  &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GIE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;          &lt;span class="c1"&gt;// Global interrupt enable&lt;/span&gt;
+
+  &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;porta_btn_mask&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;RA4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;display_data&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В файле &lt;code&gt;isr.c&lt;/code&gt; реализована логика, отвечающая за отображение информации на семисегментном дисплее. Интерфейс взаимодействия &lt;code&gt;isr.c&lt;/code&gt; с другими программными модулями, такими как &lt;em&gt;main.c&lt;/em&gt;, только через переменную &lt;code&gt;display_data&lt;/code&gt; - проектирование на уровне интерфейсов позволяет распределить для модулей зоны ответственности и инкапсулировать их реализацию. 
+Модули, полученные в на этапе проектирования системы, должны быть минимально связанны друг с другом (Слабая Связанность, Low Coupling). При правильном проектировании в случае изменении одного модуля не придется править другие или эти изменения будут минимальными. Чем слабее связанность, тем легче писать/понимать/расширять/чинить любую программу на любом языке программирования.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui-int.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Так как &lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/"&gt;скважность&lt;/a&gt; импульсов на RB4 равна двум яркость свечения каждого из разрядов семисегментного распределяется поровну от максимальной.&lt;/p&gt;</content><category term="picsim"></category></entry><entry><title>PICSim.js - широтно-импульсная модуляция</title><link href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/" rel="alternate"></link><published>2017-01-14T00:00:00+02:00</published><updated>2017-01-14T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-14:/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/</id><summary type="html">&lt;p&gt;В &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;предыдущем&lt;/a&gt; примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
 Широтно-импульсная &lt;a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/"&gt;модуляция&lt;/a&gt; (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать …&lt;/p&gt;</summary><content type="html">&lt;p&gt;В &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;предыдущем&lt;/a&gt; примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
 Широтно-импульсная &lt;a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/"&gt;модуляция&lt;/a&gt; (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать аналоговый сигнал любой формы. Высокий КПД ШИМ также позволяет эффективно управлять и мощной нагрузкой - моторами, нагревательными элементами. К недостаткам ШИМ стоит в первую очередь высокий уровень помех, для устранения которых можно использовать даже самую простую интегрирующую &lt;a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/"&gt;RC-цепочку&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Наиболее простой реализацией ШИМ на микроконтроллере является &lt;em&gt;программная&lt;/em&gt; реализация, однако также программный метод получения ШИМ сигнала очень требователен к частоте работы микроконтроллера и занимает достаточно много процессорного времени. В связи с этим большинство современных микроконтроллеров имеет на борту отдельный периферийных модуль аппаратного ШИМ, работающего параллельно с основной программой, но обо всём по порядку.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/soft-pwm.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/99041ddce996943a1f04ec2c88b65ecd"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f628A blink.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A pwm.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -46,10 +219,10 @@
 
 &lt;p&gt;Каждая кнопка RA1-RA4 при нажатии устанавливает свою яркость светодиода RB0. Поскольку частота переключения RB0 достаточно большая, человеческий глаз видит среднее значение яркости. Точно расчитать частоту переключения RB0 затруднительно т.к. тут многое зависит от компилятора - нужно смотреть в ассемблерный листинг. Также очевидно что любая дополнительная логика в &lt;code&gt;// Do something useful&lt;/code&gt; окажет &lt;a href="http://mazko.github.io/picsim.js/dab4ea8ec9d49164ac8630482e9b84ec"&gt;сильное&lt;/a&gt; влияние на итоговую скважность импульсов на выходе RB0. Аппаратный ШИМ лишен всех этих недостатков.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;p&gt;Для работы модуля ШИМ требуется один таймер и модуль CCP1. На &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;блок-схеме&lt;/a&gt;  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. &lt;/p&gt;
+&lt;p&gt;Для работы модуля ШИМ требуется один &lt;a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/"&gt;таймер&lt;/a&gt; и модуль CCP1. На &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;блок-схеме&lt;/a&gt;  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. &lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/hw-pwm.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/27d4e6ff0c8004700dc62985d6f8be93"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f628A blink.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A pwm.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -98,15 +271,15 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Аппаратный ШИМ не расходует ресурсы процессора и логика &lt;code&gt;// Do something useful&lt;/code&gt; никак не влияет на яркость свечения светодиодов.&lt;/p&gt;
+&lt;p&gt;Аппаратный ШИМ не расходует ресурсы процессора и логика &lt;code&gt;// Do something useful&lt;/code&gt; никак не влияет на яркость свечения светодиодов. Для уменьшения энергопотребления можно спокойно уменьшить тактовую частоту микроконтроллера, просто пересчитав значения регистров ШИМ.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui-hw.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;К тому же частоту аппаратного ШИМ в отличие от программного можно совершенно точно рассчитать на этапе проектирования системы. &lt;/p&gt;
-&lt;p&gt;Далее прерывания.&lt;/p&gt;</content><category term="picsim"></category></entry><entry><title>Симуляция микроконтроллеров PICSim.js</title><link href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/" rel="alternate"></link><published>2017-01-13T00:00:00+02:00</published><updated>2017-01-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-13:/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/</id><summary type="html">&lt;p&gt;PIC (&lt;strong&gt;P&lt;/strong&gt;eripheral &lt;strong&gt;I&lt;/strong&gt;nterface &lt;strong&gt;C&lt;/strong&gt;ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности …&lt;/p&gt;</summary><content type="html">&lt;p&gt;PIC (&lt;strong&gt;P&lt;/strong&gt;eripheral &lt;strong&gt;I&lt;/strong&gt;nterface &lt;strong&gt;C&lt;/strong&gt;ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности. В свою очередь PIC32 на данный момент является флагманом компании Microchip на рынке микроконтроллеров, обладая наиболее высокой производительностью и наиболее продвинутой периферией на борту. Ниже изображена блок-схема микроконтроллера PIC16F648. В принципе за исключением количества портов ввода-вывода PORTA, PORTB... и набора периферийных модулей Timer, CCP1... этот рисунок у большинства современных PIC16 будет идентичен.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;Далее&lt;/a&gt; прерывания.&lt;/p&gt;</content><category term="picsim"></category><category term="ШИМ"></category></entry><entry><title>Симуляция микроконтроллеров PICSim.js</title><link href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/" rel="alternate"></link><published>2017-01-13T00:00:00+02:00</published><updated>2017-01-13T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-13:/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/</id><summary type="html">&lt;p&gt;PIC (&lt;strong&gt;P&lt;/strong&gt;eripheral &lt;strong&gt;I&lt;/strong&gt;nterface &lt;strong&gt;C&lt;/strong&gt;ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности …&lt;/p&gt;</summary><content type="html">&lt;p&gt;PIC (&lt;strong&gt;P&lt;/strong&gt;eripheral &lt;strong&gt;I&lt;/strong&gt;nterface &lt;strong&gt;C&lt;/strong&gt;ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности. В свою очередь PIC32 на данный момент является флагманом компании Microchip на рынке микроконтроллеров, обладая наиболее высокой производительностью и наиболее продвинутой периферией на борту. Ниже изображена блок-схема микроконтроллера PIC16F648. В принципе за исключением количества портов ввода-вывода PORTA, PORTB... и набора периферийных модулей Timer, CCP1... этот рисунок у большинства современных PIC16 будет идентичен.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/PIC16F648.svg" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 --chip=16f628A blink.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A blink.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="c1"&gt;// __delay_ms legacy code&lt;/span&gt;
@@ -141,7 +314,7 @@
 &lt;p&gt;Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 --chip=16f628A buttons.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A buttons.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -7360,7 +7533,7 @@ sed &lt;span class="s1"&gt;&amp;#39;s/\\\\u/\\u/g&amp;#39;&lt;/span&gt; &amp;gt;
 &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/.gitignore"&gt;&lt;/a&gt;
 &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/package.json"&gt;&lt;/a&gt;
 &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/readme"&gt;&lt;/a&gt;
- --&gt;</content><category term="NLP"></category><category term="Lucene"></category><category term="ES6"></category></entry><entry><title>TDD на уровне микроконтроллеров - свежий взгляд</title><link href="http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/" rel="alternate"></link><published>2014-03-29T00:00:00+02:00</published><updated>2014-03-29T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2014-03-29:/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/</id><summary type="html">&lt;p&gt;Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже &lt;a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/"&gt;поднималась&lt;/a&gt;. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой &lt;em&gt;наивный&lt;/em&gt; подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже &lt;a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/"&gt;поднималась&lt;/a&gt;. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой &lt;em&gt;наивный&lt;/em&gt; подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки особенно на стыке софта перефирии:&lt;/p&gt;
+ --&gt;</content><category term="NLP"></category><category term="Lucene"></category><category term="ES6"></category></entry><entry><title>TDD на уровне микроконтроллеров - свежий взгляд</title><link href="http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/" rel="alternate"></link><published>2014-03-29T00:00:00+02:00</published><updated>2014-03-29T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2014-03-29:/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/</id><summary type="html">&lt;p&gt;Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже &lt;a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/"&gt;поднималась&lt;/a&gt;. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой &lt;em&gt;наивный&lt;/em&gt; подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже &lt;a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/"&gt;поднималась&lt;/a&gt;. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой &lt;em&gt;наивный&lt;/em&gt; подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки особенно на стыке софта перефирии:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;увеличивается объём кода за счёт дополнительных функций или &lt;code&gt;#ifdef&lt;/code&gt; на стыке с периферией (всякие &lt;em&gt;UART&lt;/em&gt;, &lt;em&gt;I2C&lt;/em&gt;, порты ввода-вывода и т.д.). Например логику по установке битов портов можно завернуть в функцию &lt;code&gt;set_flag()&lt;/code&gt; и при написании тестов задействовать соотв. ей &lt;em&gt;mock&lt;/em&gt; - однако это увеличит общий объём кода&lt;/p&gt;
@@ -7739,7 +7912,7 @@ quit
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Очевидно, что такой &lt;em&gt;TDD&lt;/em&gt; подход на порядок удобнее &lt;a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/"&gt;предыдущих&lt;/a&gt;. Тут очень многое зависит от возможностей эмулятора и иногда функционала &lt;em&gt;sim30&lt;/em&gt; бывает недостаточно. Типичный пример - логика обработка прерываний:&lt;/p&gt;
+&lt;p&gt;Очевидно, что такой &lt;em&gt;TDD&lt;/em&gt; подход на порядок удобнее &lt;a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/"&gt;предыдущих&lt;/a&gt;. Тут очень многое зависит от возможностей эмулятора и иногда функционала &lt;em&gt;sim30&lt;/em&gt; бывает недостаточно. Типичный пример - логика обработка прерываний:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;src/gpio_button.h&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef gpio_button_H&lt;/span&gt;
 &lt;span class="cp"&gt;#define gpio_button_H&lt;/span&gt;
@@ -13152,850 +13325,4 @@ oleg@linux-ubuc:~&amp;gt; sudo /usr/sbin/groupmod -A &lt;span class="nv"&gt;$USE
 
 &lt;p&gt;В Ubuntu 12.04 добавить пользователя можно так: &lt;code&gt;sudo adduser $USER dialout&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;На этом всё, надёжных девайсов Вам !&lt;/p&gt;
-&lt;p&gt;На всякий пожарный исходники &lt;a href="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/bootloader.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;</content><category term="Bootloader"></category><category term="Микроконтроллер"></category><category term="UART"></category></entry><entry><title>Продолжаем XPрименты - Valgrind</title><link href="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/" rel="alternate"></link><published>2012-10-02T00:00:00+03:00</published><updated>2012-10-02T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-02:/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/</id><summary type="html">&lt;p&gt;В предыдущем &lt;a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/"&gt;посте&lt;/a&gt; было рассказано о пользе применения элементов &lt;strong&gt;экстремального программирования&lt;/strong&gt; (&lt;em&gt;Extreme Programming&lt;/em&gt; (&lt;em&gt;XP&lt;/em&gt;)) в контексте разработки устройств на микроконтроллерах. Перед тем, как разворачивать приложение (прошивать микроконтроллер) в обязательном порядке на ПК запускаются тесты, представляющие собой обычный &lt;strong&gt;исполняемый файл&lt;/strong&gt;, использующий тот же исходный код, что и конечный потребитель - микроконтроллер. Ключевое …&lt;/p&gt;</summary><content type="html">&lt;p&gt;В предыдущем &lt;a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/"&gt;посте&lt;/a&gt; было рассказано о пользе применения элементов &lt;strong&gt;экстремального программирования&lt;/strong&gt; (&lt;em&gt;Extreme Programming&lt;/em&gt; (&lt;em&gt;XP&lt;/em&gt;)) в контексте разработки устройств на микроконтроллерах. Перед тем, как разворачивать приложение (прошивать микроконтроллер) в обязательном порядке на ПК запускаются тесты, представляющие собой обычный &lt;strong&gt;исполняемый файл&lt;/strong&gt;, использующий тот же исходный код, что и конечный потребитель - микроконтроллер. Ключевое понятие сейчас для нас - &lt;strong&gt;исполняемый файл&lt;/strong&gt;, фактически законченное консольное приложение. А значит можно задействовать дополнительные инструменты для проверки / анализа качества кода на этапе выполнения. Один из таких инструментов - &lt;a href="http://valgrind.org/" rel="nofollow"&gt;Valgring&lt;/a&gt; обладает просто-таки потрясающими возможностями, в чём мы сейчас и постараемся убедиться.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Valgrind&lt;/strong&gt; обновляется довольно часто, поэтому в репозиториях &lt;em&gt;Ubuntu&lt;/em&gt; / &lt;em&gt;openSUSE&lt;/em&gt; и т.д. может быть более &lt;em&gt;древняя&lt;/em&gt; версия программы. В этой связи возможно проще работать с исходниками - процесс сборки / установки &lt;strong&gt;Valgrind&lt;/strong&gt; стандартный как для &lt;strong&gt;Unix&lt;/strong&gt; и состоит из трёх этапов: ./&lt;strong&gt;configure&lt;/strong&gt;, &lt;strong&gt;make&lt;/strong&gt;, &lt;strong&gt;make install&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo zypper install make
-&lt;span class="c1"&gt;# cd &amp;#39;/home/embedded/Рабочий стол/vargrind/valgrind-3.7.0&amp;#39;&lt;/span&gt;
-./configure
-make
-sudo make install
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Вот что получится, если попросить &lt;strong&gt;Valgrind&lt;/strong&gt; проверить нашу программу для расчёта расстояния между двумя GPS координатам:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Первый запуск Скриншот" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_demo.png" style="width:100%; border:1px solid grey;"&gt;&lt;/p&gt;
-&lt;p&gt;Основная утилита &lt;strong&gt;Valgrind&lt;/strong&gt; - &lt;strong&gt;memcheck&lt;/strong&gt;, она запускается по умолчанию. Для использования других утилит это необходимо явно указывать в параметрах командной строки, как продемонстрировано на вызове &lt;strong&gt;exp-sgcheck&lt;/strong&gt; (ранее она называлась &lt;strong&gt;exp-ptrcheck&lt;/strong&gt;). Как видно из рисунка, наш код ошибок при работе с памятью не имеет.&lt;/p&gt;
-&lt;h3&gt;Valgrind - memcheck&lt;/h3&gt;
-&lt;p&gt;Теперь рассмотрим более интересный пример. Необходимо разработать метод, который принимает в качестве входного параметра &lt;strong&gt;GPS&lt;/strong&gt; строку в формате &lt;strong&gt;NMEA&lt;/strong&gt; и извлекает дату и время принятого пакета. Чтобы было проще сортировать полученные данные по дате, возможно, понадобится соответственно изменить её формат:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_valgrind/src/gps/gps.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;string.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; 
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;Date&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Time&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="n"&gt;DateTimeGPS&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/**************************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Function Name:  TryGetDateTimeRMCGPS                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Return Value:   true if success, false if not         *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Parameters:     NMEA RMC string,                      *&lt;/span&gt;
-&lt;span class="cm"&gt; *          DateTimeGPS structure, doSwap boolean *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Description:    Find date and time in RMC string ang  *&lt;/span&gt;
-&lt;span class="cm"&gt; *          fill DateTimeGPS                      *&lt;/span&gt;
-&lt;span class="cm"&gt; **************************************************************/&lt;/span&gt;
-
-&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;rmc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-            &lt;span class="n"&gt;DateTimeGPS&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;doDateSwap&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="k"&gt;register&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;s1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strchr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rmc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;    
-            &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Time&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;atol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; 
-                &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strchr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;,&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;doDateSwap&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                    &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;130484&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)];&lt;/span&gt;
-                    &lt;span class="n"&gt;memcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;s1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-                    &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;swap&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                    &lt;span class="n"&gt;swap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; 
-                    &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; 
-                    &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;swap&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                    &lt;span class="n"&gt;swap&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; 
-                    &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt; 
-                    &lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;swap&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                    &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;atol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bufD&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-                &lt;span class="p"&gt;}&lt;/span&gt;
-                &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;datetime&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;atol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-                &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-            &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_valgrind/tests/cppunit/gps/GpsTest.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GPS_TEST_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GPS_TEST_H&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;cppunit/extensions/HelperMacros.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;GpsTest&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;TestFixture&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST_SUITE&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_empty_TryGetDateTimeRMCGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_empty_swap_TryGetDateTimeRMCGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_TryGetDateTimeRMCGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_swap_TryGetDateTimeRMCGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_params_immutable_TryGetDateTimeRMCGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_params_immutable_swap_TryGetDateTimeRMCGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST_SUITE_END&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;test_empty_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_empty_swap_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_swap_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_params_immutable_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_params_immutable_swap_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif  &lt;/span&gt;&lt;span class="c1"&gt;// __GPS_TEST_H&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_valgrind/tests/cppunit/gps/GpsTest.cpp&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GpsTest.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;C&amp;quot;&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;../../../src/gps/gps.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="n"&gt;CPPUNIT_TEST_SUITE_REGISTRATION&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#define VALID_TEST_RMC &amp;quot;$GPRMC,225446,A,&amp;quot; \&lt;/span&gt;
-&lt;span class="cp"&gt;    &amp;quot;4916.45,N,12311.12,W,000.5,054.7,191194,020.3,E*68&amp;quot;&lt;/span&gt;
-
-&lt;span class="n"&gt;DateTimeGPS&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_empty_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="s"&gt;&amp;quot;$GPRMC,,,,,,,,&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_empty_swap_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="s"&gt;&amp;quot;$GPRMC,,,,,,,,&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;VALID_TEST_RMC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;191194ul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Date&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;225446ul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Time&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_swap_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;VALID_TEST_RMC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;941119ul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Date&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;225446ul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Time&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;template_params_immutable_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;doSwap&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;rmc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Date&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Time&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rmc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;doSwap&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;rmc&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;1ul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Date&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;2ul&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Time&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;rmc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VALID_TEST_RMC&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rmc&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;dt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;doSwap&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;VALID_TEST_RMC&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;rmc&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_params_immutable_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;template_params_immutable_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_params_immutable_swap_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;template_params_immutable_TryGetDateTimeRMCGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Код успешно компилируется и проходит тесты. Но что по этому поводу думает &lt;strong&gt;Valgrind&lt;/strong&gt; ?&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Memcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_memcheck_error.png" style="width:100%; border:1px solid grey;"&gt;&lt;/p&gt;
-&lt;p&gt;Строка должна всегда завершаться нулём, а в нашем случае последний символ bufD неопределён. Ниже представлен исправленный вариант.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_valgrind/src/gps/gps.c&lt;/em&gt;
-    :::cpp
-    #include &lt;string.h&gt;
-    #include &lt;stdlib.h&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;typedef struct 
-{
-    unsigned long Date, Time;
-} DateTimeGPS;
-
-/**************************************************************
- *      Function Name:  TryGetDateTimeRMCGPS                  *
- *      Return Value:   true if success, false if not         *
- *      Parameters:     NMEA RMC string,                      *
- *          DateTimeGPS structure, doSwap boolean *
- *      Description:    Find date and time in RMC string ang  *
- *          fill DateTimeGPS                      *
- **************************************************************/
-
-bool TryGetDateTimeRMCGPS(const char* rmc, 
-            DateTimeGPS* datetime, bool doDateSwap) {
-    const register char* s1 = strchr(rmc, &amp;#39;,&amp;#39;);
-        if (s1) {    
-            datetime-&amp;gt;Time = atol(s1 + 1);
-            for (unsigned char c = 0; c &amp;lt; 8 &amp;amp;&amp;amp; 
-                (s1 = strchr(s1 + 1, &amp;#39;,&amp;#39;)); c++);
-            if (s1) {
-                if(doDateSwap) {
-                    char bufD[sizeof(&amp;quot;130484&amp;quot;)];
-                    memcpy(bufD, s1 + 1, sizeof(bufD) - 1);
-                    char swap;
-                    swap = bufD[0]; 
-                    bufD[0] = bufD[4]; 
-                    bufD[4] = swap;
-                    swap = bufD[1]; 
-                    bufD[1] = bufD[5]; 
-                    bufD[5] = swap;
-                    bufD[sizeof(bufD) - 1] = 0; // fixed
-                    datetime-&amp;gt;Date = atol(bufD);
-                }
-                else datetime-&amp;gt;Date = atol(s1 + 1);
-
-                return true;
-            }
-    }
-
-    return false;
-}
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Существует одна категория ошибок, особенно актуальная при использовании чистого &lt;strong&gt;С&lt;/strong&gt;, которую &lt;strong&gt;memcheck&lt;/strong&gt; обнаружить пока не в состоянии - выход за границы массива, который расположен в стеке или является статическим (объявлен с помощью ключевого слова &lt;em&gt;static&lt;/em&gt;).&lt;/p&gt;
-&lt;h3&gt;Valgrind - exp-sgcheck&lt;/h3&gt;
-&lt;p&gt;Перед тем, как работать с &lt;strong&gt;NMEA&lt;/strong&gt; пакетом, его необходимо получить. Вот очень простой код:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_valgrind/src/gps/gpsUART.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;gps.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/*************************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Each NMEA sting begins with &amp;#39;$&amp;#39; and ends             *&lt;/span&gt;
-&lt;span class="cm"&gt; *      with &amp;lt;CR&amp;gt; and can&amp;#39;t be longer than 80                *&lt;/span&gt;
-&lt;span class="cm"&gt; *      characters of visible text                           *&lt;/span&gt;
-&lt;span class="cm"&gt; *************************************************************/&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;81&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
-
-&lt;span class="cm"&gt;/*************************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Function Name:  getsGPS                              *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Return Value:   bool                                 *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Parameters:     no                                   *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Description:    This routine read each char          *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      while &amp;quot;\r\n&amp;quot; sequence not occur.     *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      Return true if no overflow           *&lt;/span&gt;
-&lt;span class="cm"&gt; *************************************************************/&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;register&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-        &lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Read_UART&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-            &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                    &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;prev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
-                    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;prev&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\r&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;prev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                    &lt;span class="p"&gt;}&lt;/span&gt;
-                &lt;span class="p"&gt;}&lt;/span&gt;
-            &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-        &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-
-    &lt;span class="cm"&gt;/* Overflow. Force ensure buf last char is null terminated */&lt;/span&gt;
-
-    &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_valgrind/tests/cppunit/gps/GpsTestUART.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GPS_TEST_UART_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GPS_TEST_UART_H&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;cppunit/extensions/HelperMacros.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;GpsTestUART&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;TestFixture&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST_SUITE&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_getsGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_rn_getsGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_max_getsGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_overflow_no_rn_empty_getsGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_overflow_no_rn_dollar_getsGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_overflow_no_rn_getsGPS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST_SUITE_END&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;test_getsGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_rn_getsGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_max_getsGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_overflow_no_rn_empty_getsGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_overflow_no_rn_dollar_getsGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_overflow_no_rn_getsGPS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif  &lt;/span&gt;&lt;span class="c1"&gt;// __GPS_TEST_UART_H&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_valgrind/tests/cppunit/gps/GpsTestUART.cpp&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GpsTestUART.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;C&amp;quot;&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;fakeuart.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-    &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;../../../src/gps/gpsUART.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="n"&gt;CPPUNIT_TEST_SUITE_REGISTRATION&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;MAX_NMEA_LENGTH&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;80&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_rn_getsGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;FAKE_UART_FILL_BUFFER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_getsGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-    &lt;span class="cp"&gt;#define GPRMC_FAKE                                     \&lt;/span&gt;
-&lt;span class="cp"&gt;            &amp;quot;$GPRMC,220516,A,5133.82,N,00042.24,W,173.8,&amp;quot;  \&lt;/span&gt;
-&lt;span class="cp"&gt;            &amp;quot;231.8,130694,004.2,W*70&amp;quot;&lt;/span&gt;
-
-    &lt;span class="n"&gt;FAKE_UART_FILL_BUFFER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_FAKE&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_FAKE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="cp"&gt;#undef GPRMC_FAKE&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_max_getsGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-    &lt;span class="cp"&gt;#define GPRMC_FAKE                                     \&lt;/span&gt;
-&lt;span class="cp"&gt;            &amp;quot;$GPRMC,145932.000,A,4836.5976,N,03433.7255,&amp;quot;  \&lt;/span&gt;
-&lt;span class="cp"&gt;            &amp;quot;E,0.25,0.00,080711,xxxxxx,xxxxxx,A*68&amp;quot;&lt;/span&gt;
-
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_FAKE&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;MAX_NMEA_LENGTH&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="n"&gt;FAKE_UART_FILL_BUFFER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_FAKE&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\r\n&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_FAKE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="cp"&gt;#undef GPRMC_FAKE&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_overflow_no_rn_empty_getsGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;FAKE_UART_FILL_BUFFER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_overflow_no_rn_dollar_getsGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;FAKE_UART_FILL_BUFFER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;$&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;vector&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MAX_NMEA_LENGTH&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="sc"&gt;&amp;#39;$&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-            &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;front&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;MAX_NMEA_LENGTH&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTestUART&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_overflow_no_rn_getsGPS&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-    &lt;span class="cp"&gt;#define GPRMC_OVERFLOW                                \&lt;/span&gt;
-&lt;span class="cp"&gt;            &amp;quot;$GPRMC,145932.000,A,4836.5976,N,03433.7255,&amp;quot; \&lt;/span&gt;
-&lt;span class="cp"&gt;            &amp;quot;E,0.25,0.00,080711,xxxxxx,xxxxxx,A*68&amp;quot;&lt;/span&gt;
-
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
-        &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_OVERFLOW&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;MAX_NMEA_LENGTH&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="n"&gt;FAKE_UART_FILL_BUFFER&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_OVERFLOW&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\n\r&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;string&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GPRMC_OVERFLOW&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="cp"&gt;#undef GPRMC_OVERFLOW&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_valgrind/tests/cppunit/gps/fakeuart.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#define FAKE_UART_FILL_BUFFER(c)                \&lt;/span&gt;
-&lt;span class="cp"&gt;        fakeuartbuf = c;                        \&lt;/span&gt;
-&lt;span class="cp"&gt;        fakeuartbuf_s1 = 0&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;fakeuartbuf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;fakeuartbuf_s1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="nf"&gt;Read_UART&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;fakeuartbuf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;fakeuartbuf_s1&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="n"&gt;fakeuartbuf_s1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;fakeuartbuf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;fakeuartbuf_s1&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Код успешно компилируется и проходит тесты и никаких вопросов у &lt;strong&gt;memcheck&lt;/strong&gt; не вызывает. Запускаем &lt;strong&gt;exp-sgcheck&lt;/strong&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="exp-sgcheck" src="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/valgrind_sgcheck_error.png" style="width:100%; border:1px solid grey;"&gt;&lt;/p&gt;
-&lt;p&gt;Программист допустил оплошность - при определённых обстоятельствах осуществляется выход за границы массива. Подобные ошибки трудно обнаружить, поскольку всё вроде как работает, но в самый неподходящий момент что-то сломается ;( Исправленный вариант выглядит так:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_valgrind/src/gps/gpsUART.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;gps.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/*************************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Each NMEA sting begins with &amp;#39;$&amp;#39; and ends             *&lt;/span&gt;
-&lt;span class="cm"&gt; *      with &amp;lt;CR&amp;gt; and can&amp;#39;t be longer than 80                *&lt;/span&gt;
-&lt;span class="cm"&gt; *      characters of visible text                           *&lt;/span&gt;
-&lt;span class="cm"&gt; *************************************************************/&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;81&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
-
-&lt;span class="cm"&gt;/*************************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Function Name:  getsGPS                              *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Return Value:   bool                                 *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Parameters:     no                                   *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Description:    This routine read each char          *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      while &amp;quot;\r\n&amp;quot; sequence not occur.     *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      Return true if no overflow           *&lt;/span&gt;
-&lt;span class="cm"&gt; *************************************************************/&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;getsGPS&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;register&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-        &lt;span class="k"&gt;switch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Read_UART&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-            &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                    &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;prev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
-                    &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;prev&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;\r&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;prev&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-                    &lt;span class="p"&gt;}&lt;/span&gt;
-                &lt;span class="p"&gt;}&lt;/span&gt;
-            &lt;span class="k"&gt;default&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// FIX &amp;lt;= !!!&lt;/span&gt;
-        &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="n"&gt;pt&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-
-    &lt;span class="cm"&gt;/* Overflow. Force ensure buf last char is null terminated */&lt;/span&gt;
-
-    &lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buf&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endhighlight&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h3&gt;Valgrind - suppressions&lt;/h3&gt;
-&lt;p&gt;В процессе поиска ошибок &lt;strong&gt;Valgrind&lt;/strong&gt; может также обнаруживать ошибки и в системных библиотеках, таких как GNU C или X11 к примеру. Поскольку подобный код мы не можем контролировать, было бы здорово иметь механизм подробного описания и подавления ошибок - это позволит сосредоточиться исключительно на ошибках разрабатываемого приложения. &lt;strong&gt;Valgrind&lt;/strong&gt; не только умеет делать подобные вещи, но также поможет сгенерировать необходимый &lt;strong&gt;suppression-синтаксис&lt;/strong&gt; с точным описанием ошибки при использовании специального параметра командной строки &lt;strong&gt;--gen-suppressions=yes&lt;/strong&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;valgrind --tool&lt;span class="o"&gt;=&lt;/span&gt;exp-sgcheck --gen-suppressions&lt;span class="o"&gt;=&lt;/span&gt;all ./a.out
-&lt;span class="c1"&gt;#create ../test.supp&lt;/span&gt;
-valgrind --tool&lt;span class="o"&gt;=&lt;/span&gt;exp-sgcheck --gen-suppressions&lt;span class="o"&gt;=&lt;/span&gt;all &lt;span class="se"&gt;\&lt;/span&gt;
---suppressions&lt;span class="o"&gt;=&lt;/span&gt;../test.supp ./a.out
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; exp-sgcheck, a stack and global array overrun &lt;span class="nv"&gt;detector&lt;/span&gt;
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; NOTE: This is an Experimental-Class Valgrind &lt;span class="nv"&gt;Tool&lt;/span&gt;
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; Copyright &lt;span class="o"&gt;(&lt;/span&gt;C&lt;span class="o"&gt;)&lt;/span&gt; 2003-2011, and GNU GPLd, by OpenWorks Ltd et al.
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; Using Valgrind-3.7.0 and LibVEX&lt;span class="p"&gt;;&lt;/span&gt; rerun with -h &lt;span class="k"&gt;for&lt;/span&gt; copyright &lt;span class="nv"&gt;info&lt;/span&gt;
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; Command: ./a.out
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; 
-............
-
-OK &lt;span class="o"&gt;(&lt;/span&gt;12&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; 
-&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="nv"&gt;3540&lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt; ERROR SUMMARY: &lt;span class="m"&gt;0&lt;/span&gt; errors from &lt;span class="m"&gt;0&lt;/span&gt; contexts &lt;span class="o"&gt;(&lt;/span&gt;suppressed: &lt;span class="m"&gt;7&lt;/span&gt; from 7&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_valgrind/tests/test.supp&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# This file suppress UART getsGPS errors&lt;/span&gt;
-
-&lt;span class="o"&gt;{&lt;/span&gt;
-   UART getsGPS no_rn_test
-   exp-sgcheck:SorG
-   fun:getsGPS
-   fun:_ZN11GpsTestUART27test_overflow_no_rn_getsGPSEv
-&lt;span class="o"&gt;}&lt;/span&gt;
-
-&lt;span class="o"&gt;{&lt;/span&gt;
-   UART getsGPS no_rn_dollar_test
-   exp-sgcheck:SorG
-   fun:getsGPS
-   fun:_ZN11GpsTestUART34test_overflow_no_rn_dollar_getsGPSEv
-&lt;span class="o"&gt;}&lt;/span&gt;
-
-&lt;span class="o"&gt;{&lt;/span&gt;
-   UART getsGPS no_rn_empty_test
-   exp-sgcheck:SorG
-   fun:getsGPS
-   fun:_ZN11GpsTestUART33test_overflow_no_rn_empty_getsGPSEv
-&lt;span class="o"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Исходники &lt;a href="http://proiot.ru/blog/posts/2012/10/02/prodolzhaem-xprimenty-valgrind/gps_valgrind.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;</content><category term="TDD"></category><category term="Микроконтроллер"></category><category term="CppUnit"></category><category term="Valgrind"></category></entry><entry><title>TDD в жизни микроконтроллеров</title><link href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/" rel="alternate"></link><published>2012-09-29T00:00:00+03:00</published><updated>2012-09-29T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-09-29:/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/</id><summary type="html">&lt;blockquote&gt;
-&lt;p&gt;Тестирование традиционно проводится в качестве финального аккорда разработки проекта, после того, как «всё заработало, просто для уверенности». Экстремальное программирование (&lt;em style="color:darkred;"&gt;Extreme Programming&lt;/em&gt; (&lt;em style="color:darkred;"&gt;XP&lt;/em&gt;)) революционизирует процесс тестирования, придавая ему равный (а то и больший) приоритет с программированием. Вообще, вы пишете тесты перед написанием программы, которая будет тестироваться, и эти тесты навсегда остаются …&lt;/p&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;blockquote&gt;
-&lt;p&gt;Тестирование традиционно проводится в качестве финального аккорда разработки проекта, после того, как «всё заработало, просто для уверенности». Экстремальное программирование (&lt;em style="color:darkred;"&gt;Extreme Programming&lt;/em&gt; (&lt;em style="color:darkred;"&gt;XP&lt;/em&gt;)) революционизирует процесс тестирования, придавая ему равный (а то и больший) приоритет с программированием. Вообще, вы пишете тесты перед написанием программы, которая будет тестироваться, и эти тесты навсегда остаются с кодом. Тесты должны успешно проводиться каждый раз при интеграции и сборке проекта. У таких тестов есть два чрезвычайно важных преимущества.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Они позволяют ясно определить интерфейс класса. Я часто предлагал «вообразить идеальный класс для решения определённой задачи» в качестве инструмента для разработки системы. Стратегия XP идёт дальше - она описывает, как класс должен выглядеть в точности для потребителя его услуг и ясно определяет его поведение. Без двусмысленных определений. Вы можете написать целый роман или создать ворох диаграмм, объясняя, как выглядит и что делает класс, но ничто не сравнится с несколькими тестами. Первое - не более чем список пожеланий, а тесты - своего рода контракт, скреплённый компилятором и выполняющийся программой. Трудно представить себе более конкретное описание класса, чем его тесты.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Bторой важный эффект написания тестов появляется, потому что вам приходится запускать тесты каждый раз при построении вашей программы. Если взглянуть на эволюцию языков программирования с этой точки зрения, нетрудно увидеть, что все настоящие улучшения в технологии связаны с тестами. Язык ассемблера проверял только синтаксис, а в &lt;strong style="color:darkred;"&gt;С&lt;/strong&gt; были введены некоторые семантические ограничения, которые в конечном счёте помогли избежать некоторых частых ошибок. Языки ООП накладывают ещё более строгие семантические ограничения, которые, если разобраться, находятся в форме нескольких тестов. «Правильно ли используется этот тип данных ?» и «Правильно ли вызывается функция ?» - это тесты, проводимые компилятором во время выполнения.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Так как вы понимаете, что ваши тесты удержат вас в рамках дозволенного и не дадут удалиться от нужной задачи (при этом по мере разработки вы всё время добавляете тесты), появляется уверенность в себе - вы можете спокойно делать огромные изменения в проекте, не беспокоясь о том, что проект может прийти в беспорядок. Это действительно замечательно.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Брюс Еккель&lt;/strong&gt; &lt;em&gt;Философия Java. Библиотека пркраммиста. 2001г.&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;При чём тут &lt;strong&gt;микроконтроллеры&lt;/strong&gt; ? Естественно, в контексте &lt;strong&gt;С&lt;/strong&gt; не нужно понимать выражение интерфейс класса буквально. Это может быть просто набор методов в файле заголовка, которые не объявлены как &lt;strong&gt;static&lt;/strong&gt;.  Программы для микроконтроллеров пишутся на &lt;strong&gt;C / C++&lt;/strong&gt;, а &lt;strong&gt;XP&lt;/strong&gt; - это методика разработки, которая не привязана к конкретному языку программирования. В идеале, конечно, для достижения максимального эффекта лучше производить тестирование на той же платформе, на которой предполагается разворачивать приложение. Но это необязательное условие - если исходный код программы для микроконтроллера содержит явную ошибку, она никуда не исчезнет и её можно выявить посредством тестирования в другом месте, на ПК к примеру. Запустить же среду тестирования непосредственно в микроконтроллере вследствие ограниченности ресурсов может оказаться очень сложной да и нецелесообразной задачей.&lt;/p&gt;
-&lt;h3&gt;Постановка задачи&lt;/h3&gt;
-&lt;p&gt;Необходимо рассчитать расстояние между двумя координатами &lt;strong&gt;GPS&lt;/strong&gt;. Используем формулу под названием &lt;strong&gt;haversine&lt;/strong&gt;:&lt;/p&gt;
-&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/haversine.js"&gt; &lt;/script&gt;
-
-&lt;table cellpadding="0" cellspacing="0"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td valign="top"&gt;&lt;b&gt;Haversine formula:&lt;/b&gt;&amp;nbsp;&lt;/td&gt;
-&lt;td class="formula"&gt;a = sin²(Δlat/2) + cos(lat&lt;sub&gt;1&lt;/sub&gt;) * cos(lat&lt;sub&gt;2&lt;/sub&gt;) * sin²(Δlong/2)&lt;br&gt; c = 2 * atan2(√&lt;span class="radicand"&gt;a&lt;/span&gt;, √&lt;span class="radicand"&gt;(1−a)&lt;/span&gt;)&lt;br&gt; d = R * c&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;где &lt;strong&gt;&lt;em&gt;R&lt;/em&gt;&lt;/strong&gt; - радиус Земли (т.е. R = 6371km), d - &lt;strong&gt;&lt;em&gt;km&lt;/em&gt;&lt;/strong&gt;, углы измеряются в &lt;strong&gt;&lt;em&gt;радианах&lt;/em&gt;&lt;/strong&gt;. Формула рассчитывает кратчайшее расстояние по прямой, т.е. сферическая составляющая не учитывается - при небольших расстояниях её влияние невелико.&lt;/p&gt;
-&lt;p&gt;Координаты &lt;em&gt;Latitude&lt;/em&gt; и &lt;em&gt;Longitude&lt;/em&gt; первой точки:&lt;/p&gt;
-&lt;p&gt;
-&lt;input maxlength="10" size="10" id="haversine_lat1" value="48.6098" style="text-align: right; padding:.3em;" type="text"/&gt;
-&lt;input maxlength="10" size="10" id="haversine_long1" value="34.5621" style="text-align: right; padding:.3em;" type="text"/&gt;
-&lt;/p&gt;
-
-&lt;p&gt;Координаты &lt;em&gt;Latitude&lt;/em&gt; и &lt;em&gt;Longitude&lt;/em&gt; второй точки:&lt;/p&gt;
-&lt;p&gt;
-&lt;input maxlength="10" size="10" id="haversine_lat2" value="-48.6098" style="text-align: right; padding:.3em;" type="text"/&gt;
-&lt;input maxlength="10" size="10" id="haversine_long2" value="-34.5621" style="text-align: right; padding:.3em;" type="text"/&gt;
-&lt;button style="padding:.2em;" type="button" onclick="haversine_math.print_haversine();"&gt;&lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;Рассчитать!&lt;/button&gt;
-&lt;/p&gt;
-
-&lt;p id="haversine_result"&gt;
-&lt;/p&gt;
-
-&lt;h3&gt;Рабочее место&lt;/h3&gt;
-&lt;p&gt;Нам точно понадобится &lt;strong&gt;C / C++&lt;/strong&gt; компилятор, в качестве среды тестирования выбор пал на &lt;strong&gt;CppUnit&lt;/strong&gt;, работать будем под 'чистой' &lt;strong&gt;openSUSE&lt;/strong&gt; 11.4.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo zypper install gcc-c++ libcppunit-devel
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;img alt="Установка Скриншот" src="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/cppunit_install.png" style="width:100%; border:1px solid grey;"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;CppUnit&lt;/strong&gt; поставляется в виде библиотеки, поэтому сперва необходимо реализовать программу, которая будет вызывать тесты, а результат выводить, например, в консоль:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_haversine/tests/cppunit/main.cpp&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;cppunit/CompilerOutputter.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;cppunit/extensions/TestFactoryRegistry.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;cppunit/ui/text/TextTestRunner.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;RunTests&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="c1"&gt;// Get the top level suite from the registry&lt;/span&gt;
-    &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Test&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;suite&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; 
-        &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;TestFactoryRegistry&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;getRegistry&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-                &lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;makeTest&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-
-    &lt;span class="c1"&gt;// Adds the test to the list of test to run&lt;/span&gt;
-    &lt;span class="c1"&gt;// CppUnit::TextUi::TestRunner runner;&lt;/span&gt;
-    &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;TextTestRunner&lt;/span&gt; &lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addTest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;suite&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-
-    &lt;span class="c1"&gt;// Change the default outputter to a error outputter&lt;/span&gt;
-    &lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setOutputter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; 
-        &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;CompilerOutputter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; 
-                &lt;span class="n"&gt;std&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;cerr&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="c1"&gt;// Run the tests.&lt;/span&gt;
-    &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;wasSucessful&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;runner&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-
-    &lt;span class="c1"&gt;// Return error code 1 if the one of test failed.&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wasSucessful&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;RunTests&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;После сборки и запуска результат должен быть таким:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;g++ -g -ldl main.cpp -lcppunit
-./a.out
-
-OK &lt;span class="o"&gt;(&lt;/span&gt;0&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Теперь можно писать тесты. Для начала объявим тело функции, которую предполагается реализовать  - это позволит успешно проходить компиляцию в тех местах, где она используется:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_haversine/src/gps/gps.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*********************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Function Name:  haversine_km                     *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Return Value:   Double                           *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Parameters:     Two coordinates                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Description:    Calculate haversine distance for *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      linear distance                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *********************************************************/&lt;/span&gt;
-
-&lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="nf"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;long1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;long2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Тесты:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_haversine/tests/cppunit/gps/GpsTest.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GPS_TEST_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GPS_TEST_H&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;cppunit/extensions/HelperMacros.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;GpsTest&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;CppUnit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;TestFixture&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST_SUITE&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_params_immutable&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_zero&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_params_positive&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_params_negative&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_lat1_negative&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_lon1_negative&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_lat2_negative&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_lon2_negative&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_TEST_SUITE_END&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;test_haversine_km_params_immutable&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_zero&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_params_positive&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_params_negative&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_lat1_negative&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_lon1_negative&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_lat2_negative&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;test_haversine_km_lon2_negative&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif  &lt;/span&gt;&lt;span class="c1"&gt;// __GPS_TEST_H&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;gps_haversine/tests/cppunit/gps/GpsTest.cpp&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GpsTest.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;C&amp;quot;&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;../../../src/gps/gps.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="c1"&gt;// Registers the fixture into the &amp;#39;registry&amp;#39;&lt;/span&gt;
-&lt;span class="n"&gt;CPPUNIT_TEST_SUITE_REGISTRATION&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Функция не должна изменять значение передаваемых параметров */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_params_immutable&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;3.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lat2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;689.8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;3.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;3.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Расстояние между одинаковыми точками ноль */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_zero&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;90&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;90&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;180&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_params_positive&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;122.4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;48.6092&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;34.5622&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;11.12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_params_negative&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;122.4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;48.6092&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;34.5622&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;31.45&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.4&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_lat1_negative&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;10850&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;48.6092&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;34.5622&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;2.2&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;11.12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_lon1_negative&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;4778&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;48.6092&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;34.5622&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;3.5&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;15.73&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_lat2_negative&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;12630&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;48.6092&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;34.5622&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;4.5&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;15.73&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;GpsTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;test_haversine_km_lon2_negative&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mi"&gt;10850&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;48.6092&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;34.5622&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;49&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;33&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;2.2&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;CPPUNIT_ASSERT_DOUBLES_EQUAL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="mf"&gt;11.12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-        &lt;span class="n"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mf"&gt;0.1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mf"&gt;0.1&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Тесты должны быть максимально лаконичными - иначе придётся ломать голову, где же именно ошибка. Мы пока не реализовали &lt;strong&gt;haversine_km&lt;/strong&gt;, поэтому результат будет такой:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;g++ -g -ldl main.cpp gps/GpsTest.cpp -lcppunit
-./a.out
-
-.F.F.F.F.F.F.F.F
-
-GpsTest.cpp:15:Assertion
-Test name: GpsTest::test_haversine_km_params_immutable
-double equality assertion failed
-- Expected: 689.8
-- Actual  : -1
-- Delta   : 0.5
-
-GpsTest.cpp:25:Assertion
-Test name: GpsTest::test_haversine_km_zero
-double equality assertion failed
-- Expected: 0
-- Actual  : -1
-- Delta   : 0
-
-GpsTest.cpp:32:Assertion
-Test name: GpsTest::test_haversine_km_params_positive
-double equality assertion failed
-- Expected: 122.4
-- Actual  : -1
-- Delta   : 0.1
-
-GpsTest.cpp:37:Assertion
-Test name: GpsTest::test_haversine_km_params_negative
-double equality assertion failed
-- Expected: 122.4
-- Actual  : -1
-- Delta   : 0.1
-
-GpsTest.cpp:42:Assertion
-Test name: GpsTest::test_haversine_km_lat1_negative
-double equality assertion failed
-- Expected: 10850
-- Actual  : -1
-- Delta   : 2.2
-
-GpsTest.cpp:47:Assertion
-Test name: GpsTest::test_haversine_km_lon1_negative
-double equality assertion failed
-- Expected: 4778
-- Actual  : -1
-- Delta   : 3.5
-
-GpsTest.cpp:52:Assertion
-Test name: GpsTest::test_haversine_km_lat2_negative
-double equality assertion failed
-- Expected: 12630
-- Actual  : -1
-- Delta   : 4.5
-
-GpsTest.cpp:57:Assertion
-Test name: GpsTest::test_haversine_km_lon2_negative
-double equality assertion failed
-- Expected: 10850
-- Actual  : -1
-- Delta   : 2.2
-
-Failures !!!
-Run: &lt;span class="m"&gt;8&lt;/span&gt;   Failure total: &lt;span class="m"&gt;8&lt;/span&gt;   Failures: &lt;span class="m"&gt;8&lt;/span&gt;   Errors: 0
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;На самом деле это хорошо - если теперь реализовать необходимый функционал и после этого все тесты пройдут успешно, значит они имеют смысл. Теперь реализуем недостающее звено. Вот первый пример рассчёта, взятый с сайта &lt;a href="http://stackoverflow.com/questions/6148814/distance-measurment-by-the-gps-coordinates" rel="nofollow" title="StackOverflow.com"&gt;StackOverflow.com&lt;/a&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_haversine/src/gps/gps.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;math.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/*********************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Function Name:  haversine_km                     *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Return Value:   Double                           *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Parameters:     Two coordinates                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Description:    Calculate haversine distance for *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      linear distance                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *********************************************************/&lt;/span&gt;
-
-&lt;span class="cp"&gt;#define d2r (M_PI / 180.0)&lt;/span&gt;
-
-&lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="nf"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;long1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;long2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;dlong&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;long2&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;long1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;d2r&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;dlat&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat2&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;d2r&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dlat&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;2.0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; 
-        &lt;span class="n"&gt;cos&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;d2r&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;cos&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;d2r&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;pow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sin&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;dlong&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mf"&gt;2.0&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;atan2&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;6367&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Результат выполнения:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;g++ -g -ldl main.cpp gps/GpsTest.cpp -lcppunit
-./a.out
-
-........
-
-OK &lt;span class="o"&gt;(&lt;/span&gt;8&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Теперь вернёмся к микроконтроллерам. В представленном решении компилятор резервирует в стеке место под &lt;strong&gt;девять&lt;/strong&gt; переменных типа &lt;strong&gt;double&lt;/strong&gt;, это очень много. Поэтому код нужно оптимизировать, а существующие тесты помогут избежать ошибок. Вот что получилось:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gps_haversine/src/gps/gps.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;math.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/*********************************************************&lt;/span&gt;
-&lt;span class="cm"&gt; *      Function Name:  haversine_km                     *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Return Value:   Double                           *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Parameters:     Two coordinates                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *      Description:    Calculate haversine distance for *&lt;/span&gt;
-&lt;span class="cm"&gt; *                      linear distance                  *&lt;/span&gt;
-&lt;span class="cm"&gt; *********************************************************/&lt;/span&gt;
-
-&lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="nf"&gt;haversine_km&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;long1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
-                    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;long2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cp"&gt;#define d2r (3.141592 / 180.0)&lt;/span&gt;
-    &lt;span class="cp"&gt;#define sindif(v1, v2) sin(((v1 - v2) * d2r) / 2.0)&lt;/span&gt;
-
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;sdlong&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sindif&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;long2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;long1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;sdlat&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sindif&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;lat1&lt;/span&gt; &lt;span class="o"&gt;*=&lt;/span&gt; &lt;span class="n"&gt;d2r&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;lat2&lt;/span&gt; &lt;span class="o"&gt;*=&lt;/span&gt; &lt;span class="n"&gt;d2r&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;sdlong&lt;/span&gt; &lt;span class="o"&gt;*=&lt;/span&gt; &lt;span class="n"&gt;sdlong&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;sdlat&lt;/span&gt;  &lt;span class="o"&gt;*=&lt;/span&gt; &lt;span class="n"&gt;sdlat&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="kt"&gt;double&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sdlat&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;cos&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;cos&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;sdlong&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;6367&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;atan2&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;sqrt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Результат выполнения тестов аналогичен предыдущему, а исходники &lt;a href="http://proiot.ru/blog/posts/2012/09/29/tdd-v-zhizni-mikrokontrollerov/gps_haversine.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;</content><category term="Микроконтроллер"></category><category term="TDD"></category><category term="GPS"></category><category term="CppUnit"></category></entry></feed>
+&lt;p&gt;На всякий пожарный исходники &lt;a href="http://proiot.ru/blog/posts/2012/10/03/zamechatelnyi-bootloader-ot-microchip-dlia-pic16-pic18/bootloader.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;</content><category term="Bootloader"></category><category term="Микроконтроллер"></category><category term="UART"></category></entry></feed>
