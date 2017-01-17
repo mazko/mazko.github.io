@@ -28,7 +28,111 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">PICSim.js - семисегментный индикатор и прерывания</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">PICSim.js - сторожевой таймер и спящий режим</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-17T00:00:00+02:00">
+                Published: Вт. 17 Январь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
+</footer><!-- /.post-info --><p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.</p>
+<p>Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/42785136281fe4b78e1e93572ff36d82">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = ON</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// The WDT has a nominal time-out period of 18 ms (with no prescaler).</span>
+  <span class="c1">// If longer time-out periods are desired, a postscaler with a division ratio</span>
+  <span class="c1">// of up to 1:128 can be assigned to the WDT under</span>
+  <span class="c1">// software control by writing to the OPTION register. Thus,</span>
+  <span class="c1">// time-out periods up to 2.3 seconds can be realized</span>
+
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS0</span> <span class="o">=</span> <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS1</span> <span class="o">=</span> <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// 1:128; 2.3 sec</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PSA</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// prescaler is assigned to watchdog</span>
+
+  <span class="c1">// looks like STATUS [TO, PD] are not implemented in original PICSim - always 0</span>
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">STATUS</span><span class="p">;</span>
+  <span class="n">TRISB</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">=</span> <span class="n">TRISA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="n">RA0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">333</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">;);</span> <span class="c1">// simple delay</span>
+  <span class="n">RA0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// CLRWDT();</span>
+    <span class="c1">// do something useful</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Минимальный период срабатывания сторожевого таймера у PIC16F648A микроконтроллера 18 миллисекунд, <a href="https://bc.js.org/">максимальный</a> <code>0.018*128=2.304</code> секунды. Так как в данном примере программист забыл программно очищать счётчик сторожевого таймера специальной командой <code>CLRWDT();</code> то через каждые 2.3 секунды микроконтроллер сбрасывается и в результате светодиод RA0 мигает. Если <a href="http://mazko.github.io/picsim.js/098c4473a3356f0082c583d299b8eb95">раскомментировать</a> <code>// CLRWDT();</code> светодиод RA0 конечно же будет светиться непрерывно. Причину сброса микроконтроллера по идее можно узнать по состоянию флагов TO, PD в регистре STATUS, хотя похоже в picsim это не реализовано.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Что касается спящий режима, то он позволяет значительно снизить энергопотребление. Для перехода а спящий режим у PIC микроконтроллеров предусмотрена специальная команда <code>SPEEP()</code>, после которой тактирование микроконтроллера прекращаются, текущее состояние всех регистров в том числе и портов ввода-вывода сохраняется и потребление энергии сводится к минимуму - обычно единицы микроампер. Выйти из спящего режима можно либо по прерыванию либо при срабатывании сторожевого таймера.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main-sleep.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/7e2d324a527f5bc49a6b891bd4dd7ec7">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = ON</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS1</span> <span class="o">=</span> <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 1:64; 1.152 sec</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PSA</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// prescaler is assigned to watchdog</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="kt">uint8_t</span> <span class="n">last_led</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">SLEEP</span><span class="p">();</span>
+    <span class="n">last_led</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">last_led</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">last_led</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">PORTB</span> <span class="o">=</span> <span class="n">last_led</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>В данном примере в отличие от предыдущего микроконтроллер не сбрасывается а просыпается от сторожевого таймера каждые 1.152 секунды, передвигает светодиод и засыпает заново. Основное энергопотребление приходится только на свечение светодиода.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui-sleep.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/" rel="bookmark"
+                           title="Permalink to PICSim.js - семисегментный индикатор и прерывания">PICSim.js - семисегментный индикатор и прерывания</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-01-16T00:00:00+02:00">
                 Published: Пн. 16 Январь 2017
@@ -39,185 +143,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info --><p>Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются относительно высокое энергопотребление и слабая видимость при ярком освещении, хотя на нашем модном цветном мобильном телефоне тоже ничего не видно на солнышке днём :)</p>
-<p>Конструктивно светодиодный семисегментный индикатор представляет собой группу из семи светодиодов, расположенных в определенном порядке. Включая их в различных комбинациях можно составить упрощённые изображения цифр 0..9. Индикаторы различаются по размеру, типу соединения светодиодов - общий анод, общий катод, по количеству отображаемых разрядов - одноразрядные, двухразрядные и более, по яркости свечения и по цвету - красные, желтые, зеленые и т.д. </p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/7.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/69cc6064062b774abdb3734521cf01a8">picsim.js</a></p>
-<p><em>display7.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-
-<span class="k">static</span> <span class="kt">uint8_t</span> <span class="nf">display7</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">switch</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xEE</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x28</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xCD</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x6D</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x2B</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x67</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">6</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xE7</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">7</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x2C</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">8</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xEF</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">9</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x6F</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xAF</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">11</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xE3</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">12</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xC6</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">13</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xE9</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">14</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0xC7</span><span class="p">;</span>
-    <span class="k">case</span> <span class="mi">15</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mh">0x87</span><span class="p">;</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;display7.c&quot;</span><span class="cp"></span>
-
-<span class="cp">#pragma config WDTE = OFF</span>
-
-<span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">porta_btn_mask</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b11110</span><span class="p">;</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="kt">uint8_t</span> <span class="n">display_data</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-          <span class="n">last_buttons</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">uint8_t</span> <span class="n">buttons</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">&amp;</span> <span class="n">porta_btn_mask</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">last_buttons</span> <span class="o">!=</span> <span class="n">buttons</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">last_buttons</span> <span class="o">=</span> <span class="n">buttons</span><span class="p">;</span>
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">2</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="n">PORTB</span> <span class="o">=</span> <span class="n">display7</span><span class="p">(</span><span class="n">display_data</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>В данном примере используется наиболее простой вид индикации - <em>статическая индикация</em>, в таком режиме каждый сегмент индикатора постоянно находится в одном из двух состояний - включен или выключен. Функция <code>display7</code> приводит двоичное число в код семисегментного индикатора и позволяет отображать шестнадцатиричное число 0..F.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Для одновременной работы нескольких разрядов семисегментного индикаторов часто используют <em>динамическую индикацию</em> (динамическое управление), которое подразумевает поочередное переключение разрядов с частотой, не воспринимаемой человеческим глазом. Для динамической индикации требуется меньшее количество ног микроконтроллера и меньшее количество внешних элементов. На исследуемой плате нога RB4 как раз и занимается поочерёдным переключением двух разрядов - при нуле на RB4 данные с PORTB попадают на левый индикатор, при единице соответственно на правый.</p>
-<p>Задача переключения разрядов семисегментных довольно критична ко времени - при его неравномерном распределении один разряд будет ярче другого, что приведёт к неприятным для человеческого глаза эффектам, мерцаниям. Для задач, критичных ко времени реакции на возникшие события в микроконтроллерах предусмотрены прерывания - основной цикл <code>main()</code> приостанавливается (прерывается), сохраняя свой контекст выполнения, отрабатывает логика обработчика прерывания, после чего управление снова передаётся <code>main()</code>, при этом сохранённый ранее контекст выполнения восстанавливается.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/2f4ae7c6427fe65ef0ccb2aaa07ee744">picsim.js</a></p>
-<p><em>isr.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;display7.c&quot;</span><span class="cp"></span>
-
-<span class="c1">// C89, section 6.5.7 Initialization.</span>
-<span class="c1">// If an object that has static storage duration is not initialized explicitly, then:</span>
-<span class="c1">// - if it has arithmetic type, it is initialized to (positive or unsigned) zero;</span>
-
-<span class="c1">// interface</span>
-<span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="n">display_data</span><span class="p">;</span>
-
-<span class="c1">// http://microchip.wikidot.com/faq:31</span>
-
-<span class="kt">void</span> <span class="n">interrupt</span> <span class="nf">_int_7</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>   <span class="c1">// interrupt function </span>
-<span class="p">{</span>
-  <span class="k">static</span> <span class="kt">bool</span> <span class="n">current_7</span><span class="p">;</span>
-
-  <span class="k">if</span><span class="p">(</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">&amp;&amp;</span> <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span><span class="p">)</span> 
-  <span class="p">{</span>                           <span class="c1">// if timer flag is set &amp; interrupt enabled</span>
-    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// clear the interrupt flag</span>
-
-    <span class="n">PORTB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">PORTB</span> <span class="o">=</span> <span class="n">display7</span><span class="p">(</span><span class="n">current_7</span> <span class="o">?</span> <span class="n">display_data</span> <span class="o">&amp;</span> <span class="mh">0xF</span> <span class="o">:</span> <span class="n">display_data</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">);</span>
-    <span class="n">RB4</span> <span class="o">=</span> <span class="n">current_7</span><span class="p">;</span>
-    <span class="n">current_7</span> <span class="o">=</span> <span class="o">!</span><span class="n">current_7</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f648A main.c isr.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-
-<span class="cp">#pragma config WDTE = OFF</span>
-
-<span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">porta_btn_mask</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b11110</span><span class="p">;</span>
-<span class="k">extern</span> <span class="kt">uint8_t</span> <span class="n">display_data</span><span class="p">;</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="kt">uint8_t</span> <span class="n">last_buttons</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">T0CS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="c1">// Timer increments on instruction clock by default 1 : 1</span>
-  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>         <span class="c1">// Enable interrupt on TMR0 overflow</span>
-  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c1">// Global interrupt enable</span>
-
-  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">uint8_t</span> <span class="n">buttons</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">&amp;</span> <span class="n">porta_btn_mask</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">last_buttons</span> <span class="o">!=</span> <span class="n">buttons</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">last_buttons</span> <span class="o">=</span> <span class="n">buttons</span><span class="p">;</span>
-      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">10</span><span class="p">;</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>В файле <code>isr.c</code> реализована логика, отвечающая за отображение информации на семисегментном дисплее. Интерфейс взаимодействия <code>isr.c</code> с другими программными модулями, такими как <em>main.c</em>, только через переменную <code>display_data</code> - проектирование на уровне интерфейсов позволяет распределить для модулей зоны ответственности и инкапсулировать их реализацию. 
-Модули, полученные в на этапе проектирования системы, должны быть минимально связанны друг с другом (Слабая Связанность, Low Coupling). При правильном проектировании в случае изменении одного модуля не придется править другие или эти изменения будут минимальными. Чем слабее связанность, тем легче писать/понимать/расширять/чинить любую программу на любом языке программирования.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui-int.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Так как <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">скважность</a> импульсов на RB4 равна двум яркость свечения каждого из разрядов семисегментного распределяется поровну от максимальной.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -286,29 +215,6 @@
 Под делителем частоты понимается устройство, которое принимает входной сигнал с заданной частотой и генерирует выходной сигнал, частота которого меньше входной в n раз. На каждые n импульсов на входе …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - триггеры как элементы памяти">NGSPICE.js - триггеры как элементы памяти</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-20T00:00:00+02:00">
-                Published: Вт. 20 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/gate">gate</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE в целом и <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">цифровую</a> схемотехнику в частности.</p>
-<p>Триггер (бистабильный мультивибратор) выполняет <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">логическую</a> функцию с обратной связью, в следствие которой имеет только два устойчивых состояния и способен под действием входных сигналов скачком переходить из одного устойчивого состояния в другое. Важной особенностью триггера как функционального устройства является способность оставаться …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/20/ngspicejs-triggery-kak-elementy-pamiati/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">

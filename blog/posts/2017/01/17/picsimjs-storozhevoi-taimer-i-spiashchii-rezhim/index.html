@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - Embedded</title>
+        <title>PICSim.js - сторожевой таймер и спящий режим</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -25,10 +25,15 @@
                     <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/" rel="bookmark"
+           title="Permalink to PICSim.js - сторожевой таймер и спящий режим">PICSim.js - сторожевой таймер и спящий режим</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">PICSim.js - сторожевой таймер и спящий режим</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-01-17T00:00:00+02:00">
                 Published: Вт. 17 Январь 2017
@@ -39,7 +44,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info --><p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.</p>
+</footer><!-- /.post-info -->      <p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.</p>
 <p>Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/42785136281fe4b78e1e93572ff36d82">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
@@ -119,109 +124,26 @@
 
 <p>В данном примере в отличие от предыдущего микроконтроллер не сбрасывается а просыпается от сторожевого таймера каждые 1.152 секунды, передвигает светодиод и засыпает заново. Основное энергопотребление приходится только на свечение светодиода.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui-sleep.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/" rel="bookmark"
-                           title="Permalink to PICSim.js - семисегментный индикатор и прерывания">PICSim.js - семисегментный индикатор и прерывания</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-16T00:00:00+02:00">
-                Published: Пн. 16 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info -->                <p>Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/" rel="bookmark"
-                           title="Permalink to PICSim.js - широтно-импульсная модуляция">PICSim.js - широтно-импульсная модуляция</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-14T00:00:00+02:00">
-                Published: Сб. 14 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info -->                <p>В <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">предыдущем</a> примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
-Широтно-импульсная <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">модуляция</a> (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/" rel="bookmark"
-                           title="Permalink to Симуляция микроконтроллеров PICSim.js">Симуляция микроконтроллеров PICSim.js</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-13T00:00:00+02:00">
-                Published: Пт. 13 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info -->                <p>PIC (<strong>P</strong>eripheral <strong>I</strong>nterface <strong>C</strong>ontroller) - серия микроконтроллеров, имеющих гарвардскую архитектуру и производимых компанией Microchip. Под маркой PIC выпускаются 8 (PIC10/12/16/18), 16 (PIC24, dsPIC30, dsPIC33F) и 32-битные PIC32 микроконтроллеры. PIC10 линейка отличается низкой стоимостью за счёт ограниченного набора периферии (обычно АЦП и ШИМ) и невысокой производительности …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/" rel="bookmark"
-                           title="Permalink to NGSPICE.js - счетчики и делители частоты">NGSPICE.js - счетчики и делители частоты</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-12-22T00:00:00+02:00">
-                Published: Чт. 22 Декабрь 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/gate">gate</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE в целом и <a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/">цифровую</a> схемотехнику в частности.</p>
-<p>В цифровой схемотехнике понятия «счетчик импульсов» и «делитель частоты» тесно связаны. 
-Под делителем частоты понимается устройство, которое принимает входной сигнал с заданной частотой и генерирует выходной сигнал, частота которого меньше входной в n раз. На каждые n импульсов на входе …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 8
-        <a href="http://proiot.ru/blog/category/embedded/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

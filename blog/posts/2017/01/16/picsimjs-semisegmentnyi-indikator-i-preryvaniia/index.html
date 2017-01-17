@@ -137,7 +137,7 @@
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Для одновременной работы нескольких разрядов семисегментного индикаторов часто используют <em>динамическую индикацию</em> (динамическое управление), которое подразумевает поочередное переключение разрядов с частотой, не воспринимаемой человеческим глазом. Для динамической индикации требуется меньшее количество ног микроконтроллера и меньшее количество внешних элементов. На исследуемой плате нога RB4 как раз и занимается поочерёдным переключением двух разрядов - при нуле на RB4 данные с PORTB попадают на левый индикатор, при единице соответственно на правый.</p>
 <p>Задача переключения разрядов семисегментных довольно критична ко времени - при его неравномерном распределении один разряд будет ярче другого, что приведёт к неприятным для человеческого глаза эффектам, мерцаниям. Для задач, критичных ко времени реакции на возникшие события в микроконтроллерах предусмотрены прерывания - основной цикл <code>main()</code> приостанавливается (прерывается), сохраняя свой контекст выполнения, отрабатывает логика обработчика прерывания, после чего управление снова передаётся <code>main()</code>, при этом сохранённый ранее контекст выполнения восстанавливается.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/2f4ae7c6427fe65ef0ccb2aaa07ee744">picsim.js</a></p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/d7c032cf6e1c90c841d5f42e9130b22f">picsim.js</a></p>
 <p><em>isr.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
@@ -159,11 +159,9 @@
 
   <span class="k">if</span><span class="p">(</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">&amp;&amp;</span> <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span><span class="p">)</span> 
   <span class="p">{</span>                           <span class="c1">// if timer flag is set &amp; interrupt enabled</span>
-    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// clear the interrupt flag</span>
-
-    <span class="n">PORTB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">PORTB</span> <span class="o">=</span> <span class="n">display7</span><span class="p">(</span><span class="n">current_7</span> <span class="o">?</span> <span class="n">display_data</span> <span class="o">&amp;</span> <span class="mh">0xF</span> <span class="o">:</span> <span class="n">display_data</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">);</span>
-    <span class="n">RB4</span> <span class="o">=</span> <span class="n">current_7</span><span class="p">;</span>
+    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// clear the interrupt flag </span>
+    <span class="kt">uint8_t</span> <span class="n">data</span> <span class="o">=</span> <span class="n">display7</span><span class="p">(</span><span class="n">current_7</span> <span class="o">?</span> <span class="n">display_data</span> <span class="o">&amp;</span> <span class="mh">0xF</span> <span class="o">:</span> <span class="n">display_data</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="n">PORTB</span> <span class="o">=</span> <span class="n">current_7</span> <span class="o">?</span> <span class="n">data</span> <span class="o">|</span> <span class="mi">0</span><span class="n">b10000</span> <span class="cm">/* RB4 */</span> <span class="o">:</span> <span class="n">data</span><span class="p">;</span>
     <span class="n">current_7</span> <span class="o">=</span> <span class="o">!</span><span class="n">current_7</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -187,7 +185,11 @@
 
   <span class="kt">uint8_t</span> <span class="n">last_buttons</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">T0CS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="c1">// Timer increments on instruction clock by default 1 : 1</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">T0CS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="c1">// Timer0 increments on instruction clock</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PSA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// Prescaler is assigned to the Timer0 module</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// Prescaler 1:4; T0IF each 256*4 cycle</span>
   <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>         <span class="c1">// Enable interrupt on TMR0 overflow</span>
   <span class="n">INTCONbits</span><span class="p">.</span><span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c1">// Global interrupt enable</span>
 
@@ -218,6 +220,7 @@
 Модули, полученные в на этапе проектирования системы, должны быть минимально связанны друг с другом (Слабая Связанность, Low Coupling). При правильном проектировании в случае изменении одного модуля не придется править другие или эти изменения будут минимальными. Чем слабее связанность, тем легче писать/понимать/расширять/чинить любую программу на любом языке программирования.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui-int.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Так как <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">скважность</a> импульсов на RB4 равна двум яркость свечения каждого из разрядов семисегментного распределяется поровну от максимальной.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">Далее</a> сторожевой таймер.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
