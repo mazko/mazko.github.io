@@ -108,7 +108,7 @@ tags: picsim
 
 Задача переключения разрядов семисегментных довольно критична ко времени - при его неравномерном распределении один разряд будет ярче другого, что приведёт к неприятным для человеческого глаза эффектам, мерцаниям. Для задач, критичных ко времени реакции на возникшие события в микроконтроллерах предусмотрены прерывания - основной цикл ```main()``` приостанавливается (прерывается), сохраняя свой контекст выполнения, отрабатывает логика обработчика прерывания, после чего управление снова передаётся ```main()```, при этом сохранённый ранее контекст выполнения восстанавливается.
 
-[hex]({attach}main.hex) | [picsim.js](http://mazko.github.io/picsim.js/2f4ae7c6427fe65ef0ccb2aaa07ee744)
+[hex]({attach}main.hex) | [picsim.js](http://mazko.github.io/picsim.js/d7c032cf6e1c90c841d5f42e9130b22f)
 
 *isr.c*
 
@@ -135,10 +135,8 @@ tags: picsim
       if(INTCONbits.T0IF && INTCONbits.T0IE) 
       {                           // if timer flag is set & interrupt enabled
         INTCONbits.T0IF = 0;      // clear the interrupt flag 
-        
-        PORTB = 0;
-        PORTB = display7(current_7 ? display_data & 0xF : display_data >> 4);
-        RB4 = current_7;
+        uint8_t data = display7(current_7 ? display_data & 0xF : display_data >> 4);
+        PORTB = current_7 ? data | 0b10000 /* RB4 */ : data;
         current_7 = !current_7;
       }
     }
@@ -163,7 +161,11 @@ tags: picsim
 
       uint8_t last_buttons = 0;
 
-      OPTION_REGbits.T0CS = 0;     // Timer increments on instruction clock by default 1 : 1
+      OPTION_REGbits.T0CS = 0;     // Timer0 increments on instruction clock
+      OPTION_REGbits.PSA = 0;      // Prescaler is assigned to the Timer0 module
+      OPTION_REGbits.PS0 = 1;
+      OPTION_REGbits.PS1 = 0;
+      OPTION_REGbits.PS2 = 0;      // Prescaler 1:4; T0IF each 256*4 cycle
       INTCONbits.T0IE = 1;         // Enable interrupt on TMR0 overflow
       INTCONbits.GIE = 1;          // Global interrupt enable
 
@@ -194,3 +196,5 @@ tags: picsim
 ![screenshot]({attach}ui-int.gif){:style="width:100%; border:1px solid #ddd;"}
 
 Так как [скважность]({filename}../2017-01-14-pwm/2017-01-14-pwm.md) импульсов на RB4 равна двум яркость свечения каждого из разрядов семисегментного распределяется поровну от максимальной.
+
+[Далее]({filename}../2017-01-17-wdt/2017-01-17-wdt.md) сторожевой таймер.
