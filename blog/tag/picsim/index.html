@@ -28,7 +28,283 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">PICSim.js - сторожевой таймер и спящий режим</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">PICSim.js - символьный дисплей на базе HD44780</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-27T00:00:00+02:00">
+                Published: Пт. 27 Январь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/hd44780">HD44780</a> </p>
+</footer><!-- /.post-info --><p>Среди множества различных LCD дисплеев наиболее простыми являются текстовые (символьные) дисплеи на основе контроллера hd44780 с параллельным 4-или 8-битным интерфейсом. В сравнении с <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">7-сегментными</a> индикаторами, дисплеи на базе HD44780 обладают на порядок большими возможностями - количество строк на экране у разных моделей - 1,2 или 4; число видимых символов в строке: 8,10,16,20,24,30,32 или 40, один символ на дисплее представляет собой матрицу размером 5x8 точек, за отрисовку символов отвечает сам HD44780, ток потребления контроллера без подсветки очень мал - 100…200 мкА. Обычно хорошей практикой для разработчиков является ознакомление с <a href="https://www.sparkfun.com/datasheets/LCD/HD44780.pdf" rel="nofollow">официальной</a> документацией.</p>
+<p>Для управления HD44780 производителем предусмотрены следующие выводы:</p>
+<ul>
+<li>
+<p>RS - дисплей определяет, что именно к нему поступает (данные/команда)  </p>
+</li>
+<li>
+<p>RW - направление данных (чтение/запись)</p>
+</li>
+<li>
+<p>D0-D7 - шина команд/данных</p>
+</li>
+<li>
+<p>E - стробирование (синхронизация команд/данных)</p>
+</li>
+</ul>
+<p>Вывод RW можно не использовать вообще если нет практической нужды принимать данные из ЖК (это обычная практика), зачастую достаточно только записывать данные в HD44780. Тогда всё управление сводится к следующей последовательности. Ведущий микроконтроллер выставляет признак RS - 0 указывает на команды, 1 - на данные, выставляет на линиях DB7…DB0 8-разрядный код, после чего формирует на выводе E стробирующий импульс (активный фронт – задний). Контроллеру HD44780 может понадобится какое-то время чтобы переварить информацию в зависимости от типа принятой команды - все это расписано в доке ровно как и правильная последовательность команд для инициализации после подачи питания. Пора бы уже написать какой-нибудь код:  </p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/db3045c11c2927f3da25c387a27e72d0">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/hello.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><em>HD44780.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef HD44780_h</span>
+<span class="cp">#define HD44780_h</span>
+
+<span class="c1">// commands</span>
+<span class="cp">#define LCD_CLEARDISPLAY    0x01</span>
+<span class="cp">#define LCD_RETURNHOME      0x02</span>
+<span class="cp">#define LCD_ENTRYMODESET    0x04</span>
+<span class="cp">#define LCD_DISPLAYCONTROL  0x08</span>
+<span class="cp">#define LCD_CURSORSHIFT     0x10</span>
+<span class="cp">#define LCD_FUNCTIONSET     0x20</span>
+<span class="cp">#define LCD_SETCGRAMADDR    0x40</span>
+<span class="cp">#define LCD_SETDDRAMADDR    0x80</span>
+
+<span class="c1">// flags for display entry mode</span>
+<span class="cp">#define LCD_ENTRYRIGHT          0x00</span>
+<span class="cp">#define LCD_ENTRYLEFT           0x02</span>
+<span class="cp">#define LCD_ENTRYSHIFTINCREMENT 0x01</span>
+<span class="cp">#define LCD_ENTRYSHIFTDECREMENT 0x00</span>
+
+<span class="c1">// flags for display on/off control</span>
+<span class="cp">#define LCD_DISPLAYON     0x04</span>
+<span class="cp">#define LCD_DISPLAYOFF    0x00</span>
+<span class="cp">#define LCD_CURSORON      0x02</span>
+<span class="cp">#define LCD_CURSOROFF     0x00</span>
+<span class="cp">#define LCD_BLINKON       0x01</span>
+<span class="cp">#define LCD_BLINKOFF      0x00</span>
+
+<span class="c1">// flags for display/cursor shift</span>
+<span class="cp">#define LCD_DISPLAYMOVE   0x08</span>
+<span class="cp">#define LCD_CURSORMOVE    0x00</span>
+<span class="cp">#define LCD_MOVERIGHT     0x04</span>
+<span class="cp">#define LCD_MOVELEFT      0x00</span>
+
+<span class="c1">// flags for function set</span>
+<span class="cp">#define LCD_8BITMODE      0x10</span>
+<span class="cp">#define LCD_4BITMODE      0x00</span>
+<span class="cp">#define LCD_2LINE         0x08</span>
+<span class="cp">#define LCD_1LINE         0x00</span>
+<span class="cp">#define LCD_5x10DOTS      0x04</span>
+<span class="cp">#define LCD_5x8DOTS       0x00</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+
+
+<p>Как видно всего команд не так уж и много <code>LCD_CLEARDISPLAY...LCD_SETDDRAMADDR</code>, но для некоторых могут быть дополнительные флаги - например для <code>LCD_DISPLAYCONTROL</code> это <code>LCD_DISPLAYON...LCD_BLINKOFF</code>.</p>
+<p><em>lcd.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;HD44780.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#define LCD_EN_PIN  PORTEbits.RE1</span>
+<span class="cp">#define LCD_RS_PIN  PORTEbits.RE2</span>
+<span class="cp">#define LCD_PORT    PORTD</span>
+
+<span class="cp">#define _LCD_DEFAULT_STATE_DISPLAYCONTROL (LCD_DISPLAYON | LCD_CURSORON | LCD_BLINKON)</span>
+<span class="cp">#define _LCD_DEFAULT_STATE_DISPLAYMODE    (LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT)</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">_lcd_wr</span><span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">LCD_PORT</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">_lcd_en_pulse</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+  <span class="n">LCD_EN_PIN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+  <span class="n">LCD_EN_PIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lcd_cmd</span><span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">_lcd_wr</span><span class="p">(</span><span class="n">val</span><span class="p">);</span>
+  <span class="n">LCD_RS_PIN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">_lcd_en_pulse</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lcd_dat</span><span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">_lcd_wr</span><span class="p">(</span><span class="n">val</span><span class="p">);</span>
+  <span class="n">LCD_RS_PIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">_lcd_en_pulse</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lcd_init</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!</span>
+  <span class="c1">// according to datasheet, we need at least 40ms after power rises above 2.7V</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">40</span><span class="p">);</span>
+
+  <span class="n">LCD_RS_PIN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">LCD_EN_PIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="c1">// this is according to the hitachi HD44780 datasheet</span>
+  <span class="c1">// page 45 figure 23</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span><span class="p">);</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span><span class="p">);</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span><span class="p">);</span>
+
+  <span class="c1">// finally, set # lines, font size, etc.</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span> <span class="o">|</span> <span class="n">LCD_2LINE</span><span class="p">);</span>
+
+  <span class="c1">// turn the display off</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_DISPLAYCONTROL</span> <span class="o">|</span> <span class="n">LCD_DISPLAYOFF</span><span class="p">);</span>
+
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_CLEARDISPLAY</span><span class="p">);</span> <span class="c1">// clear display, set cursor position to zero</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>             <span class="c1">// this command takes a long time!</span>
+
+  <span class="c1">// turn the display on with default cursor and blinking</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_DISPLAYCONTROL</span> <span class="o">|</span> <span class="n">_LCD_DEFAULT_STATE_DISPLAYCONTROL</span><span class="p">);</span>
+
+  <span class="c1">// Initialize to default text direction (for romance languages)</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_ENTRYMODESET</span> <span class="o">|</span> <span class="n">_LCD_DEFAULT_STATE_DISPLAYMODE</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>При инициализации <code>lcd_init()</code> необходимо соблюдать ритуал с временными задержками, описанный в документации к HD44780.</p>
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 5e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;lcd.c&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">lcd_print</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lcd_dat</span><span class="p">(</span><span class="o">*</span><span class="n">str</span><span class="o">++</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_SETDDRAMADDR</span> <span class="o">|</span> <span class="mi">0</span><span class="p">);</span>    <span class="c1">// first line 0 column</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Hey PICSim.js !&quot;</span><span class="p">);</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_SETDDRAMADDR</span> <span class="o">|</span> <span class="mh">0x40</span><span class="p">);</span> <span class="c1">// second line 0 column</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Life is good :)&quot;</span><span class="p">);</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>У PIC18 довольно много битов конфигурации, поэтому для них отдельный файл <code>config.h</code>. Первым делом с помощью управляющих команд <code>lcd_cmd</code> дисплей настраивается, затем текст пересылается в виде данных <code>lcd_dat</code>. Хотя видимых символов в строке дисплея в нашем случае 16, всего их там 64 (0x40) - остальные просто находятся в памяти HD44780 контроллера.</p>
+<p>При работе HD44780 трудно держать все управляющие комбинации в голове, поэтому код не помешает упростить, например привести к виду arduino библиотеки «LiquidCrystal».</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/liquid-crystal.c">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/showtime.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/1889b71bb6c0df4349565d08a7c01ddd">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 5e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;liquid-crystal.c&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">clear_print</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">){</span>
+  <span class="n">lcd_clear</span><span class="p">();</span> <span class="c1">// clear display, set cursor position to zero</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;PICSim.js :)&quot;</span><span class="p">);</span>
+    <span class="n">lcd_set_cursor</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// second line third column</span>
+    <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Show time !&quot;</span><span class="p">);</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;No CURSOR&quot;</span><span class="p">);</span>
+    <span class="n">lcd_no_cursor</span><span class="p">();</span>  <span class="c1">// hide cursor</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+    <span class="n">lcd_cursor</span><span class="p">();</span>     <span class="c1">// show cursor</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;No BLINK&quot;</span><span class="p">);</span>
+    <span class="n">lcd_no_blink</span><span class="p">();</span>  <span class="c1">// blink OFF</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+    <span class="n">lcd_blink</span><span class="p">();</span>     <span class="c1">// blink ON</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;ON/OFF&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">lcd_display</span><span class="p">();</span>    <span class="c1">// display ON</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+      <span class="n">lcd_no_display</span><span class="p">();</span> <span class="c1">// display OFF</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">lcd_display</span><span class="p">();</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;SCROLL right&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+      <span class="n">lcd_scroll_display_right</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;SCROLL left&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+      <span class="n">lcd_scroll_display_left</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="c1">// PICSimLab: not implemented ?</span>
+    <span class="c1">// lcd_right_to_left()</span>
+    <span class="c1">// lcd_autoscroll()</span>
+    <span class="c1">// lcd_create_char()</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Данный код заточен на дисплей, состоящий из двух строк - это задаётся на этапе инициализации один раз <code>LCD_8BITMODE | LCD_2LINE</code>. Также для экономии ног ввода-вывода микроконтроллера можно достаточно легко перейти с 8-битного на 4-битный <code>LCD_4BITMODE</code> формат передачи команд/данных, попутно немного подправив функцию <code>_lcd_wr</code>.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Далее аналогово-цифровой преобразователь (АЦП).</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/" rel="bookmark"
+                           title="Permalink to PICSim.js - сторожевой таймер и спящий режим">PICSim.js - сторожевой таймер и спящий режим</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-01-17T00:00:00+02:00">
                 Published: Вт. 17 Январь 2017
@@ -39,92 +315,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info --><p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.</p>
-<p>Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/42785136281fe4b78e1e93572ff36d82">picsim.js</a></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-
-<span class="cp">#pragma config WDTE = ON</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="c1">// The WDT has a nominal time-out period of 18 ms (with no prescaler).</span>
-  <span class="c1">// If longer time-out periods are desired, a postscaler with a division ratio</span>
-  <span class="c1">// of up to 1:128 can be assigned to the WDT under</span>
-  <span class="c1">// software control by writing to the OPTION register. Thus,</span>
-  <span class="c1">// time-out periods up to 2.3 seconds can be realized</span>
-
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS0</span> <span class="o">=</span> <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS1</span> <span class="o">=</span> <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// 1:128; 2.3 sec</span>
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PSA</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// prescaler is assigned to watchdog</span>
-
-  <span class="c1">// looks like STATUS [TO, PD] are not implemented in original PICSim - always 0</span>
-  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">STATUS</span><span class="p">;</span>
-  <span class="n">TRISB</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">=</span> <span class="n">TRISA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="n">RA0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">333</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">;);</span> <span class="c1">// simple delay</span>
-  <span class="n">RA0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// CLRWDT();</span>
-    <span class="c1">// do something useful</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Минимальный период срабатывания сторожевого таймера у PIC16F648A микроконтроллера 18 миллисекунд, <a href="https://bc.js.org/">максимальный</a> <code>0.018*128=2.304</code> секунды. Так как в данном примере программист забыл программно очищать счётчик сторожевого таймера специальной командой <code>CLRWDT();</code> то через каждые 2.3 секунды микроконтроллер сбрасывается и в результате светодиод RA0 мигает. Если <a href="http://mazko.github.io/picsim.js/098c4473a3356f0082c583d299b8eb95">раскомментировать</a> <code>// CLRWDT();</code> светодиод RA0 конечно же будет светиться непрерывно. Причину сброса микроконтроллера по идее можно узнать по состоянию флагов TO, PD в регистре STATUS, хотя похоже в picsim это не реализовано.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Что касается спящий режима, то он позволяет значительно снизить энергопотребление. Для перехода а спящий режим у PIC микроконтроллеров предусмотрена специальная команда <code>SPEEP()</code>, после которой тактирование микроконтроллера прекращаются, текущее состояние всех регистров в том числе и портов ввода-вывода сохраняется и потребление энергии сводится к минимуму - обычно единицы микроампер. Выйти из спящего режима можно либо по прерыванию либо при срабатывании сторожевого таймера.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main-sleep.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/7e2d324a527f5bc49a6b891bd4dd7ec7">picsim.js</a></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-
-<span class="cp">#pragma config WDTE = ON</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS1</span> <span class="o">=</span> <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 1:64; 1.152 sec</span>
-  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PSA</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// prescaler is assigned to watchdog</span>
-
-  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="kt">uint8_t</span> <span class="n">last_led</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">SLEEP</span><span class="p">();</span>
-    <span class="n">last_led</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">last_led</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">last_led</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="n">PORTB</span> <span class="o">=</span> <span class="n">last_led</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>В данном примере в отличие от предыдущего микроконтроллер не сбрасывается а просыпается от сторожевого таймера каждые 1.152 секунды, передвигает светодиод и засыпает заново. Основное энергопотребление приходится только на свечение светодиода.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui-sleep.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

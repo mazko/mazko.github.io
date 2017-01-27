@@ -223,8 +223,8 @@
 <div class="highlight"><pre><span></span>~$ sudo docker pull 42ua/emsdk
 ~$ <span class="nb">source</span> emcc-env/activate
 <span class="o">(</span>emsdk<span class="o">)</span>~$ emcc -v
-emcc <span class="o">(</span>Emscripten gcc/clang-like replacement + linker emulating GNU ld<span class="o">)</span> 1.35.8
-clang version 3.8.0  <span class="o">(</span>emscripten 1.35.8 : 1.35.8<span class="o">)</span>
+emcc <span class="o">(</span>Emscripten gcc/clang-like replacement + linker emulating GNU ld<span class="o">)</span> <span class="m">1</span>.35.8
+clang version <span class="m">3</span>.8.0  <span class="o">(</span>emscripten <span class="m">1</span>.35.8 : <span class="m">1</span>.35.8<span class="o">)</span>
 Target: x86_64-unknown-linux-gnu
 Thread model: posix
 </pre></div>
@@ -244,7 +244,7 @@ The quick brown fox!
 
 <p>Оптимизация возможна как на уровне LLVM так и JS включительно с Closure Compiler. Чего можно ожидать от оптимизации ?</p>
 <div class="highlight"><pre><span></span>~$ ls -sh sed.node.js
-1,9M sed.node.js
+<span class="m">1</span>,9M sed.node.js
 ~$ emcc -O2 --memory-init-file <span class="m">0</span> -o sed.js sed/*.o lib/libsed.a
 ~$ ls -sh sed.js
 620K sed.js

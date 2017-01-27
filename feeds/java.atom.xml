@@ -1424,7 +1424,7 @@
 
 &lt;p&gt;Проверка, &lt;a href="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-lucene.zip"&gt;исходники&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ mvn clean &lt;span class="nb"&gt;test&lt;/span&gt;
-   Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+   Tests run: &lt;span class="m"&gt;4&lt;/span&gt;, Failures: &lt;span class="m"&gt;0&lt;/span&gt;, Errors: &lt;span class="m"&gt;0&lt;/span&gt;, Skipped: &lt;span class="m"&gt;0&lt;/span&gt;
 ~$ mvn clean install exec:java -Dexec.mainClass&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;weka.gui.GUIChooser&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</content><category term="NLP"></category><category term="Weka"></category><category term="Lucene"></category><category term="Maven"></category></entry><entry><title>Анализ тональности текста с помощью Weka</title><link href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/" rel="alternate"></link><published>2016-04-26T00:00:00+03:00</published><updated>2016-04-26T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-04-26:/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/</id><summary type="html">&lt;p&gt;Имеется &lt;a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz"&gt;заданный&lt;/a&gt; набор документов для которых уже заранее известна тональность: &lt;strong&gt;good&lt;/strong&gt;, &lt;strong&gt;neutral&lt;/strong&gt;, &lt;strong&gt;bad&lt;/strong&gt;. Для нового документа необходимо определить какая у него тональность из трёх указанных.
 Идеального решения тут не существует ну хотябы потому, что понятие хороший/плохой/злой часто субъективно :) Но всё-же можно попробовать взять среднюю температуру по больнице &lt;a href="https://habrahabr.ru/post/149605/" rel="nofollow"&gt;задействовав …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Имеется &lt;a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/kino1k.tar.gz"&gt;заданный&lt;/a&gt; набор документов для которых уже заранее известна тональность: &lt;strong&gt;good&lt;/strong&gt;, &lt;strong&gt;neutral&lt;/strong&gt;, &lt;strong&gt;bad&lt;/strong&gt;. Для нового документа необходимо определить какая у него тональность из трёх указанных.
@@ -1459,7 +1459,7 @@
 &lt;span class="s2"&gt;            -S \\\&amp;quot;weka.attributeSelection.Ranker -T 0.0 -N -1\\\&amp;quot;\&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
     -W weka.classifiers.bayes.NaiveBayesMultinomial &lt;span class="se"&gt;\&lt;/span&gt;
     -t /tmp/weka-output&lt;span class="nv"&gt;$$&lt;/span&gt;.arff &lt;span class="se"&gt;\&lt;/span&gt;
-    -d ./sentiment-naive-bayes-multinomial.1.3.ig.model -x 3
+    -d ./sentiment-naive-bayes-multinomial.1.3.ig.model -x &lt;span class="m"&gt;3&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1615,9 +1615,9 @@ Model loaded
 Model trained algorithm: NaiveBayesMultinomial
 Now print text to analyze!
 &amp;gt; жизнь прекрасна
-&lt;span class="o"&gt;[&lt;/span&gt;neutral -&amp;gt; 0.32679098745501506, bad -&amp;gt; 0.23459195142944572, good -&amp;gt; 0.4386170611155391&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;neutral -&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;.32679098745501506, bad -&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;.23459195142944572, good -&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;.4386170611155391&lt;span class="o"&gt;]&lt;/span&gt;
 &amp;gt; всё плохо
-&lt;span class="o"&gt;[&lt;/span&gt;neutral -&amp;gt; 0.31243645980279694, bad -&amp;gt; 0.4502602266214787, good -&amp;gt; 0.2373033135757244&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;neutral -&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;.31243645980279694, bad -&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;.4502602266214787, good -&amp;gt; &lt;span class="m"&gt;0&lt;/span&gt;.2373033135757244&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1661,17 +1661,17 @@ application/msword
 &lt;p&gt;Вывод: &lt;code&gt;application/pdf&lt;/code&gt;. Ради интереса попросим вывести более подробно метаинформацию из файла:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar -m ipa.pdf 
 ERROR - Error: Could not parse predefined CMAP file &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Adobe-Ide-UCS2&amp;#39;&lt;/span&gt;
-Content-Length: 9055059
+Content-Length: &lt;span class="m"&gt;9055059&lt;/span&gt;
 Content-Type: application/pdf
-Creation-Date: 2008-01-26T23:40:04Z
-created: Sun Jan &lt;span class="m"&gt;27&lt;/span&gt; 01:40:04 EET 2008
-date: 2008-01-26T23:40:04Z
-dcterms:created: 2008-01-26T23:40:04Z
-meta:creation-date: 2008-01-26T23:40:04Z
-producer: PDF Creator Plus 4.0 - http://www.peernet.com
+Creation-Date: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+created: Sun Jan &lt;span class="m"&gt;27&lt;/span&gt; &lt;span class="m"&gt;01&lt;/span&gt;:40:04 EET &lt;span class="m"&gt;2008&lt;/span&gt;
+date: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+dcterms:created: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+meta:creation-date: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+producer: PDF Creator Plus &lt;span class="m"&gt;4&lt;/span&gt;.0 - http://www.peernet.com
 resourceName: ipa.pdf
-xmp:CreatorTool: PDF Creator Plus 4.0 - http://www.peernet.com
-xmpTPg:NPages: 2351
+xmp:CreatorTool: PDF Creator Plus &lt;span class="m"&gt;4&lt;/span&gt;.0 - http://www.peernet.com
+xmpTPg:NPages: &lt;span class="m"&gt;2351&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1705,7 +1705,7 @@ http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
 
 &lt;p&gt;Вывод: &lt;code&gt;tr&lt;/code&gt;. Ура ! Мы с Вами только что обучили &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; новому языку ! Теперь ещё одна дача - преобразовать &lt;em&gt;tr.ngp&lt;/em&gt; в &lt;a href="http://mazko.github.io/jsli/" rel="nofollow"&gt;javascript&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;LNG&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;basename &lt;span class="nv"&gt;$1&lt;/span&gt; .ngp&lt;span class="sb"&gt;`&lt;/span&gt;
-&lt;span class="nv"&gt;SUM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0
+&lt;span class="nv"&gt;SUM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
 &lt;span class="k"&gt;for&lt;/span&gt; COUNT in &lt;span class="k"&gt;$(&lt;/span&gt;sed &lt;span class="s1"&gt;&amp;#39;/^#/d;s/^\S\+\s\+\([0-9]\+\)$/\1/&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.ngp&lt;span class="k"&gt;)&lt;/span&gt;
 &lt;span class="k"&gt;do&lt;/span&gt;
 &lt;span class="nv"&gt;SUM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;expr &lt;span class="nv"&gt;$SUM&lt;/span&gt; + &lt;span class="nv"&gt;$COUNT&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -3530,7 +3530,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;$s/,$//&amp;#39;&lt;/span&gt; &lt;span cl
 &lt;span class="s1"&gt;    mvn -pl crawler/ exec:java -Dexec.mainClass=&amp;quot;crawler.App&amp;quot; &amp;amp; \&lt;/span&gt;
 &lt;span class="s1"&gt;    trap &amp;quot;kill -TERM -$$&amp;quot; SIGINT ; wait&amp;#39;&lt;/span&gt;
 ...
-INFO &lt;span class="o"&gt;[&lt;/span&gt;crawler.App.main&lt;span class="o"&gt;()]&lt;/span&gt; Closing Index &amp;lt; /home/oleg/lucene-tutorial-index &amp;gt; NumDocs: 53
+INFO &lt;span class="o"&gt;[&lt;/span&gt;crawler.App.main&lt;span class="o"&gt;()]&lt;/span&gt; Closing Index &amp;lt; /home/oleg/lucene-tutorial-index &amp;gt; NumDocs: &lt;span class="m"&gt;53&lt;/span&gt;
 INFO &lt;span class="o"&gt;[&lt;/span&gt;crawler.App.main&lt;span class="o"&gt;()]&lt;/span&gt; Index Closed OK!
 Ctrl+C
 &lt;/pre&gt;&lt;/div&gt;
@@ -3691,8 +3691,8 @@ Ctrl+C
 &lt;h3&gt;Сборка и первый запуск&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ apt install maven default-jdk
 ~$ mvn -v
-Apache Maven 3.3.9
-Java version: 1.8.0_03-Ubuntu, vendor: Oracle Corporation
+Apache Maven &lt;span class="m"&gt;3&lt;/span&gt;.3.9
+Java version: &lt;span class="m"&gt;1&lt;/span&gt;.8.0_03-Ubuntu, vendor: Oracle Corporation
 ~$ sudo netstat -tulpn &lt;span class="p"&gt;|&lt;/span&gt; grep -q &lt;span class="m"&gt;8080&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;port 8080 is busy !&amp;#39;&lt;/span&gt;
 ~$ mvn clean -pl server/ jetty:run
 &lt;/pre&gt;&lt;/div&gt;

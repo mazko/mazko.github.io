@@ -193,8 +193,8 @@
 <h3>Сборка и первый запуск</h3>
 <div class="highlight"><pre><span></span>~$ apt install maven default-jdk
 ~$ mvn -v
-Apache Maven 3.3.9
-Java version: 1.8.0_03-Ubuntu, vendor: Oracle Corporation
+Apache Maven <span class="m">3</span>.3.9
+Java version: <span class="m">1</span>.8.0_03-Ubuntu, vendor: Oracle Corporation
 ~$ sudo netstat -tulpn <span class="p">|</span> grep -q <span class="m">8080</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s1">&#39;port 8080 is busy !&#39;</span>
 ~$ mvn clean -pl server/ jetty:run
 </pre></div>

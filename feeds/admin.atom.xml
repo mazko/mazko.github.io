@@ -42,7 +42,7 @@ UPnP - набор открытых бесплатных сетевых прот�
     awk -v &lt;span class="nv"&gt;RS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;\n\n\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/BubbleUPnP/ &amp;amp;&amp;amp; /[Ss][Tt]: uuid:/ {print $0 &amp;quot;\n&amp;quot;}&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
 HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
-Cache-control: max-age&lt;span class="o"&gt;=&lt;/span&gt;1800
+Cache-control: max-age&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1800&lt;/span&gt;
 Usn: uuid:3ef89534-fb8e-c38f-0000-00007940d6d3
 Location: http://192.168.0.100:57916/dev/3ef89534-fb8e-c38f-0000-00007940d6d3/desc.xml
 Server: Linux/2.6.29 UPnP/1.0 BubbleUPnP/1.6.11.1
@@ -287,7 +287,7 @@ curl -vsf &lt;span class="nv"&gt;$URL_AV&lt;/span&gt; &lt;span class="se"&gt;\&l
 &lt;h2&gt;GNUPLOT&lt;/h2&gt;
 &lt;p&gt;В gnuplot можно рисовать графики как с помощью функций так и по заданным точкам. Нас интересует последний вариант:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ gnuplot --version
-gnuplot 4.6 patchlevel 6
+gnuplot &lt;span class="m"&gt;4&lt;/span&gt;.6 patchlevel &lt;span class="m"&gt;6&lt;/span&gt;
 ~$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
 &lt;span class="s1"&gt;plot for [IDX=0:1] &amp;quot;-&amp;quot; using 1:2 title columnheader(1) with lines&lt;/span&gt;
 &lt;span class="s1"&gt;hello&lt;/span&gt;
@@ -510,15 +510,15 @@ gnuplot 4.6 patchlevel 6
 &lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
 &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : 3117,
+  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;3117&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;timed_out&amp;quot;&lt;/span&gt; : false,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : null,
     &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
@@ -526,177 +526,177 @@ gnuplot 4.6 patchlevel 6
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;77269&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : null,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.415 &lt;span class="o"&gt;]&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.415 &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; [mazko.github.io]Шерлок[/mazko.github.io] Холмс. Это&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.415 &lt;span class="o"&gt;]&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.415 &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;354799&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : null,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.313 &lt;span class="o"&gt;]&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.313 &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс вступил&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.313 &lt;span class="o"&gt;]&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.313 &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;77265&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : null,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.297 &lt;span class="o"&gt;]&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.297 &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;. Во второй — [mazko.github.io]Шерлок[/mazko.github.io]&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.297 &lt;span class="o"&gt;]&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.297 &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;368937&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : null,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.269 &lt;span class="o"&gt;]&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.269 &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; водопада. [mazko.github.io]Шерлок[/mazko.github.io] Холмс&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.269 &lt;span class="o"&gt;]&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.269 &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;368936&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : null,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.248 &lt;span class="o"&gt;]&lt;/span&gt;
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.248 &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;description&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot; угрозой. [mazko.github.io]Шерлок[/mazko.github.io] Холмс&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.248 &lt;span class="o"&gt;]&lt;/span&gt;
+      &lt;span class="s2"&gt;&amp;quot;sort&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.248 &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;aggregations&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;directors&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : 0,
-      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : 0,
+      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
+      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;buckets&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Игорь Масленников&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;categories&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : 0,
-      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : 0,
+      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
+      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;buckets&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;детектив&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;криминал&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;stars&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : 0,
-      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : 0,
+      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
+      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;buckets&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Василий Ливанов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Виталий Соломин&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Рина Зеленая&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Борислав Брондуков&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 4
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;4&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Борис Клюев&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 3
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;3&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Александр Захаров&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Алексей Кожевников&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Валентина Панина&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Виктор Евграфов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Игорь Дмитриев&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Игорь Ефимов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Николай Крюков&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Адольф Ильин&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Анатолий Подшивалов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Борис Рыжухин&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Виктор Аристов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Виталий Баганов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Геннадий Богачёв&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Игнат Лейрер&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Катерина Шелл&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Мария Соломина&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Николай Караченцов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Светлана Крючкова&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Федор Одиноков&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 1
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;years&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;buckets&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key_as_string&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;1980-01-01T00:00:00.000Z&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : 315532800000,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 5,
+        &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;315532800000&lt;/span&gt;,
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;months&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
           &lt;span class="s2"&gt;&amp;quot;buckets&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
             &lt;span class="s2"&gt;&amp;quot;key_as_string&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;1980-01-01T00:00:00.000Z&amp;quot;&lt;/span&gt;,
-            &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : 315532800000,
-            &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 3
+            &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;315532800000&lt;/span&gt;,
+            &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;3&lt;/span&gt;
           &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
             &lt;span class="s2"&gt;&amp;quot;key_as_string&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;1980-03-01T00:00:00.000Z&amp;quot;&lt;/span&gt;,
-            &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : 320716800000,
-            &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+            &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;320716800000&lt;/span&gt;,
+            &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
           &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
         &lt;span class="o"&gt;}&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
@@ -710,13 +710,13 @@ gnuplot 4.6 patchlevel 6
 &lt;h2&gt;УСТАНОВКА И НАСТРОЙКА ELASTICSEARCH&lt;/h2&gt;
 &lt;p&gt;Предполагается что в системе уже установлен &lt;a href="https://docs.docker.com/engine/installation/" rel="nofollow"&gt;Docker&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ docker -v
-Docker version 1.11.2, build b9f10c9
+Docker version &lt;span class="m"&gt;1&lt;/span&gt;.11.2, build b9f10c9
 
 ~$ docker pull ubuntu &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; docker run -it ubuntu
 
 root@d1b1c0c6bddc:/# cat /etc/lsb-release
 &lt;span class="nv"&gt;DISTRIB_ID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;Ubuntu
-&lt;span class="nv"&gt;DISTRIB_RELEASE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;16.04
+&lt;span class="nv"&gt;DISTRIB_RELEASE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;16&lt;/span&gt;.04
 &lt;span class="nv"&gt;DISTRIB_CODENAME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;xenial
 &lt;span class="nv"&gt;DISTRIB_DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Ubuntu 16.04 LTS&amp;quot;&lt;/span&gt;
 
@@ -765,7 +765,7 @@ root@d1b1c0c6bddc:/# &lt;span class="nb"&gt;exit&lt;/span&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ docker commit d1b1c0c6bddc elastic
 ~$ docker rm d1b1c0c6bddc
 
-~$ docker run --rm -it -u elasticsearch -p 9200:9200 elastic &lt;span class="se"&gt;\&lt;/span&gt;
+~$ docker run --rm -it -u elasticsearch -p &lt;span class="m"&gt;9200&lt;/span&gt;:9200 elastic &lt;span class="se"&gt;\&lt;/span&gt;
   /usr/share/elasticsearch/bin/elasticsearch
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -776,7 +776,7 @@ root@d1b1c0c6bddc:/# &lt;span class="nb"&gt;exit&lt;/span&gt;
 HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
 Access-Control-Allow-Origin: http://localhost:8080
 Content-Type: text/plain&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nv"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;UTF-8
-Content-Length: 0
+Content-Length: &lt;span class="m"&gt;0&lt;/span&gt;
 
 ~$ curl -I -H &lt;span class="s1"&gt;&amp;#39;Origin: http://some.hacker.com&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://localhost:9200/&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
@@ -788,7 +788,7 @@ HTTP/1.1 &lt;span class="m"&gt;403&lt;/span&gt; Forbidden
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ docker volume create --name elastic-data
 
 &lt;span class="c1"&gt;# user: elasticsearch, port forward 9200, image: elastic, volume: elastic-data&lt;/span&gt;
-~$ docker run --rm -it -u elasticsearch -p 9200:9200 &lt;span class="se"&gt;\&lt;/span&gt;
+~$ docker run --rm -it -u elasticsearch -p &lt;span class="m"&gt;9200&lt;/span&gt;:9200 &lt;span class="se"&gt;\&lt;/span&gt;
   -v elastic-data:/usr/share/elasticsearch/data elastic &lt;span class="se"&gt;\&lt;/span&gt;
   /usr/share/elasticsearch/bin/elasticsearch
 &lt;/pre&gt;&lt;/div&gt;
@@ -833,11 +833,11 @@ HTTP/1.1 &lt;span class="m"&gt;403&lt;/span&gt; Forbidden
   &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;AVWHlznJTgOouHAvlXph&amp;quot;&lt;/span&gt;,
-  &lt;span class="s2"&gt;&amp;quot;_version&amp;quot;&lt;/span&gt; : 1,
+  &lt;span class="s2"&gt;&amp;quot;_version&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 2,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 1,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;created&amp;quot;&lt;/span&gt; : &lt;span class="nb"&gt;true&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
@@ -877,11 +877,11 @@ HTTP/1.1 &lt;span class="m"&gt;403&lt;/span&gt; Forbidden
   &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;AVWHnN7ATgOouHAvlXpl&amp;quot;&lt;/span&gt;,
-  &lt;span class="s2"&gt;&amp;quot;_version&amp;quot;&lt;/span&gt; : 1,
+  &lt;span class="s2"&gt;&amp;quot;_version&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 2,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 1,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;created&amp;quot;&lt;/span&gt; : &lt;span class="nb"&gt;true&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
@@ -939,23 +939,23 @@ HTTP/1.1 &lt;span class="m"&gt;403&lt;/span&gt; Forbidden
 &lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
 &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : 8,
+  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;8&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;timed_out&amp;quot;&lt;/span&gt; : false,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 1,
-    &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : 0.15342641,
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;.15342641,
     &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;AVWHmwbSTgOouHAvlXpi&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : 0.15342641,
+      &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;.15342641,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 8.042 &lt;span class="o"&gt;]&lt;/span&gt;,
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.042 &lt;span class="o"&gt;]&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;409640&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
@@ -985,23 +985,23 @@ HTTP/1.1 &lt;span class="m"&gt;403&lt;/span&gt; Forbidden
 &lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
 &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : 218,
+  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;218&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;timed_out&amp;quot;&lt;/span&gt; : false,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 1,
-    &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : 1.0,
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;.0,
     &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;_index&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;kinopoisk&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;film&amp;quot;&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;_id&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;AVWHnN7ATgOouHAvlXpl&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : 1.0,
+      &lt;span class="s2"&gt;&amp;quot;_score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;.0,
       &lt;span class="s2"&gt;&amp;quot;fields&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; 7.943 &lt;span class="o"&gt;]&lt;/span&gt;,
+        &lt;span class="s2"&gt;&amp;quot;rate&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;7&lt;/span&gt;.943 &lt;span class="o"&gt;]&lt;/span&gt;,
         &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="m"&gt;153013&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;highlight&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
@@ -1046,17 +1046,17 @@ sys   0m0.196s
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~: curl -XGET &lt;span class="s1"&gt;&amp;#39;localhost:9200/kinopoisk/_count?pretty&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
 &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="s2"&gt;&amp;quot;count&amp;quot;&lt;/span&gt; : 14999,
+  &lt;span class="s2"&gt;&amp;quot;count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;14999&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
 
 ~: curl -XGET &lt;span class="s1"&gt;&amp;#39;localhost:9200/_cat/indices&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
-yellow open kinopoisk &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;14999&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; 39.1mb 39.1mb
+yellow open kinopoisk &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;14999&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;39&lt;/span&gt;.1mb &lt;span class="m"&gt;39&lt;/span&gt;.1mb
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -1096,28 +1096,28 @@ yellow open kinopoisk &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt
 &lt;span class="o"&gt;{&lt;/span&gt;
   &lt;span class="s2"&gt;&amp;quot;tokens&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;token&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;раз&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : 0,
-    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : 3,
+    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;3&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;&amp;lt;ALPHANUM&amp;gt;&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;token&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;раз два&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : 0,
-    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : 7,
+    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;7&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;shingle&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;token&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;два&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : 4,
-    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : 7,
+    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;4&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;7&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;&amp;lt;ALPHANUM&amp;gt;&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : 1
+    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;token&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;раз&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : 8,
-    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : 11,
+    &lt;span class="s2"&gt;&amp;quot;start_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;8&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;end_offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;11&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;type&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;&amp;lt;ALPHANUM&amp;gt;&amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : 102
+    &lt;span class="s2"&gt;&amp;quot;position&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;102&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -1177,29 +1177,29 @@ yellow open kinopoisk &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt
 &lt;span class="c1"&gt;#response&lt;/span&gt;
 &lt;span class="o"&gt;{&lt;/span&gt;
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;film-suggest&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;шерлок &amp;quot;&lt;/span&gt;,
-    &lt;span class="s2"&gt;&amp;quot;offset&amp;quot;&lt;/span&gt; : 0,
-    &lt;span class="s2"&gt;&amp;quot;length&amp;quot;&lt;/span&gt; : 7,
+    &lt;span class="s2"&gt;&amp;quot;offset&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;length&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;7&lt;/span&gt;,
     &lt;span class="s2"&gt;&amp;quot;options&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;шерлок холмс&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : 3.0
+      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;3&lt;/span&gt;.0
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;шерлок холмс и&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : 2.0
+      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;.0
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;шерлок холмс и доктор&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : 2.0
+      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;.0
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;шерлок холмс и доктор ватсон&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : 2.0
+      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;.0
     &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
       &lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;шерлок младший&amp;quot;&lt;/span&gt;,
-      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : 1.0
+      &lt;span class="s2"&gt;&amp;quot;score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;.0
     &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
@@ -1246,52 +1246,52 @@ yellow open kinopoisk &lt;span class="m"&gt;5&lt;/span&gt; &lt;span class="m"&gt
 &lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# response&lt;/span&gt;
 &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : 1103,
+  &lt;span class="s2"&gt;&amp;quot;took&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1103&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;timed_out&amp;quot;&lt;/span&gt; : false,
   &lt;span class="s2"&gt;&amp;quot;_shards&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : 5,
-    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : 0
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;successful&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;5&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : 16,
-    &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : 0.0,
+    &lt;span class="s2"&gt;&amp;quot;total&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;16&lt;/span&gt;,
+    &lt;span class="s2"&gt;&amp;quot;max_score&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;0&lt;/span&gt;.0,
     &lt;span class="s2"&gt;&amp;quot;hits&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;,
   &lt;span class="s2"&gt;&amp;quot;aggregations&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="s2"&gt;&amp;quot;stars&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;{&lt;/span&gt;
-      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : 1,
-      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : 122,
+      &lt;span class="s2"&gt;&amp;quot;doc_count_error_upper_bound&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;1&lt;/span&gt;,
+      &lt;span class="s2"&gt;&amp;quot;sum_other_doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;122&lt;/span&gt;,
       &lt;span class="s2"&gt;&amp;quot;buckets&amp;quot;&lt;/span&gt; : &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Василий Ливанов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 7
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;7&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Виталий Соломин&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 7
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;7&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Рина Зеленая&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 7
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;7&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Борислав Брондуков&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 6
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;6&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Борис Клюев&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 4
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;4&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Александр Захаров&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Алексей Кожевников&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Валентина Панина&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Виктор Евграфов&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt;, &lt;span class="o"&gt;{&lt;/span&gt;
         &lt;span class="s2"&gt;&amp;quot;key&amp;quot;&lt;/span&gt; : &lt;span class="s2"&gt;&amp;quot;Джеральдин Джеймс&amp;quot;&lt;/span&gt;,
-        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : 2
+        &lt;span class="s2"&gt;&amp;quot;doc_count&amp;quot;&lt;/span&gt; : &lt;span class="m"&gt;2&lt;/span&gt;
       &lt;span class="o"&gt;}&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
     &lt;span class="o"&gt;}&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;

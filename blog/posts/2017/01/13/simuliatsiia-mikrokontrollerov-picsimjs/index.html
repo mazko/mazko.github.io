@@ -49,15 +49,14 @@
 <p>Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 --chip=16f648A blink.c</span>
+<span class="cm">  xc8 -Werror --chip=16f648A blink.c</span>
 <span class="cm">*/</span>
-
-<span class="c1">// __delay_ms legacy code</span>
-<span class="cp">#include</span> <span class="cpf">&lt;htc.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// http://microchip.wikidot.com/faq:26</span>
 <span class="c1">// The delay amount must be a constant (cannot be a variable).</span>
 <span class="cp">#define _XTAL_FREQ 5e4 </span><span class="c1">// 50 kHz</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
 
 <span class="cp">#pragma config WDTE = OFF</span>
 
@@ -84,7 +83,7 @@
 <p>Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 --chip=16f648A buttons.c</span>
+<span class="cm">  xc8 -Werror --chip=16f648A buttons.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
@@ -116,6 +115,7 @@
 
 
 <p>Данный код не будет одинаково корректно функционировать в широком диапазоне тактовых частот т.к. не содержит зависимостей от __delay-подобных функций.</p>
+<p>Особое внимание стоит обратить на выражение типа <code>PORTB=TRISB=0;</code> - здесь присваивание <strong>идёт справа налево</strong>, то есть в приближении этот код аналогичен <code>TRISB=0; /* что сейчас на выходе PORTB ? */ PORTB=TRISB; /* вот сейчас точно 0 */</code>, но не лучше ли сделать так <code>TRISB=PORTB=0;</code>, что аналогично <code>PORTB=0;TRISB=PORTB;</code> ? Проблема последнего выражения в том, что PORTB это не обычный регистр, а порт ввода-вывода и может давать на чтение значение, отличное от записанного. Из этого всего следует, что самый простой и надёжный способ это <strong>инициализировать порты ввода вывода явно</strong>: <code>PORTB=0;TRISB=0;</code>. Хотя в режиме симуляции ничего «сгореть» не может, поэтому <code>PORTB=TRISB=0;</code> тоже можно :)</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui-b.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">Далее</a> ШИМ.</p>
 <p>P.S. Таблица периферийных модулей реализованных в симуляторе <a href="https://github.com/lcgamboa/picsim" rel="nofollow">PICSim</a>.</p>

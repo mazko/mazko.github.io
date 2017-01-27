@@ -53,7 +53,7 @@ wget fakeroot kernel-package zlib1g-dev libncurses5-dev debootstrap
 <div class="highlight"><pre><span></span>~$ mkdir allwinter
 ~$ <span class="nb">cd</span> allwinter
 ~$ mkdir debfs_armhf
-~$ dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>debfs_armhf.img <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span>1024
+~$ dd <span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>debfs_armhf.img <span class="nv">bs</span><span class="o">=</span>1M <span class="nv">count</span><span class="o">=</span><span class="m">1024</span>
 ~$ mkfs.ext4 -F debfs_armhf.img
 ~$ mount -o loop debfs_armhf.img debfs_armhf
 </pre></div>
@@ -189,27 +189,27 @@ output/mk802-1gb_hwpack.tar.xz ../mk802rootfs.tgz
 
 
 <p>Вставляем SD-карту в MK802, включаем и скрещиваем пальцы :) Через минутку-другую устройство должно зарегистрироваться в WI-FI сети. Список можно просматривать так:</p>
-<div class="highlight"><pre><span></span>~$ watch -n 0,1 arp-scan -l --interface<span class="o">=</span>wlan0
+<div class="highlight"><pre><span></span>~$ watch -n <span class="m">0</span>,1 arp-scan -l --interface<span class="o">=</span>wlan0
 Interface: wlan0, datalink type: EN10MB <span class="o">(</span>Ethernet<span class="o">)</span>
-Starting arp-scan 1.8.1 with <span class="m">256</span> hosts
-192.168.1.1 00:0e:2e:2a:df:90   Edimax Technology Co., Ltd.
-192.168.1.10    00:1e:58:b7:cc:ad   D-Link Corporation
-192.168.1.15    08:9e:01:20:e8:e6   <span class="o">(</span>Unknown<span class="o">)</span>
-192.168.1.122   e0:cb:4e:c1:30:77   ASUSTek COMPUTER INC.
-192.168.1.203   00:25:22:b9:40:21   ASRock Incorporation
-192.168.1.205   00:17:31:50:e2:32   ASUSTek COMPUTER INC.
-192.168.1.209   f8:1a:67:80:f0:dd   <span class="o">(</span>Unknown<span class="o">)</span>
-192.168.1.227   d8:d3:85:38:60:35   Hewlett Packard
-192.168.1.235   00:e0:4c:2c:0e:82   REALTEK SEMICONDUCTOR CORP.
-192.168.1.233   f0:7b:cb:0f:3e:e4   Hon Hai Precision Ind. Co.,Ltd. 
-192.168.1.228   1c:65:9d:f9:e2:06   Liteon Technology Corporation
-192.168.1.231   48:02:2a:66:74:3f   <span class="o">(</span>Unknown<span class="o">)</span>
-192.168.1.240   78:ab:bb:c5:9b:e5   <span class="o">(</span>Unknown<span class="o">)</span>
-192.168.1.241   bc:b1:f3:14:c5:68   <span class="o">(</span>Unknown<span class="o">)</span>
-192.168.1.245   bc:f6:85:65:bc:38   <span class="o">(</span>Unknown<span class="o">)</span>
+Starting arp-scan <span class="m">1</span>.8.1 with <span class="m">256</span> hosts
+<span class="m">192</span>.168.1.1 <span class="m">00</span>:0e:2e:2a:df:90   Edimax Technology Co., Ltd.
+<span class="m">192</span>.168.1.10    <span class="m">00</span>:1e:58:b7:cc:ad   D-Link Corporation
+<span class="m">192</span>.168.1.15    <span class="m">08</span>:9e:01:20:e8:e6   <span class="o">(</span>Unknown<span class="o">)</span>
+<span class="m">192</span>.168.1.122   e0:cb:4e:c1:30:77   ASUSTek COMPUTER INC.
+<span class="m">192</span>.168.1.203   <span class="m">00</span>:25:22:b9:40:21   ASRock Incorporation
+<span class="m">192</span>.168.1.205   <span class="m">00</span>:17:31:50:e2:32   ASUSTek COMPUTER INC.
+<span class="m">192</span>.168.1.209   f8:1a:67:80:f0:dd   <span class="o">(</span>Unknown<span class="o">)</span>
+<span class="m">192</span>.168.1.227   d8:d3:85:38:60:35   Hewlett Packard
+<span class="m">192</span>.168.1.235   <span class="m">00</span>:e0:4c:2c:0e:82   REALTEK SEMICONDUCTOR CORP.
+<span class="m">192</span>.168.1.233   f0:7b:cb:0f:3e:e4   Hon Hai Precision Ind. Co.,Ltd. 
+<span class="m">192</span>.168.1.228   1c:65:9d:f9:e2:06   Liteon Technology Corporation
+<span class="m">192</span>.168.1.231   <span class="m">48</span>:02:2a:66:74:3f   <span class="o">(</span>Unknown<span class="o">)</span>
+<span class="m">192</span>.168.1.240   <span class="m">78</span>:ab:bb:c5:9b:e5   <span class="o">(</span>Unknown<span class="o">)</span>
+<span class="m">192</span>.168.1.241   bc:b1:f3:14:c5:68   <span class="o">(</span>Unknown<span class="o">)</span>
+<span class="m">192</span>.168.1.245   bc:f6:85:65:bc:38   <span class="o">(</span>Unknown<span class="o">)</span>
 
 <span class="m">15</span> packets received by filter, <span class="m">0</span> packets dropped by kernel
-Ending arp-scan 1.8.1: <span class="m">256</span> hosts scanned in 1.367 seconds
+Ending arp-scan <span class="m">1</span>.8.1: <span class="m">256</span> hosts scanned in <span class="m">1</span>.367 seconds
 </pre></div>
 
 
@@ -349,7 +349,7 @@ output/mk802-1gb_hwpack.tar.xz ../mk802rootfs.tgz
 ~$ ls /dev/sd?1 <span class="p">|</span> xargs vgcreate torrents /dev/mmcblk0p3
 <span class="c1"># pvdisplay | grep &#39;VG Name&#39;</span>
 <span class="c1"># vgdisplay | grep &#39;VG Size&#39;</span>
-~$ lvcreate -l 100%FREE torrents
+~$ lvcreate -l <span class="m">100</span>%FREE torrents
 ~$ mkfs.ext4 /dev/torrents/lvol0
 ~$ sed -i s/<span class="se">\\</span>/dev<span class="se">\\</span>/mmcblk0p3/<span class="se">\\</span>/dev<span class="se">\\</span>/torrents<span class="se">\\</span>/lvol0/ <span class="se">\</span>
 /etc/fstab

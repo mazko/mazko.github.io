@@ -387,7 +387,7 @@
 
 <p>Если в <strong>Linux</strong> оболочка для работы с <strong>Bootloader</strong>'ом вообще не видит USB-to-serial переходника (например <code>/dev/ttyUSB0</code>), скорее всего текущий пользователь просто не обладает соответствующими правами. Поскольку постоянно запускать программу их-под <strong>root</strong>'a неудобно, ниже описан конкретный случай лечения OpenSUSE 12.1 - полными правами на USB-to-serial обладает группа <em>dialout</em>, поэтому в неё нужно добавить текущего пользователя системы, после чего, чтобы изменения вступили в силу, ОБЯЗАТЕЛЬНО перелогиниться:</p>
 <div class="highlight"><pre><span></span>oleg@linux-ubuc:~&gt; ls -l /dev/ttyUSB?
-crw-rw---- <span class="m">1</span> root dialout 188, <span class="m">0</span> марта  <span class="m">1</span> 10:13 /dev/ttyUSB0
+crw-rw---- <span class="m">1</span> root dialout <span class="m">188</span>, <span class="m">0</span> марта  <span class="m">1</span> <span class="m">10</span>:13 /dev/ttyUSB0
 oleg@linux-ubuc:~&gt; sudo /usr/sbin/groupmod -A <span class="nv">$USER</span> dialout
 </pre></div>
 

@@ -1,7 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-01-17T00:00:00+02:00</updated><entry><title>PICSim.js - сторожевой таймер и спящий режим</title><link href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/" rel="alternate"></link><published>2017-01-17T00:00:00+02:00</published><updated>2017-01-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-17:/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/</id><summary type="html">&lt;p&gt;Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный &lt;a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/"&gt;счётчик&lt;/a&gt;, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации &lt;code&gt;#pragma config WDTE = OFF|ON&lt;/code&gt; - если включён &lt;code&gt;WDTE = ON&lt;/code&gt;, то в случае переполнения счётчика обычно происходит аппаратный …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный &lt;a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/"&gt;счётчик&lt;/a&gt;, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации &lt;code&gt;#pragma config WDTE = OFF|ON&lt;/code&gt; - если включён &lt;code&gt;WDTE = ON&lt;/code&gt;, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-01-27T00:00:00+02:00</updated><entry><title>PICSim.js - символьный дисплей на базе HD44780</title><link href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/" rel="alternate"></link><published>2017-01-27T00:00:00+02:00</published><updated>2017-01-27T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-27:/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/</id><summary type="html">&lt;p&gt;Среди множества различных LCD дисплеев наиболее простыми являются текстовые (символьные) дисплеи на основе контроллера hd44780 с параллельным 4-или 8-битным интерфейсом. В сравнении с &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;7-сегментными&lt;/a&gt; индикаторами, дисплеи на базе HD44780 обладают на порядок большими возможностями - количество строк на экране у разных моделей - 1,2 или 4; число видимых символов в строке …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Среди множества различных LCD дисплеев наиболее простыми являются текстовые (символьные) дисплеи на основе контроллера hd44780 с параллельным 4-или 8-битным интерфейсом. В сравнении с &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;7-сегментными&lt;/a&gt; индикаторами, дисплеи на базе HD44780 обладают на порядок большими возможностями - количество строк на экране у разных моделей - 1,2 или 4; число видимых символов в строке: 8,10,16,20,24,30,32 или 40, один символ на дисплее представляет собой матрицу размером 5x8 точек, за отрисовку символов отвечает сам HD44780, ток потребления контроллера без подсветки очень мал - 100…200 мкА. Обычно хорошей практикой для разработчиков является ознакомление с &lt;a href="https://www.sparkfun.com/datasheets/LCD/HD44780.pdf" rel="nofollow"&gt;официальной&lt;/a&gt; документацией.&lt;/p&gt;
+&lt;p&gt;Для управления HD44780 производителем предусмотрены следующие выводы:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;RS - дисплей определяет, что именно к нему поступает (данные/команда)  &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;RW - направление данных (чтение/запись)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;D0-D7 - шина команд/данных&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;E - стробирование (синхронизация команд/данных)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Вывод RW можно не использовать вообще если нет практической нужды принимать данные из ЖК (это обычная практика), зачастую достаточно только записывать данные в HD44780. Тогда всё управление сводится к следующей последовательности. Ведущий микроконтроллер выставляет признак RS - 0 указывает на команды, 1 - на данные, выставляет на линиях DB7…DB0 8-разрядный код, после чего формирует на выводе E стробирующий импульс (активный фронт – задний). Контроллеру HD44780 может понадобится какое-то время чтобы переварить информацию в зависимости от типа принятой команды - все это расписано в доке ровно как и правильная последовательность команд для инициализации после подачи питания. Пора бы уже написать какой-нибудь код:  &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/db3045c11c2927f3da25c387a27e72d0"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/hello.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;HD44780.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef HD44780_h&lt;/span&gt;
+&lt;span class="cp"&gt;#define HD44780_h&lt;/span&gt;
+
+&lt;span class="c1"&gt;// commands&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_CLEARDISPLAY    0x01&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_RETURNHOME      0x02&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_ENTRYMODESET    0x04&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_DISPLAYCONTROL  0x08&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_CURSORSHIFT     0x10&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_FUNCTIONSET     0x20&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_SETCGRAMADDR    0x40&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_SETDDRAMADDR    0x80&lt;/span&gt;
+
+&lt;span class="c1"&gt;// flags for display entry mode&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_ENTRYRIGHT          0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_ENTRYLEFT           0x02&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_ENTRYSHIFTINCREMENT 0x01&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_ENTRYSHIFTDECREMENT 0x00&lt;/span&gt;
+
+&lt;span class="c1"&gt;// flags for display on/off control&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_DISPLAYON     0x04&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_DISPLAYOFF    0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_CURSORON      0x02&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_CURSOROFF     0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_BLINKON       0x01&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_BLINKOFF      0x00&lt;/span&gt;
+
+&lt;span class="c1"&gt;// flags for display/cursor shift&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_DISPLAYMOVE   0x08&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_CURSORMOVE    0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_MOVERIGHT     0x04&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_MOVELEFT      0x00&lt;/span&gt;
+
+&lt;span class="c1"&gt;// flags for function set&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_8BITMODE      0x10&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_4BITMODE      0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_2LINE         0x08&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_1LINE         0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_5x10DOTS      0x04&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_5x8DOTS       0x00&lt;/span&gt;
+
+&lt;span class="cp"&gt;#endif&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Как видно всего команд не так уж и много &lt;code&gt;LCD_CLEARDISPLAY...LCD_SETDDRAMADDR&lt;/code&gt;, но для некоторых могут быть дополнительные флаги - например для &lt;code&gt;LCD_DISPLAYCONTROL&lt;/code&gt; это &lt;code&gt;LCD_DISPLAYON...LCD_BLINKOFF&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;lcd.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HD44780.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define LCD_EN_PIN  PORTEbits.RE1&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_RS_PIN  PORTEbits.RE2&lt;/span&gt;
+&lt;span class="cp"&gt;#define LCD_PORT    PORTD&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define _LCD_DEFAULT_STATE_DISPLAYCONTROL (LCD_DISPLAYON | LCD_CURSORON | LCD_BLINKON)&lt;/span&gt;
+&lt;span class="cp"&gt;#define _LCD_DEFAULT_STATE_DISPLAYMODE    (LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT)&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;_lcd_wr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;LCD_PORT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;_lcd_en_pulse&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;LCD_EN_PIN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;LCD_EN_PIN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;_lcd_wr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;LCD_RS_PIN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;_lcd_en_pulse&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;lcd_dat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;_lcd_wr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;LCD_RS_PIN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;_lcd_en_pulse&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;lcd_init&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!&lt;/span&gt;
+  &lt;span class="c1"&gt;// according to datasheet, we need at least 40ms after power rises above 2.7V&lt;/span&gt;
+  &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;40&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="n"&gt;LCD_RS_PIN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;LCD_EN_PIN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// this is according to the hitachi HD44780 datasheet&lt;/span&gt;
+  &lt;span class="c1"&gt;// page 45 figure 23&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_FUNCTIONSET&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;LCD_8BITMODE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_FUNCTIONSET&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;LCD_8BITMODE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_FUNCTIONSET&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;LCD_8BITMODE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// finally, set # lines, font size, etc.&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_FUNCTIONSET&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;LCD_8BITMODE&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;LCD_2LINE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// turn the display off&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_DISPLAYCONTROL&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;LCD_DISPLAYOFF&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_CLEARDISPLAY&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// clear display, set cursor position to zero&lt;/span&gt;
+  &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;             &lt;span class="c1"&gt;// this command takes a long time!&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// turn the display on with default cursor and blinking&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_DISPLAYCONTROL&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;_LCD_DEFAULT_STATE_DISPLAYCONTROL&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Initialize to default text direction (for romance languages)&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_ENTRYMODESET&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;_LCD_DEFAULT_STATE_DISPLAYMODE&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;При инициализации &lt;code&gt;lcd_init()&lt;/code&gt; необходимо соблюдать ритуал с временными задержками, описанный в документации к HD44780.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define _XTAL_FREQ 5e4&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;config-4620.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;lcd.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;lcd_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_dat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// lcd&lt;/span&gt;
+  &lt;span class="n"&gt;PORTD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;PORTE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;TRISE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;lcd_init&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_SETDDRAMADDR&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;    &lt;span class="c1"&gt;// first line 0 column&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Hey PICSim.js !&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_cmd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LCD_SETDDRAMADDR&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="mh"&gt;0x40&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// second line 0 column&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Life is good :)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;У PIC18 довольно много битов конфигурации, поэтому для них отдельный файл &lt;code&gt;config.h&lt;/code&gt;. Первым делом с помощью управляющих команд &lt;code&gt;lcd_cmd&lt;/code&gt; дисплей настраивается, затем текст пересылается в виде данных &lt;code&gt;lcd_dat&lt;/code&gt;. Хотя видимых символов в строке дисплея в нашем случае 16, всего их там 64 (0x40) - остальные просто находятся в памяти HD44780 контроллера.&lt;/p&gt;
+&lt;p&gt;При работе HD44780 трудно держать все управляющие комбинации в голове, поэтому код не помешает упростить, например привести к виду arduino библиотеки «LiquidCrystal».&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/liquid-crystal.c"&gt;liquid-crystal.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/showtime.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/1889b71bb6c0df4349565d08a7c01ddd"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define _XTAL_FREQ 5e4&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;config-4620.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;liquid-crystal.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_clear&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// clear display, set cursor position to zero&lt;/span&gt;
+  &lt;span class="n"&gt;lcd_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// lcd&lt;/span&gt;
+  &lt;span class="n"&gt;PORTD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISD&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;PORTE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;TRISE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="n"&gt;lcd_init&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;PICSim.js :)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_set_cursor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// second line third column&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Show time !&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4444&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+    &lt;span class="n"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;No CURSOR&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_no_cursor&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;  &lt;span class="c1"&gt;// hide cursor&lt;/span&gt;
+    &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_cursor&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;     &lt;span class="c1"&gt;// show cursor&lt;/span&gt;
+
+    &lt;span class="n"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;No BLINK&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_no_blink&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;  &lt;span class="c1"&gt;// blink OFF&lt;/span&gt;
+    &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_blink&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;     &lt;span class="c1"&gt;// blink ON&lt;/span&gt;
+
+    &lt;span class="n"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;ON/OFF&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;lcd_display&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;    &lt;span class="c1"&gt;// display ON&lt;/span&gt;
+      &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;lcd_no_display&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// display OFF&lt;/span&gt;
+      &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;lcd_display&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+    &lt;span class="n"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SCROLL right&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;lcd_scroll_display_right&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="n"&gt;clear_print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SCROLL left&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;__delay_ms&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;500&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="n"&gt;lcd_scroll_display_left&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// PICSimLab: not implemented ?&lt;/span&gt;
+    &lt;span class="c1"&gt;// lcd_right_to_left()&lt;/span&gt;
+    &lt;span class="c1"&gt;// lcd_autoscroll()&lt;/span&gt;
+    &lt;span class="c1"&gt;// lcd_create_char()&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Данный код заточен на дисплей, состоящий из двух строк - это задаётся на этапе инициализации один раз &lt;code&gt;LCD_8BITMODE | LCD_2LINE&lt;/code&gt;. Также для экономии ног ввода-вывода микроконтроллера можно достаточно легко перейти с 8-битного на 4-битный &lt;code&gt;LCD_4BITMODE&lt;/code&gt; формат передачи команд/данных, попутно немного подправив функцию &lt;code&gt;_lcd_wr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Далее аналогово-цифровой преобразователь (АЦП).&lt;/p&gt;</content><category term="picsim"></category><category term="HD44780"></category></entry><entry><title>PICSim.js - сторожевой таймер и спящий режим</title><link href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/" rel="alternate"></link><published>2017-01-17T00:00:00+02:00</published><updated>2017-01-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-17:/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/</id><summary type="html">&lt;p&gt;Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный &lt;a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/"&gt;счётчик&lt;/a&gt;, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации &lt;code&gt;#pragma config WDTE = OFF|ON&lt;/code&gt; - если включён &lt;code&gt;WDTE = ON&lt;/code&gt;, то в случае переполнения счётчика обычно происходит аппаратный …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный &lt;a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/"&gt;счётчик&lt;/a&gt;, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации &lt;code&gt;#pragma config WDTE = OFF|ON&lt;/code&gt; - если включён &lt;code&gt;WDTE = ON&lt;/code&gt;, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.&lt;/p&gt;
 &lt;p&gt;Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/42785136281fe4b78e1e93572ff36d82"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/3cfca08cb95e5bb6ba688747d58168d2"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
 &lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
@@ -24,7 +276,7 @@
 
   &lt;span class="c1"&gt;// looks like STATUS [TO, PD] are not implemented in original PICSim - always 0&lt;/span&gt;
   &lt;span class="n"&gt;PORTB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;STATUS&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="n"&gt;TRISB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISB&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
   &lt;span class="n"&gt;RA0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
   &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;333&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;);&lt;/span&gt; &lt;span class="c1"&gt;// simple delay&lt;/span&gt;
@@ -79,7 +331,8 @@
 
 &lt;p&gt;В данном примере в отличие от предыдущего микроконтроллер не сбрасывается а просыпается от сторожевого таймера каждые 1.152 секунды, передвигает светодиод и засыпает заново. Основное энергопотребление приходится только на свечение светодиода.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui-sleep.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;p&gt;Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.&lt;/p&gt;</content><category term="picsim"></category></entry><entry><title>PICSim.js - семисегментный индикатор и прерывания</title><link href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/" rel="alternate"></link><published>2017-01-16T00:00:00+02:00</published><updated>2017-01-16T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-16:/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/</id><summary type="html">&lt;p&gt;Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются относительно высокое энергопотребление и слабая видимость при ярком освещении, хотя на нашем модном цветном мобильном телефоне тоже ничего не видно на солнышке днём :)&lt;/p&gt;
+&lt;p&gt;Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;Далее&lt;/a&gt; попробуем линейку PIC18 микроконтроллеров и начнём с символьного LCD дисплея на базе контроллера HD44780.&lt;/p&gt;</content><category term="picsim"></category></entry><entry><title>PICSim.js - семисегментный индикатор и прерывания</title><link href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/" rel="alternate"></link><published>2017-01-16T00:00:00+02:00</published><updated>2017-01-16T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-16:/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/</id><summary type="html">&lt;p&gt;Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются относительно высокое энергопотребление и слабая видимость при ярком освещении, хотя на нашем модном цветном мобильном телефоне тоже ничего не видно на солнышке днём :)&lt;/p&gt;
 &lt;p&gt;Конструктивно светодиодный семисегментный индикатор представляет собой группу из семи светодиодов, расположенных в определенном порядке. Включая их в различных комбинациях можно составить упрощённые изображения цифр 0..9. Индикаторы различаются по размеру, типу соединения светодиодов - общий анод, общий катод, по количеству отображаемых разрядов - одноразрядные, двухразрядные и более, по яркости свечения и по цвету - красные, желтые, зеленые и т.д. &lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/7.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/69cc6064062b774abdb3734521cf01a8"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;display7.c&lt;/em&gt;&lt;/p&gt;
@@ -362,15 +615,14 @@
 &lt;p&gt;Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 --chip=16f648A blink.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A blink.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
-
-&lt;span class="c1"&gt;// __delay_ms legacy code&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;htc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
 &lt;span class="c1"&gt;// http://microchip.wikidot.com/faq:26&lt;/span&gt;
 &lt;span class="c1"&gt;// The delay amount must be a constant (cannot be a variable).&lt;/span&gt;
 &lt;span class="cp"&gt;#define _XTAL_FREQ 5e4 &lt;/span&gt;&lt;span class="c1"&gt;// 50 kHz&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
 &lt;span class="cp"&gt;#pragma config WDTE = OFF&lt;/span&gt;
 
@@ -397,7 +649,7 @@
 &lt;p&gt;Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 --chip=16f648A buttons.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A buttons.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -429,6 +681,7 @@
 
 
 &lt;p&gt;Данный код не будет одинаково корректно функционировать в широком диапазоне тактовых частот т.к. не содержит зависимостей от __delay-подобных функций.&lt;/p&gt;
+&lt;p&gt;Особое внимание стоит обратить на выражение типа &lt;code&gt;PORTB=TRISB=0;&lt;/code&gt; - здесь присваивание &lt;strong&gt;идёт справа налево&lt;/strong&gt;, то есть в приближении этот код аналогичен &lt;code&gt;TRISB=0; /* что сейчас на выходе PORTB ? */ PORTB=TRISB; /* вот сейчас точно 0 */&lt;/code&gt;, но не лучше ли сделать так &lt;code&gt;TRISB=PORTB=0;&lt;/code&gt;, что аналогично &lt;code&gt;PORTB=0;TRISB=PORTB;&lt;/code&gt; ? Проблема последнего выражения в том, что PORTB это не обычный регистр, а порт ввода-вывода и может давать на чтение значение, отличное от записанного. Из этого всего следует, что самый простой и надёжный способ это &lt;strong&gt;инициализировать порты ввода вывода явно&lt;/strong&gt;: &lt;code&gt;PORTB=0;TRISB=0;&lt;/code&gt;. Хотя в режиме симуляции ничего «сгореть» не может, поэтому &lt;code&gt;PORTB=TRISB=0;&lt;/code&gt; тоже можно :)&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/ui-b.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/"&gt;Далее&lt;/a&gt; ШИМ.&lt;/p&gt;
 &lt;p&gt;P.S. Таблица периферийных модулей реализованных в симуляторе &lt;a href="https://github.com/lcgamboa/picsim" rel="nofollow"&gt;PICSim&lt;/a&gt;.&lt;/p&gt;</content><category term="picsim"></category></entry><entry><title>NGSPICE.js - счетчики и делители частоты</title><link href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/" rel="alternate"></link><published>2016-12-22T00:00:00+02:00</published><updated>2016-12-22T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-12-22:/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/"&gt;Продолжаем&lt;/a&gt; осваивать NGSPICE в целом и &lt;a href="http://proiot.ru/blog/posts/2016/12/18/ngspicejs-logicheskie-ventili/"&gt;цифровую&lt;/a&gt; схемотехнику в частности.&lt;/p&gt;
@@ -1896,7 +2149,7 @@ build  project.yml  rakefile.rb  src  &lt;span class="nb"&gt;test&lt;/span&gt;  
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ xc16-gcc -omf&lt;span class="o"&gt;=&lt;/span&gt;elf -mcpu&lt;span class="o"&gt;=&lt;/span&gt;24EP64MC206 src/hello.c &lt;span class="se"&gt;\&lt;/span&gt;
 -o build/hello.elf -Wl,-Tp24EP64MC206.gld
 ~$ file build/hello.elf
-build/hello.elf: ELF 32-bit LSB executable, &lt;span class="se"&gt;\&lt;/span&gt;
+build/hello.elf: ELF &lt;span class="m"&gt;32&lt;/span&gt;-bit LSB executable, &lt;span class="se"&gt;\&lt;/span&gt;
 version &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;SYSV&lt;span class="o"&gt;)&lt;/span&gt;, statically linked, not stripped
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -2341,11 +2594,11 @@ Quit
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# sudo apt-get install sshpass pv&lt;/span&gt;
 ~$ cat /dev/urandom &lt;span class="p"&gt;|&lt;/span&gt; pv &lt;span class="p"&gt;|&lt;/span&gt; sshpass -p &lt;span class="s2"&gt;&amp;quot;YOUR_SSH_PASS&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 ssh root@torrents.local &lt;span class="s2"&gt;&amp;quot;cat &amp;gt; /dev/null&amp;quot;&lt;/span&gt;
-9,7GB 13:32 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Для разогрева предлагаю провести маленький эксперимент - на одной машине генерить случайные данные &lt;code&gt;/dev/urandom&lt;/code&gt;, а на другой принимать  и сливать в &lt;code&gt;/dev/null&lt;/code&gt;, тем самым замерять скорость:&lt;/p&gt;
+&lt;span class="m"&gt;9&lt;/span&gt;,7GB &lt;span class="m"&gt;13&lt;/span&gt;:32 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Для разогрева предлагаю провести маленький эксперимент - на одной машине генерить случайные данные &lt;code&gt;/dev/urandom&lt;/code&gt;, а на другой принимать  и сливать в &lt;code&gt;/dev/null&lt;/code&gt;, тем самым замерять скорость:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# sudo apt-get install sshpass pv&lt;/span&gt;
 ~$ cat /dev/urandom &lt;span class="p"&gt;|&lt;/span&gt; pv &lt;span class="p"&gt;|&lt;/span&gt; sshpass -p &lt;span class="s2"&gt;&amp;quot;YOUR_SSH_PASS&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 ssh root@torrents.local &lt;span class="s2"&gt;&amp;quot;cat &amp;gt; /dev/null&amp;quot;&lt;/span&gt;
-9,7GB 13:32:04 &lt;span class="o"&gt;[&lt;/span&gt; 376kB/s&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;                    &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt;    &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="m"&gt;9&lt;/span&gt;,7GB &lt;span class="m"&gt;13&lt;/span&gt;:32:04 &lt;span class="o"&gt;[&lt;/span&gt; 376kB/s&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;                    &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt;    &lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2365,13 +2618,13 @@ mali_drm                &lt;span class="m"&gt;2600&lt;/span&gt;  &lt;span class=
 drm                   &lt;span class="m"&gt;209376&lt;/span&gt;  &lt;span class="m"&gt;1&lt;/span&gt; mali_drm
 mali                  &lt;span class="m"&gt;110904&lt;/span&gt;  &lt;span class="m"&gt;0&lt;/span&gt; 
 ump                    &lt;span class="m"&gt;52145&lt;/span&gt;  &lt;span class="m"&gt;1&lt;/span&gt; mali
-8192cu                &lt;span class="m"&gt;454729&lt;/span&gt;  0
+8192cu                &lt;span class="m"&gt;454729&lt;/span&gt;  &lt;span class="m"&gt;0&lt;/span&gt;
 
 ~$ ssh root@torrents.local lsusb &lt;span class="p"&gt;|&lt;/span&gt; grep WLAN 
-Bus &lt;span class="m"&gt;004&lt;/span&gt; Device 002: ID 0bda:8176 ... RTL8188CUS 802.11n WLAN Adapter
+Bus &lt;span class="m"&gt;004&lt;/span&gt; Device &lt;span class="m"&gt;002&lt;/span&gt;: ID 0bda:8176 ... RTL8188CUS &lt;span class="m"&gt;802&lt;/span&gt;.11n WLAN Adapter
 
 ~$ ssh root@torrents.local iwconfig wlan0 &lt;span class="p"&gt;|&lt;/span&gt; grep ESSID
-wlan0 IEEE 802.11bg ESSID:&lt;span class="s2"&gt;&amp;quot;some.essid&amp;quot;&lt;/span&gt; Nickname:&lt;span class="s2"&gt;&amp;quot;&amp;lt;WIFI@REALTEK&amp;gt;&amp;quot;&lt;/span&gt;
+wlan0 IEEE &lt;span class="m"&gt;802&lt;/span&gt;.11bg ESSID:&lt;span class="s2"&gt;&amp;quot;some.essid&amp;quot;&lt;/span&gt; Nickname:&lt;span class="s2"&gt;&amp;quot;&amp;lt;WIFI@REALTEK&amp;gt;&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2482,14 +2735,14 @@ output/mk802-1gb_hwpack.tar.xz ../mk802rootfs.tgz
 &lt;p&gt;При загрузке системы стартует точка доступа, затем, если нет активности на линии, WI-FI переключается в обычный режим. Собственно результат наших трудов:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ cat /dev/urandom &lt;span class="p"&gt;|&lt;/span&gt; pv &lt;span class="p"&gt;|&lt;/span&gt; sshpass -p &lt;span class="s2"&gt;&amp;quot;YOUR_SSH_PASS&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 ssh root@torrents.local &lt;span class="s2"&gt;&amp;quot;cat &amp;gt; /dev/null&amp;quot;&lt;/span&gt;
-13GB 1:15:53 &lt;span class="o"&gt;[&lt;/span&gt;3,05MB/s&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;                &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="o"&gt;]&lt;/span&gt;
+13GB &lt;span class="m"&gt;1&lt;/span&gt;:15:53 &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;,05MB/s&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;                &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="o"&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Это когда WI-FI модуль в режиме &lt;em&gt;g&lt;/em&gt;, а если верить производителю RTL8188CUS способен работать в режиме &lt;em&gt;n&lt;/em&gt;. Для самых отважных предлагаю попробовать добавить строчку &lt;em&gt;ieee80211n=1&lt;/em&gt; в &lt;code&gt;/etc/hostapd.conf&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ cat /dev/urandom &lt;span class="p"&gt;|&lt;/span&gt; pv &lt;span class="p"&gt;|&lt;/span&gt; sshpass -p &lt;span class="s2"&gt;&amp;quot;YOUR_SSH_PASS&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 ssh root@torrents.local &lt;span class="s2"&gt;&amp;quot;cat &amp;gt; /dev/null&amp;quot;&lt;/span&gt;
-15GB 1:18:28 &lt;span class="o"&gt;[&lt;/span&gt;   5MB/s&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;                &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="o"&gt;]&lt;/span&gt;
+15GB &lt;span class="m"&gt;1&lt;/span&gt;:18:28 &lt;span class="o"&gt;[&lt;/span&gt;   5MB/s&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt;                &amp;lt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;gt; &lt;span class="o"&gt;]&lt;/span&gt;
 
 ~$ ssh root@torrents.local
 ~$ ps aux &lt;span class="p"&gt;|&lt;/span&gt; grep sshd:
@@ -2512,7 +2765,7 @@ wget fakeroot kernel-package zlib1g-dev libncurses5-dev debootstrap
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ mkdir allwinter
 ~$ &lt;span class="nb"&gt;cd&lt;/span&gt; allwinter
 ~$ mkdir debfs_armhf
-~$ dd &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/zero &lt;span class="nv"&gt;of&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;debfs_armhf.img &lt;span class="nv"&gt;bs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1M &lt;span class="nv"&gt;count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1024
+~$ dd &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/zero &lt;span class="nv"&gt;of&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;debfs_armhf.img &lt;span class="nv"&gt;bs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1M &lt;span class="nv"&gt;count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1024&lt;/span&gt;
 ~$ mkfs.ext4 -F debfs_armhf.img
 ~$ mount -o loop debfs_armhf.img debfs_armhf
 &lt;/pre&gt;&lt;/div&gt;
@@ -2648,27 +2901,27 @@ output/mk802-1gb_hwpack.tar.xz ../mk802rootfs.tgz
 
 
 &lt;p&gt;Вставляем SD-карту в MK802, включаем и скрещиваем пальцы :) Через минутку-другую устройство должно зарегистрироваться в WI-FI сети. Список можно просматривать так:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ watch -n 0,1 arp-scan -l --interface&lt;span class="o"&gt;=&lt;/span&gt;wlan0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ watch -n &lt;span class="m"&gt;0&lt;/span&gt;,1 arp-scan -l --interface&lt;span class="o"&gt;=&lt;/span&gt;wlan0
 Interface: wlan0, datalink type: EN10MB &lt;span class="o"&gt;(&lt;/span&gt;Ethernet&lt;span class="o"&gt;)&lt;/span&gt;
-Starting arp-scan 1.8.1 with &lt;span class="m"&gt;256&lt;/span&gt; hosts
-192.168.1.1 00:0e:2e:2a:df:90   Edimax Technology Co., Ltd.
-192.168.1.10    00:1e:58:b7:cc:ad   D-Link Corporation
-192.168.1.15    08:9e:01:20:e8:e6   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
-192.168.1.122   e0:cb:4e:c1:30:77   ASUSTek COMPUTER INC.
-192.168.1.203   00:25:22:b9:40:21   ASRock Incorporation
-192.168.1.205   00:17:31:50:e2:32   ASUSTek COMPUTER INC.
-192.168.1.209   f8:1a:67:80:f0:dd   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
-192.168.1.227   d8:d3:85:38:60:35   Hewlett Packard
-192.168.1.235   00:e0:4c:2c:0e:82   REALTEK SEMICONDUCTOR CORP.
-192.168.1.233   f0:7b:cb:0f:3e:e4   Hon Hai Precision Ind. Co.,Ltd. 
-192.168.1.228   1c:65:9d:f9:e2:06   Liteon Technology Corporation
-192.168.1.231   48:02:2a:66:74:3f   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
-192.168.1.240   78:ab:bb:c5:9b:e5   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
-192.168.1.241   bc:b1:f3:14:c5:68   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
-192.168.1.245   bc:f6:85:65:bc:38   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
+Starting arp-scan &lt;span class="m"&gt;1&lt;/span&gt;.8.1 with &lt;span class="m"&gt;256&lt;/span&gt; hosts
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.1 &lt;span class="m"&gt;00&lt;/span&gt;:0e:2e:2a:df:90   Edimax Technology Co., Ltd.
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.10    &lt;span class="m"&gt;00&lt;/span&gt;:1e:58:b7:cc:ad   D-Link Corporation
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.15    &lt;span class="m"&gt;08&lt;/span&gt;:9e:01:20:e8:e6   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.122   e0:cb:4e:c1:30:77   ASUSTek COMPUTER INC.
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.203   &lt;span class="m"&gt;00&lt;/span&gt;:25:22:b9:40:21   ASRock Incorporation
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.205   &lt;span class="m"&gt;00&lt;/span&gt;:17:31:50:e2:32   ASUSTek COMPUTER INC.
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.209   f8:1a:67:80:f0:dd   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.227   d8:d3:85:38:60:35   Hewlett Packard
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.235   &lt;span class="m"&gt;00&lt;/span&gt;:e0:4c:2c:0e:82   REALTEK SEMICONDUCTOR CORP.
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.233   f0:7b:cb:0f:3e:e4   Hon Hai Precision Ind. Co.,Ltd. 
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.228   1c:65:9d:f9:e2:06   Liteon Technology Corporation
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.231   &lt;span class="m"&gt;48&lt;/span&gt;:02:2a:66:74:3f   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.240   &lt;span class="m"&gt;78&lt;/span&gt;:ab:bb:c5:9b:e5   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.241   bc:b1:f3:14:c5:68   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="m"&gt;192&lt;/span&gt;.168.1.245   bc:f6:85:65:bc:38   &lt;span class="o"&gt;(&lt;/span&gt;Unknown&lt;span class="o"&gt;)&lt;/span&gt;
 
 &lt;span class="m"&gt;15&lt;/span&gt; packets received by filter, &lt;span class="m"&gt;0&lt;/span&gt; packets dropped by kernel
-Ending arp-scan 1.8.1: &lt;span class="m"&gt;256&lt;/span&gt; hosts scanned in 1.367 seconds
+Ending arp-scan &lt;span class="m"&gt;1&lt;/span&gt;.8.1: &lt;span class="m"&gt;256&lt;/span&gt; hosts scanned in &lt;span class="m"&gt;1&lt;/span&gt;.367 seconds
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2808,7 +3061,7 @@ output/mk802-1gb_hwpack.tar.xz ../mk802rootfs.tgz
 ~$ ls /dev/sd?1 &lt;span class="p"&gt;|&lt;/span&gt; xargs vgcreate torrents /dev/mmcblk0p3
 &lt;span class="c1"&gt;# pvdisplay | grep &amp;#39;VG Name&amp;#39;&lt;/span&gt;
 &lt;span class="c1"&gt;# vgdisplay | grep &amp;#39;VG Size&amp;#39;&lt;/span&gt;
-~$ lvcreate -l 100%FREE torrents
+~$ lvcreate -l &lt;span class="m"&gt;100&lt;/span&gt;%FREE torrents
 ~$ mkfs.ext4 /dev/torrents/lvol0
 ~$ sed -i s/&lt;span class="se"&gt;\\&lt;/span&gt;/dev&lt;span class="se"&gt;\\&lt;/span&gt;/mmcblk0p3/&lt;span class="se"&gt;\\&lt;/span&gt;/dev&lt;span class="se"&gt;\\&lt;/span&gt;/torrents&lt;span class="se"&gt;\\&lt;/span&gt;/lvol0/ &lt;span class="se"&gt;\&lt;/span&gt;
 /etc/fstab
@@ -5080,7 +5333,7 @@ src/manchester/Man_Decode.cpp &lt;span class="nv"&gt;$GTEST_HOME&lt;/span&gt;/sr
 
 &lt;p&gt;Если в &lt;strong&gt;Linux&lt;/strong&gt; оболочка для работы с &lt;strong&gt;Bootloader&lt;/strong&gt;'ом вообще не видит USB-to-serial переходника (например &lt;code&gt;/dev/ttyUSB0&lt;/code&gt;), скорее всего текущий пользователь просто не обладает соответствующими правами. Поскольку постоянно запускать программу их-под &lt;strong&gt;root&lt;/strong&gt;'a неудобно, ниже описан конкретный случай лечения OpenSUSE 12.1 - полными правами на USB-to-serial обладает группа &lt;em&gt;dialout&lt;/em&gt;, поэтому в неё нужно добавить текущего пользователя системы, после чего, чтобы изменения вступили в силу, ОБЯЗАТЕЛЬНО перелогиниться:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;oleg@linux-ubuc:~&amp;gt; ls -l /dev/ttyUSB?
-crw-rw---- &lt;span class="m"&gt;1&lt;/span&gt; root dialout 188, &lt;span class="m"&gt;0&lt;/span&gt; марта  &lt;span class="m"&gt;1&lt;/span&gt; 10:13 /dev/ttyUSB0
+crw-rw---- &lt;span class="m"&gt;1&lt;/span&gt; root dialout &lt;span class="m"&gt;188&lt;/span&gt;, &lt;span class="m"&gt;0&lt;/span&gt; марта  &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;10&lt;/span&gt;:13 /dev/ttyUSB0
 oleg@linux-ubuc:~&amp;gt; sudo /usr/sbin/groupmod -A &lt;span class="nv"&gt;$USER&lt;/span&gt; dialout
 &lt;/pre&gt;&lt;/div&gt;
 

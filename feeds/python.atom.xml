@@ -10,22 +10,22 @@
 &lt;p&gt;Для экспериментов можно задействовать любой мобильный телефон (либо GSM модуль типа sim900, если Вы дружите с паяльником), который имеет возможность подключения к ПК. Поскольку особого желания возиться с проводами нету, самый простой способ соединить телефон и компьютер - использовать Bluetooth. Посмотрим какие устройства доступны для подключения:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ hcitool scan
 Scanning ...
-    00:11:22:33:44:55   Nokia 6300
+    &lt;span class="m"&gt;00&lt;/span&gt;:11:22:33:44:55   Nokia &lt;span class="m"&gt;6300&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Имея MAC адрес устройства, можем посмотреть список сервисов (вывод команды показан не весь):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sdptool browse 00:11:22:33:44:55
-Browsing 00:11:22:33:44:55 ...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sdptool browse &lt;span class="m"&gt;00&lt;/span&gt;:11:22:33:44:55
+Browsing &lt;span class="m"&gt;00&lt;/span&gt;:11:22:33:44:55 ...
 ......
-Service Name: COM 1
+Service Name: COM &lt;span class="m"&gt;1&lt;/span&gt;
 Service RecHandle: 0x10002
 Service Class ID List:
   &lt;span class="s2"&gt;&amp;quot;Serial Port&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0x1101&lt;span class="o"&gt;)&lt;/span&gt;
 Protocol Descriptor List:
   &lt;span class="s2"&gt;&amp;quot;L2CAP&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0x0100&lt;span class="o"&gt;)&lt;/span&gt;
   &lt;span class="s2"&gt;&amp;quot;RFCOMM&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;0x0003&lt;span class="o"&gt;)&lt;/span&gt;
-    Channel: 3
+    Channel: &lt;span class="m"&gt;3&lt;/span&gt;
 Language Base Attr List:
   code_ISO639: 0x656e
   encoding:    0x6a
@@ -35,8 +35,8 @@ Language Base Attr List:
 
 
 &lt;p&gt;Цепляемся к &lt;code&gt;Channel: 3&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ rfcomm connect &lt;span class="m"&gt;0&lt;/span&gt; 00:11:22:33:44:55 3
-Connected /dev/rfcomm0 to 00:11:22:33:44:55 on channel 3
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ rfcomm connect &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="m"&gt;00&lt;/span&gt;:11:22:33:44:55 &lt;span class="m"&gt;3&lt;/span&gt;
+Connected /dev/rfcomm0 to &lt;span class="m"&gt;00&lt;/span&gt;:11:22:33:44:55 on channel &lt;span class="m"&gt;3&lt;/span&gt;
 Press CTRL-C &lt;span class="k"&gt;for&lt;/span&gt; hangup
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -57,20 +57,20 @@ OK
 
 
 &lt;p&gt;Отлично. Нас интересуют две AT-команды: &lt;code&gt;AT+COPS&lt;/code&gt; и &lt;code&gt;AT+CREG&lt;/code&gt;, которые имеют настраиваемый формат ответа - задаём тот, который устроит:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;AT+COPS&lt;span class="o"&gt;=&lt;/span&gt;0,2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;AT+COPS&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;,2
 OK
-AT+CREG&lt;span class="o"&gt;=&lt;/span&gt;2
+AT+CREG&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2&lt;/span&gt;
 OK
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Всё готово - запрашиваем MCC, MNC, LAC, CID:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;AT+COPS?
-+COPS: 0,2,&lt;span class="s2"&gt;&amp;quot;25501&amp;quot;&lt;/span&gt;,0
++COPS: &lt;span class="m"&gt;0&lt;/span&gt;,2,&lt;span class="s2"&gt;&amp;quot;25501&amp;quot;&lt;/span&gt;,0
 
 OK
 AT+CREG?
-+CREG: 2,1,&lt;span class="s2"&gt;&amp;quot;8174&amp;quot;&lt;/span&gt;,&lt;span class="s2"&gt;&amp;quot;EA45&amp;quot;&lt;/span&gt;
++CREG: &lt;span class="m"&gt;2&lt;/span&gt;,1,&lt;span class="s2"&gt;&amp;quot;8174&amp;quot;&lt;/span&gt;,&lt;span class="s2"&gt;&amp;quot;EA45&amp;quot;&lt;/span&gt;
 
 OK
 &lt;/pre&gt;&lt;/div&gt;
@@ -154,7 +154,7 @@ OK
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;?q=&lt;/span&gt;&lt;span class="si"&gt;%f&lt;/span&gt;&lt;span class="s1"&gt;,&lt;/span&gt;&lt;span class="si"&gt;%f&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GOOGLE_MAPS_URL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;latitude&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;longitude&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;cid_dec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lac_dec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mcc_mnc_dec&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;fetch_cell_from_serial&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="n"&gt;lat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_location_by_cell&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cid_dec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lac_dec&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mcc_mnc_dec&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
     &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;format_googlemaps_link&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lon&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -163,7 +163,7 @@ OK
 
 &lt;p&gt;Скрипт написан на питоне и использует &lt;code&gt;pyserial&lt;/code&gt; для коммуникации с последовательным портом.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ python pygsm.py 
-http://maps.google.com?q&lt;span class="o"&gt;=&lt;/span&gt;48.611261,34.556325
+http://maps.google.com?q&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;48&lt;/span&gt;.611261,34.556325
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -171,13 +171,13 @@ http://maps.google.com?q&lt;span class="o"&gt;=&lt;/span&gt;48.611261,34.556325
 &lt;p&gt;Данные обмена можно снифить:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;#apt-get install socat&lt;/span&gt;
 ~$ socat -d -v -x &lt;span class="se"&gt;\&lt;/span&gt;
-PTY,link&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyNONGREEDY,raw,perm&lt;span class="o"&gt;=&lt;/span&gt;777,echo&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+PTY,link&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyNONGREEDY,raw,perm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;777&lt;/span&gt;,echo&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 /dev/rfcomm0,raw
 &lt;span class="c1"&gt;#echo -e &amp;#39;AT\r&amp;#39; &amp;gt; /dev/ttyNONGREEDY&lt;/span&gt;
-&amp;gt; 2014/01/11 11:34:08.565031  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;3
+&amp;gt; &lt;span class="m"&gt;2014&lt;/span&gt;/01/11 &lt;span class="m"&gt;11&lt;/span&gt;:34:08.565031  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;
  &lt;span class="m"&gt;41&lt;/span&gt; &lt;span class="m"&gt;54&lt;/span&gt; 0d 0a                                      AT..
 --
-&amp;lt; 2014/01/11 11:34:08.743405  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;5
+&amp;lt; &lt;span class="m"&gt;2014&lt;/span&gt;/01/11 &lt;span class="m"&gt;11&lt;/span&gt;:34:08.743405  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;5&lt;/span&gt;
  0d 0a                                            ..
  4f 4b 0d 0a                                      OK..
 --
@@ -206,13 +206,13 @@ pyserial/examples/tcp_serial_redirect.py?format&lt;span class="o"&gt;=&lt;/span&
 
 &lt;p&gt;Эмулировать устройство можно так:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ socat -d -v -x &lt;span class="se"&gt;\&lt;/span&gt;
-PTY,link&lt;span class="o"&gt;=&lt;/span&gt;/dev/rfcomm0,raw,perm&lt;span class="o"&gt;=&lt;/span&gt;777,echo&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-PTY,link&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyNONGREEDY,raw,perm&lt;span class="o"&gt;=&lt;/span&gt;777,echo&lt;span class="o"&gt;=&lt;/span&gt;0
+PTY,link&lt;span class="o"&gt;=&lt;/span&gt;/dev/rfcomm0,raw,perm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;777&lt;/span&gt;,echo&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+PTY,link&lt;span class="o"&gt;=&lt;/span&gt;/dev/ttyNONGREEDY,raw,perm&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;777&lt;/span&gt;,echo&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
 &lt;span class="c1"&gt;# echo -e &amp;#39;AT\r&amp;#39; &amp;gt; /dev/rfcomm0&lt;/span&gt;
-&amp;gt; 2014/01/11 12:31:37.585420  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;3
+&amp;gt; &lt;span class="m"&gt;2014&lt;/span&gt;/01/11 &lt;span class="m"&gt;12&lt;/span&gt;:31:37.585420  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;
  &lt;span class="m"&gt;41&lt;/span&gt; &lt;span class="m"&gt;54&lt;/span&gt; 0d 0a                                      AT..
 --
-&amp;lt; 2014/01/11 12:31:37.586518  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;7&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;6
+&amp;lt; &lt;span class="m"&gt;2014&lt;/span&gt;/01/11 &lt;span class="m"&gt;12&lt;/span&gt;:31:37.586518  &lt;span class="nv"&gt;length&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;7&lt;/span&gt; &lt;span class="nv"&gt;from&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="nv"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;6&lt;/span&gt;
  &lt;span class="m"&gt;41&lt;/span&gt; &lt;span class="m"&gt;54&lt;/span&gt; 0d 0a                                      AT..
  4f 4b 0a                                         OK.
 --

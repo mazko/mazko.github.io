@@ -55,22 +55,22 @@
 <p>Для экспериментов можно задействовать любой мобильный телефон (либо GSM модуль типа sim900, если Вы дружите с паяльником), который имеет возможность подключения к ПК. Поскольку особого желания возиться с проводами нету, самый простой способ соединить телефон и компьютер - использовать Bluetooth. Посмотрим какие устройства доступны для подключения:</p>
 <div class="highlight"><pre><span></span>~$ hcitool scan
 Scanning ...
-    00:11:22:33:44:55   Nokia 6300
+    <span class="m">00</span>:11:22:33:44:55   Nokia <span class="m">6300</span>
 </pre></div>
 
 
 <p>Имея MAC адрес устройства, можем посмотреть список сервисов (вывод команды показан не весь):</p>
-<div class="highlight"><pre><span></span>~$ sdptool browse 00:11:22:33:44:55
-Browsing 00:11:22:33:44:55 ...
+<div class="highlight"><pre><span></span>~$ sdptool browse <span class="m">00</span>:11:22:33:44:55
+Browsing <span class="m">00</span>:11:22:33:44:55 ...
 ......
-Service Name: COM 1
+Service Name: COM <span class="m">1</span>
 Service RecHandle: 0x10002
 Service Class ID List:
   <span class="s2">&quot;Serial Port&quot;</span> <span class="o">(</span>0x1101<span class="o">)</span>
 Protocol Descriptor List:
   <span class="s2">&quot;L2CAP&quot;</span> <span class="o">(</span>0x0100<span class="o">)</span>
   <span class="s2">&quot;RFCOMM&quot;</span> <span class="o">(</span>0x0003<span class="o">)</span>
-    Channel: 3
+    Channel: <span class="m">3</span>
 Language Base Attr List:
   code_ISO639: 0x656e
   encoding:    0x6a
@@ -80,8 +80,8 @@ Language Base Attr List:
 
 
 <p>Цепляемся к <code>Channel: 3</code>:</p>
-<div class="highlight"><pre><span></span>~$ rfcomm connect <span class="m">0</span> 00:11:22:33:44:55 3
-Connected /dev/rfcomm0 to 00:11:22:33:44:55 on channel 3
+<div class="highlight"><pre><span></span>~$ rfcomm connect <span class="m">0</span> <span class="m">00</span>:11:22:33:44:55 <span class="m">3</span>
+Connected /dev/rfcomm0 to <span class="m">00</span>:11:22:33:44:55 on channel <span class="m">3</span>
 Press CTRL-C <span class="k">for</span> hangup
 </pre></div>
 
@@ -102,20 +102,20 @@ OK
 
 
 <p>Отлично. Нас интересуют две AT-команды: <code>AT+COPS</code> и <code>AT+CREG</code>, которые имеют настраиваемый формат ответа - задаём тот, который устроит:</p>
-<div class="highlight"><pre><span></span>AT+COPS<span class="o">=</span>0,2
+<div class="highlight"><pre><span></span>AT+COPS<span class="o">=</span><span class="m">0</span>,2
 OK
-AT+CREG<span class="o">=</span>2
+AT+CREG<span class="o">=</span><span class="m">2</span>
 OK
 </pre></div>
 
 
 <p>Всё готово - запрашиваем MCC, MNC, LAC, CID:</p>
 <div class="highlight"><pre><span></span>AT+COPS?
-+COPS: 0,2,<span class="s2">&quot;25501&quot;</span>,0
++COPS: <span class="m">0</span>,2,<span class="s2">&quot;25501&quot;</span>,0
 
 OK
 AT+CREG?
-+CREG: 2,1,<span class="s2">&quot;8174&quot;</span>,<span class="s2">&quot;EA45&quot;</span>
++CREG: <span class="m">2</span>,1,<span class="s2">&quot;8174&quot;</span>,<span class="s2">&quot;EA45&quot;</span>
 
 OK
 </pre></div>
@@ -199,7 +199,7 @@ OK
     <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">?q=</span><span class="si">%f</span><span class="s1">,</span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">GOOGLE_MAPS_URL</span><span class="p">,</span> <span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">cid_dec</span><span class="p">,</span> <span class="n">lac_dec</span><span class="p">,</span> <span class="n">mcc_mnc_dec</span> <span class="o">=</span> <span class="n">fetch_cell_from_serial</span><span class="p">()</span>
     <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">get_location_by_cell</span><span class="p">(</span><span class="n">cid_dec</span><span class="p">,</span> <span class="n">lac_dec</span><span class="p">,</span> <span class="n">mcc_mnc_dec</span><span class="p">)</span>
     <span class="k">print</span> <span class="n">format_googlemaps_link</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
@@ -208,7 +208,7 @@ OK
 
 <p>Скрипт написан на питоне и использует <code>pyserial</code> для коммуникации с последовательным портом.</p>
 <div class="highlight"><pre><span></span>~$ python pygsm.py 
-http://maps.google.com?q<span class="o">=</span>48.611261,34.556325
+http://maps.google.com?q<span class="o">=</span><span class="m">48</span>.611261,34.556325
 </pre></div>
 
 
@@ -216,13 +216,13 @@ http://maps.google.com?q<span class="o">=</span>48.611261,34.556325
 <p>Данные обмена можно снифить:</p>
 <div class="highlight"><pre><span></span><span class="c1">#apt-get install socat</span>
 ~$ socat -d -v -x <span class="se">\</span>
-PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span>777,echo<span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span><span class="m">777</span>,echo<span class="o">=</span><span class="m">0</span> <span class="se">\</span>
 /dev/rfcomm0,raw
 <span class="c1">#echo -e &#39;AT\r&#39; &gt; /dev/ttyNONGREEDY</span>
-&gt; 2014/01/11 11:34:08.565031  <span class="nv">length</span><span class="o">=</span><span class="m">4</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>3
+&gt; <span class="m">2014</span>/01/11 <span class="m">11</span>:34:08.565031  <span class="nv">length</span><span class="o">=</span><span class="m">4</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span><span class="m">3</span>
  <span class="m">41</span> <span class="m">54</span> 0d 0a                                      AT..
 --
-&lt; 2014/01/11 11:34:08.743405  <span class="nv">length</span><span class="o">=</span><span class="m">6</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>5
+&lt; <span class="m">2014</span>/01/11 <span class="m">11</span>:34:08.743405  <span class="nv">length</span><span class="o">=</span><span class="m">6</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span><span class="m">5</span>
  0d 0a                                            ..
  4f 4b 0d 0a                                      OK..
 --
@@ -251,13 +251,13 @@ pyserial/examples/tcp_serial_redirect.py?format<span class="o">=</span>raw
 
 <p>Эмулировать устройство можно так:</p>
 <div class="highlight"><pre><span></span>~$ socat -d -v -x <span class="se">\</span>
-PTY,link<span class="o">=</span>/dev/rfcomm0,raw,perm<span class="o">=</span>777,echo<span class="o">=</span><span class="m">0</span> <span class="se">\</span>
-PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span>777,echo<span class="o">=</span>0
+PTY,link<span class="o">=</span>/dev/rfcomm0,raw,perm<span class="o">=</span><span class="m">777</span>,echo<span class="o">=</span><span class="m">0</span> <span class="se">\</span>
+PTY,link<span class="o">=</span>/dev/ttyNONGREEDY,raw,perm<span class="o">=</span><span class="m">777</span>,echo<span class="o">=</span><span class="m">0</span>
 <span class="c1"># echo -e &#39;AT\r&#39; &gt; /dev/rfcomm0</span>
-&gt; 2014/01/11 12:31:37.585420  <span class="nv">length</span><span class="o">=</span><span class="m">4</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>3
+&gt; <span class="m">2014</span>/01/11 <span class="m">12</span>:31:37.585420  <span class="nv">length</span><span class="o">=</span><span class="m">4</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span><span class="m">3</span>
  <span class="m">41</span> <span class="m">54</span> 0d 0a                                      AT..
 --
-&lt; 2014/01/11 12:31:37.586518  <span class="nv">length</span><span class="o">=</span><span class="m">7</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span>6
+&lt; <span class="m">2014</span>/01/11 <span class="m">12</span>:31:37.586518  <span class="nv">length</span><span class="o">=</span><span class="m">7</span> <span class="nv">from</span><span class="o">=</span><span class="m">0</span> <span class="nv">to</span><span class="o">=</span><span class="m">6</span>
  <span class="m">41</span> <span class="m">54</span> 0d 0a                                      AT..
  4f 4b 0a                                         OK.
 --

@@ -46,7 +46,7 @@
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
 </footer><!-- /.post-info -->      <p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный сброс микроконтроллера, хотя также возможен особый случай использования сторожевого таймера - чтобы вывести микроконтроллер из спящего режима.</p>
 <p>Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/42785136281fe4b78e1e93572ff36d82">picsim.js</a></p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/3cfca08cb95e5bb6ba688747d58168d2">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
 <span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
 <span class="cm">*/</span>
@@ -69,7 +69,7 @@
 
   <span class="c1">// looks like STATUS [TO, PD] are not implemented in original PICSim - always 0</span>
   <span class="n">PORTB</span> <span class="o">=</span> <span class="n">STATUS</span><span class="p">;</span>
-  <span class="n">TRISB</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">=</span> <span class="n">TRISA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTA</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="n">TRISA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
   <span class="n">RA0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">333</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">;);</span> <span class="c1">// simple delay</span>
@@ -125,6 +125,7 @@
 <p>В данном примере в отличие от предыдущего микроконтроллер не сбрасывается а просыпается от сторожевого таймера каждые 1.152 секунды, передвигает светодиод и засыпает заново. Основное энергопотребление приходится только на свечение светодиода.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/ui-sleep.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Сторожевой таймер является очень простым и полезным инструментом, придающим надёжности разрабатываемой системе. Особенно когда устройство покидает пределы уютной лаборатории и переходит из бережных рук разработчиков к реальным пользователям.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">Далее</a> попробуем линейку PIC18 микроконтроллеров и начнём с символьного LCD дисплея на базе контроллера HD44780.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>

@@ -99,11 +99,11 @@
 <span class="o">(</span>env<span class="o">)</span>~: node -v 
 v6.3.0
 <span class="o">(</span>env<span class="o">)</span>~: npm -v
-3.10.3
+<span class="m">3</span>.10.3
 <span class="o">(</span>env<span class="o">)</span>~: npm install -g angular-cli
 <span class="o">(</span>env<span class="o">)</span>~: ng version
-angular-cli: 1.0.0-beta.9
-node: 6.3.0
+angular-cli: <span class="m">1</span>.0.0-beta.9
+node: <span class="m">6</span>.3.0
 os: linux x64
 <span class="o">(</span>env<span class="o">)</span>~: ng new elastic <span class="o">&amp;&amp;</span> <span class="nb">cd</span> <span class="nv">$_</span>
 <span class="o">(</span>env<span class="o">)</span>~: tree -I node_modules
@@ -888,35 +888,35 @@ Executed <span class="m">4</span> of <span class="m">4</span> SUCCESS
 
 <p><em>src/app/films-search/auto-complete/auto-complete.component.css</em></p>
 <div class="highlight"><pre><span></span><span class="nt">input</span> <span class="p">{</span>
-  <span class="nb">text-align</span><span class="o">:</span> <span class="nb">center</span><span class="p">;</span>
-  <span class="n">flex</span><span class="o">-</span><span class="n">grow</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
-  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
+  <span class="k">text-align</span><span class="p">:</span> <span class="kc">center</span><span class="p">;</span>
+  <span class="k">flex-grow</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="p">:</span> <span class="kc">inherit</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">span</span> <span class="p">{</span>
-  <span class="nb">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
-  <span class="nb">height</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="k">display</span><span class="p">:</span> <span class="kc">flex</span><span class="p">;</span>
+  <span class="k">height</span><span class="p">:</span> <span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">ul</span> <span class="p">{</span>
-  <span class="nb">padding</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-  <span class="nb">margin</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-  <span class="nb">border</span><span class="o">:</span> <span class="nb">solid</span> <span class="m">1px</span> <span class="m">#f1f1f1</span><span class="p">;</span>
-  <span class="nb">position</span><span class="o">:</span> <span class="nb">absolute</span><span class="p">;</span>
-  <span class="nb">background</span><span class="o">:</span> <span class="m">#FFF</span><span class="p">;</span>
+  <span class="k">padding</span><span class="p">:</span> <span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">margin</span><span class="p">:</span> <span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">border</span><span class="p">:</span> <span class="kc">solid</span> <span class="mi">1</span><span class="kt">px</span> <span class="mh">#f1f1f1</span><span class="p">;</span>
+  <span class="k">position</span><span class="p">:</span> <span class="kc">absolute</span><span class="p">;</span>
+  <span class="k">background</span><span class="p">:</span> <span class="mh">#FFF</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">ul</span> <span class="nt">li</span> <span class="p">{</span>
-  <span class="nb">list-style</span><span class="o">:</span> <span class="nb">none</span><span class="p">;</span>
-  <span class="nb">padding</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
-  <span class="nb">margin</span><span class="o">:</span> <span class="m">0px</span><span class="p">;</span>
-  <span class="nb">color</span><span class="o">:</span> <span class="m">#7E7E7E</span><span class="p">;</span>
-  <span class="nb">cursor</span><span class="o">:</span> <span class="nb">pointer</span><span class="p">;</span>
+  <span class="k">list-style</span><span class="p">:</span> <span class="kc">none</span><span class="p">;</span>
+  <span class="k">padding</span><span class="p">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">margin</span><span class="p">:</span> <span class="mi">0</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">color</span><span class="p">:</span> <span class="mh">#7E7E7E</span><span class="p">;</span>
+  <span class="k">cursor</span><span class="p">:</span> <span class="kc">pointer</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nt">ul</span> <span class="nt">li</span><span class="nd">:hover</span> <span class="p">{</span>
-  <span class="nb">background-color</span><span class="o">:</span> <span class="m">#f1f1f1</span><span class="p">;</span>
-  <span class="nb">color</span><span class="o">:</span> <span class="m">#000</span><span class="p">;</span>
+<span class="nt">ul</span> <span class="nt">li</span><span class="p">:</span><span class="nd">hover</span> <span class="p">{</span>
+  <span class="k">background-color</span><span class="p">:</span> <span class="mh">#f1f1f1</span><span class="p">;</span>
+  <span class="k">color</span><span class="p">:</span> <span class="mh">#000</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -1079,21 +1079,21 @@ Executed <span class="m">4</span> of <span class="m">4</span> SUCCESS
 
 <p><em>src/app/films-search/aggregations/aggregations.component.css</em></p>
 <div class="highlight"><pre><span></span><span class="nt">span</span> <span class="p">{</span>
-  <span class="nb">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
-  <span class="nb">height</span><span class="o">:</span> <span class="m">100%</span><span class="p">;</span>
+  <span class="k">display</span><span class="p">:</span> <span class="kc">flex</span><span class="p">;</span>
+  <span class="k">height</span><span class="p">:</span> <span class="mi">100</span><span class="kt">%</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">select</span> <span class="p">{</span>
-  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
-  <span class="nb">text</span><span class="o">-</span><span class="nb">overflow</span><span class="o">:</span> <span class="n">ellipsis</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="p">:</span> <span class="kc">inherit</span><span class="p">;</span>
+  <span class="k">text-overflow</span><span class="p">:</span> <span class="kc">ellipsis</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">select</span> <span class="p">{</span>
-  <span class="n">flex</span><span class="o">-</span><span class="n">grow</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+  <span class="k">flex-grow</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nt">select</span><span class="nd">:not</span><span class="o">(</span><span class="nd">:first-of-type</span><span class="o">)</span> <span class="p">{</span>
-  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">7px</span><span class="p">;</span>
+<span class="nt">select</span><span class="p">:</span><span class="nd">not</span><span class="o">(</span><span class="p">:</span><span class="nd">first-of-type</span><span class="o">)</span> <span class="p">{</span>
+  <span class="k">margin-left</span><span class="p">:</span> <span class="mi">7</span><span class="kt">px</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -1215,32 +1215,32 @@ Executed <span class="m">4</span> of <span class="m">4</span> SUCCESS
 
 <p><em>src/app/films-search/films-search.component.css</em></p>
 <div class="highlight"><pre><span></span><span class="nt">div</span> <span class="p">{</span>
-  <span class="nb">font-size</span><span class="o">:</span> <span class="m">18px</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="p">:</span> <span class="mi">18</span><span class="kt">px</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">p</span> <span class="p">{</span>
-  <span class="nb">display</span><span class="o">:</span> <span class="n">flex</span><span class="p">;</span>
+  <span class="k">display</span><span class="p">:</span> <span class="kc">flex</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">auto-complete</span><span class="o">,</span> <span class="nt">aggregations</span> <span class="p">{</span>
-  <span class="n">flex</span><span class="o">-</span><span class="n">grow</span><span class="o">:</span> <span class="m">1</span><span class="p">;</span>
+  <span class="k">flex-grow</span><span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">button</span> <span class="p">{</span>
-  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">7px</span><span class="p">;</span>
-  <span class="n">align</span><span class="o">-</span><span class="n">self</span><span class="o">:</span> <span class="n">stretch</span><span class="p">;</span>
-  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
+  <span class="k">margin-left</span><span class="p">:</span> <span class="mi">7</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">align-self</span><span class="p">:</span> <span class="kc">stretch</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="p">:</span> <span class="kc">inherit</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">span</span> <span class="p">{</span>
-  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">5px</span><span class="p">;</span>
-  <span class="n">align</span><span class="o">-</span><span class="n">self</span><span class="o">:</span> <span class="nb">center</span><span class="p">;</span>
+  <span class="k">margin-left</span><span class="p">:</span> <span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">align-self</span><span class="p">:</span> <span class="kc">center</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">select</span> <span class="p">{</span>
-  <span class="nb">margin-left</span><span class="o">:</span> <span class="m">7px</span><span class="p">;</span>
-  <span class="nb">font-size</span><span class="o">:</span> <span class="nb">inherit</span><span class="p">;</span>
-  <span class="nb">text</span><span class="o">-</span><span class="nb">overflow</span><span class="o">:</span> <span class="n">ellipsis</span><span class="p">;</span>
+  <span class="k">margin-left</span><span class="p">:</span> <span class="mi">7</span><span class="kt">px</span><span class="p">;</span>
+  <span class="k">font-size</span><span class="p">:</span> <span class="kc">inherit</span><span class="p">;</span>
+  <span class="k">text-overflow</span><span class="p">:</span> <span class="kc">ellipsis</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>PICSim.js - символьный дисплей на базе HD44780</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/" rel="bookmark"
+           title="Permalink to PICSim.js - символьный дисплей на базе HD44780">PICSim.js - символьный дисплей на базе HD44780</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-01-27T00:00:00+02:00">
+                Published: Пт. 27 Январь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/hd44780">HD44780</a> </p>
+</footer><!-- /.post-info -->      <p>Среди множества различных LCD дисплеев наиболее простыми являются текстовые (символьные) дисплеи на основе контроллера hd44780 с параллельным 4-или 8-битным интерфейсом. В сравнении с <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">7-сегментными</a> индикаторами, дисплеи на базе HD44780 обладают на порядок большими возможностями - количество строк на экране у разных моделей - 1,2 или 4; число видимых символов в строке: 8,10,16,20,24,30,32 или 40, один символ на дисплее представляет собой матрицу размером 5x8 точек, за отрисовку символов отвечает сам HD44780, ток потребления контроллера без подсветки очень мал - 100…200 мкА. Обычно хорошей практикой для разработчиков является ознакомление с <a href="https://www.sparkfun.com/datasheets/LCD/HD44780.pdf" rel="nofollow">официальной</a> документацией.</p>
+<p>Для управления HD44780 производителем предусмотрены следующие выводы:</p>
+<ul>
+<li>
+<p>RS - дисплей определяет, что именно к нему поступает (данные/команда)  </p>
+</li>
+<li>
+<p>RW - направление данных (чтение/запись)</p>
+</li>
+<li>
+<p>D0-D7 - шина команд/данных</p>
+</li>
+<li>
+<p>E - стробирование (синхронизация команд/данных)</p>
+</li>
+</ul>
+<p>Вывод RW можно не использовать вообще если нет практической нужды принимать данные из ЖК (это обычная практика), зачастую достаточно только записывать данные в HD44780. Тогда всё управление сводится к следующей последовательности. Ведущий микроконтроллер выставляет признак RS - 0 указывает на команды, 1 - на данные, выставляет на линиях DB7…DB0 8-разрядный код, после чего формирует на выводе E стробирующий импульс (активный фронт – задний). Контроллеру HD44780 может понадобится какое-то время чтобы переварить информацию в зависимости от типа принятой команды - все это расписано в доке ровно как и правильная последовательность команд для инициализации после подачи питания. Пора бы уже написать какой-нибудь код:  </p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/db3045c11c2927f3da25c387a27e72d0">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/hello.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><em>HD44780.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef HD44780_h</span>
+<span class="cp">#define HD44780_h</span>
+
+<span class="c1">// commands</span>
+<span class="cp">#define LCD_CLEARDISPLAY    0x01</span>
+<span class="cp">#define LCD_RETURNHOME      0x02</span>
+<span class="cp">#define LCD_ENTRYMODESET    0x04</span>
+<span class="cp">#define LCD_DISPLAYCONTROL  0x08</span>
+<span class="cp">#define LCD_CURSORSHIFT     0x10</span>
+<span class="cp">#define LCD_FUNCTIONSET     0x20</span>
+<span class="cp">#define LCD_SETCGRAMADDR    0x40</span>
+<span class="cp">#define LCD_SETDDRAMADDR    0x80</span>
+
+<span class="c1">// flags for display entry mode</span>
+<span class="cp">#define LCD_ENTRYRIGHT          0x00</span>
+<span class="cp">#define LCD_ENTRYLEFT           0x02</span>
+<span class="cp">#define LCD_ENTRYSHIFTINCREMENT 0x01</span>
+<span class="cp">#define LCD_ENTRYSHIFTDECREMENT 0x00</span>
+
+<span class="c1">// flags for display on/off control</span>
+<span class="cp">#define LCD_DISPLAYON     0x04</span>
+<span class="cp">#define LCD_DISPLAYOFF    0x00</span>
+<span class="cp">#define LCD_CURSORON      0x02</span>
+<span class="cp">#define LCD_CURSOROFF     0x00</span>
+<span class="cp">#define LCD_BLINKON       0x01</span>
+<span class="cp">#define LCD_BLINKOFF      0x00</span>
+
+<span class="c1">// flags for display/cursor shift</span>
+<span class="cp">#define LCD_DISPLAYMOVE   0x08</span>
+<span class="cp">#define LCD_CURSORMOVE    0x00</span>
+<span class="cp">#define LCD_MOVERIGHT     0x04</span>
+<span class="cp">#define LCD_MOVELEFT      0x00</span>
+
+<span class="c1">// flags for function set</span>
+<span class="cp">#define LCD_8BITMODE      0x10</span>
+<span class="cp">#define LCD_4BITMODE      0x00</span>
+<span class="cp">#define LCD_2LINE         0x08</span>
+<span class="cp">#define LCD_1LINE         0x00</span>
+<span class="cp">#define LCD_5x10DOTS      0x04</span>
+<span class="cp">#define LCD_5x8DOTS       0x00</span>
+
+<span class="cp">#endif</span>
+</pre></div>
+
+
+<p>Как видно всего команд не так уж и много <code>LCD_CLEARDISPLAY...LCD_SETDDRAMADDR</code>, но для некоторых могут быть дополнительные флаги - например для <code>LCD_DISPLAYCONTROL</code> это <code>LCD_DISPLAYON...LCD_BLINKOFF</code>.</p>
+<p><em>lcd.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;HD44780.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#define LCD_EN_PIN  PORTEbits.RE1</span>
+<span class="cp">#define LCD_RS_PIN  PORTEbits.RE2</span>
+<span class="cp">#define LCD_PORT    PORTD</span>
+
+<span class="cp">#define _LCD_DEFAULT_STATE_DISPLAYCONTROL (LCD_DISPLAYON | LCD_CURSORON | LCD_BLINKON)</span>
+<span class="cp">#define _LCD_DEFAULT_STATE_DISPLAYMODE    (LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT)</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">_lcd_wr</span><span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">LCD_PORT</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">_lcd_en_pulse</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+  <span class="n">LCD_EN_PIN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+  <span class="n">LCD_EN_PIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lcd_cmd</span><span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">_lcd_wr</span><span class="p">(</span><span class="n">val</span><span class="p">);</span>
+  <span class="n">LCD_RS_PIN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">_lcd_en_pulse</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lcd_dat</span><span class="p">(</span><span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">_lcd_wr</span><span class="p">(</span><span class="n">val</span><span class="p">);</span>
+  <span class="n">LCD_RS_PIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">_lcd_en_pulse</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lcd_init</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!</span>
+  <span class="c1">// according to datasheet, we need at least 40ms after power rises above 2.7V</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">40</span><span class="p">);</span>
+
+  <span class="n">LCD_RS_PIN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">LCD_EN_PIN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="c1">// this is according to the hitachi HD44780 datasheet</span>
+  <span class="c1">// page 45 figure 23</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span><span class="p">);</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span><span class="p">);</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span><span class="p">);</span>
+
+  <span class="c1">// finally, set # lines, font size, etc.</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_FUNCTIONSET</span> <span class="o">|</span> <span class="n">LCD_8BITMODE</span> <span class="o">|</span> <span class="n">LCD_2LINE</span><span class="p">);</span>
+
+  <span class="c1">// turn the display off</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_DISPLAYCONTROL</span> <span class="o">|</span> <span class="n">LCD_DISPLAYOFF</span><span class="p">);</span>
+
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_CLEARDISPLAY</span><span class="p">);</span> <span class="c1">// clear display, set cursor position to zero</span>
+  <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>             <span class="c1">// this command takes a long time!</span>
+
+  <span class="c1">// turn the display on with default cursor and blinking</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_DISPLAYCONTROL</span> <span class="o">|</span> <span class="n">_LCD_DEFAULT_STATE_DISPLAYCONTROL</span><span class="p">);</span>
+
+  <span class="c1">// Initialize to default text direction (for romance languages)</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_ENTRYMODESET</span> <span class="o">|</span> <span class="n">_LCD_DEFAULT_STATE_DISPLAYMODE</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>При инициализации <code>lcd_init()</code> необходимо соблюдать ритуал с временными задержками, описанный в документации к HD44780.</p>
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 5e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;lcd.c&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">lcd_print</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">lcd_dat</span><span class="p">(</span><span class="o">*</span><span class="n">str</span><span class="o">++</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_SETDDRAMADDR</span> <span class="o">|</span> <span class="mi">0</span><span class="p">);</span>    <span class="c1">// first line 0 column</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Hey PICSim.js !&quot;</span><span class="p">);</span>
+  <span class="n">lcd_cmd</span><span class="p">(</span><span class="n">LCD_SETDDRAMADDR</span> <span class="o">|</span> <span class="mh">0x40</span><span class="p">);</span> <span class="c1">// second line 0 column</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Life is good :)&quot;</span><span class="p">);</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>У PIC18 довольно много битов конфигурации, поэтому для них отдельный файл <code>config.h</code>. Первым делом с помощью управляющих команд <code>lcd_cmd</code> дисплей настраивается, затем текст пересылается в виде данных <code>lcd_dat</code>. Хотя видимых символов в строке дисплея в нашем случае 16, всего их там 64 (0x40) - остальные просто находятся в памяти HD44780 контроллера.</p>
+<p>При работе HD44780 трудно держать все управляющие комбинации в голове, поэтому код не помешает упростить, например привести к виду arduino библиотеки «LiquidCrystal».</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/liquid-crystal.c">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/showtime.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/1889b71bb6c0df4349565d08a7c01ddd">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 5e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;liquid-crystal.c&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">clear_print</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">){</span>
+  <span class="n">lcd_clear</span><span class="p">();</span> <span class="c1">// clear display, set cursor position to zero</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="n">str</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;PICSim.js :)&quot;</span><span class="p">);</span>
+    <span class="n">lcd_set_cursor</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// second line third column</span>
+    <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Show time !&quot;</span><span class="p">);</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;No CURSOR&quot;</span><span class="p">);</span>
+    <span class="n">lcd_no_cursor</span><span class="p">();</span>  <span class="c1">// hide cursor</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+    <span class="n">lcd_cursor</span><span class="p">();</span>     <span class="c1">// show cursor</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;No BLINK&quot;</span><span class="p">);</span>
+    <span class="n">lcd_no_blink</span><span class="p">();</span>  <span class="c1">// blink OFF</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+    <span class="n">lcd_blink</span><span class="p">();</span>     <span class="c1">// blink ON</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;ON/OFF&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">lcd_display</span><span class="p">();</span>    <span class="c1">// display ON</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+      <span class="n">lcd_no_display</span><span class="p">();</span> <span class="c1">// display OFF</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">lcd_display</span><span class="p">();</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;SCROLL right&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+      <span class="n">lcd_scroll_display_right</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="n">clear_print</span><span class="p">(</span><span class="s">&quot;SCROLL left&quot;</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+      <span class="n">lcd_scroll_display_left</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="c1">// PICSimLab: not implemented ?</span>
+    <span class="c1">// lcd_right_to_left()</span>
+    <span class="c1">// lcd_autoscroll()</span>
+    <span class="c1">// lcd_create_char()</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Данный код заточен на дисплей, состоящий из двух строк - это задаётся на этапе инициализации один раз <code>LCD_8BITMODE | LCD_2LINE</code>. Также для экономии ног ввода-вывода микроконтроллера можно достаточно легко перейти с 8-битного на 4-битный <code>LCD_4BITMODE</code> формат передачи команд/данных, попутно немного подправив функцию <code>_lcd_wr</code>.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Далее аналогово-цифровой преобразователь (АЦП).</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

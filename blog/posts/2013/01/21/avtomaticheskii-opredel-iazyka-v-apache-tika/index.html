@@ -84,17 +84,17 @@ application/msword
 <p>Вывод: <code>application/pdf</code>. Ради интереса попросим вывести более подробно метаинформацию из файла:</p>
 <div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -m ipa.pdf 
 ERROR - Error: Could not parse predefined CMAP file <span class="k">for</span> <span class="s1">&#39;Adobe-Ide-UCS2&#39;</span>
-Content-Length: 9055059
+Content-Length: <span class="m">9055059</span>
 Content-Type: application/pdf
-Creation-Date: 2008-01-26T23:40:04Z
-created: Sun Jan <span class="m">27</span> 01:40:04 EET 2008
-date: 2008-01-26T23:40:04Z
-dcterms:created: 2008-01-26T23:40:04Z
-meta:creation-date: 2008-01-26T23:40:04Z
-producer: PDF Creator Plus 4.0 - http://www.peernet.com
+Creation-Date: <span class="m">2008</span>-01-26T23:40:04Z
+created: Sun Jan <span class="m">27</span> <span class="m">01</span>:40:04 EET <span class="m">2008</span>
+date: <span class="m">2008</span>-01-26T23:40:04Z
+dcterms:created: <span class="m">2008</span>-01-26T23:40:04Z
+meta:creation-date: <span class="m">2008</span>-01-26T23:40:04Z
+producer: PDF Creator Plus <span class="m">4</span>.0 - http://www.peernet.com
 resourceName: ipa.pdf
-xmp:CreatorTool: PDF Creator Plus 4.0 - http://www.peernet.com
-xmpTPg:NPages: 2351
+xmp:CreatorTool: PDF Creator Plus <span class="m">4</span>.0 - http://www.peernet.com
+xmpTPg:NPages: <span class="m">2351</span>
 </pre></div>
 
 
@@ -128,7 +128,7 @@ http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
 
 <p>Вывод: <code>tr</code>. Ура ! Мы с Вами только что обучили <a href="http://tika.apache.org/" rel="nofollow">Tika</a> новому языку ! Теперь ещё одна дача - преобразовать <em>tr.ngp</em> в <a href="http://mazko.github.io/jsli/" rel="nofollow">javascript</a>:</p>
 <div class="highlight"><pre><span></span><span class="nv">LNG</span><span class="o">=</span><span class="sb">`</span>basename <span class="nv">$1</span> .ngp<span class="sb">`</span>
-<span class="nv">SUM</span><span class="o">=</span>0
+<span class="nv">SUM</span><span class="o">=</span><span class="m">0</span>
 <span class="k">for</span> COUNT in <span class="k">$(</span>sed <span class="s1">&#39;/^#/d;s/^\S\+\s\+\([0-9]\+\)$/\1/&#39;</span> <span class="nv">$LNG</span>.ngp<span class="k">)</span>
 <span class="k">do</span>
 <span class="nv">SUM</span><span class="o">=</span><span class="sb">`</span>expr <span class="nv">$SUM</span> + <span class="nv">$COUNT</span><span class="sb">`</span><span class="p">;</span>
