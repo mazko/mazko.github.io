@@ -28,7 +28,129 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/">PICSim.js - аналого-цифровой преобразователь</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">PICSim.js - матричная клавиатура</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-30T00:00:00+02:00">
+                Published: Пн. 30 Январь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
+</footer><!-- /.post-info --><p>Матричная клавиатура состоит и <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">обычных</a> кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись всего одним т.к. <code>4*4=16</code>.</p>
+<p>Матричная клавиатура на рисунке подключена к порту PORTB, все ноги подтянуты резисторами к напряжению питания - т.е. читаются как 1 если ничего не нажато. Алгоритм опроса матричной клавиатуры на 16 кнопок сводится к следующим шагам:</p>
+<ul>
+<li>
+<p>инициализация - четыре сканирующие ноги RB0...RB3 на выход, четыре считывающие RB4...RB7 на вход. Ничто не запрещает поменять сканирующие/считывающие выводы, только после этого нужно поменять пару строчек в приведенной ниже функции <code>_keyboard_scan()</code></p>
+</li>
+<li>
+<p>опрос - на первой итерации выставляется ноль на RB0, на RB1..RB3 единицы, если это привело к посадке подтягивающего напряжения например на входе RB5, это указывает на нажатие кнопки 3. Если пересечение не найдено, итерация продолжается - теперь уже RB1 в ноль, <code>RB0=RB2=RB3=1</code> и так вплоть до RB3</p>
+</li>
+</ul>
+<p><a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/8ec71b12144755531dd59a243e3061bb">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Работа с символьным дисплеем описывалась в предыдущем <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">материале</a>. Тут размер массива на этапе компиляции определяется с помощью расписанной ранее <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиомы</a> <code>sizeof x / sizeof x[0]</code>. Функция считывания клавиши <code>keyboad_get_or_0()</code> неблокирующая - если клавиша нажата (после чего отпущена), возвращается код символа, если же ничего не нажато, возвращается 0. Неблокирующую функцию всегда можно сделать при желании блокирующей, если поместить в цикл, а вот с блокирующими функциями не всё так просто.</p>
+<p><em>keyboard.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">char</span> <span class="nf">_keyboard_scan</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="n">key_code</span><span class="p">[</span><span class="mi">4</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">{</span><span class="sc">&#39;1&#39;</span><span class="p">,</span><span class="sc">&#39;2&#39;</span><span class="p">,</span><span class="sc">&#39;3&#39;</span><span class="p">,</span><span class="sc">&#39;+&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="sc">&#39;4&#39;</span><span class="p">,</span><span class="sc">&#39;5&#39;</span><span class="p">,</span><span class="sc">&#39;6&#39;</span><span class="p">,</span><span class="sc">&#39;-&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="sc">&#39;7&#39;</span><span class="p">,</span><span class="sc">&#39;8&#39;</span><span class="p">,</span><span class="sc">&#39;9&#39;</span><span class="p">,</span><span class="sc">&#39;/&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="sc">&#39;*&#39;</span><span class="p">,</span><span class="sc">&#39;0&#39;</span><span class="p">,</span><span class="sc">&#39;#&#39;</span><span class="p">,</span><span class="sc">&#39;$&#39;</span><span class="p">}};</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="n">key_code</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">key_code</span><span class="p">;</span> <span class="n">r</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// set PORTB and some delay for voltage to rise / fall</span>
+    <span class="n">PORTB</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">r</span><span class="p">);</span>
+    <span class="n">__delay_ms</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">key_code</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="o">**</span><span class="n">key_code</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">PORTB</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mh">0x80</span> <span class="o">&gt;&gt;</span> <span class="n">c</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">key_code</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">char</span> <span class="nf">keyboad_get_or_0</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="kt">char</span> <span class="n">_last_key</span><span class="p">;</span>
+
+  <span class="k">const</span> <span class="kt">char</span> <span class="n">key</span> <span class="o">=</span> <span class="n">_keyboard_scan</span><span class="p">();</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_last_key</span> <span class="o">=</span> <span class="n">key</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">_last_key</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="n">key</span> <span class="o">=</span> <span class="n">_last_key</span><span class="p">;</span>
+    <span class="n">_last_key</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">key</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 5e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;liquid-crystal.c&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;keyboard.c&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// matrix keyboard: PORTB AN8..AN12 as digital</span>
+  <span class="n">ADCON1bits</span><span class="p">.</span><span class="n">PCFG0</span> <span class="o">=</span> <span class="n">ADCON1bits</span><span class="p">.</span><span class="n">PCFG1</span> <span class="o">=</span>
+  <span class="n">ADCON1bits</span><span class="p">.</span><span class="n">PCFG2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mh">0xF0</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+  <span class="n">lcd_no_cursor</span><span class="p">();</span>
+  <span class="n">lcd_no_blink</span><span class="p">();</span>
+  <span class="n">lcd_print</span><span class="p">(</span><span class="s">&quot;Keyboard:&quot;</span><span class="p">);</span>
+  <span class="n">lcd_set_cursor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// row 2</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="n">key</span> <span class="o">=</span> <span class="n">keyboad_get_or_0</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">lcd_dat</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Алгоритм, используемый в матричной клавиатуре, прекрасно масштабируется в сторону увеличения - например 8 бит для считывания и 8 для сканирования даст <code>8*8=64</code> комбинации, это один порт ввода-вывода для 16-битных pic24 или два порта для pic18...pic10 микроконтроллеров. В теории матричная клавиатура несколько уступает по скорости сканирования простым кнопкам и расходует какую-то незначительную чать процессорного времени, но всё это с лихвой компенсируется более рациональным использованием портов ввода вывода. </p>
+<p>Далее часы реального времени.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/" rel="bookmark"
+                           title="Permalink to PICSim.js - аналого-цифровой преобразователь">PICSim.js - аналого-цифровой преобразователь</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-01-28T00:00:00+02:00">
                 Published: Сб. 28 Январь 2017
@@ -39,67 +161,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/atsp">АЦП</a> </p>
-</footer><!-- /.post-info --><p>Как мы уже <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">знаем</a>, цифро-аналоговые преобразователи (ЦАП, DAC) преобразуют дискретный (двоичный) код в аналоговый сигнал - как правило напряжение. Не менее востребованным в цифровой электронике является обратное преобразование - аналого-цифровой преобразователь (АЦП, англ. Analog-to-digital converter, ADC). Наиболее важными характеристиками АЦП являются разрядность/разрешение - минимальное изменение величины аналогового сигнала, которое может быть зафиксировано, а также частота дискретизации (Sampling rate) - частота выборки цифровых значений из аналогового сигнала.</p>
-<p>Микроконтроллер PIC18F4620 имеет на борту один аппаратный АЦП разрядностью 10 <a href="https://bc.js.org/">бит</a> <code>2^10=1024</code> с максимальной частотой дискретизации (если верить производителю) 100 тысяч выборок в секунду. Также в микроконтроллере предусмотрен мультиплексор, позволяющий в нужный момент времени программно переключать на вход АЦП 13 различных ног. В качестве опорного напряжения для АЦП может служить как источник питания Vdd/Vss (обычная практика), так и внешний источник на ногах 4 и 5 (AN2/AN3). Напряжение на входе АЦП не должно выходить за пределы опорного.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/b1bb487dc063ae1128e98372a7983519">picsim.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>Работа с символьным дисплеем описывалась в предыдущем <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">материале</a>. Тут мы реализовали функцию <code>putch</code>, что позволяет работать с LCD через стандартную функцию С <code>printf</code>. Поскольку в нашем случае длина выводимой на дисплей строки всегда постоянна, нет необходимости его очищать - достаточно просто переводить курсор домой перед каждым новым вызовом <code>printf</code>.</p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#define _XTAL_FREQ 5e4</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
-
-<span class="cp">#include</span> <span class="cpf">&quot;liquid-crystal.c&quot;</span><span class="cp"></span>
-
-<span class="c1">// http://microchip.wikidot.com/faq:29</span>
-<span class="kt">void</span> <span class="nf">putch</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">lcd_dat</span><span class="p">(</span><span class="n">byte</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="kt">uint32_t</span> <span class="n">adc_samples_counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="c1">// lcd</span>
-  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">PORTE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// ADC input RE0</span>
-
-  <span class="c1">// ADC analog input RE0</span>
-  <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS3</span> <span class="o">=</span> <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS2</span> <span class="o">=</span> <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">ADON</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-
-  <span class="n">lcd_init</span><span class="p">();</span>
-  <span class="n">lcd_no_cursor</span><span class="p">();</span>
-  <span class="n">lcd_no_blink</span><span class="p">();</span>
-
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">GO</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c1">// start ADC conversion</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">ADCON0bits</span><span class="p">.</span><span class="n">GO</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// wait untill conversion finish</span>
-    <span class="n">lcd_home</span><span class="p">();</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%4d:0x%04x&quot;</span><span class="p">,</span>
-      <span class="p">((((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ADRESH</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">ADRESL</span><span class="o">&gt;&gt;</span><span class="mi">6</span><span class="p">)),</span>
-      <span class="o">++</span><span class="n">adc_samples_counter</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Как нетрудно догадаться по картинке у данной симуляции опорное напряжение 5 Вольт. С помощью битов CHS3-CHS0 выбирается с какого вывода микроконтроллера аналоговый сигнал поступает на вход АЦП - в данном случае это RE0. Бит ADON включает АЦП, для старта преобразования необходимо программно выставить флаг GO, по окончании преобразования этот флаг будет сброшен аппаратно (автоматически). Так как разрядность микроконтроллера 8 бит, что меньше разрядности АЦП, то результат преобразования размещается одновременно в двух регистрах - ADRESH и ADRESL. Выравнивание 10 битного числа в этих двух регистров задаётся битом ADFM, хотя надобность в нём возникает редко.</p>
-<p>Далее матричная клавиатура.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>Как мы уже <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">знаем</a>, цифро-аналоговые преобразователи (ЦАП, DAC) преобразуют дискретный (двоичный) код в аналоговый сигнал - как правило напряжение. Не менее востребованным в цифровой электронике является обратное преобразование - аналого-цифровой преобразователь (АЦП, англ. Analog-to-digital converter, ADC). Наиболее важными характеристиками АЦП являются разрядность/разрешение - минимальное изменение величины аналогового сигнала, которое может быть зафиксировано …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -165,29 +230,6 @@
 </footer><!-- /.post-info -->                <p>Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/" rel="bookmark"
-                           title="Permalink to PICSim.js - широтно-импульсная модуляция">PICSim.js - широтно-импульсная модуляция</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-14T00:00:00+02:00">
-                Published: Сб. 14 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info -->                <p>В <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">предыдущем</a> примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
-Широтно-импульсная <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">модуляция</a> (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">

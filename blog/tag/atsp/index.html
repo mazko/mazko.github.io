@@ -84,7 +84,7 @@
     <span class="k">while</span> <span class="p">(</span><span class="n">ADCON0bits</span><span class="p">.</span><span class="n">GO</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// wait untill conversion finish</span>
     <span class="n">lcd_home</span><span class="p">();</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%4d:0x%04x&quot;</span><span class="p">,</span>
-      <span class="p">((((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">ADRESH</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">ADRESL</span><span class="o">&gt;&gt;</span><span class="mi">6</span><span class="p">)),</span>
+      <span class="p">(((</span><span class="kt">uint16_t</span><span class="p">)</span><span class="n">ADRESH</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">ADRESL</span><span class="o">&gt;&gt;</span><span class="mi">6</span><span class="p">),</span>
       <span class="o">++</span><span class="n">adc_samples_counter</span><span class="p">);</span>
   <span class="p">}</span>
 
@@ -93,8 +93,8 @@
 </pre></div>
 
 
-<p>Как нетрудно догадаться по картинке у данной симуляции опорное напряжение 5 Вольт. С помощью битов CHS3-CHS0 выбирается с какого вывода микроконтроллера аналоговый сигнал поступает на вход АЦП - в данном случае это RE0. Бит ADON включает АЦП, для старта преобразования необходимо программно выставить флаг GO, по окончании преобразования этот флаг будет сброшен аппаратно (автоматически). Так как разрядность микроконтроллера 8 бит, что меньше разрядности АЦП, то результат преобразования размещается одновременно в двух регистрах - ADRESH и ADRESL. Выравнивание 10 битного числа в этих двух регистров задаётся битом ADFM, хотя надобность в нём возникает редко.</p>
-<p>Далее матричная клавиатура.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </article>
+<p>Как нетрудно догадаться по картинке у данной симуляции опорное напряжение 5 Вольт. С помощью битов CHS3-CHS0 выбирается с какого вывода микроконтроллера аналоговый сигнал поступает на вход АЦП - в данном случае это RE0. Бит ADON включает АЦП, для старта преобразования необходимо программно выставить флаг GO, по окончании преобразования этот флаг будет сброшен аппаратно (автоматически). Так как разрядность микроконтроллера 8 бит, что меньше разрядности АЦП, то результат преобразования размещается одновременно в двух регистрах - ADRESH и ADRESL. Выравнивание 10 битного числа в этих двух регистров задаётся битом ADFM, хотя надобность знать о его существовании возникает редко.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">Далее</a> матричная клавиатура.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
