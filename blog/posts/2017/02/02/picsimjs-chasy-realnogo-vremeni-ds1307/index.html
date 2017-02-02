@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - picsim</title>
+        <title>PICSim.js - часы реального времени DS1307</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -19,16 +19,21 @@
                 <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                     <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
                     <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="bookmark"
+           title="Permalink to PICSim.js - часы реального времени DS1307">PICSim.js - часы реального времени DS1307</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/">PICSim.js - часы реального времени DS1307</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-02-02T00:00:00+02:00">
                 Published: Чт. 02 Февраль 2017
@@ -39,7 +44,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/ds1307">DS1307</a> <a href="http://proiot.ru/blog/tag/i2c">I2C</a> </p>
-</footer><!-- /.post-info --><p>Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.</p>
+</footer><!-- /.post-info -->      <p>Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.</p>
 <p>К ознакомлению настоятельно рекомендуется <a href="https://www.sparkfun.com/datasheets/Components/DS1307.pdf" rel="nofollow">официальная</a> документация на DS1307. В случае с шиной I2C в первую очередь важны следующие характеристики - максимальная частота тактирования SCL (от этого зависит максимальная скорость передачи данных), физический адрес микросхемы (из 127 возможных) на шине и внутренняя карта памяти (адреса регистров). Так как I2C является <em>синхронным</em> интерфейсом, то имеет значение именно верхняя граница частоты, тогда как фактическая скорость обмена задаётся мастером и может быть любой и даже необязательно постоянной - микроконтроллер может спокойно переключаться на более важные задачи без потери данных на шине.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c">i2c-hw.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/d1e0550ef7c27dcf8619f25c7f35a5c4">picsim.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
@@ -150,106 +155,26 @@
 </pre></div>
 
 
-<p>Текущую время и дату можно конечно же выставлять - адреса внутренней карты памяти DS1307 для записи такие же как и на чтение. Если скорость обмена данными не имеет особого значения, то ничто не мешает заменить аппаратный I2C (файл i2c-hw.c) программной реализацией (программно считывать/выставлять ноги микроконтроллера SCL/SDA) - это также проверялось и даже будет работать в симуляции PICSim.js.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Текущую время и дату можно конечно же выставлять - адреса внутренней карты памяти DS1307 для записи такие же как и на чтение. Если скорость обмена данными не имеет особого значения, то ничто не мешает заменить аппаратный I2C (файл i2c-hw.c) программной реализацией (программно считывать/выставлять ноги микроконтроллера SCL/SDA) - это также проверялось и даже будет работать в симуляции PICSim.js.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/" rel="bookmark"
-                           title="Permalink to PICSim.js - матричная клавиатура">PICSim.js - матричная клавиатура</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-30T00:00:00+02:00">
-                Published: Пн. 30 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info -->                <p>Матричная клавиатура состоит и <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">обычных</a> кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/" rel="bookmark"
-                           title="Permalink to PICSim.js - аналого-цифровой преобразователь">PICSim.js - аналого-цифровой преобразователь</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-28T00:00:00+02:00">
-                Published: Сб. 28 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/atsp">АЦП</a> </p>
-</footer><!-- /.post-info -->                <p>Как мы уже <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">знаем</a>, цифро-аналоговые преобразователи (ЦАП, DAC) преобразуют дискретный (двоичный) код в аналоговый сигнал - как правило напряжение. Не менее востребованным в цифровой электронике является обратное преобразование - аналого-цифровой преобразователь (АЦП, англ. Analog-to-digital converter, ADC). Наиболее важными характеристиками АЦП являются разрядность/разрешение - минимальное изменение величины аналогового сигнала, которое может быть зафиксировано …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/" rel="bookmark"
-                           title="Permalink to PICSim.js - символьный дисплей на базе HD44780">PICSim.js - символьный дисплей на базе HD44780</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-27T00:00:00+02:00">
-                Published: Пт. 27 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/hd44780">HD44780</a> </p>
-</footer><!-- /.post-info -->                <p>Среди множества различных LCD дисплеев наиболее простыми являются текстовые (символьные) дисплеи на основе контроллера hd44780 с параллельным 4-или 8-битным интерфейсом. В сравнении с <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">7-сегментными</a> индикаторами, дисплеи на базе HD44780 обладают на порядок большими возможностями - количество строк на экране у разных моделей - 1,2 или 4; число видимых символов в строке …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/" rel="bookmark"
-                           title="Permalink to PICSim.js - сторожевой таймер и спящий режим">PICSim.js - сторожевой таймер и спящий режим</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-17T00:00:00+02:00">
-                Published: Вт. 17 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info -->                <p>Сторожевой таймер (Watchdog Timer - «сторожевой пёс») в PIC микроконтроллерах не требует внешних компонентов и представляет из себя обычный <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">счётчик</a>, непрерывно тактируемый от автономного RC-генератора. Сторожевой таймер можно глобально включать/отключать в битах конфигурации <code>#pragma config WDTE = OFF|ON</code> - если включён <code>WDTE = ON</code>, то в случае переполнения счётчика обычно происходит аппаратный …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 2
-        <a href="http://proiot.ru/blog/tag/picsim/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
