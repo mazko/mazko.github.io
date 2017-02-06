@@ -38,7 +38,7 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
 </footer><!-- /.post-info --><p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого <em>ANSI C</em>.</p>
 <p>Для экспериментов нам понадобиться какой-то тестовый макет, который можно запустить / эмулировать в виртуальной среде (выбор пал на <em>Proteus VSM</em>). Есть простенький микроконтроллер (PIC16F1823), который управляет лампочками (гирляндой) и может менять их яркость с помощью встроенного цифро-аналогового преобразователя ЦАП (в реальном устройстве для этого лучше использовать ШИМ, ЦАП лучше подходит для эмуляции в <em>Proteus VSM</em>). Быстро вникнуть в суть дела можно посмотрев следующее видео:</p>
 <video width="100%" controls>
@@ -50,7 +50,7 @@ Your browser does not support the video tag.
 <p><img alt="Диаграмма состояний Скриншот" src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;"></p>
 <h3>Операторы switch/case</h3>
 <p>Прибегнув к помощи условных операторов <code>if</code> / <code>else</code> или <code>switch</code> / <code>case</code> по-старинке задачу решили так:</p>
-<p><em>/FSM/Child/src/main.c</em></p>
+<p><em>FSM/Child/src/main.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;main.h&quot;</span><span class="cp"></span>
 
 <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
@@ -151,7 +151,7 @@ Your browser does not support the video tag.
 </ul>
 <h3>Табличная альтернатива</h3>
 <p>Второй способ решения задачи состоит в использовании таблицы переходов:</p>
-<p><em>/FSM/Table/Simple/src/main.c</em></p>
+<p><em>FSM/Table/Simple/src/main.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;main.h&quot;</span><span class="cp"></span>
 
 <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
@@ -249,7 +249,7 @@ Your browser does not support the video tag.
 <p>Добавление нового состояния не требует изменений логики обработки событий машиной с конечным числом состояний.  Давайте добавим ещё одно состояние - лампочки <strong>плавно</strong> меняют яркость:</p>
 </li>
 </ul>
-<p><em>/FSM/Table/Scale/src/main.c</em></p>
+<p><em>FSM/Table/Scale/src/main.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;main.h&quot;</span><span class="cp"></span>
 
 <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
@@ -357,9 +357,8 @@ Your browser does not support the video tag.
 </pre></div>
 
 
-<p>Несложно заметить, что код в суперцикле <code>for(;;)</code> остался без изменений, т.е. решение с использованием таблиц лучше расширяется.</p>
-<h3>Паттерн Состояние (State)</h3>
-<p>Не поверите, но у табличного решения тоже есть альтернатива - <em>Паттерн Состояние</em>, но об этом чуть <a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/">позже</a>.</p>
+<p>Несложно заметить, что код в суперцикле <code>for(;;)</code> остался без изменений, т.е. решение с использованием таблиц характеризуется лучшей <em>расширяемостью</em> кода.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">Далее</a> сопрограммы.</p>
 <p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">

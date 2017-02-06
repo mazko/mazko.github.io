@@ -1,7 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-02-02T00:00:00+02:00</updated><entry><title>PICSim.js - часы реального времени DS1307</title><link href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="alternate"></link><published>2017-02-02T00:00:00+02:00</published><updated>2017-02-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-02:/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/</id><summary type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.&lt;/p&gt;
-&lt;p&gt;К ознакомлению настоятельно рекомендуется &lt;a href="https://www.sparkfun.com/datasheets/Components/DS1307.pdf" rel="nofollow"&gt;официальная&lt;/a&gt; документация на DS1307. В случае с шиной I2C в первую очередь важны следующие характеристики - максимальная частота тактирования SCL (от этого зависит максимальная скорость передачи данных), физический адрес микросхемы (из 127 возможных) на шине и внутренняя карта памяти (адреса регистров). Так как I2C является &lt;em&gt;синхронным&lt;/em&gt; интерфейсом, то имеет значение именно верхняя граница частоты, тогда как фактическая скорость обмена задаётся мастером и может быть любой и даже необязательно постоянной - микроконтроллер может спокойно переключаться на более важные задачи без потери данных на шине.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c"&gt;i2c-hw.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;liquid-crystal.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/d1e0550ef7c27dcf8619f25c7f35a5c4"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-02-05T00:00:00+02:00</updated><entry><title>PICSim.js - сопрограммы и простейшая многозадачность</title><link href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="alternate"></link><published>2017-02-05T00:00:00+02:00</published><updated>2017-02-05T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-05:/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/</id><summary type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи, причём в случае PIC18 это даже двухуровневая система прерываний. Обычно всего этого достаточно для реализации простой логики, однако при увеличении требований к системе традиционный подход теряет привлекательность. Альтернативный метод структурирования приложений состоит в том, чтобы выделить и отделить независимые подзадачи друг от друга и использовать некий программный каркас, который управляет этими подзадачами согласно набору ясно определенных правил. При таком подходе могут одновременно выполняться несколько (псевдо)параллельных задач, сообщающихся между собой и управляемых единым ядром. Этот подход к программированию - RTOS (операционная система реального времени), а многозадачность бывает 2 видов:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;кооперативная - следующая задача выполняется только после того, как текущая задача явно передаст управление&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;вытесняющая - планировщик операционной системы сам передает управление от одной задачи другой&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров. Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью &lt;a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" rel="nofollow"&gt;сопрограмм&lt;/a&gt;(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;состояние&lt;/a&gt; между вызовами, хитрое применением оператора &lt;code&gt;switch&lt;/code&gt; и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h"&gt;coroutine.h&lt;/a&gt;  | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_r.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;coroutine.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define YIELD scrReturnV &lt;/span&gt;&lt;span class="c1"&gt;// just readability&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;task_leds_r&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;scrBegin&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// infinite task loop&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// chasing leds&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;PORTC&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTC&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;TRISC&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+      &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="n"&gt;scrFinishV&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;task_l.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdlib.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;coroutine.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define YIELD scrReturnV &lt;/span&gt;&lt;span class="c1"&gt;// just readability&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;task_leds_l&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;scrBegin&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// infinite task loop&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// chasing leds&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+      &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// blink random leds&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;random6&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;random6&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="cm"&gt;/* 0..6 */&lt;/span&gt; &lt;span class="n"&gt;rand&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random6&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+        &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;random6&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+          &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
+        &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="n"&gt;scrFinishV&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;config-4620.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// non-reentrant tasks examples&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_r.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// leds&lt;/span&gt;
+  &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;PORTC&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISC&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x18&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// simplest cooperative scheduler&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;task_leds_l&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;task_leds_r&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Тут две задачи - левые светодиоды и правые. Каждая задача представляет из себя бесконечный цикл - и будь это обычные функции всё процессорное время ушло бы на &lt;code&gt;task_leds_l()&lt;/code&gt;, тогда как до &lt;code&gt;task_leds_r()&lt;/code&gt; очередь бы так и не дошла. Но мы имеем дело не с простыми функциями, а сопрограммами - макрос YIELD возвращает управление обратно вызывающей функции, а она в свою очередь просто поочерёдно вызывает задачи, выполняя тем самым функцию простейшего планировщика.&lt;/p&gt;
+&lt;p&gt;При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её &lt;code&gt;static&lt;/code&gt; - например &lt;code&gt;static uint8_t i, port&lt;/code&gt;, в то время как к &lt;code&gt;uint8_t random6&lt;/code&gt; это самая обычная (автоматическая) переменная. &lt;/p&gt;</content><category term="picsim"></category><category term="RTOS"></category></entry><entry><title>PICSim.js - часы реального времени DS1307</title><link href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="alternate"></link><published>2017-02-02T00:00:00+02:00</published><updated>2017-02-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-02:/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/</id><summary type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.&lt;/p&gt;
+&lt;p&gt;К ознакомлению настоятельно рекомендуется &lt;a href="https://www.sparkfun.com/datasheets/Components/DS1307.pdf" rel="nofollow"&gt;официальная&lt;/a&gt; документация на DS1307. В случае с шиной I2C в первую очередь важны следующие характеристики - максимальная частота тактирования SCL (от этого зависит максимальная скорость передачи данных), физический адрес микросхемы (из 127 возможных) на шине и внутренняя карта памяти (адреса регистров). Так как I2C является &lt;em&gt;синхронным&lt;/em&gt; интерфейсом, то имеет значение именно верхняя граница частоты, тогда как фактическая скорость обмена задаётся мастером и может быть любой и даже необязательно постоянной - микроконтроллер может спокойно переключаться на более важные задачи без потери данных на шине. Это серьёзное преимущество синхронных интерфейсов переда асинхронными.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c"&gt;i2c-hw.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;liquid-crystal.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/1bcc58df4b0494fada5bfdc2638e8034"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;Работа с символьным дисплеем описывалась в предыдущем &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;материале&lt;/a&gt;. Специфические делали реализации работы с аппаратным I2C для данного микроконтроллера помещены в отдельный файл &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c"&gt;i2c-hw.c&lt;/a&gt;. Чтение данных из DS1307 происходит в функции rtc_r. По спецификации I2C ведомому разрешается придерживать (выставлять в 0) линию SCL, тем самым сигнализируя о неготовности к обмену данными - поэтому функция &lt;code&gt;i2c_idle&lt;/code&gt; ждёт пока не отпустят SCL. С каждым чтением очередного байта &lt;code&gt;i2c_rb&lt;/code&gt; внутренний адрес карты памяти DS1307 инкриминируется, что позволяет последовательно считывать минуты...год без явного указывания их адресов - нужен только начальный адрес секунд. В сети достаточно материала с подробным описанием интерфейса I2C, из которых назначение функций &lt;code&gt;i2c_open&lt;/code&gt;, &lt;code&gt;i2c_start&lt;/code&gt; и т.д. должно быть предельно ясным.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;rtc_r.c&lt;/em&gt;&lt;/p&gt;
@@ -11,7 +137,7 @@
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;i2c-hw.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="nf"&gt;bcd2dec&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;bcd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="nf"&gt;bcd2dec&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;bcd&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;bcd&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bcd&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 
@@ -110,7 +236,8 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Текущую время и дату можно конечно же выставлять - адреса внутренней карты памяти DS1307 для записи такие же как и на чтение. Если скорость обмена данными не имеет особого значения, то ничто не мешает заменить аппаратный I2C (файл i2c-hw.c) программной реализацией (программно считывать/выставлять ноги микроконтроллера SCL/SDA) - это также проверялось и даже будет работать в симуляции PICSim.js.&lt;/p&gt;</content><category term="picsim"></category><category term="DS1307"></category><category term="I2C"></category></entry><entry><title>PICSim.js - матричная клавиатура</title><link href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/" rel="alternate"></link><published>2017-01-30T00:00:00+02:00</published><updated>2017-01-30T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-30:/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/</id><summary type="html">&lt;p&gt;Матричная клавиатура состоит и &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;обычных&lt;/a&gt; кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Матричная клавиатура состоит и &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;обычных&lt;/a&gt; кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись всего одним т.к. &lt;code&gt;4*4=16&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Текущую время и дату можно конечно же выставлять - адреса внутренней карты памяти DS1307 для записи такие же как и на чтение. Если скорость обмена данными не имеет особого значения, то ничто не мешает заменить аппаратный I2C (файл i2c-hw.c) программной реализацией (программно считывать/выставлять ноги микроконтроллера SCL/SDA) - это также проверялось и даже будет работать в симуляции PICSim.js.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;Далее&lt;/a&gt; сопрограммы.&lt;/p&gt;</content><category term="picsim"></category><category term="DS1307"></category><category term="I2C"></category></entry><entry><title>PICSim.js - матричная клавиатура</title><link href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/" rel="alternate"></link><published>2017-01-30T00:00:00+02:00</published><updated>2017-01-30T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-01-30:/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/</id><summary type="html">&lt;p&gt;Матричная клавиатура состоит и &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;обычных&lt;/a&gt; кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Матричная клавиатура состоит и &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;обычных&lt;/a&gt; кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись всего одним т.к. &lt;code&gt;4*4=16&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Матричная клавиатура на рисунке подключена к порту PORTB, все ноги подтянуты резисторами к напряжению питания - т.е. читаются как 1 если ничего не нажато. Алгоритм опроса матричной клавиатуры на 16 кнопок сводится к следующим шагам:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -3334,520 +3461,7 @@ output/mk802-1gb_hwpack.tar.xz ../mk802rootfs.tgz
 
 
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/"&gt;Далее&lt;/a&gt; рассмотрим случай настройки WI-FI в режиме точки доступа.&lt;/p&gt;
-&lt;p&gt;P.S. &lt;code&gt;chmod a+rw /torrents&lt;/code&gt; необходимо делать по ssh, видимо диск должен быть физически примонтирован. Если кто знает почему внизу можно оставлять комментарии :)&lt;/p&gt;</content><category term="MK802"></category><category term="SoC"></category><category term="Torrent"></category><category term="Avahi"></category><category term="Debian"></category></entry><entry><title>Паттерны в чистом C. State</title><link href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/" rel="alternate"></link><published>2012-10-13T00:00:00+03:00</published><updated>2012-10-13T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-13:/blog/posts/2012/10/13/patterny-v-chistom-c-state/</id><summary type="html">&lt;blockquote&gt;
-&lt;p&gt;"Шаблоны предназначены для объектно ориентированного проектирования и реализации."&lt;/p&gt;
-&lt;p&gt;Это заблуждение относится к разряду тех, где возможности шаблонов чересчур ограничиваются.&lt;/p&gt;
-&lt;p&gt;Шаблоны не представляют собой никакой ценности, если они не содержат практического опыта. Какой опыт будет заключен в шаблоне, зависит от его разработчика. Безусловно, в объектно ориентированном проектировании существует огромный опыт, но …&lt;/p&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;blockquote&gt;
-&lt;p&gt;"Шаблоны предназначены для объектно ориентированного проектирования и реализации."&lt;/p&gt;
-&lt;p&gt;Это заблуждение относится к разряду тех, где возможности шаблонов чересчур ограничиваются.&lt;/p&gt;
-&lt;p&gt;Шаблоны не представляют собой никакой ценности, если они не содержат практического опыта. Какой опыт будет заключен в шаблоне, зависит от его разработчика. Безусловно, в объектно ориентированном проектировании существует огромный опыт, но не менее ценные наработки имеются в проектировании, не основанном на объектно ориентированной парадигме...&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Джон Влиссидес&lt;/strong&gt; &lt;em&gt;Применение шаблонов проектирования ISBN 5-8459-0393-9 (рус.)&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Наверно каждый специалист в процессе работы периодически испытывает чувство &lt;a href="http://ru.wikipedia.org/wiki/%D0%94%D0%B5%D0%B6%D0%B0%D0%B2%D1%8E" rel="nofollow"&gt;дежавю&lt;/a&gt;. Где-то уже решалась похожая задачка. В принципе большинство задач уже когда-то решалось. &lt;em&gt;Паттерн&lt;/em&gt; - повторимая архитектурная конструкция, представляющая собой &lt;em&gt;удачное&lt;/em&gt; решение проблемы проектирования в рамках некоторого часто возникающего контекста.&lt;/p&gt;
-&lt;p&gt;Самый лучший способ разобраться в &lt;a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow"&gt;шаблонах&lt;/a&gt; проектирования, это попытаться их использовать, потому как дать чёткое неоспоримое определение паттерну непросто, ну разве что повторить слова &lt;em&gt;Alfred North Whitehead&lt;/em&gt;, сказанные в 1943 году: "&lt;em&gt;Искусство — это наложение шаблона на опыт и наше эстетическое наслаждение от узнавания этого шаблона...&lt;/em&gt;".&lt;/p&gt;
-&lt;p&gt;Чистый (ANSI) &lt;strong&gt;С&lt;/strong&gt; не является объектно ориентированным языком - из трёх китов &lt;em&gt;ООП&lt;/em&gt; в нём напрямую не поддерживается наследование, полиморфизм представлен только в виде указателей на функцию. Инкапсуляции в большинстве случаев всё же можно добиться, например с помощью ключевого слова &lt;code&gt;static&lt;/code&gt; или очень хитрых &lt;code&gt;typedef&lt;/code&gt;. В общем негусто. Но давайте всё же рискнём и попытаемся реализовать один из паттернов - &lt;strong&gt;State&lt;/strong&gt; на &lt;strong&gt;С&lt;/strong&gt;. В &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;прошлый&lt;/a&gt; раз мы вспомнили теорию &lt;em&gt;конечных автоматов&lt;/em&gt;, теперь продолжим поддерживать &lt;span style="text-decoration: line-through;"&gt;китайскую&lt;/span&gt; отечественную промышленность по производству гирлянд.&lt;/p&gt;
-&lt;h3&gt;Определение&lt;/h3&gt;
-&lt;p&gt;С чего начать ? Начнём с определения. Официальная формулировка паттерна &lt;em&gt;Состояние&lt;/em&gt; (&lt;em&gt;State&lt;/em&gt;) от &lt;a href="http://ru.wikipedia.org/wiki/Design_Patterns" rel="nofollow"&gt;Банды Четырёх&lt;/a&gt; звучит так: "&lt;em&gt;Позволяет объекту варьировать свое поведение в зависимости от внутреннего состояния. Из­вне создается впечатление, что изменился класс объекта&lt;/em&gt;".&lt;/p&gt;
-&lt;p&gt;В &lt;strong&gt;С&lt;/strong&gt; конечно нету классов, но пока для простоты можно считать что класс и модуль (файл) в нашем примере одно и тоже. Теперь попробуем набросать &lt;a href="http://ru.wikipedia.org/wiki/UML" rel="nofollow"&gt;UML&lt;/a&gt; - диаграмму для нашей гирлянды (если вы не очень сильны в &lt;em&gt;UML&lt;/em&gt;, не волнуйтесь - я тоже):&lt;/p&gt;
-&lt;p&gt;&lt;img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/UML.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;p&gt;Изначально &lt;em&gt;UML&lt;/em&gt; создавался с прицелом на &lt;em&gt;ООП&lt;/em&gt;, поэтому "сишник" взглянув на данный рисунок может испугаться раньше времени. Не стоит волноваться, мы не будем погружаться в такую тёмную сторону &lt;strong&gt;С&lt;/strong&gt; как &lt;a href="http://www.cs.rit.edu/~ats/books/ooc.pdf" rel="nofollow"&gt;эмуляция&lt;/a&gt; наследования или виртуальных функций. Этим должен заниматься компилятор. Самое время представить участников паттерна &lt;em&gt;State&lt;/em&gt;:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;GarlandContext&lt;/code&gt;: или просто контекст - единственный модуль, с которым (точнее с его интерфейсом - функциями &lt;code&gt;garlandTick&lt;/code&gt; и &lt;code&gt;garlandNext&lt;/code&gt;) будет работать программа - клиент. Ромб справа от &lt;code&gt;GarlandContext&lt;/code&gt; в терминах &lt;em&gt;UML&lt;/em&gt; означает агрегирование - контекст хранит текущее состояние в переменной &lt;code&gt;_garlandState&lt;/code&gt; (минус слева означает видимость только в пределах своего модуля). Поведение &lt;code&gt;GarlandContext&lt;/code&gt; напрямую зависит от текущего состояния - это отражено в комментарии стрелочкой слева.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;GarlandState&lt;/code&gt;: интерфейс для инкапсуляции поведения &lt;code&gt;GarlandContext&lt;/code&gt;. Контекст работает только с этим интерфейсом, не зная какое именно состояние тот представляет на данный момент.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;code&gt;RightToLeftState&lt;/code&gt; и &lt;code&gt;LeftToRightState&lt;/code&gt;: конкретные состояния - реализации &lt;code&gt;GarlandState&lt;/code&gt;. Каждое состояние представляет из себя отдельный модуль, который реализует своё поведение. Кто управляет переходами между состояниями ? В нашем случае этим занимаются сами состояния, однако, как будет продемонстрировано чуть позже, существуют и другие вариации шаблона &lt;em&gt;State&lt;/em&gt;.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3&gt;Реализация&lt;/h3&gt;
-&lt;p&gt;Как и в &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;табличном&lt;/a&gt; решении, полиморфизма можно добиться воспользовавшись указателями на функцию - это позволит менять поведение объекта в процессе выполнения. Интерфейс состояний в нашем случае состоит из двух функций:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/GarlandState.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GARLAND_STATE_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GARLAND_STATE_H&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Неполный тип GarlandStatePtr для компиляции Events typedefs */&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Events typedefs */&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="nf"&gt;void&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;EventTickFunc&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="nf"&gt;void&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;EventNextFunc&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;EventTickFunc&lt;/span&gt; &lt;span class="n"&gt;tickFunc&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;EventNextFunc&lt;/span&gt; &lt;span class="n"&gt;nextFunc&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Обработчики событий по умолчанию */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Зачем нужен &lt;code&gt;defaultEventHandlersImpl&lt;/code&gt; ? Как уже упоминалась чуть ранее, возможности полиморфизма ввиду отсутствия наследования в &lt;strong&gt;С&lt;/strong&gt; очень ограничены. Каждое конкретное состояние должно реализовывать своё поведение путём динамического присваивания полям структуры &lt;code&gt;GarlandState&lt;/code&gt; указателей на соответствующие поведению функции. Это означает, что каждый раз при добавлении в систему нового события (метода в интерфейс состояния) необходимо вносить изменения и во все уже реализованные на данный момент состояния - в противном случае поведение системы может оказаться непредсказуемым. Тут на помощь приходит &lt;code&gt;defaultEventHandlersImpl&lt;/code&gt; - реализация обработчиков событий по-умолчанию, которая &lt;em&gt;ослабляет зависимость&lt;/em&gt; реализации состояния от новых событий. При таком подходе в случае добавления в системе нового события достаточно реализовать только один соответствующий обработчик по умолчанию, после чего каждое состояние может по мере необходимости переопределять этот обработчик своим собственным:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/GarlandState.с&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultTick&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cm"&gt;/* Обработка события Tick по умолчанию */&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultNext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cm"&gt;/* Обработка события Next по умолчанию */&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultTick&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultNext&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Реализация конкретных состояний (некоторые детали реализации железа вынесены в модуль HAL):&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/RightToLeftState.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __RIGHT_TO_LEFT_STATE_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __RIGHT_TO_LEFT_STATE_H&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/RightToLeftState.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;LeftToRightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftTickImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;nextLeftLed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftNextImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;resetLeds&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-    &lt;span class="n"&gt;setStateLeftToRight&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftTickImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftNextImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/LeftToRightState.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __LEFT_TO_RIGHT_STATE_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __LEFT_TO_RIGHT_STATE_H&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateLeftToRight&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/LeftToRightState.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;LeftToRightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onLeftToRightTickImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;nextRightLed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onLeftToRightNextImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;resetLeds&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-    &lt;span class="n"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateLeftToRight&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onLeftToRightTickImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onLeftToRightNextImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Теперь &lt;code&gt;GarlandContext&lt;/code&gt;, с которым будет сотрудничать программа - клиент, в нашем случае это суперцикл в &lt;em&gt;main.c&lt;/em&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/GarlandContext.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GARLAND_CONTEXT_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GARLAND_CONTEXT_H&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Интерфейс управления гирляндой */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;garlandTick&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;garlandNext&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/GarlandContext.с&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandContext.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Начальное состояние справа налево */&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;tick_ctor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;garlandTick&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;next_ctor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;garlandNext&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* &lt;/span&gt;
-&lt;span class="cm"&gt;   В _garlandState хранится текущее состояние.&lt;/span&gt;
-&lt;span class="cm"&gt;   HI-TECH не понимает {.tickFunc=tick_ctor, .nextFunc=next_ctor}.&lt;/span&gt;
-&lt;span class="cm"&gt;   (C99) разрешает &amp;quot;tagged&amp;quot; инициализацию полей структуры по имени.&lt;/span&gt;
-&lt;span class="cm"&gt;*/&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt; &lt;span class="n"&gt;_garlandState&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;tick_ctor&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;next_ctor&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;garlandTick&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;_garlandState&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;_garlandState&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;garlandNext&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;_garlandState&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;_garlandState&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;По сравнению с &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;предыдущими&lt;/a&gt; реализациями размер &lt;em&gt;main.c&lt;/em&gt; уменьшается до неприлично малого размера:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Simple/src/main.с&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandContext.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-    &lt;span class="n"&gt;initHardware&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-
-    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-        &lt;span class="cm"&gt;/* Сканируем кнопку. Если нажата событие NEXT */&lt;/span&gt;
-
-         &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;isNextButtonPressed&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-                &lt;span class="n"&gt;garlandNext&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-                &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-            &lt;span class="p"&gt;}&lt;/span&gt; 
-        &lt;span class="p"&gt;}&lt;/span&gt;
-
-        &lt;span class="cm"&gt;/* Пришло время события TICK */&lt;/span&gt;
-
-        &lt;span class="n"&gt;garlandTick&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Сборка проекта с помощью компилятора HI-TECH PICC:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/usr/hitech/picc/9.83/bin/PICC -q --opt&lt;span class="o"&gt;=&lt;/span&gt;all --chip&lt;span class="o"&gt;=&lt;/span&gt;16F1823 --ASMLIST &lt;span class="se"&gt;\&lt;/span&gt;
-main.c GarlandState.c LeftToRightState.c RightToLeftState.c          &lt;span class="se"&gt;\&lt;/span&gt;
-GarlandContext.c HAL.c
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h3&gt;Расширяемость&lt;/h3&gt;
-&lt;p&gt;Добавим состояние, в котором лампочки плавно меняют яркость:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Scale/src/RightToLeftBrightState.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __RIGHT_TO_LEFT_BRIGHT_STATE_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __RIGHT_TO_LEFT_BRIGHT_STATE_H&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateRightToLeftBright&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Scale/src/RightToLeftBrightState.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftBrightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;LeftToRightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftBrightTickImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;nextLeftBrightLed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftBrightNextImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;resetLeds&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-    &lt;span class="n"&gt;setStateLeftToRight&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateRightToLeftBright&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftBrightTickImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftBrightNextImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Данное состояние будет следовать после &lt;code&gt;RightToLeftState&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Scale/src/RightToLeftState.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftBrightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftTickImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;nextLeftLed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftNextImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;resetLeds&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-    &lt;span class="n"&gt;setStateRightToLeftBright&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftTickImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftNextImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Всё ! Очень просто добавлять новые состояния - насколько хватит фантазии. Все алгоритмы инкапсулированы каждый в своём модуле и никак не могут нарушить работу друг друга.&lt;/p&gt;
-&lt;h3&gt;Прелесть Отладки&lt;/h3&gt;
-&lt;p&gt;Чуточку расширим структуру &lt;code&gt;GarlandState&lt;/code&gt; - добавим поле &lt;code&gt;name&lt;/code&gt;, в котором будет храниться название текущего состояния в виде строки:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Debug/src/GarlandState.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GARLAND_STATE_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GARLAND_STATE_H&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Неполный тип GarlandState для компиляции Events typedefs */&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Events typedefs */&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="nf"&gt;void&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;EventTickFunc&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="nf"&gt;void&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;EventNextFunc&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;EventTickFunc&lt;/span&gt; &lt;span class="n"&gt;tickFunc&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;EventNextFunc&lt;/span&gt; &lt;span class="n"&gt;nextFunc&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Обработчики событий по умолчанию */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Debug/src/RightToLeftState.с&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftBrightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftTickImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;nextLeftLed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftNextImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;resetLeds&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-    &lt;span class="n"&gt;setStateRightToLeftBright&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;setStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftTickImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftNextImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;RightToLeftState&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Теперь можно расширить функциональность обработки событий по умолчанию:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Debug/src/GarlandState.с&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultTick&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cm"&gt;/* Обработка события Tick по умолчанию */&lt;/span&gt;
-    &lt;span class="n"&gt;signalError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Tick&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultNext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cm"&gt;/* Обработка события Next по умолчанию */&lt;/span&gt;
-    &lt;span class="n"&gt;signalError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Next&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultTick&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultNext&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;После добавления ошибок на этапе выполнения можно наблюдать следующую картинку (&lt;code&gt;signalError&lt;/code&gt; реализована в модуле HAL - выводит диагностические сообщения в &lt;em&gt;UART&lt;/em&gt;. Эмуляция в  &lt;em&gt;Proteus VSM&lt;/em&gt; ):&lt;/p&gt;
-&lt;p&gt;&lt;img alt="UML" src="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternDebug.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;h3&gt;Вариации шаблона State&lt;/h3&gt;
-&lt;p&gt;В рассмотренном нами примере переключением состояния занимаются сами &lt;em&gt;состояния&lt;/em&gt;. Экземпляр состояния хранится в &lt;em&gt;контексте&lt;/em&gt; (переменная &lt;code&gt;_garlandState&lt;/code&gt;). Что можно переделать:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Можно делегировать обязанность переключать состояние контексту. Для этого интерфейс модуля &lt;code&gt;GarlandContext&lt;/code&gt; необходимо расширить функцией &lt;code&gt;changeState&lt;/code&gt;, которая позволит переключать текущее состояние.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Сделать состояния &lt;em&gt;ленивыми&lt;/em&gt;. В таком случае в &lt;code&gt;GarlandContext&lt;/code&gt; вместо переменной &lt;code&gt;_garlandState&lt;/code&gt;, представляющей экземпляр текущего состояния, можно обойтись соответствующим указателем &lt;code&gt;GarlandStatePtr&lt;/code&gt;. Экземпляры самих состояний логично хранить в самих модулях, реализующих эти состояния (простите за каламбур, возможно проще будет взглянуть на исходный код).&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Stateless/src/RightToLeftBrightState.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftBrightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;LeftToRightState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandContext.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftBrightTickImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;nextLeftBrightLed&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;onRightToLeftBrightNextImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;resetLeds&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// in HAL.h&lt;/span&gt;
-    &lt;span class="n"&gt;changeState&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;getStateLeftToRight&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="nf"&gt;getStateRightToLeftBright&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt; &lt;span class="n"&gt;garlandState&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;bit&lt;/span&gt; &lt;span class="n"&gt;initialized&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;initialized&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-        &lt;span class="n"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;garlandState&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-        &lt;span class="n"&gt;garlandState&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftBrightTickImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-        &lt;span class="n"&gt;garlandState&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;onRightToLeftBrightNextImpl&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-        &lt;span class="n"&gt;garlandState&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;RightToLeftBrightState&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-        &lt;span class="n"&gt;initialized&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;garlandState&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Stateless/src/GarlandContext.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandContext.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;RightToLeftState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdio.h&amp;gt; // NULL&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;garlandTick&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-        &lt;span class="cm"&gt;/* Начальное состояние справа налево */&lt;/span&gt;
-
-        &lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;garlandNext&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-        &lt;span class="cm"&gt;/* Начальное состояние справа налево */&lt;/span&gt;
-
-        &lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getStateRightToLeft&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-    &lt;span class="p"&gt;}&lt;/span&gt;
-    &lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Обратный вызов для смены состояния */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;changeState&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;newStatePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;_garlandStatePtr&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;newStatePtr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Примечательно, что такой приём даёт возможность объявить тип &lt;code&gt;GarlandStatePtr&lt;/code&gt; как указатель на экземпляр - константу &lt;code&gt;GarlandState&lt;/code&gt;, ведь в нашем случае объект пула (состояние) инициализируется только один раз и нелогично, чтобы он изменялся в процессе выполнения. Подход с использованием указателя на контанту придаст надёжности разрабатываемой системе - ведь теперь, например, при попытке в теле функции &lt;code&gt;onRightToLeftBrightTickImpl&lt;/code&gt; и ей подобных изменить аргумент &lt;code&gt;statePtr&lt;/code&gt; компилятор вежливо напомнит, что нельзя трогать объект - константу. В &lt;em&gt;С-указателях&lt;/em&gt; &lt;code&gt;сonst&lt;/code&gt; слева от звёздочки задаёт постоянство значения, на которое он указывает:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/StatePatternC/Stateless/src/GarlandState.h&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef __GARLAND_STATE_H&lt;/span&gt;
-&lt;span class="cp"&gt;#define __GARLAND_STATE_H&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Неполный тип GarlandState для компиляции Events typedefs */&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Events typedefs */&lt;/span&gt;
-
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="nf"&gt;void&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;EventTickFunc&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="nf"&gt;void&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;EventNextFunc&lt;/span&gt;&lt;span class="p"&gt;)(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;EventTickFunc&lt;/span&gt; &lt;span class="n"&gt;tickFunc&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;EventNextFunc&lt;/span&gt; &lt;span class="n"&gt;nextFunc&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-
-&lt;span class="cm"&gt;/* Обработчики событий по умолчанию */&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-&lt;span class="cp"&gt;#endif&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;/StatePatternC/Stateless/src/GarlandState.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;GarlandState.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;HAL.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultTick&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cm"&gt;/* Обработка события Tick по умолчанию */&lt;/span&gt;
-    &lt;span class="n"&gt;signalError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Tick&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultNext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GarlandStatePtr&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="cm"&gt;/* Обработка события Next по умолчанию */&lt;/span&gt;
-    &lt;span class="n"&gt;signalError&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Next&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;defaultEventHandlersImpl&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;GarlandState&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;tickFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultTick&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="n"&gt;statePtr&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;nextFunc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;defaultNext&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h3&gt;Итого&lt;/h3&gt;
-&lt;p&gt;Паттерн &lt;strong&gt;State&lt;/strong&gt; локализует зависящее от состояния поведение и делит его на части, соответствующие состояниям. Всё поведение, ассоциированное с конкретным состоянием &lt;strong&gt;изолировано&lt;/strong&gt; в отдельном модуле. Такой подход даёт целый рад преимуществ: &lt;em&gt;расширяемость&lt;/em&gt; - легко добавлять новые состояния; &lt;em&gt;инкапсуляция&lt;/em&gt; - каждое состояние изолировано в отдельном модуле; &lt;em&gt;отладка&lt;/em&gt; - удобно отлавливать ошибки в процессе выполнения; &lt;em&gt;надёжность&lt;/em&gt; / &lt;em&gt;читабельность&lt;/em&gt; - уменьшение количества операций условных переходов &lt;code&gt;switch&lt;/code&gt; / &lt;code&gt;case&lt;/code&gt; или &lt;code&gt;if&lt;/code&gt; / &lt;code&gt;else&lt;/code&gt;.&lt;/p&gt;
-&lt;h3&gt;Принцип открытости / закрытости&lt;/h3&gt;
-&lt;p&gt;Единственная константа в программировании - &lt;strong&gt;ИЗМЕНЕНИЯ&lt;/strong&gt;. Каким образом можно разрабатывать программы, устойчивые к изменениям ? В 1988 году &lt;em&gt;Бертран Мейер&lt;/em&gt; ответил на этот вопрос, предложив принцип &lt;a href="http://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF_%D0%BE%D1%82%D0%BA%D1%80%D1%8B%D1%82%D0%BE%D1%81%D1%82%D0%B8/%D0%B7%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D0%BE%D1%81%D1%82%D0%B8" rel="nofollow"&gt;открытости / закрытости&lt;/a&gt;: «программные сущности (классы, модули, функции и т. п.) должны быть открыты для расширения, но закрыты для изменения». В нашем случае добавление в систему нового состояния (алгоритма переключения гирлянд) требует минимум изменений в системе, т.е. использование паттерна &lt;em&gt;State&lt;/em&gt; (как в принципе и большинство других, описываемых &lt;em&gt;GoF&lt;/em&gt;) - это шаг навстречу к соблюдению принципа &lt;em&gt;открытости / закрытости&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;Исходники &lt;a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/StatePatternC.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;
-&lt;h3&gt;Мозговой штурм&lt;/h3&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес, "Приемы объектно-ориентированного проектирования. Паттерны проектирования == Design Patterns: Elements of Reusable Object-Oriented Software" — СПб: «Питер», 2007. — С. 366. — ISBN 978-5-469-01136-1 (также ISBN 5-272-00355-1)&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Джошуа Кериевски, "Рефакторинг с использованием шаблонов (паттернов проектирования) == Refactoring to Patterns (Addison-Wesley Signature Series)" — М.: «Вильямс», 2006. — С. 400. — ISBN 0-321-21335-1&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Э. Фримен, Э. Фримен, К. Сьерра, Б. Бейтс, "Паттерны проектирования" — ISBN 978-5-459-00435-9; 2011 г.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Роберт К. Мартин, Джеймс В. Ньюкирк, Роберт С. Косс, "Быстрая разработка программ. Принципы, примеры, практика" — ISBN 5-8459-0558-3, 0-13-597444-5; 2004 г.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Adam Petersen, "&lt;a href="http://www.adampetersen.se/Patterns%20in%20C%202,%20STATE.pdf" rel="nofollow"&gt;Patterns in C, part 2: STATE&lt;/a&gt;", C Vu 17.2&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;</content><category term="Паттерн"></category><category term="UML"></category><category term="Конечный Автомат"></category></entry><entry><title>Автомат с конечным числом состояний</title><link href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/" rel="alternate"></link><published>2012-10-09T00:00:00+03:00</published><updated>2012-10-09T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-09:/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/</id><summary type="html">&lt;p&gt;Простым примером машины с конечным числом состояний (&lt;strong&gt;FSM&lt;/strong&gt; - &lt;em&gt;Finite State Machine&lt;/em&gt;) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится &lt;em&gt;микроконтроллер&lt;/em&gt; и сопутствующая обвязка. Мы не будем углубляться …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Простым примером машины с конечным числом состояний (&lt;strong&gt;FSM&lt;/strong&gt; - &lt;em&gt;Finite State Machine&lt;/em&gt;) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится &lt;em&gt;микроконтроллер&lt;/em&gt; и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого &lt;em&gt;ANSI C&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;P.S. &lt;code&gt;chmod a+rw /torrents&lt;/code&gt; необходимо делать по ssh, видимо диск должен быть физически примонтирован. Если кто знает почему внизу можно оставлять комментарии :)&lt;/p&gt;</content><category term="MK802"></category><category term="SoC"></category><category term="Torrent"></category><category term="Avahi"></category><category term="Debian"></category></entry><entry><title>Автомат с конечным числом состояний</title><link href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/" rel="alternate"></link><published>2012-10-09T00:00:00+03:00</published><updated>2012-10-09T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-09:/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/</id><summary type="html">&lt;p&gt;Простым примером машины с конечным числом состояний (&lt;strong&gt;FSM&lt;/strong&gt; - &lt;em&gt;Finite State Machine&lt;/em&gt;) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится &lt;em&gt;микроконтроллер&lt;/em&gt; и сопутствующая обвязка. Мы не будем углубляться …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Простым примером машины с конечным числом состояний (&lt;strong&gt;FSM&lt;/strong&gt; - &lt;em&gt;Finite State Machine&lt;/em&gt;) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится &lt;em&gt;микроконтроллер&lt;/em&gt; и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого &lt;em&gt;ANSI C&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Для экспериментов нам понадобиться какой-то тестовый макет, который можно запустить / эмулировать в виртуальной среде (выбор пал на &lt;em&gt;Proteus VSM&lt;/em&gt;). Есть простенький микроконтроллер (PIC16F1823), который управляет лампочками (гирляндой) и может менять их яркость с помощью встроенного цифро-аналогового преобразователя ЦАП (в реальном устройстве для этого лучше использовать ШИМ, ЦАП лучше подходит для эмуляции в &lt;em&gt;Proteus VSM&lt;/em&gt;). Быстро вникнуть в суть дела можно посмотрев следующее видео:&lt;/p&gt;
 &lt;video width="100%" controls&gt;
   &lt;source src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/video.mp4" type="video/mp4"&gt;
@@ -3858,7 +3472,7 @@ Your browser does not support the video tag.
 &lt;p&gt;&lt;img alt="Диаграмма состояний Скриншот" src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;h3&gt;Операторы switch/case&lt;/h3&gt;
 &lt;p&gt;Прибегнув к помощи условных операторов &lt;code&gt;if&lt;/code&gt; / &lt;code&gt;else&lt;/code&gt; или &lt;code&gt;switch&lt;/code&gt; / &lt;code&gt;case&lt;/code&gt; по-старинке задачу решили так:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/FSM/Child/src/main.c&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;FSM/Child/src/main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;main.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
 &lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -3959,7 +3573,7 @@ Your browser does not support the video tag.
 &lt;/ul&gt;
 &lt;h3&gt;Табличная альтернатива&lt;/h3&gt;
 &lt;p&gt;Второй способ решения задачи состоит в использовании таблицы переходов:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;/FSM/Table/Simple/src/main.c&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;FSM/Table/Simple/src/main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;main.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
 &lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -4057,7 +3671,7 @@ Your browser does not support the video tag.
 &lt;p&gt;Добавление нового состояния не требует изменений логики обработки событий машиной с конечным числом состояний.  Давайте добавим ещё одно состояние - лампочки &lt;strong&gt;плавно&lt;/strong&gt; меняют яркость:&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;em&gt;/FSM/Table/Scale/src/main.c&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;FSM/Table/Scale/src/main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;main.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
 &lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -4165,10 +3779,9 @@ Your browser does not support the video tag.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Несложно заметить, что код в суперцикле &lt;code&gt;for(;;)&lt;/code&gt; остался без изменений, т.е. решение с использованием таблиц лучше расширяется.&lt;/p&gt;
-&lt;h3&gt;Паттерн Состояние (State)&lt;/h3&gt;
-&lt;p&gt;Не поверите, но у табличного решения тоже есть альтернатива - &lt;em&gt;Паттерн Состояние&lt;/em&gt;, но об этом чуть &lt;a href="http://proiot.ru/blog/posts/2012/10/13/patterny-v-chistom-c-state/"&gt;позже&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Исходники &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;</content><category term="Паттерн"></category><category term="Конечный Автомат"></category><category term="Идиома"></category></entry><entry><title>Идиомы в ANSI C</title><link href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/" rel="alternate"></link><published>2012-10-08T00:00:00+03:00</published><updated>2012-10-08T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-08:/blog/posts/2012/10/08/idiomy-v-ansi-c/</id><summary type="html">&lt;p&gt;&lt;em&gt;Шаблоны проектирования&lt;/em&gt;, они же просто &lt;a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow"&gt;паттерны&lt;/a&gt;, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются &lt;strong&gt;идиомами&lt;/strong&gt;, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот &lt;strong&gt;идиом&lt;/strong&gt; в чистом &lt;strong&gt;С&lt;/strong&gt; (&lt;em&gt;ANSI C&lt;/em&gt;), по большей части это вольный перевод &lt;a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow"&gt;Idiomatic Expressions in C&lt;/a&gt; от …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;Шаблоны проектирования&lt;/em&gt;, они же просто &lt;a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow"&gt;паттерны&lt;/a&gt;, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются &lt;strong&gt;идиомами&lt;/strong&gt;, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот &lt;strong&gt;идиом&lt;/strong&gt; в чистом &lt;strong&gt;С&lt;/strong&gt; (&lt;em&gt;ANSI C&lt;/em&gt;), по большей части это вольный перевод &lt;a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow"&gt;Idiomatic Expressions in C&lt;/a&gt; от &lt;a href="http://www.adampetersen.se/articles.htm" rel="nofollow"&gt;Adam Petersen&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Несложно заметить, что код в суперцикле &lt;code&gt;for(;;)&lt;/code&gt; остался без изменений, т.е. решение с использованием таблиц характеризуется лучшей &lt;em&gt;расширяемостью&lt;/em&gt; кода.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;Далее&lt;/a&gt; сопрограммы.&lt;/p&gt;
+&lt;p&gt;Исходники &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip"&gt;тут&lt;/a&gt;.&lt;/p&gt;</content><category term="Конечный Автомат"></category><category term="Идиома"></category></entry><entry><title>Идиомы в ANSI C</title><link href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/" rel="alternate"></link><published>2012-10-08T00:00:00+03:00</published><updated>2012-10-08T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-08:/blog/posts/2012/10/08/idiomy-v-ansi-c/</id><summary type="html">&lt;p&gt;&lt;em&gt;Шаблоны проектирования&lt;/em&gt;, они же просто &lt;a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow"&gt;паттерны&lt;/a&gt;, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются &lt;strong&gt;идиомами&lt;/strong&gt;, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот &lt;strong&gt;идиом&lt;/strong&gt; в чистом &lt;strong&gt;С&lt;/strong&gt; (&lt;em&gt;ANSI C&lt;/em&gt;), по большей части это вольный перевод &lt;a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow"&gt;Idiomatic Expressions in C&lt;/a&gt; от …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;Шаблоны проектирования&lt;/em&gt;, они же просто &lt;a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow"&gt;паттерны&lt;/a&gt;, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются &lt;strong&gt;идиомами&lt;/strong&gt;, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот &lt;strong&gt;идиом&lt;/strong&gt; в чистом &lt;strong&gt;С&lt;/strong&gt; (&lt;em&gt;ANSI C&lt;/em&gt;), по большей части это вольный перевод &lt;a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow"&gt;Idiomatic Expressions in C&lt;/a&gt; от &lt;a href="http://www.adampetersen.se/articles.htm" rel="nofollow"&gt;Adam Petersen&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;К сожалению идиомы очень редко и, как правило, выборочно описываются в соответствующей литературе по программированию - данный материал может показаться достаточно сложным для новичков, в то же время при изложении более серьёзного материала авторы подразумевают, что читатель со всем этим уже знаком. Как бы там ни было, ясно одно - даже если программист не использует некоторые идиомы в своих работах, это ещё не означает, что он не должен быть с ними знаком хотя бы для того, чтобы более эффективно и быстро разбираться в чужом коде.&lt;/p&gt;
 &lt;p&gt;Описываемые в данном материале идиомы можно условно разделить на две категории:&lt;/p&gt;
 &lt;ul&gt;
