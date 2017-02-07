@@ -68,7 +68,7 @@ tags: picsim
 
     :::c
     /*
-      xc8 -Werror --chip=18f4620 main.c
+      xc8 --chip=18f4620 main.c
     */
 
     #define _XTAL_FREQ 5e4

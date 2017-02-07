@@ -106,7 +106,7 @@ tags: picsim, RTOS
 
     :::c
     /*
-      xc8 -Werror --chip=18f4620 main.c
+      xc8 --chip=18f4620 main.c
     */
 
     #include <xc.h>

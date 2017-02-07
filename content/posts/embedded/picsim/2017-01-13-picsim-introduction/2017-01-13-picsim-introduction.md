@@ -13,7 +13,7 @@ PIC (**P**eripheral **I**nterface **C**ontroller) - серия микрокон�
     :::c
 
     /*
-      xc8 -Werror --chip=16f648A blink.c
+      xc8 --chip=16f648A blink.c
     */
 
     // http://microchip.wikidot.com/faq:26
@@ -56,7 +56,7 @@ PIC (**P**eripheral **I**nterface **C**ontroller) - серия микрокон�
     :::c
 
     /*
-      xc8 -Werror --chip=16f648A buttons.c
+      xc8 --chip=16f648A buttons.c
     */
 
     #include <xc.h>

@@ -58,7 +58,7 @@ tags: picsim
     :::c
 
     /*
-      xc8 -Werror --chip=16f648A main.c
+      xc8 --chip=16f648A main.c
     */
 
     #include <xc.h>
@@ -146,7 +146,7 @@ tags: picsim
     :::c
 
     /*
-      xc8 -Werror --chip=16f648A main.c isr.c
+      xc8 --chip=16f648A main.c isr.c
     */
 
     #include <xc.h>
