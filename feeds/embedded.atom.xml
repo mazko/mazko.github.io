@@ -9,7 +9,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров. Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью &lt;a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" rel="nofollow"&gt;сопрограмм&lt;/a&gt;(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;состояние&lt;/a&gt; между вызовами, хитрое применением оператора &lt;code&gt;switch&lt;/code&gt; и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h"&gt;coroutine.h&lt;/a&gt;  | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h"&gt;coroutine.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;task_r.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -39,7 +39,7 @@
       &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
     &lt;span class="p"&gt;}&lt;/span&gt;
     &lt;span class="n"&gt;PORTC&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTC&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;TRISC&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
       &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
     &lt;span class="p"&gt;}&lt;/span&gt;
   &lt;span class="p"&gt;}&lt;/span&gt;
@@ -83,7 +83,7 @@
           &lt;span class="n"&gt;random6&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="cm"&gt;/* 0..6 */&lt;/span&gt; &lt;span class="n"&gt;rand&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
         &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random6&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
         &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0x80&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;random6&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
           &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
         &lt;span class="p"&gt;}&lt;/span&gt;
       &lt;span class="p"&gt;}&lt;/span&gt;
@@ -97,7 +97,7 @@
 
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -125,7 +125,100 @@
 
 
 &lt;p&gt;Тут две задачи - левые светодиоды и правые. Каждая задача представляет из себя бесконечный цикл - и будь это обычные функции всё процессорное время ушло бы на &lt;code&gt;task_leds_l()&lt;/code&gt;, тогда как до &lt;code&gt;task_leds_r()&lt;/code&gt; очередь бы так и не дошла. Но мы имеем дело не с простыми функциями, а сопрограммами - макрос YIELD возвращает управление обратно вызывающей функции, а она в свою очередь просто поочерёдно вызывает задачи, выполняя тем самым функцию простейшего планировщика.&lt;/p&gt;
-&lt;p&gt;При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её &lt;code&gt;static&lt;/code&gt; - например &lt;code&gt;static uint8_t i, port&lt;/code&gt;, в то время как к &lt;code&gt;uint8_t random6&lt;/code&gt; это самая обычная (автоматическая) переменная. &lt;/p&gt;</content><category term="picsim"></category><category term="RTOS"></category></entry><entry><title>PICSim.js - часы реального времени DS1307</title><link href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="alternate"></link><published>2017-02-02T00:00:00+02:00</published><updated>2017-02-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-02:/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/</id><summary type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.&lt;/p&gt;
+&lt;p&gt;При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её &lt;code&gt;static&lt;/code&gt; - например &lt;code&gt;static uint8_t i, port&lt;/code&gt;, в то время как к &lt;code&gt;uint8_t random6&lt;/code&gt; это самая обычная (автоматическая) переменная.&lt;/p&gt;
+&lt;p&gt;А что произойдёт, если к этим двум задачам досыпать ещё парочку ? Очевидно, что тогда задержки придётся перебирать заново:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// delay&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt; &lt;span class="cm"&gt;/* new value */&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+  &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;И это плохо - такие проекты тяжело сопровождать и развивать. Существует достаточно простой способ избежать этого нежелательного эффекта, если привязать эти самые задержки к какому-нибудь аппаратному таймеру. В следующем примере запускается таймер, постоянно отсчитывается время с момента включения. Это время не зависит от загрузки процессора и количества выполняемых задач.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h"&gt;coroutine.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main2.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/a8ff2394bb5884738bbee3ce613be1ce"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;isr.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// up time since the start of the system&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;_uptime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="nf"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GIE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;GIE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// critical section&lt;/span&gt;
+    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;copy&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_uptime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;GIE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// critical section end&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;copy&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;_uptime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// High priority interrupt&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;interrupt&lt;/span&gt; &lt;span class="nf"&gt;isr&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IF&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;                               
+    &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IF&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;_uptime&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c isr.c&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// TMR0 high priority Interrupt, 8 bit, 1:32 Prescale&lt;/span&gt;
+  &lt;span class="n"&gt;RCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IPEN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;T0CON&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;T0CONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T08BIT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;T0CONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0PS2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;T0IF&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;INTCON2bits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TMR0IP&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;        
+  &lt;span class="n"&gt;T0CONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TMR0ON&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GIE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;task_r.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="nf"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;task_leds_r&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// ...&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// http://www.microchip.com/forums/m890404.aspx&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;();)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Код, который не менялся, обозначен как &lt;code&gt;// ...&lt;/code&gt;, изменения в задаче &lt;em&gt;task_l.c&lt;/em&gt; аналогичны изменениям в &lt;em&gt;task_r.c&lt;/em&gt; и поэтому не показаны. Поскольку разрядность счётчика времени больше разрядности микроконтроллера - математические операции не атомарны, поэтому в функцию &lt;code&gt;get_uptime()&lt;/code&gt; вводится простейший механизм синхронизации GIE. Несмотря на свою простоту описанное решение характеризуется прекрасной переносимостью - тут чистый С без ассемблерных вставок и оно вполне подходит для реальных проектов и особенно хорошо подходит для очень слабых микроконтроллеров. &lt;/p&gt;</content><category term="picsim"></category><category term="RTOS"></category></entry><entry><title>PICSim.js - часы реального времени DS1307</title><link href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="alternate"></link><published>2017-02-02T00:00:00+02:00</published><updated>2017-02-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-02:/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/</id><summary type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.&lt;/p&gt;
 &lt;p&gt;К ознакомлению настоятельно рекомендуется &lt;a href="https://www.sparkfun.com/datasheets/Components/DS1307.pdf" rel="nofollow"&gt;официальная&lt;/a&gt; документация на DS1307. В случае с шиной I2C в первую очередь важны следующие характеристики - максимальная частота тактирования SCL (от этого зависит максимальная скорость передачи данных), физический адрес микросхемы (из 127 возможных) на шине и внутренняя карта памяти (адреса регистров). Так как I2C является &lt;em&gt;синхронным&lt;/em&gt; интерфейсом, то имеет значение именно верхняя граница частоты, тогда как фактическая скорость обмена задаётся мастером и может быть любой и даже необязательно постоянной - микроконтроллер может спокойно переключаться на более важные задачи без потери данных на шине. Это серьёзное преимущество синхронных интерфейсов переда асинхронными.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c"&gt;i2c-hw.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;liquid-crystal.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/1bcc58df4b0494fada5bfdc2638e8034"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
@@ -186,7 +279,7 @@
 
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#define _XTAL_FREQ 25e4&lt;/span&gt;
@@ -295,7 +388,7 @@
 
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#define _XTAL_FREQ 5e4&lt;/span&gt;
@@ -341,7 +434,7 @@
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;Работа с символьным дисплеем описывалась в предыдущем &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;материале&lt;/a&gt;. Тут мы реализовали функцию &lt;code&gt;putch&lt;/code&gt;, что позволяет работать с LCD через стандартную функцию С &lt;code&gt;printf&lt;/code&gt;. Поскольку в нашем случае длина выводимой на дисплей строки всегда постоянна, нет необходимости его очищать - достаточно просто переводить курсор домой перед каждым новым вызовом &lt;code&gt;printf&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#define _XTAL_FREQ 5e4&lt;/span&gt;
@@ -527,7 +620,7 @@
 &lt;p&gt;При инициализации &lt;code&gt;lcd_init()&lt;/code&gt; необходимо соблюдать ритуал с временными задержками, описанный в документации к HD44780.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#define _XTAL_FREQ 5e4&lt;/span&gt;
@@ -568,7 +661,7 @@
 &lt;p&gt;При работе HD44780 трудно держать все управляющие комбинации в голове, поэтому код не помешает упростить, например привести к виду arduino библиотеки «LiquidCrystal».&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/liquid-crystal.c"&gt;liquid-crystal.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/showtime.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/1889b71bb6c0df4349565d08a7c01ddd"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=18f4620 main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#define _XTAL_FREQ 5e4&lt;/span&gt;
@@ -646,7 +739,7 @@
 &lt;p&gt;Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/3cfca08cb95e5bb6ba688747d58168d2"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -688,7 +781,7 @@
 &lt;p&gt;Что касается спящий режима, то он позволяет значительно снизить энергопотребление. Для перехода а спящий режим у PIC микроконтроллеров предусмотрена специальная команда &lt;code&gt;SPEEP()&lt;/code&gt;, после которой тактирование микроконтроллера прекращаются, текущее состояние всех регистров в том числе и портов ввода-вывода сохраняется и потребление энергии сводится к минимуму - обычно единицы микроампер. Выйти из спящего режима можно либо по прерыванию либо при срабатывании сторожевого таймера.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main-sleep.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/7e2d324a527f5bc49a6b891bd4dd7ec7"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -772,7 +865,7 @@
 
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A main.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -849,7 +942,7 @@
 
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A main.c isr.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A main.c isr.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -905,7 +998,7 @@
 &lt;p&gt;Наиболее простой реализацией ШИМ на микроконтроллере является &lt;em&gt;программная&lt;/em&gt; реализация, однако также программный метод получения ШИМ сигнала очень требователен к частоте работы микроконтроллера и занимает достаточно много процессорного времени. В связи с этим большинство современных микроконтроллеров имеет на борту отдельный периферийных модуль аппаратного ШИМ, работающего параллельно с основной программой, но обо всём по порядку.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/soft-pwm.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/99041ddce996943a1f04ec2c88b65ecd"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A pwm.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A pwm.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -949,7 +1042,7 @@
 &lt;p&gt;Для работы модуля ШИМ требуется один &lt;a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/"&gt;таймер&lt;/a&gt; и модуль CCP1. На &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;блок-схеме&lt;/a&gt;  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. &lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/hw-pwm.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/27d4e6ff0c8004700dc62985d6f8be93"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A pwm.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A pwm.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -1006,7 +1099,7 @@
 &lt;p&gt;Микроконтроллеры PIC16 имеют очень эффективный набор команд - всего 35. Большинство выполняются за один цикл, в некоторых случаях (условные переходы) 2. Для выполнения одного цикла требуется 4 периода тактовой частоты. Несмотря на небольшой набор команд на их основе можно реализовать любую логику или если выражаться по-умному то такой набор команд является полным по Тьюрингу. На каком языке бы ни была написана программа для PIC16 микроконтроллера, после компиляции она будет представлена определённой последовательностью различных команд из 35. Скачать C-компилятор xc8 можно c сайта Microchip.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/blink.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/91b059197905b07da98f64848ac9d4f1"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A blink.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A blink.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="c1"&gt;// http://microchip.wikidot.com/faq:26&lt;/span&gt;
@@ -1040,7 +1133,7 @@
 &lt;p&gt;Следующая сложная программа уже взаимодействует с пользователем посредством кнопок RA1-RA3. Каждая кнопка сигнализирует о нажатии своей комбинацией светодиодов на PORTB.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/buttons.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/651d7b511656cac141c52941dffeb5a3"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
-&lt;span class="cm"&gt;  xc8 -Werror --chip=16f648A buttons.c&lt;/span&gt;
+&lt;span class="cm"&gt;  xc8 --chip=16f648A buttons.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;

@@ -49,7 +49,7 @@
 </li>
 </ul>
 <p>Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров. Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью <a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" rel="nofollow">сопрограмм</a>(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">состояние</a> между вызовами, хитрое применением оператора <code>switch</code> и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h">coroutine.h</a>  | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b">picsim.js</a></p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h">coroutine.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b">picsim.js</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p><em>task_r.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
@@ -79,7 +79,7 @@
       <span class="n">PORTA</span> <span class="o">|=</span> <span class="mh">0x80</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="n">PORTC</span> <span class="o">=</span> <span class="p">(</span><span class="n">PORTC</span> <span class="o">&amp;</span> <span class="n">TRISC</span><span class="p">)</span> <span class="o">|</span> <span class="n">port</span><span class="p">;</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
       <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
     <span class="p">}</span>
   <span class="p">}</span>
@@ -123,7 +123,7 @@
           <span class="n">random6</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="cm">/* 0..6 */</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">7</span><span class="p">;</span>
         <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">random6</span> <span class="o">==</span> <span class="p">(</span><span class="n">PORTA</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">));</span>
         <span class="n">PORTA</span> <span class="o">=</span> <span class="p">(</span><span class="n">PORTA</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="o">|</span> <span class="n">random6</span><span class="p">;</span>
-        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
           <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
         <span class="p">}</span>
       <span class="p">}</span>
@@ -137,7 +137,7 @@
 
 <p><em>main.c</em></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">  xc8 --chip=18f4620 main.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
@@ -165,7 +165,100 @@
 
 
 <p>Тут две задачи - левые светодиоды и правые. Каждая задача представляет из себя бесконечный цикл - и будь это обычные функции всё процессорное время ушло бы на <code>task_leds_l()</code>, тогда как до <code>task_leds_r()</code> очередь бы так и не дошла. Но мы имеем дело не с простыми функциями, а сопрограммами - макрос YIELD возвращает управление обратно вызывающей функции, а она в свою очередь просто поочерёдно вызывает задачи, выполняя тем самым функцию простейшего планировщика.</p>
-<p>При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её <code>static</code> - например <code>static uint8_t i, port</code>, в то время как к <code>uint8_t random6</code> это самая обычная (автоматическая) переменная. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/#disqus_thread">comments</a>.</p>                </article>
+<p>При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её <code>static</code> - например <code>static uint8_t i, port</code>, в то время как к <code>uint8_t random6</code> это самая обычная (автоматическая) переменная.</p>
+<p>А что произойдёт, если к этим двум задачам досыпать ещё парочку ? Очевидно, что тогда задержки придётся перебирать заново:</p>
+<div class="highlight"><pre><span></span><span class="c1">// delay</span>
+<span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span> <span class="cm">/* new value */</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
+  <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
+<span class="p">}</span>
+</pre></div>
+
+
+<p>И это плохо - такие проекты тяжело сопровождать и развивать. Существует достаточно простой способ избежать этого нежелательного эффекта, если привязать эти самые задержки к какому-нибудь аппаратному таймеру. В следующем примере запускается таймер, постоянно отсчитывается время с момента включения. Это время не зависит от загрузки процессора и количества выполняемых задач.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h">coroutine.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main2.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/a8ff2394bb5884738bbee3ce613be1ce">picsim.js</a></p>
+<p><em>isr.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// up time since the start of the system</span>
+<span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">_uptime</span><span class="p">;</span>
+
+<span class="kt">uint32_t</span> <span class="nf">get_uptime</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">GIE</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">GIE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// critical section</span>
+    <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">copy</span> <span class="o">=</span> <span class="n">_uptime</span><span class="p">;</span>
+    <span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// critical section end</span>
+    <span class="k">return</span> <span class="n">copy</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">_uptime</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// High priority interrupt</span>
+<span class="kt">void</span> <span class="n">interrupt</span> <span class="nf">isr</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">&amp;&amp;</span> <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span><span class="p">)</span> <span class="p">{</span>                               
+    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">_uptime</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=18f4620 main.c isr.c</span>
+<span class="cm">*/</span>
+
+<span class="c1">// ...</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// ...</span>
+
+  <span class="c1">// TMR0 high priority Interrupt, 8 bit, 1:32 Prescale</span>
+  <span class="n">RCONbits</span><span class="p">.</span><span class="n">IPEN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">T0CON</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">T0CONbits</span><span class="p">.</span><span class="n">T08BIT</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">T0CONbits</span><span class="p">.</span><span class="n">T0PS2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">INTCON2bits</span><span class="p">.</span><span class="n">TMR0IP</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>        
+  <span class="n">T0CONbits</span><span class="p">.</span><span class="n">TMR0ON</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="c1">// ...</span>
+
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>task_r.c</em></p>
+<div class="highlight"><pre><span></span><span class="c1">// ...</span>
+
+<span class="k">extern</span> <span class="kt">uint32_t</span> <span class="nf">get_uptime</span><span class="p">();</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">task_leds_r</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// ...</span>
+
+  <span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">i</span><span class="p">;</span>
+
+  <span class="c1">// ...</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="c1">// http://www.microchip.com/forums/m890404.aspx</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">get_uptime</span><span class="p">()</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">get_uptime</span><span class="p">();)</span> <span class="p">{</span>
+      <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Код, который не менялся, обозначен как <code>// ...</code>, изменения в задаче <em>task_l.c</em> аналогичны изменениям в <em>task_r.c</em> и поэтому не показаны. Поскольку разрядность счётчика времени больше разрядности микроконтроллера - математические операции не атомарны, поэтому в функцию <code>get_uptime()</code> вводится простейший механизм синхронизации GIE. Несмотря на свою простоту описанное решение характеризуется прекрасной переносимостью - тут чистый С без ассемблерных вставок и оно вполне подходит для реальных проектов и особенно хорошо подходит для очень слабых микроконтроллеров. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>

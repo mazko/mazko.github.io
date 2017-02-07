@@ -45,7 +45,7 @@
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Работа с символьным дисплеем описывалась в предыдущем <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">материале</a>. Тут мы реализовали функцию <code>putch</code>, что позволяет работать с LCD через стандартную функцию С <code>printf</code>. Поскольку в нашем случае длина выводимой на дисплей строки всегда постоянна, нет необходимости его очищать - достаточно просто переводить курсор домой перед каждым новым вызовом <code>printf</code>.</p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">  xc8 --chip=18f4620 main.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#define _XTAL_FREQ 5e4</span>

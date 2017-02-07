@@ -48,7 +48,7 @@
 <p>Зачем нужен сторожевой таймер ? Программы в микроконтроллерах напрямую взаимодействуют с железом и иногда случаются внештатные ситуации, когда по тем или иным причинам программа может зависнуть - причиной тому может быть как аппаратный сбой, так и ошибка программиста. В таких случаях нужно идти и ручками выдергивать питание или нажимать кнопочку сброса. Альтернативой этому как раз и является использование сторожевого таймера, который сбросит микроконтроллер автоматически если что-то пошло не так.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/3cfca08cb95e5bb6ba688747d58168d2">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
+<span class="cm">  xc8 --chip=16f648A main.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
@@ -90,7 +90,7 @@
 <p>Что касается спящий режима, то он позволяет значительно снизить энергопотребление. Для перехода а спящий режим у PIC микроконтроллеров предусмотрена специальная команда <code>SPEEP()</code>, после которой тактирование микроконтроллера прекращаются, текущее состояние всех регистров в том числе и портов ввода-вывода сохраняется и потребление энергии сводится к минимуму - обычно единицы микроампер. Выйти из спящего режима можно либо по прерыванию либо при срабатывании сторожевого таймера.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/main-sleep.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/7e2d324a527f5bc49a6b891bd4dd7ec7">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=16f648A main.c</span>
+<span class="cm">  xc8 --chip=16f648A main.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>

@@ -176,7 +176,7 @@
 <p>При инициализации <code>lcd_init()</code> необходимо соблюдать ритуал с временными задержками, описанный в документации к HD44780.</p>
 <p><em>main.c</em></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">  xc8 --chip=18f4620 main.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#define _XTAL_FREQ 5e4</span>
@@ -217,7 +217,7 @@
 <p>При работе HD44780 трудно держать все управляющие комбинации в голове, поэтому код не помешает упростить, например привести к виду arduino библиотеки «LiquidCrystal».</p>
 <p><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/liquid-crystal.c">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/showtime.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/1889b71bb6c0df4349565d08a7c01ddd">picsim.js</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 -Werror --chip=18f4620 main.c</span>
+<span class="cm">  xc8 --chip=18f4620 main.c</span>
 <span class="cm">*/</span>
 
 <span class="cp">#define _XTAL_FREQ 5e4</span>
