@@ -10,7 +10,7 @@ tags: picsim, RTOS
 
 Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров. Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью [сопрограмм](http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html){:rel="nofollow"}(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее [состояние]({filename}../../2012-10-09-finite-state-machine/2012-10-09-finite-state-machine.md) между вызовами, хитрое применением оператора ```switch``` и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.
 
-[config.h]({attach}config-4620.h) | [coroutine.h]({attach}coroutine.h)  | [hex]({attach}main.hex) | [picsim.js](http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b)
+[config.h]({attach}config-4620.h) | [coroutine.h]({attach}coroutine.h) | [hex]({attach}main.hex) | [picsim.js](http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b)
 
 [comment]: <> (byzanz-record --x=98 --y=100 -w 1233 -h 665 --delay 3 -d 22 ui.flv)
 [comment]: <> (rm -rf frames/* && ffmpeg -i ui.flv -pix_fmt rgb24 -r 10 "frames/frame-%05d.png")
@@ -48,7 +48,7 @@ tags: picsim, RTOS
           PORTA |= 0x80;
         }
         PORTC = (PORTC & TRISC) | port;
-        for(i = 0; i < 240; i++) { 
+        for (i = 0; i < 240; i++) { 
           YIELD; /* cooperate delay */ 
         }
       }
@@ -92,7 +92,7 @@ tags: picsim, RTOS
               random6 = 1 << /* 0..6 */ rand() % 7;
             } while (random6 == (PORTA & ~0x80));
             PORTA = (PORTA & 0x80) | random6;
-            for(i = 0; i < 240; i++) { 
+            for (i = 0; i < 240; i++) { 
               YIELD; /* cooperate delay */ 
             }
           }
@@ -133,4 +133,100 @@ tags: picsim, RTOS
 
 Тут две задачи - левые светодиоды и правые. Каждая задача представляет из себя бесконечный цикл - и будь это обычные функции всё процессорное время ушло бы на ```task_leds_l()```, тогда как до ```task_leds_r()``` очередь бы так и не дошла. Но мы имеем дело не с простыми функциями, а сопрограммами - макрос YIELD возвращает управление обратно вызывающей функции, а она в свою очередь просто поочерёдно вызывает задачи, выполняя тем самым функцию простейшего планировщика.
 
-При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её ```static``` - например ```static uint8_t i, port```, в то время как к ```uint8_t random6``` это самая обычная (автоматическая) переменная. 
+При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её ```static``` - например ```static uint8_t i, port```, в то время как к ```uint8_t random6``` это самая обычная (автоматическая) переменная.
+
+А что произойдёт, если к этим двум задачам досыпать ещё парочку ? Очевидно, что тогда задержки придётся перебирать заново:
+
+    :::c
+    // delay
+    for(i = 0; i < 240 /* new value */; i++) { 
+      YIELD; /* cooperate delay */ 
+    }
+
+И это плохо - такие проекты тяжело сопровождать и развивать. Существует достаточно простой способ избежать этого нежелательного эффекта, если привязать эти самые задержки к какому-нибудь аппаратному таймеру. В следующем примере запускается таймер, постоянно отсчитывается время с момента включения. Это время не зависит от загрузки процессора и количества выполняемых задач.
+
+[config.h]({attach}config-4620.h) | [coroutine.h]({attach}coroutine.h) | [hex]({attach}main2.hex) | [picsim.js](http://mazko.github.io/picsim.js/a8ff2394bb5884738bbee3ce613be1ce)
+
+*isr.c*
+
+    :::c
+    #include <xc.h>
+    #include <stdint.h>
+
+    // up time since the start of the system
+    static uint32_t _uptime;
+
+    uint32_t get_uptime() {
+      if (GIE) {
+        GIE = 0; // critical section
+        const uint32_t copy = _uptime;
+        GIE = 1; // critical section end
+        return copy;
+      } else {
+        return _uptime;
+      }
+    }
+
+    // High priority interrupt
+    void interrupt isr() {
+      if (INTCONbits.T0IF && INTCONbits.T0IE) {                               
+        INTCONbits.T0IF = 0;
+        _uptime++;
+      }
+    }
+
+*main.c*
+
+    :::c
+    /*
+      xc8 --chip=18f4620 main.c isr.c
+    */
+
+    // ...
+
+    int main() {
+
+      // ...
+
+      // TMR0 high priority Interrupt, 8 bit, 1:32 Prescale
+      RCONbits.IPEN = 1;
+      T0CON = 0;
+      T0CONbits.T08BIT = 1;
+      T0CONbits.T0PS2 = 1;
+      INTCONbits.T0IE = 1;
+      INTCONbits.T0IF = 0;
+      INTCON2bits.TMR0IP = 1;        
+      T0CONbits.TMR0ON = 1;
+      INTCONbits.GIE = 1;
+
+      // ...
+
+    }
+
+*task_r.c*
+
+    :::c
+    // ...
+
+    extern uint32_t get_uptime();
+
+    static void task_leds_r() {
+
+      // ...
+
+      static uint32_t i;
+
+      // ...
+
+      while (1) {
+
+        // ...
+
+        // http://www.microchip.com/forums/m890404.aspx
+        for (i = get_uptime() + 10; i > get_uptime();) {
+          YIELD; /* cooperate delay */ 
+        }
+      }
+    }
+
+Код, который не менялся, обозначен как ```// ...```, изменения в задаче *task_l.c* аналогичны изменениям в *task_r.c* и поэтому не показаны. Поскольку разрядность счётчика времени больше разрядности микроконтроллера - математические операции не атомарны, поэтому в функцию ```get_uptime()``` вводится простейший механизм синхронизации GIE. Несмотря на свою простоту описанное решение характеризуется прекрасной переносимостью - тут чистый С без ассемблерных вставок и оно вполне подходит для реальных проектов и особенно хорошо подходит для очень слабых микроконтроллеров. 
