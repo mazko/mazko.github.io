@@ -1,5 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-02-05T00:00:00+02:00</updated><entry><title>PICSim.js - сопрограммы и простейшая многозадачность</title><link href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="alternate"></link><published>2017-02-05T00:00:00+02:00</published><updated>2017-02-05T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-05:/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/</id><summary type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи, причём в случае PIC18 это даже двухуровневая система прерываний. Обычно всего этого достаточно для реализации простой логики, однако при увеличении требований к системе традиционный подход теряет привлекательность. Альтернативный метод структурирования приложений состоит в том, чтобы выделить и отделить независимые подзадачи друг от друга и использовать некий программный каркас, который управляет этими подзадачами согласно набору ясно определенных правил. При таком подходе могут одновременно выполняться несколько (псевдо)параллельных задач, сообщающихся между собой и управляемых единым ядром. Этот подход к программированию - RTOS (операционная система реального времени), а многозадачность бывает 2 видов:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-02-14T00:00:00+02:00</updated><entry><title>PICSim.js - калькулятор и обратная польская запись</title><link href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/" rel="alternate"></link><published>2017-02-14T00:00:00+02:00</published><updated>2017-02-14T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-14:/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/</id><summary type="html">&lt;p&gt;Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например &lt;code&gt;4 2 + = 4 + 2 = 6&lt;/code&gt; или &lt;code&gt;4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4&lt;/code&gt;. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например &lt;code&gt;4 2 + = 4 + 2 = 6&lt;/code&gt; или &lt;code&gt;4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4&lt;/code&gt;. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается в стек, а если встречается оператор, то из стека извлекаются два последних операнда и выполняется
+операция, после чего результат посылается обратно в стек. Классическая реализация калькулятора на базе обратной польской записи подробно расписана в книге «Язык программирования Си» Брайана Кернигана и Денниса Ритчи (последний один из непосредственных авторов и разработчиков языка Си). В общем случае алгоритм решения подобных задач сводится к двум этапам:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;лексической анализ - распознавание и выделение лексем из входной последовательности символов. В случае RPN калькулятора на выходе получаем числа и арифметические операции&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;синтаксический анализ - последовательность лексем преобразуется в структуру данных, которая хорошо подходит для дальнейшей обработки. В упрощённом случае для RPN калькулятора это стек&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ошибки при выполнении программы могут происходить на обоих этапах - за вводом недопустимых символов (например букв) должен следить лексической анализатор, а вот обработка деления на ноль или неправильное количество элементов в стеке это уже зона ответственности синтаксического анализа.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip"&gt;исходники&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. требуют POSIX. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - &lt;a href="http://re2c.org/" rel="nofollow"&gt;re2c&lt;/a&gt;. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция &lt;code&gt;lex_flt&lt;/code&gt; это облегчённая версия &lt;code&gt;atof&lt;/code&gt;/&lt;code&gt;strtod&lt;/code&gt;, достаточная для RPN калькулятора.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;stack.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdbool.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;RPN_MAX_CHARS&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+  &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
+&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
+&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;stack_clr&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;rpn.re.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdbool.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;stack.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;lex_flt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="n"&gt;neg&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/*!re2c&lt;/span&gt;
+&lt;span class="cm"&gt;      re2c:yyfill:enable = 0;&lt;/span&gt;
+&lt;span class="cm"&gt;      re2c:define:YYCTYPE = char;&lt;/span&gt;
+&lt;span class="cm"&gt;      re2c:define:YYCURSOR = s;&lt;/span&gt;
+
+&lt;span class="cm"&gt;      &amp;quot;-&amp;quot;    { neg = true; goto mant_int; }&lt;/span&gt;
+&lt;span class="cm"&gt;      &amp;quot;&amp;quot;     { goto mant_int; }&lt;/span&gt;
+&lt;span class="cm"&gt;  */&lt;/span&gt;
+&lt;span class="nl"&gt;mant_int&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="cm"&gt;/*!re2c&lt;/span&gt;
+&lt;span class="cm"&gt;      &amp;quot;.&amp;quot;    { goto mant_frac; }&lt;/span&gt;
+&lt;span class="cm"&gt;      &amp;quot;&amp;quot;     { goto end; }&lt;/span&gt;
+&lt;span class="cm"&gt;      [0-9]  { *f = (*f * 10) + (s[-1] - &amp;#39;0&amp;#39;); goto mant_int; }&lt;/span&gt;
+&lt;span class="cm"&gt;  */&lt;/span&gt;
+&lt;span class="nl"&gt;mant_frac&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="cm"&gt;/*!re2c&lt;/span&gt;
+&lt;span class="cm"&gt;      &amp;quot;&amp;quot;     { goto end; }&lt;/span&gt;
+&lt;span class="cm"&gt;      [0-9]  { *f += (x /= 10) * (s[-1] - &amp;#39;0&amp;#39;); goto mant_frac; }&lt;/span&gt;
+&lt;span class="cm"&gt;  */&lt;/span&gt;
+&lt;span class="nl"&gt;end&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;neg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;*=&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
+&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;cc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;o1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;o1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;+&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;o1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;-&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;o1&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;/&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;o1&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;*&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;o1&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; 
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;lex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;cur&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// YYMARKER is needed because rules overlap:&lt;/span&gt;
+  &lt;span class="c1"&gt;// it backups input position of the longest successful match&lt;/span&gt;
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;YYMARKER&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tok&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;cur&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="cm"&gt;/*!re2c&lt;/span&gt;
+&lt;span class="cm"&gt;        re2c:yyfill:enable = 0;&lt;/span&gt;
+&lt;span class="cm"&gt;        re2c:define:YYCTYPE = char;&lt;/span&gt;
+&lt;span class="cm"&gt;        re2c:define:YYCURSOR = cur;&lt;/span&gt;
+
+&lt;span class="cm"&gt;        flt = &amp;quot;-&amp;quot; ? ([0-9]+ | [0-9]* &amp;quot;.&amp;quot; [0-9]+);&lt;/span&gt;
+&lt;span class="cm"&gt;        mop = [-+*\/];&lt;/span&gt;
+
+&lt;span class="cm"&gt;        *       { return true; }&lt;/span&gt;
+&lt;span class="cm"&gt;        &amp;quot;\x00&amp;quot;  { return false; }&lt;/span&gt;
+&lt;span class="cm"&gt;        flt     { if (lex_flt(tok, cur, &amp;amp;f) || stack_push(f)) return true; continue; }&lt;/span&gt;
+&lt;span class="cm"&gt;        &amp;quot; &amp;quot; flt { if (lex_flt(tok + 1, cur, &amp;amp;f) || stack_push(f)) return true; continue; }&lt;/span&gt;
+&lt;span class="cm"&gt;        mop     { if (cc(*tok)) return true; continue; }&lt;/span&gt;
+&lt;span class="cm"&gt;        &amp;quot; &amp;quot; mop { if (cc(*(tok + 1))) return true; continue; }&lt;/span&gt;
+&lt;span class="cm"&gt;    */&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
+&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;rpn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;cur&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;stack_clr&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;lex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;cur&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;||&lt;/span&gt; &lt;span class="n"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Работа с символьным &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;дисплеем&lt;/a&gt; и &lt;a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/"&gt;матричной&lt;/a&gt; клавиатурой описывались в предыдущем материале.&lt;/p&gt;
+&lt;p&gt;Для преобразования выражений из обычной (например &lt;code&gt;3 + 4 * (2 - 1)&lt;/code&gt;) инфиксной нотации в постфиксную (RPN) существует алгоритм «сортировочная станция», который так же как и RPN основан на стеке и легко может быть адаптирован под микроконтроллеры. Таким образом несложно разработать калькулятор для обычный людей.&lt;/p&gt;
+&lt;p&gt;Ещё раз ссылка на &lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip"&gt;исходники&lt;/a&gt; RPN-калькулятора. &lt;/p&gt;</content><category term="picsim"></category><category term="re2c"></category></entry><entry><title>PICSim.js - сопрограммы и простейшая многозадачность</title><link href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="alternate"></link><published>2017-02-05T00:00:00+02:00</published><updated>2017-02-05T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-05:/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/</id><summary type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи, причём в случае PIC18 это даже двухуровневая система прерываний. Обычно всего этого достаточно для реализации простой логики, однако при увеличении требований к системе традиционный подход теряет привлекательность. Альтернативный метод структурирования приложений состоит в том, чтобы выделить и отделить независимые подзадачи друг от друга и использовать некий программный каркас, который управляет этими подзадачами согласно набору ясно определенных правил. При таком подходе могут одновременно выполняться несколько (псевдо)параллельных задач, сообщающихся между собой и управляемых единым ядром. Этот подход к программированию - RTOS (операционная система реального времени), а многозадачность бывает 2 видов:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;кооперативная - следующая задача выполняется только после того, как текущая задача явно передаст управление&lt;/p&gt;
@@ -8,9 +145,10 @@
 &lt;p&gt;вытесняющая - планировщик операционной системы сам передает управление от одной задачи другой&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров. Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью &lt;a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" rel="nofollow"&gt;сопрограмм&lt;/a&gt;(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;состояние&lt;/a&gt; между вызовами, хитрое применением оператора &lt;code&gt;switch&lt;/code&gt; и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.&lt;/p&gt;
+&lt;p&gt;Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h"&gt;coroutine.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью &lt;a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" rel="nofollow"&gt;сопрограмм&lt;/a&gt;(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;состояние&lt;/a&gt; между вызовами, хитрое применением оператора &lt;code&gt;switch&lt;/code&gt; и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;task_r.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -126,7 +264,7 @@
 
 &lt;p&gt;Тут две задачи - левые светодиоды и правые. Каждая задача представляет из себя бесконечный цикл - и будь это обычные функции всё процессорное время ушло бы на &lt;code&gt;task_leds_l()&lt;/code&gt;, тогда как до &lt;code&gt;task_leds_r()&lt;/code&gt; очередь бы так и не дошла. Но мы имеем дело не с простыми функциями, а сопрограммами - макрос YIELD возвращает управление обратно вызывающей функции, а она в свою очередь просто поочерёдно вызывает задачи, выполняя тем самым функцию простейшего планировщика.&lt;/p&gt;
 &lt;p&gt;При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её &lt;code&gt;static&lt;/code&gt; - например &lt;code&gt;static uint8_t i, port&lt;/code&gt;, в то время как к &lt;code&gt;uint8_t random6&lt;/code&gt; это самая обычная (автоматическая) переменная.&lt;/p&gt;
-&lt;p&gt;А что произойдёт, если к этим двум задачам досыпать ещё парочку ? Очевидно, что тогда задержки придётся перебирать заново:&lt;/p&gt;
+&lt;p&gt;А что произойдёт, если к этим двум задачам досыпать ещё парочку ? Очевидно, что тогда временные интервалы придётся перебирать заново:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// delay&lt;/span&gt;
 &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;240&lt;/span&gt; &lt;span class="cm"&gt;/* new value */&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
   &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
@@ -134,8 +272,8 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;И это плохо - такие проекты тяжело сопровождать и развивать. Существует достаточно простой способ избежать этого нежелательного эффекта, если привязать эти самые задержки к какому-нибудь аппаратному таймеру. В следующем примере запускается таймер, постоянно отсчитывается время с момента включения. Это время не зависит от загрузки процессора и количества выполняемых задач.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h"&gt;coroutine.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main2.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/a8ff2394bb5884738bbee3ce613be1ce"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;И это плохо - такие проекты тяжело сопровождать и развивать. Существует достаточно простой способ избежать этого нежелательного эффекта, если привязать временные интервалы к какому-нибудь аппаратному таймеру. В следующем примере запускается таймер, постоянно отсчитывается время с момента включения. Это время не зависит от загрузки процессора и количества выполняемых задач.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main2.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/a8ff2394bb5884738bbee3ce613be1ce"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;isr.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -143,6 +281,7 @@
 &lt;span class="c1"&gt;// up time since the start of the system&lt;/span&gt;
 &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;_uptime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
+&lt;span class="c1"&gt;// http://www.microchip.com/forums/m890404.aspx&lt;/span&gt;
 &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="nf"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;GIE&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="n"&gt;GIE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// critical section&lt;/span&gt;
@@ -164,16 +303,33 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Поскольку разрядность счётчика времени &lt;code&gt;uint32_t&lt;/code&gt; больше разрядности микроконтроллера - операции над переменной &lt;code&gt;_uptime&lt;/code&gt; не атомарны, поэтому в функцию &lt;code&gt;get_uptime()&lt;/code&gt; вводится простейший механизм синхронизации через GIE. Теперь во всех задачах при формировании временных интервалов более целесообразно пользоваться функцией &lt;code&gt;get_uptime()&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// delay&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;();)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
 &lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
 &lt;span class="cm"&gt;  xc8 --chip=18f4620 main.c isr.c&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
-&lt;span class="c1"&gt;// ...&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;xc.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;config-4620.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// non-reentrant tasks examples&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_r.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
 &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-  &lt;span class="c1"&gt;// ...&lt;/span&gt;
+  &lt;span class="c1"&gt;// leds&lt;/span&gt;
+  &lt;span class="n"&gt;PORTA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISA&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;PORTC&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;TRISC&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0x18&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
   &lt;span class="c1"&gt;// TMR0 high priority Interrupt, 8 bit, 1:32 Prescale&lt;/span&gt;
   &lt;span class="n"&gt;RCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IPEN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -186,39 +342,19 @@
   &lt;span class="n"&gt;T0CONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TMR0ON&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
   &lt;span class="n"&gt;INTCONbits&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;GIE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="c1"&gt;// ...&lt;/span&gt;
-
-&lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;task_r.c&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// ...&lt;/span&gt;
-
-&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="nf"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
-
-&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;task_leds_r&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-  &lt;span class="c1"&gt;// ...&lt;/span&gt;
-
-  &lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;uint32_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-  &lt;span class="c1"&gt;// ...&lt;/span&gt;
-
-  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-    &lt;span class="c1"&gt;// ...&lt;/span&gt;
-
-    &lt;span class="c1"&gt;// http://www.microchip.com/forums/m890404.aspx&lt;/span&gt;
-    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;get_uptime&lt;/span&gt;&lt;span class="p"&gt;();)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-      &lt;span class="n"&gt;YIELD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="cm"&gt;/* cooperate delay */&lt;/span&gt; 
-    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="c1"&gt;// simplest cooperative scheduler&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;task_leds_l&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;task_leds_r&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
   &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Код, который не менялся, обозначен как &lt;code&gt;// ...&lt;/code&gt;, изменения в задаче &lt;em&gt;task_l.c&lt;/em&gt; аналогичны изменениям в &lt;em&gt;task_r.c&lt;/em&gt; и поэтому не показаны. Поскольку разрядность счётчика времени больше разрядности микроконтроллера - математические операции не атомарны, поэтому в функцию &lt;code&gt;get_uptime()&lt;/code&gt; вводится простейший механизм синхронизации GIE. Несмотря на свою простоту описанное решение характеризуется прекрасной переносимостью - тут чистый С без ассемблерных вставок и оно вполне подходит для реальных проектов и особенно хорошо подходит для очень слабых микроконтроллеров. &lt;/p&gt;</content><category term="picsim"></category><category term="RTOS"></category></entry><entry><title>PICSim.js - часы реального времени DS1307</title><link href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="alternate"></link><published>2017-02-02T00:00:00+02:00</published><updated>2017-02-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-02:/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/</id><summary type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.&lt;/p&gt;
+&lt;p&gt;Несмотря на свою простоту описанное решение характеризуется прекрасной переносимостью - тут чистый С без ассемблерных вставок и оно вполне подходит для реальных проектов и особенно хорошо подходит для очень слабых микроконтроллеров.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/"&gt;Далее&lt;/a&gt; калькулятор выражений в обратной польской нотации.&lt;/p&gt;</content><category term="picsim"></category><category term="RTOS"></category></entry><entry><title>PICSim.js - часы реального времени DS1307</title><link href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="alternate"></link><published>2017-02-02T00:00:00+02:00</published><updated>2017-02-02T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-02:/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/</id><summary type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.&lt;/p&gt;
 &lt;p&gt;К ознакомлению настоятельно рекомендуется &lt;a href="https://www.sparkfun.com/datasheets/Components/DS1307.pdf" rel="nofollow"&gt;официальная&lt;/a&gt; документация на DS1307. В случае с шиной I2C в первую очередь важны следующие характеристики - максимальная частота тактирования SCL (от этого зависит максимальная скорость передачи данных), физический адрес микросхемы (из 127 возможных) на шине и внутренняя карта памяти (адреса регистров). Так как I2C является &lt;em&gt;синхронным&lt;/em&gt; интерфейсом, то имеет значение именно верхняя граница частоты, тогда как фактическая скорость обмена задаётся мастером и может быть любой и даже необязательно постоянной - микроконтроллер может спокойно переключаться на более важные задачи без потери данных на шине. Это серьёзное преимущество синхронных интерфейсов переда асинхронными.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/config-4620.h"&gt;config.h&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c"&gt;i2c-hw.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;liquid-crystal.c&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/1bcc58df4b0494fada5bfdc2638e8034"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;

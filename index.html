@@ -28,7 +28,168 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">PICSim.js - сопрограммы и простейшая многозадачность</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">PICSim.js - калькулятор и обратная польская запись</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-02-14T00:00:00+02:00">
+                Published: Вт. 14 Февраль 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/re2c">re2c</a> </p>
+</footer><!-- /.post-info --><p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается в стек, а если встречается оператор, то из стека извлекаются два последних операнда и выполняется
+операция, после чего результат посылается обратно в стек. Классическая реализация калькулятора на базе обратной польской записи подробно расписана в книге «Язык программирования Си» Брайана Кернигана и Денниса Ритчи (последний один из непосредственных авторов и разработчиков языка Си). В общем случае алгоритм решения подобных задач сводится к двум этапам:</p>
+<ul>
+<li>
+<p>лексической анализ - распознавание и выделение лексем из входной последовательности символов. В случае RPN калькулятора на выходе получаем числа и арифметические операции</p>
+</li>
+<li>
+<p>синтаксический анализ - последовательность лексем преобразуется в структуру данных, которая хорошо подходит для дальнейшей обработки. В упрощённом случае для RPN калькулятора это стек</p>
+</li>
+</ul>
+<p>Ошибки при выполнении программы могут происходить на обоих этапах - за вводом недопустимых символов (например букв) должен следить лексической анализатор, а вот обработка деления на ноль или неправильное количество элементов в стеке это уже зона ответственности синтаксического анализа.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> | <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. требуют POSIX. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - <a href="http://re2c.org/" rel="nofollow">re2c</a>. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция <code>lex_flt</code> это облегчённая версия <code>atof</code>/<code>strtod</code>, достаточная для RPN калькулятора.</p>
+<p><em>stack.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">data</span><span class="p">[</span><span class="n">RPN_MAX_CHARS</span> <span class="o">/</span> <span class="mi">2</span><span class="p">];</span>
+  <span class="kt">uint8_t</span> <span class="n">sp</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">_stack</span><span class="p">;</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">stack_push</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="n">_stack</span><span class="p">.</span><span class="n">data</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">stack_pop</span><span class="p">(</span><span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="o">--</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span><span class="p">];</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">stack_clr</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>rpn.re.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;stack.c&quot;</span><span class="cp"></span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="k">static</span> <span class="kt">bool</span> <span class="nf">lex_flt</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">e</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">neg</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="cm">/*!re2c</span>
+<span class="cm">      re2c:yyfill:enable = 0;</span>
+<span class="cm">      re2c:define:YYCTYPE = char;</span>
+<span class="cm">      re2c:define:YYCURSOR = s;</span>
+
+<span class="cm">      &quot;-&quot;    { neg = true; goto mant_int; }</span>
+<span class="cm">      &quot;&quot;     { goto mant_int; }</span>
+<span class="cm">  */</span>
+<span class="nl">mant_int</span><span class="p">:</span>
+  <span class="cm">/*!re2c</span>
+<span class="cm">      &quot;.&quot;    { goto mant_frac; }</span>
+<span class="cm">      &quot;&quot;     { goto end; }</span>
+<span class="cm">      [0-9]  { *f = (*f * 10) + (s[-1] - &#39;0&#39;); goto mant_int; }</span>
+<span class="cm">  */</span>
+<span class="nl">mant_frac</span><span class="p">:</span>
+  <span class="cm">/*!re2c</span>
+<span class="cm">      &quot;&quot;     { goto end; }</span>
+<span class="cm">      [0-9]  { *f += (x /= 10) * (s[-1] - &#39;0&#39;); goto mant_frac; }</span>
+<span class="cm">  */</span>
+<span class="nl">end</span><span class="p">:</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">neg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">f</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">s</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">cc</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">o1</span><span class="p">,</span> <span class="n">o2</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">stack_pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">stack_pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o1</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">case</span> <span class="sc">&#39;+&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">+</span> <span class="n">o2</span><span class="p">);</span>
+      <span class="k">case</span> <span class="sc">&#39;-&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">-</span> <span class="n">o2</span><span class="p">);</span>
+      <span class="k">case</span> <span class="sc">&#39;/&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">o2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">/</span> <span class="n">o2</span><span class="p">);</span>
+      <span class="k">case</span> <span class="sc">&#39;*&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">*</span> <span class="n">o2</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span> 
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="k">static</span> <span class="kt">bool</span> <span class="nf">lex</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// YYMARKER is needed because rules overlap:</span>
+  <span class="c1">// it backups input position of the longest successful match</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">YYMARKER</span><span class="p">;</span>
+
+  <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">tok</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>
+    <span class="cm">/*!re2c</span>
+<span class="cm">        re2c:yyfill:enable = 0;</span>
+<span class="cm">        re2c:define:YYCTYPE = char;</span>
+<span class="cm">        re2c:define:YYCURSOR = cur;</span>
+
+<span class="cm">        flt = &quot;-&quot; ? ([0-9]+ | [0-9]* &quot;.&quot; [0-9]+);</span>
+<span class="cm">        mop = [-+*\/];</span>
+
+<span class="cm">        *       { return true; }</span>
+<span class="cm">        &quot;\x00&quot;  { return false; }</span>
+<span class="cm">        flt     { if (lex_flt(tok, cur, &amp;f) || stack_push(f)) return true; continue; }</span>
+<span class="cm">        &quot; &quot; flt { if (lex_flt(tok + 1, cur, &amp;f) || stack_push(f)) return true; continue; }</span>
+<span class="cm">        mop     { if (cc(*tok)) return true; continue; }</span>
+<span class="cm">        &quot; &quot; mop { if (cc(*(tok + 1))) return true; continue; }</span>
+<span class="cm">    */</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">rpn</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">cur</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">stack_clr</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">lex</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="o">||</span> <span class="n">stack_pop</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Работа с символьным <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">дисплеем</a> и <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">матричной</a> клавиатурой описывались в предыдущем материале.</p>
+<p>Для преобразования выражений из обычной (например <code>3 + 4 * (2 - 1)</code>) инфиксной нотации в постфиксную (RPN) существует алгоритм «сортировочная станция», который так же как и RPN основан на стеке и легко может быть адаптирован под микроконтроллеры. Таким образом несложно разработать калькулятор для обычный людей.</p>
+<p>Ещё раз ссылка на <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> RPN-калькулятора. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="bookmark"
+                           title="Permalink to PICSim.js - сопрограммы и простейшая многозадачность">PICSim.js - сопрограммы и простейшая многозадачность</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-02-05T00:00:00+02:00">
                 Published: Вс. 05 Февраль 2017
@@ -39,231 +200,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info --><p>Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">программа</a> для микроконтроллера это <em>суперцикл</em> - одна точка входа <code>main</code> с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">прерываний</a> - немедленную обработку событий, что позволяет решать более сложные задачи, причём в случае PIC18 это даже двухуровневая система прерываний. Обычно всего этого достаточно для реализации простой логики, однако при увеличении требований к системе традиционный подход теряет привлекательность. Альтернативный метод структурирования приложений состоит в том, чтобы выделить и отделить независимые подзадачи друг от друга и использовать некий программный каркас, который управляет этими подзадачами согласно набору ясно определенных правил. При таком подходе могут одновременно выполняться несколько (псевдо)параллельных задач, сообщающихся между собой и управляемых единым ядром. Этот подход к программированию - RTOS (операционная система реального времени), а многозадачность бывает 2 видов:</p>
-<ul>
-<li>
-<p>кооперативная - следующая задача выполняется только после того, как текущая задача явно передаст управление</p>
-</li>
-<li>
-<p>вытесняющая - планировщик операционной системы сам передает управление от одной задачи другой</p>
-</li>
-</ul>
-<p>Кооперативная многозадачность является наиболее простой с точки зрения реализации и хорошо подходит для слабых микроконтроллеров. Простейшую кооперативную многозадачность в чистом С можно реализовать с помощью <a href="http://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" rel="nofollow">сопрограмм</a>(coroutine). Это очень практичная и интересная реализация, где каждая функция сохраняет своё внутреннее <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">состояние</a> между вызовами, хитрое применением оператора <code>switch</code> и парочки макросов даёт возможность этой функции приостанавливаться, а при последующем вызове продолжать выполнение с предыдущего места - именно так и ведут себя сопрограммы.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h">coroutine.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/56fd34dfd1c731a3d6eee89ccd6ee25b">picsim.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p><em>task_r.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;coroutine.h&quot;</span><span class="cp"></span>
-
-<span class="cp">#define YIELD scrReturnV </span><span class="c1">// just readability</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">task_leds_r</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">scrBegin</span><span class="p">;</span>
-
-  <span class="k">static</span> <span class="kt">uint8_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">port</span><span class="p">;</span>
-
-  <span class="c1">// infinite task loop</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// chasing leds</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">port</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">port</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">port</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">))</span> <span class="p">{</span>
-      <span class="n">port</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">port</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">port</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">PORTA</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">PORTA</span> <span class="o">|=</span> <span class="mh">0x80</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="n">PORTC</span> <span class="o">=</span> <span class="p">(</span><span class="n">PORTC</span> <span class="o">&amp;</span> <span class="n">TRISC</span><span class="p">)</span> <span class="o">|</span> <span class="n">port</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
-      <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="n">scrFinishV</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>task_l.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;coroutine.h&quot;</span><span class="cp"></span>
-
-<span class="cp">#define YIELD scrReturnV </span><span class="c1">// just readability</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">task_leds_l</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">scrBegin</span><span class="p">;</span>
-
-  <span class="k">static</span> <span class="kt">uint8_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">port</span><span class="p">;</span>
-
-  <span class="c1">// infinite task loop</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// chasing leds</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">port</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">port</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">port</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="n">PORTA</span> <span class="o">=</span> <span class="p">(</span><span class="n">PORTA</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="o">|</span> <span class="n">port</span><span class="p">;</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
-      <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
-    <span class="p">}</span>
-
-    <span class="c1">// blink random leds</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">port</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">port</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span> <span class="n">port</span><span class="p">;</span> <span class="n">port</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kt">uint8_t</span> <span class="n">random6</span><span class="p">;</span>
-        <span class="k">do</span> <span class="p">{</span>
-          <span class="n">random6</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="cm">/* 0..6 */</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="mi">7</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">random6</span> <span class="o">==</span> <span class="p">(</span><span class="n">PORTA</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mh">0x80</span><span class="p">));</span>
-        <span class="n">PORTA</span> <span class="o">=</span> <span class="p">(</span><span class="n">PORTA</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="o">|</span> <span class="n">random6</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
-          <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
-        <span class="p">}</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="n">scrFinishV</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 --chip=18f4620 main.c</span>
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
-
-<span class="c1">// non-reentrant tasks examples</span>
-
-<span class="cp">#include</span> <span class="cpf">&quot;task_l.c&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;task_r.c&quot;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="c1">// leds</span>
-  <span class="n">PORTA</span> <span class="o">=</span> <span class="n">TRISA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">PORTC</span> <span class="o">=</span> <span class="n">TRISC</span> <span class="o">=</span> <span class="mh">0x18</span><span class="p">;</span>
-
-  <span class="c1">// simplest cooperative scheduler</span>
-  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">task_leds_l</span><span class="p">();</span>
-    <span class="n">task_leds_r</span><span class="p">();</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Тут две задачи - левые светодиоды и правые. Каждая задача представляет из себя бесконечный цикл - и будь это обычные функции всё процессорное время ушло бы на <code>task_leds_l()</code>, тогда как до <code>task_leds_r()</code> очередь бы так и не дошла. Но мы имеем дело не с простыми функциями, а сопрограммами - макрос YIELD возвращает управление обратно вызывающей функции, а она в свою очередь просто поочерёдно вызывает задачи, выполняя тем самым функцию простейшего планировщика.</p>
-<p>При работе с сопрограммами следует особое внимание уделять переменным. Если переменная должна сохранять своё значение между вызовами, то необходимо объявлять её <code>static</code> - например <code>static uint8_t i, port</code>, в то время как к <code>uint8_t random6</code> это самая обычная (автоматическая) переменная.</p>
-<p>А что произойдёт, если к этим двум задачам досыпать ещё парочку ? Очевидно, что тогда задержки придётся перебирать заново:</p>
-<div class="highlight"><pre><span></span><span class="c1">// delay</span>
-<span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">240</span> <span class="cm">/* new value */</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> 
-  <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
-<span class="p">}</span>
-</pre></div>
-
-
-<p>И это плохо - такие проекты тяжело сопровождать и развивать. Существует достаточно простой способ избежать этого нежелательного эффекта, если привязать эти самые задержки к какому-нибудь аппаратному таймеру. В следующем примере запускается таймер, постоянно отсчитывается время с момента включения. Это время не зависит от загрузки процессора и количества выполняемых задач.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/coroutine.h">coroutine.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/main2.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/a8ff2394bb5884738bbee3ce613be1ce">picsim.js</a></p>
-<p><em>isr.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-
-<span class="c1">// up time since the start of the system</span>
-<span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">_uptime</span><span class="p">;</span>
-
-<span class="kt">uint32_t</span> <span class="nf">get_uptime</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">GIE</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">GIE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// critical section</span>
-    <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">copy</span> <span class="o">=</span> <span class="n">_uptime</span><span class="p">;</span>
-    <span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// critical section end</span>
-    <span class="k">return</span> <span class="n">copy</span><span class="p">;</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="n">_uptime</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1">// High priority interrupt</span>
-<span class="kt">void</span> <span class="n">interrupt</span> <span class="nf">isr</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">&amp;&amp;</span> <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span><span class="p">)</span> <span class="p">{</span>                               
-    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">_uptime</span><span class="o">++</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-<span class="cm">  xc8 --chip=18f4620 main.c isr.c</span>
-<span class="cm">*/</span>
-
-<span class="c1">// ...</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="c1">// ...</span>
-
-  <span class="c1">// TMR0 high priority Interrupt, 8 bit, 1:32 Prescale</span>
-  <span class="n">RCONbits</span><span class="p">.</span><span class="n">IPEN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">T0CON</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">T0CONbits</span><span class="p">.</span><span class="n">T08BIT</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">T0CONbits</span><span class="p">.</span><span class="n">T0PS2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">INTCON2bits</span><span class="p">.</span><span class="n">TMR0IP</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>        
-  <span class="n">T0CONbits</span><span class="p">.</span><span class="n">TMR0ON</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-
-  <span class="c1">// ...</span>
-
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>task_r.c</em></p>
-<div class="highlight"><pre><span></span><span class="c1">// ...</span>
-
-<span class="k">extern</span> <span class="kt">uint32_t</span> <span class="nf">get_uptime</span><span class="p">();</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">task_leds_r</span><span class="p">()</span> <span class="p">{</span>
-
-  <span class="c1">// ...</span>
-
-  <span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">i</span><span class="p">;</span>
-
-  <span class="c1">// ...</span>
-
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="c1">// ...</span>
-
-    <span class="c1">// http://www.microchip.com/forums/m890404.aspx</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">get_uptime</span><span class="p">()</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">get_uptime</span><span class="p">();)</span> <span class="p">{</span>
-      <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Код, который не менялся, обозначен как <code>// ...</code>, изменения в задаче <em>task_l.c</em> аналогичны изменениям в <em>task_r.c</em> и поэтому не показаны. Поскольку разрядность счётчика времени больше разрядности микроконтроллера - математические операции не атомарны, поэтому в функцию <code>get_uptime()</code> вводится простейший механизм синхронизации GIE. Несмотря на свою простоту описанное решение характеризуется прекрасной переносимостью - тут чистый С без ассемблерных вставок и оно вполне подходит для реальных проектов и особенно хорошо подходит для очень слабых микроконтроллеров. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">программа</a> для микроконтроллера это <em>суперцикл</em> - одна точка входа <code>main</code> с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">прерываний</a> - немедленную обработку событий, что позволяет решать более сложные задачи …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -329,28 +269,6 @@
 </footer><!-- /.post-info -->                <p>Как мы уже <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">знаем</a>, цифро-аналоговые преобразователи (ЦАП, DAC) преобразуют дискретный (двоичный) код в аналоговый сигнал - как правило напряжение. Не менее востребованным в цифровой электронике является обратное преобразование - аналого-цифровой преобразователь (АЦП, англ. Analog-to-digital converter, ADC). Наиболее важными характеристиками АЦП являются разрядность/разрешение - минимальное изменение величины аналогового сигнала, которое может быть зафиксировано …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/" rel="bookmark"
-                           title="Permalink to PICSim.js - символьный дисплей на базе HD44780">PICSim.js - символьный дисплей на базе HD44780</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-27T00:00:00+02:00">
-                Published: Пт. 27 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/hd44780">HD44780</a> </p>
-</footer><!-- /.post-info -->                <p>Среди множества различных LCD дисплеев наиболее простыми являются текстовые (символьные) дисплеи на основе контроллера hd44780 с параллельным 4-или 8-битным интерфейсом. В сравнении с <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">7-сегментными</a> индикаторами, дисплеи на базе HD44780 обладают на порядок большими возможностями - количество строк на экране у разных моделей - 1,2 или 4; число видимых символов в строке …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - re2c</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">PICSim.js - калькулятор и обратная польская запись</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-02-14T00:00:00+02:00">
+                Published: Вт. 14 Февраль 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/re2c">re2c</a> </p>
+</footer><!-- /.post-info --><p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается в стек, а если встречается оператор, то из стека извлекаются два последних операнда и выполняется
+операция, после чего результат посылается обратно в стек. Классическая реализация калькулятора на базе обратной польской записи подробно расписана в книге «Язык программирования Си» Брайана Кернигана и Денниса Ритчи (последний один из непосредственных авторов и разработчиков языка Си). В общем случае алгоритм решения подобных задач сводится к двум этапам:</p>
+<ul>
+<li>
+<p>лексической анализ - распознавание и выделение лексем из входной последовательности символов. В случае RPN калькулятора на выходе получаем числа и арифметические операции</p>
+</li>
+<li>
+<p>синтаксический анализ - последовательность лексем преобразуется в структуру данных, которая хорошо подходит для дальнейшей обработки. В упрощённом случае для RPN калькулятора это стек</p>
+</li>
+</ul>
+<p>Ошибки при выполнении программы могут происходить на обоих этапах - за вводом недопустимых символов (например букв) должен следить лексической анализатор, а вот обработка деления на ноль или неправильное количество элементов в стеке это уже зона ответственности синтаксического анализа.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> | <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. требуют POSIX. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - <a href="http://re2c.org/" rel="nofollow">re2c</a>. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция <code>lex_flt</code> это облегчённая версия <code>atof</code>/<code>strtod</code>, достаточная для RPN калькулятора.</p>
+<p><em>stack.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">data</span><span class="p">[</span><span class="n">RPN_MAX_CHARS</span> <span class="o">/</span> <span class="mi">2</span><span class="p">];</span>
+  <span class="kt">uint8_t</span> <span class="n">sp</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">_stack</span><span class="p">;</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">stack_push</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="n">_stack</span><span class="p">.</span><span class="n">data</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">stack_pop</span><span class="p">(</span><span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="o">--</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span><span class="p">];</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">stack_clr</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>rpn.re.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;stack.c&quot;</span><span class="cp"></span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="k">static</span> <span class="kt">bool</span> <span class="nf">lex_flt</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">e</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">neg</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="cm">/*!re2c</span>
+<span class="cm">      re2c:yyfill:enable = 0;</span>
+<span class="cm">      re2c:define:YYCTYPE = char;</span>
+<span class="cm">      re2c:define:YYCURSOR = s;</span>
+
+<span class="cm">      &quot;-&quot;    { neg = true; goto mant_int; }</span>
+<span class="cm">      &quot;&quot;     { goto mant_int; }</span>
+<span class="cm">  */</span>
+<span class="nl">mant_int</span><span class="p">:</span>
+  <span class="cm">/*!re2c</span>
+<span class="cm">      &quot;.&quot;    { goto mant_frac; }</span>
+<span class="cm">      &quot;&quot;     { goto end; }</span>
+<span class="cm">      [0-9]  { *f = (*f * 10) + (s[-1] - &#39;0&#39;); goto mant_int; }</span>
+<span class="cm">  */</span>
+<span class="nl">mant_frac</span><span class="p">:</span>
+  <span class="cm">/*!re2c</span>
+<span class="cm">      &quot;&quot;     { goto end; }</span>
+<span class="cm">      [0-9]  { *f += (x /= 10) * (s[-1] - &#39;0&#39;); goto mant_frac; }</span>
+<span class="cm">  */</span>
+<span class="nl">end</span><span class="p">:</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">neg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">f</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">s</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">cc</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kt">float</span> <span class="n">o1</span><span class="p">,</span> <span class="n">o2</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">stack_pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">stack_pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o1</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">case</span> <span class="sc">&#39;+&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">+</span> <span class="n">o2</span><span class="p">);</span>
+      <span class="k">case</span> <span class="sc">&#39;-&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">-</span> <span class="n">o2</span><span class="p">);</span>
+      <span class="k">case</span> <span class="sc">&#39;/&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">o2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">/</span> <span class="n">o2</span><span class="p">);</span>
+      <span class="k">case</span> <span class="sc">&#39;*&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">*</span> <span class="n">o2</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span> 
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="k">static</span> <span class="kt">bool</span> <span class="nf">lex</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// YYMARKER is needed because rules overlap:</span>
+  <span class="c1">// it backups input position of the longest successful match</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">YYMARKER</span><span class="p">;</span>
+
+  <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">tok</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>
+    <span class="cm">/*!re2c</span>
+<span class="cm">        re2c:yyfill:enable = 0;</span>
+<span class="cm">        re2c:define:YYCTYPE = char;</span>
+<span class="cm">        re2c:define:YYCURSOR = cur;</span>
+
+<span class="cm">        flt = &quot;-&quot; ? ([0-9]+ | [0-9]* &quot;.&quot; [0-9]+);</span>
+<span class="cm">        mop = [-+*\/];</span>
+
+<span class="cm">        *       { return true; }</span>
+<span class="cm">        &quot;\x00&quot;  { return false; }</span>
+<span class="cm">        flt     { if (lex_flt(tok, cur, &amp;f) || stack_push(f)) return true; continue; }</span>
+<span class="cm">        &quot; &quot; flt { if (lex_flt(tok + 1, cur, &amp;f) || stack_push(f)) return true; continue; }</span>
+<span class="cm">        mop     { if (cc(*tok)) return true; continue; }</span>
+<span class="cm">        &quot; &quot; mop { if (cc(*(tok + 1))) return true; continue; }</span>
+<span class="cm">    */</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="c1">// 0 == SUCCESS</span>
+<span class="kt">bool</span> <span class="nf">rpn</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">cur</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">stack_clr</span><span class="p">();</span>
+  <span class="k">return</span> <span class="n">lex</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="o">||</span> <span class="n">stack_pop</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Работа с символьным <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">дисплеем</a> и <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">матричной</a> клавиатурой описывались в предыдущем материале.</p>
+<p>Для преобразования выражений из обычной (например <code>3 + 4 * (2 - 1)</code>) инфиксной нотации в постфиксную (RPN) существует алгоритм «сортировочная станция», который так же как и RPN основан на стеке и легко может быть адаптирован под микроконтроллеры. Таким образом несложно разработать калькулятор для обычный людей.</p>
+<p>Ещё раз ссылка на <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> RPN-калькулятора. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a href="http://github.com/mazko">github</a></li>
+                            <li><a href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
