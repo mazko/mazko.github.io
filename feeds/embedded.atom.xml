@@ -4227,6 +4227,39 @@ Your browser does not support the video tag.
 
 
 &lt;p&gt;Главным недостатком такого подхода является дополнительный объём памяти, в котором будут храниться строки с комментариями. Для встраиваемых приложений это особенно актуально. Однако не стоит забывать, что макрос &lt;code&gt;assert&lt;/code&gt; - это инструментарий для отладки, его в любое время можно отключить (&lt;code&gt;NDEBUG&lt;/code&gt;).&lt;/p&gt;
+&lt;h3&gt;СТАТИЧЕСКАЯ ДИАГНОСТИКА&lt;/h3&gt;
+&lt;p&gt;Диагностировать ошибки в программе на этапе компиляции обычно выходит дешевле чем тестировать продукт на реальных пользователях. Например парочка макросов для битовых операций:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#define BIT_SET(a,b) ((a) |= (1&amp;lt;&amp;lt;(b)))&lt;/span&gt;
+&lt;span class="cp"&gt;#define BIT_CLEAR(a,b) ((a) &amp;amp;= ~(1&amp;lt;&amp;lt;(b)))&lt;/span&gt;
+&lt;span class="cp"&gt;#define BIT_FLIP(a,b) ((a) ^= (1&amp;lt;&amp;lt;(b)))&lt;/span&gt;
+&lt;span class="cp"&gt;#define BIT_CHECK(a,b) ((a) &amp;amp; (1&amp;lt;&amp;lt;(b)))&lt;/span&gt;
+
+&lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// OK&lt;/span&gt;
+&lt;span class="n"&gt;BIT_SET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// BAD: 10 &amp;gt; 8 * sizeof(a)&lt;/span&gt;
+&lt;span class="n"&gt;BIT_SET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Очевидно операция &lt;code&gt;BIT_SET(a, 10);&lt;/code&gt; не имеет смысла для переменной 8 бит и такой класс ошибок можно и нужно обнаруживать ещё на этапе компиляции. Существуют много различных &lt;a href="http://www.pixelbeat.org/programming/gcc/static_assert.html" rel="nofollow"&gt;способов&lt;/a&gt; это сделать.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#define STATIC_ASSERT(cond) typedef int foo[(cond) ? 1 : -1]&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define BIT_SET(a,b) STATIC_ASSERT(8*sizeof(a)&amp;gt;b); ((a) |= (1&amp;lt;&amp;lt;(b)))&lt;/span&gt;
+
+&lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// OK&lt;/span&gt;
+&lt;span class="n"&gt;BIT_SET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="c1"&gt;// compile error&lt;/span&gt;
+&lt;span class="n"&gt;BIT_SET&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Теперь логически неправильный код &lt;code&gt;BIT_SET(a, 10);&lt;/code&gt; попросту не соберётся что и требовалось в постановке задачи.&lt;/p&gt;
 &lt;h3&gt;КОНСТАНТЫ СЛЕВА&lt;/h3&gt;
 &lt;p&gt;В стандарт &lt;strong&gt;С&lt;/strong&gt; вошла одна загадочная конструкция, в которой легко запутаться / очепятаться (мы с ней отчасти уже пересекались при описании идиомы ИМЕНОВАННЫЕ АРГУМЕНТЫ):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
