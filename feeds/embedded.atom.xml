@@ -23,7 +23,7 @@
 &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
-&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;stack_push&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -32,7 +32,7 @@
 &lt;span class="p"&gt;}&lt;/span&gt;
 
 &lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
-&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
     &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -40,7 +40,7 @@
   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;stack_clr&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;stack_clr&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="n"&gt;_stack&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -84,7 +84,7 @@
 &lt;span class="p"&gt;}&lt;/span&gt;
 
 &lt;span class="c1"&gt;// 0 == SUCCESS&lt;/span&gt;
-&lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;cc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;bool&lt;/span&gt; &lt;span class="nf"&gt;cc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="kt"&gt;float&lt;/span&gt; &lt;span class="n"&gt;o1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
   &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;o2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;stack_pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;o1&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -1086,10 +1086,11 @@
 
 &lt;span class="cp"&gt;#pragma config WDTE = OFF&lt;/span&gt;
 
-&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;porta_btn_mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11110&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;display_data&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
 &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;porta_btn_mask&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11110&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
   &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;last_buttons&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
@@ -1124,8 +1125,8 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;В файле &lt;code&gt;isr.c&lt;/code&gt; реализована логика, отвечающая за отображение информации на семисегментном дисплее. Интерфейс взаимодействия &lt;code&gt;isr.c&lt;/code&gt; с другими программными модулями, такими как &lt;em&gt;main.c&lt;/em&gt;, только через переменную &lt;code&gt;display_data&lt;/code&gt; - проектирование на уровне интерфейсов позволяет распределить для модулей зоны ответственности и инкапсулировать их реализацию. 
-Модули, полученные в на этапе проектирования системы, должны быть минимально связанны друг с другом (Слабая Связанность, Low Coupling). При правильном проектировании в случае изменении одного модуля не придется править другие или эти изменения будут минимальными. Чем слабее связанность, тем легче писать/понимать/расширять/чинить любую программу на любом языке программирования.&lt;/p&gt;
+&lt;p&gt;В файле &lt;code&gt;isr.c&lt;/code&gt; реализована логика, отвечающая за отображение информации на семисегментном дисплее. Интерфейс взаимодействия &lt;code&gt;isr.c&lt;/code&gt; с другими программными модулями, такими как &lt;em&gt;main.c&lt;/em&gt;, только через переменную &lt;code&gt;display_data&lt;/code&gt;. Функция &lt;code&gt;display7&lt;/code&gt; не входит в этот интерфейс и поэтому объявлена как &lt;code&gt;static&lt;/code&gt;, т.е. доступна только в пределах своего модуля. Грамотное проектирование интерфейсов позволяет распределить для модулей зоны ответственности и инкапсулировать их реализацию. 
+Модули, полученные на этапе проектирования системы, должны быть минимально связанны друг с другом (Слабая Связанность, Low Coupling). При таком проектировании в случае изменения одного модуля не придется править другие или эти изменения будут минимальными. Чем слабее связанность, тем легче писать/понимать/расширять/чинить любую программу на любом языке программирования.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui-int.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;Так как &lt;a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/"&gt;скважность&lt;/a&gt; импульсов на RB4 равна двум яркость свечения каждого из разрядов семисегментного распределяется поровну от максимальной.&lt;/p&gt;
 &lt;p&gt;И напоследок одно замечание по коду &lt;code&gt;extern uint8_t display_data;&lt;/code&gt;, который указывает на переменную в другом файле. К сожалению в данном случае Си компилятор тут не проверяет типы и поэтому оставит без внимания какую-нибудь ерунду типа &lt;code&gt;extern uint16_t display_data;&lt;/code&gt; при том что реальная переменная &lt;code&gt;uint8_t&lt;/code&gt;. Поэтому для лучшего контроля типов декларации extern переменных / функций принято описывать в отдельных файлах.&lt;/p&gt;
@@ -4098,6 +4099,7 @@ Your browser does not support the video tag.
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Для многомерных массивов и вложенных структур могут понадобиться дополнительный фигурные скобки например &lt;code&gt;{{0}}&lt;/code&gt;.&lt;/p&gt;
 &lt;h3&gt;КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ&lt;/h3&gt;
 &lt;p&gt;Как известно, &lt;strong&gt;С&lt;/strong&gt; не изобилует удобствами при работе с массивами. При передаче массива в качестве аргумента функции, попросту передаётся указатель на его первый элемент. Без дополнительных соглашений (пример такого соглашения - строка, тот же массив, но он всегда завершается нулевым символом), этой информации недостаточно, чтобы в теле функции узнать количество элементов массива. В результате большинство API вешают всю чёрную бухгалтерию по вычислению количества элементов массива на программиста. Одним из примеров может быть функция &lt;code&gt;poll()&lt;/code&gt; в POSIX API. В качестве первого аргумента ей передаётся массив структур &lt;code&gt;pollfd&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;pollfd&lt;/span&gt; &lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;NO_OF_HANDLES&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
@@ -4131,6 +4133,14 @@ Your browser does not support the video tag.
 
 
 &lt;p&gt;В основе идиомы лежит утверждение, что результатом деления размера всего массива на размер одного из его элементов является общее количество элементов.&lt;/p&gt;
+&lt;h3&gt;РАЗМЕРНОСТЬ МАССИВА ЗАДАЁТСЯ ИЗ ENUM&lt;/h3&gt;
+&lt;p&gt;В предыдущем примере размерность массива задаётся макросом &lt;code&gt;#define NO_OF_HANDLES&lt;/code&gt;, но это же можно сделать и более строгим способом через перечисление enum:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;NO_OF_HANDLES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;pollfd&lt;/span&gt; &lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;NO_OF_HANDLES&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Такое решение более надёжно т.к. для enum нельзя сделать какую-нибудь пакость типа &lt;code&gt;#undef&lt;/code&gt;. Ещё можно было бы попробовать задать размерность и с помощью &lt;code&gt;const int NO_OF_HANDLES=42;&lt;/code&gt;, правда такой способ возможен только внутри функций и поэтому не особо практичен в отличие от enum.&lt;/p&gt;
 &lt;h3&gt;МАГИЧЕСКИЕ ЧИСЛА КАК ПЕРЕМЕННЫЕ&lt;/h3&gt;
 &lt;p&gt;Что за 42 !? Опытные программисты избегают &lt;a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5_%D1%87%D0%B8%D1%81%D0%BB%D0%BE_%28%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%29" rel="nofollow"&gt;магических чисел&lt;/a&gt;, потому что они делают код трудным для понимания и могут запутать любого, кто будет его читать / сопровождать. Правда есть некоторые числа - 0, 1, 3.14 и 42, которые принято считать менее магическими, чем остальные. Когда мы видим переменную, инициализируемую по умолчанию 0, можно предположить, что она будет изменяться где-то дальше в коде. Число 1 может быть просто аналогом &lt;code&gt;true&lt;/code&gt;. Число &lt;a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%82%D0%B2%D0%B5%D1%82_%D0%BD%D0%B0_%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D1%8B%D0%B9_%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81_%D0%B6%D0%B8%D0%B7%D0%BD%D0%B8,_%D0%B2%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B9_%D0%B8_%D0%B2%D1%81%D0%B5%D0%B3%D0%BE_%D1%82%D0%B0%D0%BA%D0%BE%D0%B3%D0%BE" rel="nofollow"&gt;42&lt;/a&gt; универсально по своей природе, оно отвечает на главный вопрос жизни, вселенной и всего такого.&lt;/p&gt;
 &lt;p&gt;Как ни странно, с &lt;em&gt;не очень&lt;/em&gt; магическими числами тоже могут быть проблемы. Например у структуры &lt;code&gt;struct tm&lt;/code&gt;, которая cодержит компоненты календарного времени в &lt;strong&gt;С&lt;/strong&gt;, поле &lt;code&gt;int tm_year;&lt;/code&gt; хранит годы с 1900 (в Windows) или с 1970 (в Unix). Таким образом &lt;em&gt;нулевое значение&lt;/em&gt; этого поля на самом деле ещё не означает &lt;em&gt;нулевой год&lt;/em&gt;.&lt;/p&gt;
@@ -4187,6 +4197,7 @@ Your browser does not support the video tag.
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Чем больше комментариев в коде тем веселей его читать.&lt;/p&gt;
 &lt;h3&gt;ДИАГНОСТИКА С ОПИСАНИЕМ&lt;/h3&gt;
 &lt;p&gt;В стандартной библиотеке &lt;strong&gt;C&lt;/strong&gt; имеется механизм для диагностики программы на этапе выполнения - макрос &lt;code&gt;assert&lt;/code&gt;, который позволяет контролировать поведение программы, обнаруживая потенциальные ошибки. Единственным аргументом для &lt;code&gt;assert&lt;/code&gt; является выражение, которое в нормальных условиях должно быть истинно. В этом случае ничего не происходит и программа идёт дальше. В противном случае &lt;code&gt;assert&lt;/code&gt; печатает сообщение в &lt;a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D1%8B%D0%B5_%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%B8" rel="nofollow"&gt;стандартный поток&lt;/a&gt; &lt;code&gt;stderr&lt;/code&gt; и вызывает функцию &lt;code&gt;abort()&lt;/code&gt; для завершения выполнения программы.&lt;/p&gt;
 &lt;p&gt;Никому не хочется разбираться в длинных функциях, в этом случае мы стараемся максимально упростить код, преобразуя его фрагменты в отдельные, более маленькие функции и передавая им какие-то данные. Используя макрос &lt;code&gt;assert&lt;/code&gt;, функция может проверить переданные ей аргументы перед выполнением своей основной логики и тем самым выявить проблему на самом раннем этапе:&lt;/p&gt;
