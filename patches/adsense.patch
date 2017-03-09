@@ -1,0 +1,85 @@
+diff --git a/templates/adsense.html b/templates/adsense.html
+new file mode 100644
+index 0000000..d51f62d
+--- /dev/null
++++ b/templates/adsense.html
+@@ -0,0 +1,20 @@
++{% if GOOGLE_ADSENSE %}
++
++<div class="body" style="marging:25px auto">
++
++<!-- 800x100 example -->
++<!-- https://support.google.com/adsense/answer/3289364?hl=en -->
++
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
++<!-- Homepage Leaderboard -->
++<ins class="adsbygoogle"
++    style="display:inline-block;width:800px;height:100px"
++    data-ad-client="{{ GOOGLE_ADSENSE.client }}"
++    data-ad-slot="{{ GOOGLE_ADSENSE.slot }}"></ins>
++<script>
++(adsbygoogle = window.adsbygoogle || []).push({});
++</script>
++
++</div>
++
++{% endif %}
+diff --git a/templates/base.html b/templates/base.html
+index 7818c23..cc28623 100644
+--- a/templates/base.html
++++ b/templates/base.html
+@@ -1,6 +1,15 @@
+ <!DOCTYPE html>
+ <html lang="{{ DEFAULT_LANG }}">
+ <head>
++
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
++<script>
++  (adsbygoogle = window.adsbygoogle || []).push({
++    google_ad_client: "ca-pub-6247427373315098",
++    enable_page_level_ads: true
++  });
++</script>
++
+         <meta charset="utf-8" />
+         <title>{% block title %}{{ SITENAME }}{%endblock%}</title>
+         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ CSS_FILE }}" />
+@@ -36,6 +45,7 @@
+                 {% endif %}
+                 </ul></nav>
+         </header><!-- /#banner -->
++        {% include 'adsense.html' %}
+         {% block content %}
+         {% endblock %}
+         <section id="extras" class="body">
+@@ -44,7 +54,7 @@
+                         <h2>{{ LINKS_WIDGET_NAME | default('links') }}</h2>
+                         <ul>
+                         {% for name, link in LINKS %}
+-                            <li><a href="{{ link }}">{{ name }}</a></li>
++                            <li><a rel="nofollow" href="{{ link }}">{{ name }}</a></li>
+                         {% endfor %}
+                         </ul>
+                 </div><!-- /.blogroll -->
+@@ -61,7 +71,7 @@
+                             {% endif %}
+ 
+                         {% for name, link in SOCIAL %}
+-                            <li><a href="{{ link }}">{{ name }}</a></li>
++                            <li><a rel="nofollow" href="{{ link }}">{{ name }}</a></li>
+                         {% endfor %}
+                         </ul>
+                 </div><!-- /.social -->
+@@ -70,10 +80,10 @@
+ 
+         <footer id="contentinfo" class="body">
+                 <address id="about" class="vcard body">
+-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
++                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                 </address><!-- /#about -->
+ 
+-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
++                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+         </footer><!-- /#contentinfo -->
+ 
+ {% include 'analytics.html' %}
