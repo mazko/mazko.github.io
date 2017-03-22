@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>С++ (18+) для микроконтроллеров - разведка боем</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
+                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/" rel="bookmark"
+           title="Permalink to С++ (18+) для микроконтроллеров - разведка боем">С++ (18+) для микроконтроллеров - разведка боем</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-03-20T00:00:00+02:00">
+                Published: Пн. 20 Март 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
+</footer><!-- /.post-info -->      <blockquote>
+<p>Большинство С++ программистов не знают, что делает большинство С++ программистов. — Андрей Александреску</p>
+</blockquote>
+<p>Программы для микроконтроллеров де-факто <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">пишутся</a> либо на Си либо на ассемблере. Си это процедурный язык программирования со статической слабой типизацией, обладающий простым и понятным синтаксисом, высокой переносимостью (в сравнении с ассемблером), он хорошо подходит для системного программирования и в конце-концов успешно прошел испытание временем. И если у Си всё так хорошо, зачем все ведущие производители микроконтроллеров (PIC32, MSP430, AVR) дружно подтянули в свои инструментарии для разработчиков C++ компиляторы ? В отличие от своего предшественника Си, C++ декларирует поддержку различных парадигм программирования - процедурное, объектно-ориентированное (ООП), обобщённое (шаблоны). Вместе с тем C++ не является серебряной пулей для решения проблем своего предшественника - ручное управление памятью по-прежнему на плечах программиста. C++ добавляет к Си объектно-ориентированные возможности - вводятся классы, которые обеспечивают три самых важных свойства ООП: инкапсуляцию, наследование и полиморфизм. ООП при грамотном использовании призвано повысить производительность труда программистов, чему посвящено немало различной литературы на любой вкус и цвет.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Запускаться будем на микроконтроллерах MSP430, компилятор как обычно на сайте <a href="http://www.ti.com/tool/msp430-gcc-opensource" rel="nofollow">производителя</a>. MSP430 — семейство 16-разрядных микроконтроллеров фирмы «Texas Instruments», которые имеют фон-Неймановскую архитектуру с единым адресным пространством для команд и данных (для сравнения у Microchip <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">PIC</a> и Atmel AVR Гарвардская архитектура).</p>
+<p>C++ в большинстве случаев обратно совместим со своим предшественником, так что поначалу всё выглядит как в старом добром Си и совсем нестрашно. Частота микроконтроллеров MSP430 задаётся программно и может меняться в процессе выполнения для снижения энергопотребления. Сетка частот встроенного тактового генератора описана в <a href="http://www.ti.com/lit/ds/symlink/msp430f1611.pdf" rel="nofollow">документации</a> - регистры RSEL служат для грубой настройки, DCO для более точной. Микроконтроллер msp430f1611 имеет шесть восьмибитных портов ввода-вывода, а шесть делится на три и получаем 16 RGB светодиодов.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/a.out">elf</a> | <a href="http://mazko.github.io/MSP430.js/6f9f42f42b3dbdb860b36607e12e34cf">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/src.zip">исходники</a></p>
+<p><em>main.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">reset &amp;&amp; (export GCC_DIR=~/ti/msp430_gcc ; </span>
+<span class="cm">    $GCC_DIR/bin/msp430-elf-c++ \</span>
+<span class="cm">    -I $GCC_DIR/include -L $GCC_DIR/include \</span>
+<span class="cm">    -Werror -Wall -mmcu=msp430f1611 -O2 *.cpp)</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;app.h&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WDTCTL</span> <span class="o">=</span> <span class="n">WDTPW</span> <span class="o">|</span> <span class="n">WDTHOLD</span><span class="p">;</span>     <span class="c1">// Stop watchdog timer</span>
+
+    <span class="c1">// DCO = 3, RSEL = 0, f = 0.13 MHz</span>
+    <span class="n">DCOCTL</span> <span class="o">=</span> <span class="cm">/* DCO2 + */</span> <span class="n">DCO1</span> <span class="o">+</span> <span class="n">DCO0</span><span class="p">;</span> 
+    <span class="n">BCSCTL1</span> <span class="o">=</span> <span class="n">XT2OFF</span> <span class="cm">/* + RSEL1 + RSEL0 + RSEL2 */</span><span class="p">;</span>
+
+    <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">O</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="n">P1OUT</span> <span class="o">=</span> <span class="n">O</span><span class="p">;</span> <span class="n">P2OUT</span> <span class="o">=</span> <span class="n">O</span><span class="p">;</span> <span class="n">P3OUT</span> <span class="o">=</span> <span class="n">O</span><span class="p">;</span> <span class="n">P4OUT</span> <span class="o">=</span> <span class="n">O</span><span class="p">;</span> <span class="n">P5OUT</span> <span class="o">=</span> <span class="n">O</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">=</span> <span class="n">O</span><span class="p">;</span>
+    <span class="n">P1DIR</span> <span class="o">=</span> <span class="n">P2DIR</span> <span class="o">=</span> <span class="n">P3DIR</span> <span class="o">=</span> <span class="n">P4DIR</span> <span class="o">=</span> <span class="n">P5DIR</span> <span class="o">=</span> <span class="n">P6DIR</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">app</span><span class="o">::</span><span class="n">run</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Тут в коде три интересных момента, касающихся С++:</p>
+<ul>
+<li>
+<p><code>constexpr</code> - константа на этапе компиляции, в отличие от <code>const</code> не занимает физический адрес в памяти</p>
+</li>
+<li>
+<p><code>auto</code> - автоматическое выведение типа на этапе компиляции исходя из присваиваемого значения</p>
+</li>
+<li>
+<p><code>app::run()</code> - вызов метода из пространства имён app</p>
+</li>
+</ul>
+<p><em>app.h</em></p>
+<div class="highlight"><pre><span></span><span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">run</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>app.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;initializer_list&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;rgb.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
+
+    <span class="kt">int</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="c1">// rgb_strip: default initialization</span>
+        <span class="n">rgb</span><span class="o">::</span><span class="n">RgbStripLayer</span> <span class="n">rgb_strip</span><span class="p">;</span>
+
+        <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">rgb_strip</span><span class="p">.</span><span class="n">RED</span><span class="p">,</span>    <span class="n">rgb_strip</span><span class="p">.</span><span class="n">GREEN</span><span class="p">,</span>
+            <span class="n">rgb_strip</span><span class="p">.</span><span class="n">BLUE</span><span class="p">,</span>   <span class="n">rgb_strip</span><span class="p">.</span><span class="n">YELLOW</span><span class="p">,</span>
+            <span class="n">rgb_strip</span><span class="p">.</span><span class="n">VIOLET</span><span class="p">,</span> <span class="n">rgb_strip</span><span class="p">.</span><span class="n">CYAN</span><span class="p">,</span>
+            <span class="n">rgb_strip</span><span class="p">.</span><span class="n">WHITE</span><span class="p">,</span>  <span class="n">rgb_strip</span><span class="p">.</span><span class="n">BLACK</span>
+        <span class="p">};</span>
+
+        <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">colors</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">m</span> <span class="p">:</span> <span class="n">rgb_strip</span><span class="p">.</span><span class="n">mem</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">m</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+                    <span class="n">rgb_strip</span><span class="p">.</span><span class="n">flush</span><span class="p">();</span>
+                    <span class="n">__delay_cycles</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>функция <code>run</code> находится в пространстве имён <code>namespace app</code> - в пределах одного пространства имён идентификаторы (имена) должны быть уникальны, тогда как один и тот же идентификатор может быть определён в нескольких пространствах имён</p>
+</li>
+<li>
+<p>для переменной <code>rgb_strip</code> отсутствует выражение инициализации и поэтому происходит инициализация по умолчанию - для классов, структур и объединений это инициализация с помощью конструктора по умолчанию (до классов мы ещё дойдём)</p>
+</li>
+<li>
+<p>цикл по контейнеру <code>for (const auto&amp; c : colors)</code> позволяет пройтись по всем элементам без явного указания индекса и стало быть без ошибок, связанных с неправильным индексом за пределами контейнера</p>
+</li>
+<li>
+<p>С++ даёт возможность программисту избегать лишних звёздочек - доступ к переменным по ссылке <code>auto&amp; c</code> обычно безопаснее и более строго проверяется компилятором чем через разыменовывание указателя <code>*с</code> в стиле Си</p>
+</li>
+</ul>
+<p><em>hal.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;pin.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">pin</span> <span class="p">{</span>
+    <span class="c1">// MSP430 aliases</span>
+    <span class="k">using</span> <span class="n">msp430_port_t</span> <span class="o">=</span> <span class="k">decltype</span><span class="p">(</span><span class="n">P1OUT</span><span class="p">);</span>
+    <span class="k">using</span> <span class="n">msp430_pin_t</span> <span class="o">=</span> <span class="n">Pin</span><span class="o">&lt;</span><span class="n">msp430_port_t</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p><code>using msp430_port_t = decltype(P1OUT);</code> - псевдоним типа, в данном случае можно было бы спокойно заменить на Cи <code>typedef decltype(P1OUT) msp430_port_t</code> - это дело вкуса и стиля</p>
+</li>
+<li>
+<p><code>decltype(P1OUT)</code> - в большинстве случаев нам не нужно знать какой там именно у микроконтроллера порт - 8, 16 или 32 бит, но его тип нам понадобится т.к. проверку типов на этапе компиляции никто не отменял</p>
+</li>
+<li>
+<p><code>Pin&lt;msp430_port_t, std::uint8_t&gt;</code> - псевдоним шаблона, кто это такой и зачем он нужен станет понятно чуть дальше</p>
+</li>
+</ul>
+<p><em>non-copyable.h</em></p>
+<div class="highlight"><pre><span></span><span class="c1">// C++ compile time check idiom: Non-Copyable Class</span>
+<span class="c1">// TODO: inheritance approach bloats the code size</span>
+<span class="k">class</span> <span class="nc">NonCopyable</span> <span class="p">{</span>
+<span class="k">protected</span><span class="o">:</span>
+    <span class="n">NonCopyable</span><span class="p">(</span><span class="n">NonCopyable</span> <span class="k">const</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+    <span class="n">NonCopyable</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">=</span><span class="p">(</span><span class="n">NonCopyable</span> <span class="k">const</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">delete</span><span class="p">;</span>
+    <span class="n">NonCopyable</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+
+
+<p>Конструктор копирования... В вежливой форме предлагаю его сразу отключать и забыть - для этого достаточно просто наследовать классы от класса <code>NonCopyable</code>. В таком случае кривой код, пытающийся создать побитовую копию объекта просто сломает компиляцию и это правильно.</p>
+<p><em>rgb.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;array&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">rgb</span> <span class="p">{</span>
+
+    <span class="k">using</span> <span class="k">namespace</span> <span class="n">pin</span><span class="p">;</span>
+
+    <span class="k">class</span> <span class="nc">RgbStripLayer</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+
+        <span class="k">template</span><span class="o">&lt;</span><span class="n">msp430_port_t</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="n">msp430_port_t</span><span class="o">&amp;</span> <span class="n">p2</span><span class="o">&gt;</span> <span class="k">struct</span> <span class="n">MonoStrip</span><span class="p">;</span>
+        <span class="k">static</span> <span class="n">MonoStrip</span><span class="o">&lt;</span><span class="n">P1OUT</span><span class="p">,</span> <span class="n">P2OUT</span><span class="o">&gt;</span> <span class="n">red</span><span class="p">;</span>
+        <span class="k">static</span> <span class="n">MonoStrip</span><span class="o">&lt;</span><span class="n">P3OUT</span><span class="p">,</span> <span class="n">P4OUT</span><span class="o">&gt;</span> <span class="n">green</span><span class="p">;</span>
+        <span class="k">static</span> <span class="n">MonoStrip</span><span class="o">&lt;</span><span class="n">P5OUT</span><span class="p">,</span> <span class="n">P6OUT</span><span class="o">&gt;</span> <span class="n">blue</span><span class="p">;</span>
+
+    <span class="k">public</span><span class="o">:</span>
+        <span class="c1">// mem: value initialization</span>
+        <span class="n">RgbStripLayer</span><span class="p">()</span><span class="o">:</span> <span class="n">mem</span><span class="p">()</span> <span class="p">{}</span>
+
+        <span class="k">static</span> <span class="k">constexpr</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">STRIP_SZ</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="mi">8</span><span class="p">;</span>
+
+        <span class="k">struct</span> <span class="n">RGB</span> <span class="p">{</span>
+            <span class="kt">bool</span> <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">;</span>
+        <span class="p">};</span>
+
+        <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">RGB</span><span class="p">,</span> <span class="n">STRIP_SZ</span><span class="o">&gt;</span> <span class="n">mem</span><span class="p">;</span>
+
+        <span class="k">static</span> <span class="k">constexpr</span> <span class="n">RGB</span> <span class="n">RED</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span> <span class="n">GREEN</span>  <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span> 
+                         <span class="n">BLUE</span>    <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">},</span> <span class="n">YELLOW</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span> 
+                         <span class="n">CYAN</span>    <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">},</span> <span class="n">VIOLET</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">},</span> 
+                         <span class="n">WHITE</span>   <span class="o">=</span> <span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">},</span> <span class="n">BLACK</span>  <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+
+        <span class="kt">void</span> <span class="nf">flush</span><span class="p">();</span>
+
+        <span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">+=</span> <span class="p">(</span><span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">);</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Итак ООП.</p>
+<ul>
+<li>
+<p>все поля и методы классов <code>class</code> (а также структур <code>struct</code>) имеют права доступа - по умолчанию все содержимое класса является доступным для чтения и записи только для него самого т.е. закрыто (private), а для структуры <code>struct</code> наоборот по умолчанию всё открыто для всех (public)</p>
+</li>
+<li>
+<p>поля red, green, blue в классе <code>RgbStripLayer</code> (слой анимации) статические - все экземпляры этого класса используют одну и ту же копию этих полей и тем самым экономится память RAM</p>
+</li>
+<li>
+<p><code>std::array</code> - это контейнер для массива фиксированного размера, имеет ту же семантику, что и Cи массивы плюс знает собственный размер, поддерживает присваивание, итераторы и т.д.</p>
+</li>
+<li>
+<p>методы, совпадающие с именем класса это конструкторы, <code>RgbStripLayer(): mem() {}</code> это конструктор по умолчанию т.к. не содержит аргументов, в нашем случае в конструкторе контейнер <code>mem</code> инициализируется нулями</p>
+</li>
+<li>
+<p>слои анимаций <code>RgbStripLayer</code> можно смешивать между собой - для этого перегружен оператор <code>+=</code></p>
+</li>
+</ul>
+<p><em>rgb.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;rgb.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">rgb</span> <span class="p">{</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="n">msp430_port_t</span><span class="o">&amp;</span> <span class="n">p1</span><span class="p">,</span> <span class="n">msp430_port_t</span><span class="o">&amp;</span> <span class="n">p2</span><span class="o">&gt;</span>
+    <span class="k">struct</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="nl">MonoStrip</span> <span class="p">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="n">msp430_pin_t</span> <span class="n">leds</span><span class="p">[</span><span class="n">STRIP_SZ</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">3</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">4</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">6</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p1</span><span class="p">,</span> <span class="mi">7</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">0</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">2</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">},</span>
+            <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">4</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">5</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">6</span> <span class="p">},</span> <span class="p">{</span> <span class="n">p2</span><span class="p">,</span> <span class="mi">7</span> <span class="p">},</span>
+        <span class="p">};</span>
+    <span class="p">};</span>
+
+    <span class="k">decltype</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">red</span><span class="p">)</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">red</span><span class="p">;</span>
+    <span class="k">decltype</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">green</span><span class="p">)</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">green</span><span class="p">;</span>
+    <span class="k">decltype</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">blue</span><span class="p">)</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">blue</span><span class="p">;</span>
+
+    <span class="kt">void</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">flush</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">--</span><span class="p">;)</span> <span class="p">{</span>
+            <span class="n">red</span><span class="p">.</span><span class="n">leds</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">set</span><span class="p">(</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">r</span><span class="p">);</span>
+            <span class="n">green</span><span class="p">.</span><span class="n">leds</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">set</span><span class="p">(</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">g</span><span class="p">);</span>
+            <span class="n">blue</span><span class="p">.</span><span class="n">leds</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">set</span><span class="p">(</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">b</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="k">operator</span> <span class="o">+=</span> <span class="p">(</span><span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">--</span><span class="p">;)</span> <span class="p">{</span>
+            <span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">r</span> <span class="o">|=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">r</span><span class="p">;</span>
+            <span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">g</span> <span class="o">|=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">g</span><span class="p">;</span>
+            <span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">b</span> <span class="o">|=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">b</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="o">*</span><span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>объявление класса и реализация в отдельных файлах в С++ не является обязательной, однако позволяет при необходимости ускорить сборку проекта за счёт т.н. раздельной компиляции - также как и в Си собственно</p>
+</li>
+<li>
+<p>шаблоны C++ позволяют задавать обобщённые алгоритмы без привязки к некоторым параметрам - в случае c <code>MonoStrip</code> это конкретные порты ввода вывода p1, p2 различные у каждого цвета, код шаблона сгенерируется на этапе компиляции и в этом они схожи с макросами Си</p>
+</li>
+<li>
+<p>каждый класс в C++ использует свое пространство имен, если внутри класса записано только объявление, реализация должна быть определена в другом месте с помощью операции доступа к области видимости ::</p>
+</li>
+</ul>
+<p>Ну и последний класс он совсем простой - каждая нога микроконтроллера это объект. За счёт использования шаблонов класс Pin ничего не знает об архитектуре микроконтроллера - тип данных порта ввода-вывода является параметром шаблона:</p>
+<p><em>pin.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;non-copyable.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">pin</span> <span class="p">{</span>
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">port_t</span><span class="p">,</span> <span class="k">typename</span> <span class="n">pos_t</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">Pin</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="n">port_t</span><span class="o">&amp;</span> <span class="n">m_port</span><span class="p">;</span>
+        <span class="k">const</span> <span class="n">port_t</span> <span class="n">m_mask</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="n">Pin</span><span class="p">(</span><span class="n">port_t</span><span class="o">&amp;</span> <span class="n">port</span><span class="p">,</span> <span class="k">const</span> <span class="n">pos_t</span> <span class="n">pos</span><span class="p">)</span><span class="o">:</span> <span class="n">m_port</span><span class="p">(</span><span class="n">port</span><span class="p">),</span> <span class="n">m_mask</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">pos</span><span class="p">)</span> <span class="p">{}</span>
+
+        <span class="kt">void</span> <span class="n">set</span><span class="p">(</span><span class="k">const</span> <span class="kt">bool</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">m_port</span> <span class="o">|=</span> <span class="n">m_mask</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">clr</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">clr</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">m_port</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">m_mask</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>если тело метода определено при объявлении класса, метод автоматически являются встроенным (inline) - обычно встроенными делают короткие методы</p>
+</li>
+<li>
+<p>аргументы функций в С++ могут иметь значения по умолчания как например <code>const bool v = true</code> , это же можно было бы сделать и с помощью перегрузки функций</p>
+</li>
+</ul>
+<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">Далее</a> паттерн декоратор.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

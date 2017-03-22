@@ -28,7 +28,201 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">PICSim.js - калькулятор и обратная польская запись</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">С++ для микроконтроллеров - «Декоратор»</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-03-22T00:00:00+02:00">
+                Published: Ср. 22 Март 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
+</footer><!-- /.post-info --><p>«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.</p>
+<p>GoF даёт следующее классическое определение: декоратор (англ. Decorator) — паттерн, структурирующий объекты. Динамически добавляет объекту новые обязанности. Является гибкой альтернативой порождению подклассов с целью расширения функциональности.</p>
+<p>Объект, который предполагается использовать (в нашем случае <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">слой</a> для лампочек), выполняет основные функции. Однако может потребоваться добавить к нему некоторую дополнительную функциональность (<a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">анимации</a>), которая будет выполняться до, после или даже вместо основной функциональности объекта.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Поскольку анимации и их последовательность заранее известны на этапе компиляции, декоратор легко реализуется на С++ шаблонах. Такая реализация позволяет не использовать виртуальные функции и будет занимать больше памяти ROM (code bloat), но работать должна шустрее - хотя для мигающих лампочек это не критично. Ещё использование шаблонов даёт удобную возможность делать простые проверки <code>static_assert()</code> на этапе компиляции. Нечто подобное <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">можно</a> конечно же соорудить и на Си с помощью макросов, но в С++ <code>static_assert()</code> это уже встроенный и весьма полезный механизм так что не приходится заново изобретать велосипед.</p>
+<p>Все классы для создания анимаций реализуют интерфейс Декоратора - методы <code>void draw(RgbStripLayer&amp; layer);</code> и <code>void set_color(const auto&amp; co)</code>. Работая в цепочке каждый последовательно добавляет (декорирует) к слою <code>RgbStripLayer</code> новые свойства. Эти классы взаимозаменяемы, их последовательность определяет конкретную анимацию. В прилагаемых исходниках добавлено больше анимаций плюс пример использования стандартной библиотекой шаблонов (STL) в С++ - алгоритм <code>std::rotate</code> для массивов.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/a.out">elf</a> | <a href="http://mazko.github.io/MSP430.js/3523e01e3e6c96088d0ac6a4c335609b">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/src.zip">исходники</a></p>
+<p><em>app.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;animation.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
+
+    <span class="k">using</span> <span class="k">namespace</span> <span class="n">animation</span><span class="p">;</span>
+
+    <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">R</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">,</span>  <span class="n">G</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">GREEN</span><span class="p">,</span>
+                   <span class="n">B</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">BLUE</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">YELLOW</span><span class="p">;</span>
+
+    <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">SZ</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">STRIP_SZ</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="n">RgbStripLayer</span> <span class="n">l1</span><span class="p">;</span>
+
+        <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">DynFill</span><span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">55555</span><span class="p">,</span> <span class="n">Nop</span> <span class="o">&gt;&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
+            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">FillCW</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">4444</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;&gt;</span> <span class="o">&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
+            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">FillCCW</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">4444</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;&gt;</span> <span class="o">&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>animation.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;rgb.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">animation</span> <span class="p">{</span>
+
+    <span class="k">using</span> <span class="k">namespace</span> <span class="n">rgb</span><span class="p">;</span>
+
+    <span class="k">struct</span> <span class="nl">Nop</span> <span class="p">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="p">};</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span> <span class="o">=</span> <span class="n">Nop</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">Flush</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">layer</span><span class="p">.</span><span class="n">flush</span><span class="p">();</span>
+            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span> <span class="n">cycles</span><span class="p">,</span> <span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">Sleep</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">static_assert</span><span class="p">(</span><span class="n">cycles</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="n">__delay_cycles</span><span class="p">(</span><span class="n">cycles</span><span class="p">);</span>
+            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span><span class="o">&amp;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">FillCW</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="cm">/* clockwise */</span> <span class="p">{</span>
+        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
+        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">m</span> <span class="p">:</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
+                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span><span class="o">&amp;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">FillCCW</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="cm">/* counterclockwise */</span> <span class="p">{</span>
+        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
+        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// while a pointer is a form of iterator,</span>
+            <span class="c1">// not all iterators have the same functionality of pointer</span>
+            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">it</span> <span class="o">=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">rbegin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">crend</span><span class="p">();</span> <span class="n">it</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="o">*</span><span class="n">it</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
+                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">EachColor</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
+        <span class="k">static</span> <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">,</span>    <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">GREEN</span><span class="p">,</span>
+            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">BLUE</span><span class="p">,</span>   <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">YELLOW</span><span class="p">,</span>
+            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">VIOLET</span><span class="p">,</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">CYAN</span><span class="p">,</span>
+            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">WHITE</span><span class="p">,</span>  
+        <span class="p">};</span>
+
+    <span class="k">public</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">colors</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">m_stream</span><span class="p">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span> <span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span> <span class="n">l</span><span class="p">,</span> <span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
+    <span class="k">class</span> <span class="nc">DynFill</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
+        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">;</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">static_assert</span><span class="p">(</span><span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="k">static_assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">);</span>
+            <span class="k">static_assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">l</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Применение паттернов и ООП в микроконтроллерах имеет свою специфику, накладываемую в основном моделью управления памятью. Неважно на чём писать - Си или С++ для встраиваемых систем предпочтительней использовать память в стеке т.к. она проверяется компилятором. В свою очередь динамическое выделение памяти на куче не гарантирует её наличия в нужный момент и в таком случае получаются грабли. ООП же больше любит динамическое выделение памяти - операторы new, malloc, умные указатели. Не стоит этого всего использовать в микроконтроллерах без ясного понимания возможных последствий.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/" rel="bookmark"
+                           title="Permalink to С++ (18+) для микроконтроллеров - разведка боем">С++ (18+) для микроконтроллеров - разведка боем</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-03-20T00:00:00+02:00">
+                Published: Пн. 20 Март 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
+</footer><!-- /.post-info -->                <blockquote>
+<p>Большинство С++ программистов не знают, что делает большинство С++ программистов. — Андрей Александреску</p>
+</blockquote>
+<p>Программы для микроконтроллеров де-факто <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">пишутся</a> либо на Си либо на ассемблере. Си это процедурный язык программирования со статической слабой типизацией, обладающий простым и понятным синтаксисом, высокой переносимостью (в сравнении с ассемблером), он хорошо подходит для системного программирования и …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/" rel="bookmark"
+                           title="Permalink to PICSim.js - калькулятор и обратная польская запись">PICSim.js - калькулятор и обратная польская запись</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-02-14T00:00:00+02:00">
                 Published: Вт. 14 Февраль 2017
@@ -39,149 +233,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/re2c">re2c</a> </p>
-</footer><!-- /.post-info --><p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается в стек, а если встречается оператор, то из стека извлекаются два последних операнда и выполняется
-операция, после чего результат посылается обратно в стек. Классическая реализация калькулятора на базе обратной польской записи подробно расписана в книге «Язык программирования Си» Брайана Кернигана и Денниса Ритчи (последний один из непосредственных авторов и разработчиков языка Си). В общем случае алгоритм решения подобных задач сводится к двум этапам:</p>
-<ul>
-<li>
-<p>лексической анализ - распознавание и выделение лексем из входной последовательности символов. В случае RPN калькулятора на выходе получаем числа и арифметические операции</p>
-</li>
-<li>
-<p>синтаксический анализ - последовательность лексем преобразуется в структуру данных, которая хорошо подходит для дальнейшей обработки. В упрощённом случае для RPN калькулятора это стек</p>
-</li>
-</ul>
-<p>Ошибки при выполнении программы могут происходить на обоих этапах - за вводом недопустимых символов (например букв) должен следить лексической анализатор, а вот обработка деления на ноль или неправильное количество элементов в стеке это уже зона ответственности синтаксического анализа.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> | <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495">picsim.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p>При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. требуют POSIX. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - <a href="http://re2c.org/" rel="nofollow">re2c</a>. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция <code>lex_flt</code> это облегчённая версия <code>atof</code>/<code>strtod</code>, достаточная для RPN калькулятора.</p>
-<p><em>stack.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
-
-<span class="k">static</span> <span class="k">struct</span> <span class="p">{</span>
-  <span class="kt">float</span> <span class="n">data</span><span class="p">[</span><span class="n">RPN_MAX_CHARS</span> <span class="o">/</span> <span class="mi">2</span><span class="p">];</span>
-  <span class="kt">uint8_t</span> <span class="n">sp</span><span class="p">;</span>
-<span class="p">}</span> <span class="n">_stack</span><span class="p">;</span>
-
-<span class="c1">// 0 == SUCCESS</span>
-<span class="k">static</span> <span class="kt">bool</span> <span class="nf">stack_push</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="n">_stack</span><span class="p">.</span><span class="n">data</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
-    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// 0 == SUCCESS</span>
-<span class="k">static</span> <span class="kt">bool</span> <span class="nf">stack_pop</span><span class="p">(</span><span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">_stack</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="o">--</span><span class="n">_stack</span><span class="p">.</span><span class="n">sp</span><span class="p">];</span>
-    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">stack_clr</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">_stack</span><span class="p">.</span><span class="n">sp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p><em>rpn.re.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;stack.c&quot;</span><span class="cp"></span>
-
-<span class="c1">// 0 == SUCCESS</span>
-<span class="k">static</span> <span class="kt">bool</span> <span class="nf">lex_flt</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">e</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">float</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-  <span class="kt">bool</span> <span class="n">neg</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
-  <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-  <span class="cm">/*!re2c</span>
-<span class="cm">      re2c:yyfill:enable = 0;</span>
-<span class="cm">      re2c:define:YYCTYPE = char;</span>
-<span class="cm">      re2c:define:YYCURSOR = s;</span>
-
-<span class="cm">      &quot;-&quot;    { neg = true; goto mant_int; }</span>
-<span class="cm">      &quot;&quot;     { goto mant_int; }</span>
-<span class="cm">  */</span>
-<span class="nl">mant_int</span><span class="p">:</span>
-  <span class="cm">/*!re2c</span>
-<span class="cm">      &quot;.&quot;    { goto mant_frac; }</span>
-<span class="cm">      &quot;&quot;     { goto end; }</span>
-<span class="cm">      [0-9]  { *f = (*f * 10) + (s[-1] - &#39;0&#39;); goto mant_int; }</span>
-<span class="cm">  */</span>
-<span class="nl">mant_frac</span><span class="p">:</span>
-  <span class="cm">/*!re2c</span>
-<span class="cm">      &quot;&quot;     { goto end; }</span>
-<span class="cm">      [0-9]  { *f += (x /= 10) * (s[-1] - &#39;0&#39;); goto mant_frac; }</span>
-<span class="cm">  */</span>
-<span class="nl">end</span><span class="p">:</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">neg</span><span class="p">)</span> <span class="p">{</span>
-    <span class="o">*</span><span class="n">f</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="n">e</span> <span class="o">!=</span> <span class="n">s</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// 0 == SUCCESS</span>
-<span class="k">static</span> <span class="kt">bool</span> <span class="nf">cc</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">float</span> <span class="n">o1</span><span class="p">,</span> <span class="n">o2</span><span class="p">;</span>
-  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">stack_pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o2</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">stack_pop</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o1</span><span class="p">))</span> <span class="p">{</span>
-    <span class="k">switch</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">case</span> <span class="sc">&#39;+&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">+</span> <span class="n">o2</span><span class="p">);</span>
-      <span class="k">case</span> <span class="sc">&#39;-&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">-</span> <span class="n">o2</span><span class="p">);</span>
-      <span class="k">case</span> <span class="sc">&#39;/&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">o2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">/</span> <span class="n">o2</span><span class="p">);</span>
-      <span class="k">case</span> <span class="sc">&#39;*&#39;</span><span class="o">:</span> <span class="k">return</span> <span class="n">stack_push</span><span class="p">(</span><span class="n">o1</span> <span class="o">*</span> <span class="n">o2</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">}</span> 
-  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="c1">// 0 == SUCCESS</span>
-<span class="k">static</span> <span class="kt">bool</span> <span class="nf">lex</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">cur</span><span class="p">)</span> <span class="p">{</span>
-
-  <span class="c1">// YYMARKER is needed because rules overlap:</span>
-  <span class="c1">// it backups input position of the longest successful match</span>
-  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">YYMARKER</span><span class="p">;</span>
-
-  <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">tok</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">f</span><span class="p">;</span>
-    <span class="cm">/*!re2c</span>
-<span class="cm">        re2c:yyfill:enable = 0;</span>
-<span class="cm">        re2c:define:YYCTYPE = char;</span>
-<span class="cm">        re2c:define:YYCURSOR = cur;</span>
-
-<span class="cm">        flt = &quot;-&quot; ? ([0-9]+ | [0-9]* &quot;.&quot; [0-9]+);</span>
-<span class="cm">        mop = [-+*\/];</span>
-
-<span class="cm">        *       { return true; }</span>
-<span class="cm">        &quot;\x00&quot;  { return false; }</span>
-<span class="cm">        flt     { if (lex_flt(tok, cur, &amp;f) || stack_push(f)) return true; continue; }</span>
-<span class="cm">        &quot; &quot; flt { if (lex_flt(tok + 1, cur, &amp;f) || stack_push(f)) return true; continue; }</span>
-<span class="cm">        mop     { if (cc(*tok)) return true; continue; }</span>
-<span class="cm">        &quot; &quot; mop { if (cc(*(tok + 1))) return true; continue; }</span>
-<span class="cm">    */</span>
-  <span class="p">}</span>
-
-<span class="p">}</span>
-
-<span class="c1">// 0 == SUCCESS</span>
-<span class="kt">bool</span> <span class="nf">rpn</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">cur</span><span class="p">,</span> <span class="kt">float</span> <span class="o">*</span> <span class="k">const</span> <span class="n">f</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">stack_clr</span><span class="p">();</span>
-  <span class="k">return</span> <span class="n">lex</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span> <span class="o">||</span> <span class="n">stack_pop</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Работа с символьным <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">дисплеем</a> и <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">матричной</a> клавиатурой описывались в предыдущем материале.</p>
-<p>Для преобразования выражений из обычной (например <code>3 + 4 * (2 - 1)</code>) инфиксной нотации в постфиксную (RPN) существует алгоритм «сортировочная станция», который так же как и RPN основан на стеке и легко может быть адаптирован под микроконтроллеры. Таким образом несложно разработать калькулятор для обычный людей.</p>
-<p>Ещё раз ссылка на <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> RPN-калькулятора. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -226,53 +281,9 @@
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/" rel="bookmark"
-                           title="Permalink to PICSim.js - матричная клавиатура">PICSim.js - матричная клавиатура</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-30T00:00:00+02:00">
-                Published: Пн. 30 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
-</footer><!-- /.post-info -->                <p>Матричная клавиатура состоит и <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">обычных</a> кнопок, только соединённых в определённом порядке - сгруппированных в ряды и столбцы, образуя матрицу. Такое включение позволяет опрашивать большее количество кнопок, задействовав при этом меньшее количество ног микроконтроллера - например для считывания 16 простых кнопок понадобилось бы целых два 8-битных порта ввода, тогда как матрицирование позволяет обойтись …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/" rel="bookmark"
-                           title="Permalink to PICSim.js - аналого-цифровой преобразователь">PICSim.js - аналого-цифровой преобразователь</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-01-28T00:00:00+02:00">
-                Published: Сб. 28 Январь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/atsp">АЦП</a> </p>
-</footer><!-- /.post-info -->                <p>Как мы уже <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">знаем</a>, цифро-аналоговые преобразователи (ЦАП, DAC) преобразуют дискретный (двоичный) код в аналоговый сигнал - как правило напряжение. Не менее востребованным в цифровой электронике является обратное преобразование - аналого-цифровой преобразователь (АЦП, англ. Analog-to-digital converter, ADC). Наиболее важными характеристиками АЦП являются разрядность/разрешение - минимальное изменение величины аналогового сигнала, которое может быть зафиксировано …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 9
+    Page 1 / 10
         <a href="http://proiot.ru/blog/category/embedded/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->
