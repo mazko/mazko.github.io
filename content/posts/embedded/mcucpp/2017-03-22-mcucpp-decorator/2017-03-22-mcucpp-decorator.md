@@ -31,9 +31,6 @@ GoF даёт следующее классическое определение:
 
         using namespace animation;
 
-        constexpr auto R = RgbStripLayer::RED,  G = RgbStripLayer::GREEN,
-                       B = RgbStripLayer::BLUE, Y = RgbStripLayer::YELLOW;
-
         constexpr auto SZ = RgbStripLayer::STRIP_SZ;
 
         int run() {
