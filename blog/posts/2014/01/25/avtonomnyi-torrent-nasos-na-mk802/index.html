@@ -18,11 +18,11 @@
         <header id="banner" class="body">
                 <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                     <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
@@ -42,7 +42,7 @@
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/mk802">MK802</a> <a href="http://proiot.ru/blog/tag/soc">SoC</a> <a href="http://proiot.ru/blog/tag/torrent">Torrent</a> <a href="http://proiot.ru/blog/tag/avahi">Avahi</a> <a href="http://proiot.ru/blog/tag/debian">Debian</a> </p>
 </footer><!-- /.post-info -->      <p>Что такое торрент думаю знает каждый школьник :) Попался мне в руки одноплатный компьютер <a href="http://ru.wikipedia.org/wiki/Android_Mini_PC_MK802" rel="nofollow">MK802</a>, который отличается очень маленькими габаритами. Под капотом сего девайса одна большая <a href="http://ru.wikipedia.org/wiki/SoC" rel="nofollow">SoC</a> - микросхема, параметры впечатляют - ARM V7 Cortex A8 1 GHz, 1GB ОЗУ, графических процессор Mali-400 и ОС <em>Android</em> на борту. Самое замечательное что разработчики заложили возможность вместо <em>Android</em> запустить любой линукс - достаточно точно так же как например в <a href="http://ru.wikipedia.org/wiki/Raspberry_Pi" rel="nofollow">Raspberry Pi</a> и ей подобных девайсах просто вставить созданную должным образом <em>micro-SD</em>-карту в соответствующий разъём (он там один такой) и включить. На <em>MK802</em> будем ставить <em>Debian</em> а работать в Ubuntu 12.04. Первым делом поставим в Ubuntu 12.04 необходимые для кросскомпиляции инструменты:</p>
 <div class="highlight"><pre><span></span><span class="c1"># sudo su</span>

@@ -19,10 +19,10 @@
                 <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                     <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
-                    <li><a href="http://proiot.ru/blog/category/python/">Python</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
@@ -37,7 +37,7 @@
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
 </footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная величина <code>S = 1/D</code>, где S - скважность, D - коэффициент заполнения от 0 до 100%. Если длина импульса равна половине периода, то такой симметричный сигнал называется меандром. Чем больше коэффициент заполнения, тем большая <em>средняя</em> мощность передаётся от источника к нагрузке и так вплоть до 100% (постоянное напряжение на нагрузке). Поскольку цепь работает по принципу включён/выключен, то отсутствуют потери при передаче энергии и в результате управляя скважностью можно регулировать мощность на нагрузке от 0 до 100% с очень высоким коэффициентом  полезного действия (КПД). Говоря более формальным языком мы имеем дело с широтно-импульсной модуляцией (ШИМ, англ. pulse-width modulation (PWM)) - процессом управления мощностью, подводимой к нагрузке, путём изменения скважности импульсов при постоянной частоте.</p>
@@ -95,7 +95,7 @@ ngspice 3 -&gt; plot v(out)
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
 </footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Интегратор - устройство, уровень выходного сигнала которого пропорционален <em>интегралу</em> (суммы для бесконечного числа бесконечно малых слагаемых), обычно по времени, от входного сигнала. В свою очередь дифференциатор выполняет обратную функцию - уровень выходного сигнала пропорционален <em>скорости изменения</em> сигнала на входе. Аналоговые интегратор и дифференциатор в …</p>
@@ -118,7 +118,7 @@ ngspice 3 -&gt; plot v(out)
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
 </footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Из школьного курса по физике хорошо известна формула мощности <code>P = U*I = U*U/R = I*I*R</code>, где последние две формулы элементарно выводятся из закона Ома, а R - не что иное, как сопротивление нагрузки. Таким образом, если взять усилитель по схеме …</p>
@@ -141,7 +141,7 @@ ngspice 3 -&gt; plot v(out)
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
 </footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал …</p>
@@ -164,7 +164,7 @@ ngspice 3 -&gt; plot v(out)
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
 </footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Наличие виртуальной земли в <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">инвертирующем</a> усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или …</p>
