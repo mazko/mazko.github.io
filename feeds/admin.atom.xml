@@ -1362,7 +1362,521 @@ notify-send -u critical &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span c
 
 
 &lt;p&gt;Ключи &lt;strong&gt;Яндекс&lt;/strong&gt; даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить &lt;code&gt;xsel-translate-notify&lt;/code&gt;, но куда удобней выполнять это действие комбинацией клавиш.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/translate-ubuntu.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;</content><category term="yandex"></category><category term="api"></category></entry><entry><title>Софтверная WI-FI точка доступа в Linux</title><link href="http://proiot.ru/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/" rel="alternate"></link><published>2014-02-08T00:00:00+02:00</published><updated>2014-02-08T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2014-02-08:/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/</id><summary type="html">&lt;p&gt;Для разогрева предлагаю провести маленький эксперимент - на одной машине генерить случайные данные &lt;code&gt;/dev/urandom&lt;/code&gt;, а на другой принимать  и сливать в &lt;code&gt;/dev/null&lt;/code&gt;, тем самым замерять скорость:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/translate-ubuntu.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;</content><category term="yandex"></category><category term="api"></category></entry><entry><title>Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)</title><link href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/" rel="alternate"></link><published>2015-11-17T00:00:00+02:00</published><updated>2015-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-11-17:/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/</id><summary type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/"&gt;sed&lt;/a&gt; | &lt;a href="http://grep.js.org/"&gt;grep&lt;/a&gt;&lt;/p&gt;
+&lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;
+
+&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_sed.js"&gt;&lt;/script&gt;
+
+&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_grep.js"&gt;&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+(function() {
+
+  var parseId, 
+      sed_default_input = "-e 's/Fyodor \\(Dostoyevsky\\)/F. \\1/' -e 'n;d'",
+      grep_default_input = "--text 'Dostoyevsky\\|Tolstoy'";
+
+  function id(i) {
+      return document.getElementById(i);
+  }
+  function parse(delay) {
+      if (parseId) {
+          window.clearTimeout(parseId);
+      }
+
+      parseId = window.setTimeout(function () {
+        var input = id("text-input").value;
+        var args = id("current-exec-args").value;
+        var exec = id("current-exec").value;
+        var output = window[exec](input, args);
+        id("out-result").value = output.replace(/\n$/, "");
+      }, delay || 555);
+  }
+  window.onload = function () {
+      var update = function() { parse(); };
+      id("text-input").onkeyup = update;
+      id("current-exec").onchange = function() {
+        id("current-exec-args").value = 
+          id("current-exec").value === 'fn_gnu_sed'
+            ? sed_default_input
+            : grep_default_input;
+        update(); 
+      };
+      id("current-exec-args").onkeyup = update;
+      id("current-exec-args").value = sed_default_input;
+      parse();
+  };
+})();
+&lt;/script&gt;
+
+&lt;!-- http://stackoverflow.com/q/5825861/ --&gt;
+
+&lt;p style="display: flex;"&gt;
+&lt;select id="current-exec" style="margin-right:5px;"&gt;
+    &lt;option value="fn_gnu_sed"&gt;sed&lt;/option&gt;
+    &lt;option value="fn_gnu_grep"&gt;grep&lt;/option&gt;
+&lt;/select&gt;
+&lt;input id="current-exec-args" type="text" style="flex: 1;"&gt;
+&lt;/p&gt;
+
+&lt;div&gt;
+&lt;!-- http://www.freeformatter.com/html-escape.html --&gt;
+&lt;div style="width:49%; border:1px solid #ddd; float:left;"&gt;
+  &lt;textarea rows="10" id="text-input" autocomplete="off"
+    style="width:97%; margin:auto; color: #AAFF00; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;"&gt;1  . In Search of Lost Time by Marcel Proust 
+2  . Ulysses by James Joyce
+3  . Don Quixote by Miguel de Cervantes
+4  . Moby Dick by Herman Melville
+5  . Hamlet by William Shakespeare
+6  . War and Peace by Leo Tolstoy
+7  . The Odyssey by Homer
+8  . The Great Gatsby by F. Scott Fitzgerald
+9  . The Divine Comedy by Dante Alighieri 
+10 . Madame Bovary by Gustave Flaubert
+11 . The Brothers Karamazov by Fyodor Dostoyevsky
+12 . One Hundred Years of Solitude by Gabriel Garcia Marquez
+13 . The Adventures of Huckleberry Finn by Mark Twain
+14 . The Iliad by Homer
+15 . Lolita by Vladimir Nabokov
+16 . Anna Karenina by Leo Tolstoy
+17 . Crime and Punishment by Fyodor Dostoyevsky
+18 . Alice's Adventures in Wonderland by Lewis Carroll
+19 . The Sound and the Fury by William Faulkner
+20 . Pride and Prejudice by Jane Austen
+21 . The Catcher in the Rye by J. D. Salinger
+22 . Wuthering Heights by Emily Brontë
+23 . Nineteen Eighty Four by George Orwell
+24 . Heart of Darkness by Joseph Conrad
+25 . To the Lighthouse by Virginia Woolf
+26 . Absalom, Absalom! by William Faulkner
+27 . Middlemarch by George Eliot
+28 . The Trial by Franz Kafka
+29 . One Thousand and One Nights by India/Iran/Iraq/Egypt
+30 . The Stories of Anton Chekhov by Anton Chekhov
+31 . The Red and the Black by Stendhal
+32 . Gulliver's Travels by Jonathan Swift
+33 . Catch-22 by Joseph Heller
+34 . The Grapes of Wrath by John Steinbeck
+35 . Invisible Man by Ralph Ellison
+36 . The Stranger by Albert Camus
+37 . Great Expectations by Charles Dickens
+38 . The Aeneid by Virgil
+39 . David Copperfield by Charles Dickens
+40 . Mrs. Dalloway by Virginia Woolf
+41 . Beloved by Toni Morrison
+42 . The Canterbury Tales by Geoffrey Chaucer
+43 . Collected Fiction by Jorge Luis Borges
+44 . Leaves of Grass by Walt Whitman
+45 . Candide by Voltaire
+46 . Jane Eyre by Charlotte Brontë
+47 . As I Lay Dying by William Faulkner
+48 . The Sun Also Rises by Ernest Hemingway
+49 . The Complete Stories of Franz Kafka by Franz Kafka
+50 . Tristram Shandy by Laurence Sterne
+51 . A Portrait of the Artist as a Young Man by James Joyce
+52 . The Portrait of a Lady by Henry James
+53 . Oedipus the King by Sophocles
+54 . Les Misérables by Victor Hugo
+55 . To Kill a Mockingbird by Harper Lee
+56 . Paradise Lost by John Milton
+57 . The Complete Tales and Poems of Edgar Allan Poe by Edgar Allan Poe
+58 . Pale Fire by Vladimir Nabokov
+59 . A Passage to India by E.M. Forster
+60 . The Idiot by Fyodor Dostoyevsky
+61 . The Scarlet Letter by Nathaniel Hawthorne
+62 . Antigone by Sophocles
+63 . Faust by Johann Wolfgang von Goethe
+64 . The Magic Mountain by Thomas Mann
+65 . Dead Souls by Nikolai Gogol
+66 . The Metamorphosis by Franz Kafka
+67 . Midnight's Children by Salman Rushdie
+68 . Emma by Jane Austen
+69 . For Whom the Bell Tolls by Ernest Hemingway
+70 . Frankenstein by Mary Shelley
+71 . Journey to the End of The Night by Louis-Ferdinand Céline
+72 . Oresteia by Aeschylus
+73 . The Old Man and the Sea by Ernest Hemingway
+74 . Vanity Fair by William Makepeace Thackeray
+75 . The Complete Stories of Flannery O'Connor by Flannery O'Connor
+76 . Under the Volcano by Malcolm Lowry
+77 . Gargantua and Pantagruel by Francois Rabelais
+78 . Tom Jones by Henry Fielding
+79 . Fairy Tales and Stories by Hans Christian Anderson
+80 . Things Fall Apart by Chinua Achebe
+81 . The Flowers of Evil by Charles Baudelaire
+82 . Brave New World by Aldous Huxley
+83 . The Tin Drum by Günter Grass
+84 . The Good Soldier by Ford Madox Ford
+85 . A Farewell to Arms by Ernest Hemingway
+86 . The Possessed by Fyodor Dostoevsky
+87 . Poems of Emily Dickinson by Emily Dickinson
+88 . On the Road by Jack Kerouac
+89 . The Master and Margarita by Mikhail Bulgakov
+90 . The Castle by Franz Kafka
+91 . Father Goriot by Honoré de Balzac
+92 . Stories of Ernest Hemingway by Ernest Hemingway
+93 . Robinson Crusoe by Daniel Defoe
+94 . Collected Poems of W. B. Yeats by W. B. Yeats
+95 . The Charterhouse of Parma by Stendhal
+96 . The Tale of Genji by Murasaki Shikibu
+97 . Oedipus at Colonus by Sophocles
+98 . Fathers and Sons by Ivan Turgenev
+99 . Metamorphoses by Ovid&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;div style="width:49%; border:1px solid #ddd; float:right;"&gt;
+  &lt;textarea rows="10" id="out-result" autocomplete="off"
+    style="width:97%; margin:auto; color: #EE00AA; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;" readonly&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;div style="clear:both;"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Собирается &lt;em&gt;Emscripten&lt;/em&gt; из исходников довольно небыстро ~3 часа на ноуте core i3 4GB, посему проще прибегнуть к помощи готового образа для &lt;a href="http://docs.docker.com/engine/installation/ubuntulinux/" rel="nofollow"&gt;docker&lt;/a&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;emcc-env/activate&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nb"&gt;alias&lt;/span&gt; in &lt;span class="s1"&gt;&amp;#39;emcc&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;emconfigure&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;emmake&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;$alias&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;sudo docker run -i -t --rm -v \$(pwd):/home/src 42ua/emsdk &lt;/span&gt;&lt;span class="nv"&gt;$alias&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;span class="nb"&gt;unset&lt;/span&gt; &lt;span class="nb"&gt;alias&lt;/span&gt;
+
+&lt;span class="nv"&gt;PS1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(emsdk)&lt;/span&gt;&lt;span class="nv"&gt;$PS1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Трюк с &lt;em&gt;activate&lt;/em&gt; позволит абстрагироваться от деталей работы с &lt;em&gt;docker&lt;/em&gt; и сконцентрироваться на кросскомпиляции:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sudo docker pull 42ua/emsdk
+~$ &lt;span class="nb"&gt;source&lt;/span&gt; emcc-env/activate
+&lt;span class="o"&gt;(&lt;/span&gt;emsdk&lt;span class="o"&gt;)&lt;/span&gt;~$ emcc -v
+emcc &lt;span class="o"&gt;(&lt;/span&gt;Emscripten gcc/clang-like replacement + linker emulating GNU ld&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.35.8
+clang version &lt;span class="m"&gt;3&lt;/span&gt;.8.0  &lt;span class="o"&gt;(&lt;/span&gt;emscripten &lt;span class="m"&gt;1&lt;/span&gt;.35.8 : &lt;span class="m"&gt;1&lt;/span&gt;.35.8&lt;span class="o"&gt;)&lt;/span&gt;
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Если повезёт, кросскомпиляция мало чем отличается от обычной сборки:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ curl -sL http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.gz  &lt;span class="p"&gt;|&lt;/span&gt; tar xz &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; sed-4.2.2
+~$ emconfigure ./configure --host&lt;span class="o"&gt;=&lt;/span&gt;asmjs-local-emscripten
+~$ emmake make
+~$ emcc -o sed.node.js sed/*.o lib/libsed.a
+~$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;xof nworb kciuq ehT&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; node sed.node.js &lt;span class="se"&gt;\&lt;/span&gt;
+    -e &lt;span class="s1"&gt;&amp;#39;/\n/!G;s/\(.\)\(.*\n\)/&amp;amp;\2\1/;//D;s/.//&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -e &lt;span class="s1"&gt;&amp;#39;s/$/!/&amp;#39;&lt;/span&gt;
+The quick brown fox!
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Оптимизация возможна как на уровне LLVM так и JS включительно с Closure Compiler. Чего можно ожидать от оптимизации ?&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ls -sh sed.node.js
+&lt;span class="m"&gt;1&lt;/span&gt;,9M sed.node.js
+~$ emcc -O2 --memory-init-file &lt;span class="m"&gt;0&lt;/span&gt; -o sed.js sed/*.o lib/libsed.a
+~$ ls -sh sed.js
+620K sed.js
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Наконец для удобства работы в брузере немного &lt;a href="http://mozakai.blogspot.com/2012/03/howto-port-cc-library-to-javascript.html" rel="nofollow"&gt;шаманства&lt;/a&gt; и дело в шляпе:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;gnu_sed_template.js&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;fn_parse_argc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;shell-quote&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;input_str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;args_str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;Module&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{},&lt;/span&gt; &lt;span class="nb"&gt;window&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{};&lt;/span&gt;
+
+  &lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;prompt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;input&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;input_str&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;input&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="nx"&gt;input&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;};&lt;/span&gt;
+  &lt;span class="p"&gt;})();&lt;/span&gt;
+
+  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;thisProgram&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;arguments&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;fn_parse_argc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;args_str&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;print&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;printErr&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* SED.RAW.JS */&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sed &lt;span class="s1"&gt;&amp;#39;/\/\* SED.RAW.JS \*\// {&lt;/span&gt;
+&lt;span class="s1"&gt;  r sed.js&lt;/span&gt;
+&lt;span class="s1"&gt;  d&lt;/span&gt;
+&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &amp;lt; gnu_sed_template.js &amp;gt; gnu_sed.node.js
+~$ browserify gnu_sed.node.js --standalone fn_gnu_sed &amp;gt; gnu_sed.js
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Процедура с портирования &lt;a href="http://ftp.gnu.org/gnu/grep/grep-2.22.tar.xz" rel="nofollow"&gt;grep&lt;/a&gt; мало чем отличается за исключением флага &lt;em&gt;--disable-threads&lt;/em&gt; на этапе &lt;code&gt;./configure&lt;/code&gt;.&lt;/p&gt;</content><category term="Emscripten"></category><category term="Docker"></category></entry><entry><title>Как перестать беспокоиться и начать портировать</title><link href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="alternate"></link><published>2015-10-21T00:00:00+03:00</published><updated>2015-10-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-10-21:/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/</id><summary type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;TL;DR&lt;/h2&gt;
+&lt;p&gt;Процесс можно условно разделить на несколько этапов:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;TL;DR&lt;/h2&gt;
+&lt;p&gt;Процесс можно условно разделить на несколько этапов:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше весит портированный скрипт тем он быстрее отработает в браузере&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Точно так же системные классы среды исполнения &lt;em&gt;Java&lt;/em&gt;, например &lt;em&gt;Character.java&lt;/em&gt;, необходимо переопределить скопировав в проект &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;На этом этапе логика должна быть полностью рабочей, если у портируемого проекта имеются юнит-тесты - прогнать их. Если что-то не работает сейчас, вряд-ли заработает после трансляции :)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Собственно сама &lt;a href="http://mazko.github.io/ESJava/"&gt;трансляция&lt;/a&gt; добытых &lt;em&gt;Java&lt;/em&gt; исходников в &lt;a href="https://babeljs.io/docs/learn-es2015/" rel="nofollow"&gt;ES6&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Точечная адаптация - например реализовать логику метода &lt;em&gt;System.arraycopy&lt;/em&gt;, который переопределили ранее, но уже для &lt;em&gt;JavaScript&lt;/em&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;
+
+&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+(function() {
+  var parseId;
+
+  function id(i) {
+      return document.getElementById(i);
+  }
+  function parse(delay) {
+      if (parseId) {
+          window.clearTimeout(parseId);
+      }
+
+      parseId = window.setTimeout(function () {
+        var ts = new luceneTokenizers[id("tokenizer-class").value];
+        ts.setReader(
+          new luceneTokenizers.StringReader(
+            id("text-to-tokenize").value)
+        );
+        var res = [];
+        for (var token, i=0; (token = ts.incrementToken()) !== null; i++) {
+          var pretty_token = {};
+          for (var prop in token) {
+            if(token.hasOwnProperty(prop)) {
+              pretty_token[prop.substring('_$esjava$'.length)] = token[prop];
+            } 
+          }
+          res.push(pretty_token);
+        }
+
+        id("tokenize-result").value = JSON.stringify(res, null, 2);
+      }, delay || 555);
+  }
+  window.onload = function () {
+      var update = function() { parse(); };
+      id("text-to-tokenize").onkeyup = update;
+      id("tokenizer-class").onchange = update;
+      parse();
+  };
+})();
+&lt;/script&gt;
+
+&lt;p&gt;&lt;select id="tokenizer-class"&gt;
+    &lt;option value="StandardTokenizer"&gt;Standard&lt;/option&gt;
+    &lt;option value="UAX29URLEmailTokenizer"&gt;UAX29URLEmail&lt;/option&gt;
+&lt;/select&gt;&lt;/p&gt;
+&lt;div&gt;
+&lt;!-- http://www.freeformatter.com/html-escape.html --&gt;
+&lt;div style="width:49%; border:1px solid #ddd; float:left;"&gt;
+  &lt;textarea rows="10" id="text-to-tokenize" autocomplete="off"
+    style="width:97%; margin:auto; color: #AAFF00; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;"&gt;The quick brown fox &amp;lt;fox@mail.ru&amp;gt; jumps over the 42 lazy dogs &amp;lt; mailto:dog@gmail.com &amp;gt; !? More at -&gt; http://www.google.com/ &amp;#9749;
+  &lt;/textarea&gt;
+&lt;/div&gt;
+&lt;div style="width:49%; border:1px solid #ddd; float:right;"&gt;
+  &lt;textarea rows="10" id="tokenize-result" autocomplete="off"
+    style="width:97%; margin:auto; color: #EE00AA; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;" readonly&gt;&lt;/textarea&gt;
+&lt;/div&gt;
+&lt;div style="clear:both;"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Как видно на демке и несложно догадаться по названию токенайзер &lt;a href="https://lucene.apache.org/core/5_3_1/analyzers-common/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.html" rel="nofollow"&gt;UAX29URLEmailTokenizer&lt;/a&gt; чуть более православный по вебу. Оба &lt;em&gt;StandardTokenizer&lt;/em&gt; и &lt;em&gt;UAX29URLEmailTokenizer&lt;/em&gt; вполне себе дружат с юникодом.&lt;/p&gt;
+&lt;p&gt;Теперь чуть подробней о процессе портирования.&lt;/p&gt;
+&lt;h2&gt;ESJava&lt;/h2&gt;
+&lt;p&gt;Итоговая структура папок Java проекта (Eclipse):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ tree
+.
+├── src
+│   ├── org
+│   │   └── apache
+│   │       └── lucene
+│   │           └── analysis
+│   │               ├── standard
+│   │               │   ├── Character.java
+│   │               │   ├── Exception.java
+│   │               │   ├── IndexOutOfBoundsException.java
+│   │               │   ├── IOException.java
+│   │               │   ├── Reader.java
+│   │               │   ├── StandardAnalyzer.java
+│   │               │   ├── StandardTokenizerImpl.java
+│   │               │   ├── StandardTokenizer.java
+│   │               │   ├── StringReader.java
+│   │               │   ├── System.java
+│   │               │   ├── Tokenizer.java
+│   │               │   ├── TokenModel.java
+│   │               │   ├── UAX29URLEmailTokenizerImpl.java
+│   │               │   └── UAX29URLEmailTokenizer.java
+│   │               └── tokenattributes
+│   │                   └── CharTermAttribute.java
+│   └── Test.java
+└── tests
+    └── org
+        └── apache
+            └── lucene
+                └── analysis
+                    └── standard
+                        ├── BaseTokenStreamTestCase.java
+                        ├── Slow.java
+                        ├── TestStandardAnalyzer.java
+                        ├── TestUAX29URLEmailTokenizer.java
+                        ├── TestUtil.java
+                        └── WordBreakTestUnicode_6_3_0.java
+
+&lt;span class="m"&gt;13&lt;/span&gt; directories, &lt;span class="m"&gt;22&lt;/span&gt; files
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Для удобства работы с исходниками среды выполнения Java:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ apt-get install openjdk-7-source
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;И так выглядит один из переопределённых в проекте системных файлов:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;src/org/apache/lucene/analysis/standardSystem.java&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;System&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+  &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;arraycopy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;srcPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;destPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="c1"&gt;// :es6:&lt;/span&gt;
+    &lt;span class="c1"&gt;// int[] elements_to_add = src.slice(srcPos, srcPos + length);&lt;/span&gt;
+    &lt;span class="c1"&gt;// Array.prototype.splice.apply(dest, new int[] {destPos,&lt;/span&gt;
+    &lt;span class="c1"&gt;// elements_to_add.length}.concat(elements_to_add));&lt;/span&gt;
+    &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;arraycopy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;srcPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;destPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="c1"&gt;// :end:&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В &lt;em&gt;ES6&lt;/em&gt; есть хорошая инструкция &lt;code&gt;import&lt;/code&gt;, но поведение немного отличается от аналогичной в Java - файлы из одного пространства тоже необходимо импортировать явно. Но лень. Проще закинуть все классы в один файл:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;merge.sh&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# find -name &amp;#39;*.java&amp;#39; | grep &amp;#39;./src/org/apache/lucene/analysis/&amp;#39;&lt;/span&gt;
+cat &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/Exception.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/IOException.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/Reader.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/StringReader.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/Character.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/TokenModel.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/Tokenizer.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/System.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/StandardAnalyzer.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/StandardTokenizer.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java &lt;span class="se"&gt;\&lt;/span&gt;
+./src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;/^package\s/d&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;/^import\s/d&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+&amp;gt; lucene-tokenizers.java
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;И просмотреть список точечных адаптаций для JavaScript:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ awk &lt;span class="s1"&gt;&amp;#39;/\:es6\:/,/\:end\:/&amp;#39;&lt;/span&gt; lucene-tokenizers.java
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Трансляция:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ npm install -g esjava
+~$ node --stack-size&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10000&lt;/span&gt; &lt;span class="sb"&gt;`&lt;/span&gt;which esjava&lt;span class="sb"&gt;`&lt;/span&gt; lucene-tokenizers.java &amp;gt; out/lucene-tokenizers.es6
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Осталось указать на &lt;em&gt;export&lt;/em&gt; классы &lt;em&gt;StringReader&lt;/em&gt;, &lt;em&gt;StandardTokenizer&lt;/em&gt;, &lt;em&gt;UAX29URLEmailTokenizer&lt;/em&gt; и добавить поддержку старых JavaScript движков:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;out/js.sh&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;ES6FILE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;lucene-tokenizers.es6&amp;#39;&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; cls in &lt;span class="s1"&gt;&amp;#39;StringReader&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;StandardTokenizer&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;UAX29URLEmailTokenizer&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  sed -i &lt;span class="s2"&gt;&amp;quot;s/^class\s\+&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cls&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;\s\+/export class &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cls&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; /&amp;quot;&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ES6FILE&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+sed &lt;span class="s1"&gt;&amp;#39;s/\\u/\\\\u/g&amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$ES6FILE&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt;                     &lt;span class="se"&gt;\&lt;/span&gt;
+node --stack-size&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10000&lt;/span&gt;                              &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="s2"&gt;&amp;quot;`which babel`&amp;quot;&lt;/span&gt;                                      &lt;span class="se"&gt;\&lt;/span&gt;
+--compact&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;false&lt;/span&gt;                                      &lt;span class="se"&gt;\&lt;/span&gt;
+--presets es2015                                     &lt;span class="se"&gt;\&lt;/span&gt;
+--plugins transform-es2015-modules-umd               &lt;span class="se"&gt;\&lt;/span&gt;
+--module-id luceneTokenizers &lt;span class="p"&gt;|&lt;/span&gt;                       &lt;span class="se"&gt;\&lt;/span&gt;
+sed &lt;span class="s1"&gt;&amp;#39;s/\\\\u/\\u/g&amp;#39;&lt;/span&gt; &amp;gt; lucene-tokenizers.babel.js
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Скрипт на выходе &lt;em&gt;lucene-tokenizers.babel.js&lt;/em&gt; крутится в демке.&lt;/p&gt;
+&lt;!-- Pelican Attach hack --&gt;
+
+&lt;!-- cd ./src/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Dsrc/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
+
+&lt;!-- 
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/lucene-tokenizers.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/merge.sh"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/js.sh"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/BaseTokenStreamTestCase.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/blanket.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/lcov_reporter.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.css"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/qunit/qunit-1.19.0.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/stdTests.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/uaxTests.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/WordBreakTestUnicode_6_3_0.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Character.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Exception.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IndexOutOfBoundsException.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/IOException.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Reader.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardAnalyzer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizerImpl.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StandardTokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/StringReader.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/System.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/Tokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/TokenModel.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizerImpl.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/standard/UAX29URLEmailTokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/org/apache/lucene/analysis/tokenattributes/CharTermAttribute.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/src/Test.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/BaseTokenStreamTestCase.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/Slow.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestStandardAnalyzer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUAX29URLEmailTokenizer.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/TestUtil.java"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/tests/org/apache/lucene/analysis/standard/WordBreakTestUnicode_6_3_0.java"&gt;&lt;/a&gt;
+ --&gt;
+
+&lt;!-- cd ./npm/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Dnpm/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
+
+&lt;!--
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/.gitignore"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/package.json"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/npm/readme"&gt;&lt;/a&gt;
+ --&gt;</content><category term="NLP"></category><category term="Lucene"></category><category term="ES6"></category></entry><entry><title>Софтверная WI-FI точка доступа в Linux</title><link href="http://proiot.ru/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/" rel="alternate"></link><published>2014-02-08T00:00:00+02:00</published><updated>2014-02-08T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2014-02-08:/blog/posts/2014/02/08/softvernaia-wi-fi-tochka-dostupa-v-linux/</id><summary type="html">&lt;p&gt;Для разогрева предлагаю провести маленький эксперимент - на одной машине генерить случайные данные &lt;code&gt;/dev/urandom&lt;/code&gt;, а на другой принимать  и сливать в &lt;code&gt;/dev/null&lt;/code&gt;, тем самым замерять скорость:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# sudo apt-get install sshpass pv&lt;/span&gt;
 ~$ cat /dev/urandom &lt;span class="p"&gt;|&lt;/span&gt; pv &lt;span class="p"&gt;|&lt;/span&gt; sshpass -p &lt;span class="s2"&gt;&amp;quot;YOUR_SSH_PASS&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
 ssh root@torrents.local &lt;span class="s2"&gt;&amp;quot;cat &amp;gt; /dev/null&amp;quot;&lt;/span&gt;

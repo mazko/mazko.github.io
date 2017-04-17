@@ -22,7 +22,6 @@
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
-                    <li><a href="http://proiot.ru/blog/category/javascript/">JavaScript</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 <section id="content" class="body">
@@ -159,7 +158,7 @@
 
 
 <p>В основе идиомы лежит утверждение, что результатом деления размера всего массива на размер одного из его элементов является общее количество элементов.</p>
-<h3>РАЗМЕРНОСТЬ МАССИВА ЗАДАЁТСЯ ИЗ ENUM</h3>
+<h3>ENUM ДЛЯ ЦЕЛОЧИСЛЕННЫХ КОНСТАНТ</h3>
 <p>В предыдущем примере размерность массива задаётся макросом <code>#define NO_OF_HANDLES</code>, но это же можно сделать и более строгим способом через перечисление enum:</p>
 <div class="highlight"><pre><span></span><span class="k">enum</span> <span class="p">{</span><span class="n">NO_OF_HANDLES</span><span class="o">=</span><span class="mi">42</span><span class="p">};</span>
 <span class="k">struct</span> <span class="n">pollfd</span> <span class="n">handles</span><span class="p">[</span><span class="n">NO_OF_HANDLES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>

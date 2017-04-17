@@ -2664,7 +2664,7 @@ Your browser does not support the video tag.
 
 
 &lt;p&gt;В основе идиомы лежит утверждение, что результатом деления размера всего массива на размер одного из его элементов является общее количество элементов.&lt;/p&gt;
-&lt;h3&gt;РАЗМЕРНОСТЬ МАССИВА ЗАДАЁТСЯ ИЗ ENUM&lt;/h3&gt;
+&lt;h3&gt;ENUM ДЛЯ ЦЕЛОЧИСЛЕННЫХ КОНСТАНТ&lt;/h3&gt;
 &lt;p&gt;В предыдущем примере размерность массива задаётся макросом &lt;code&gt;#define NO_OF_HANDLES&lt;/code&gt;, но это же можно сделать и более строгим способом через перечисление enum:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="n"&gt;NO_OF_HANDLES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;pollfd&lt;/span&gt; &lt;span class="n"&gt;handles&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;NO_OF_HANDLES&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
