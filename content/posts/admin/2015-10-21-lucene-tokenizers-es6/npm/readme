@@ -1,0 +1,43 @@
+[Online Demo](http://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/)
+
+Install:
+
+    npm install lucene-tokenizers
+
+### Example:
+
+    var lt = require('lucene-tokenizers');
+
+    var ts = new lt.StandardTokenizer();
+    ts.setReader(new lt.StringReader("Hello World!"));
+    var res = [], token = null;
+    while ((token = ts.incrementToken()) !== null) {
+      var pretty_token = {};
+      for (var prop in token) {
+        if(token.hasOwnProperty(prop)) {
+          pretty_token[prop.substring('_$esjava$'.length)] = token[prop];
+        } 
+      }
+      res.push(pretty_token);
+    }
+
+    console.log(JSON.stringify(res, null, 2));
+    
+### Output:
+
+    [
+      {
+        "text": "Hello",
+        "type": "<ALPHANUM>",
+        "start": 0,
+        "positionIncrement": 1
+      },
+      {
+        "text": "World",
+        "type": "<ALPHANUM>",
+        "start": 6,
+        "positionIncrement": 1
+      }
+    ]
+
+[More about ESJava](https://github.com/mazko/esjava)
