@@ -5,6 +5,23 @@ tags: Elastic, REST, Docker
 [ElasticSearch](https://www.elastic.co/products/elasticsearch){:rel="nofollow"} - поисковый движок с JSON REST API, использующий под капотом [Lucene]({filename}../../java/lucene/2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md). Предлагаю смастерить с помощью Elastic поиск для парочки [фильмов]({filename}../../java/lucene/2016-05-15-lucene-facet/2016-05-15-lucene-facet.md). На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим [способом](https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html){:rel="nofollow"}. Затем копнём поглубже в [процесс индексации]({filename}../../java/lucene/2012-10-17-lucene-real-world---indexing/2012-10-17-lucene-real-world---indexing.md), [поисковые запросы]({filename}../../java/lucene/2012-10-29-lucene-real-world---syntax/2012-10-29-lucene-real-world---syntax.md),
 [подсветку]({filename}../../java/lucene/2012-10-28-lucene-real-world---highlighting/2012-10-28-lucene-real-world---highlighting.md) вхождений в результатах выдачи и [агрегацию данных]({filename}../../java/lucene/2016-05-15-lucene-facet/2016-05-15-lucene-facet.md) в Elastic и всё это только лишь с помощью REST API без необходимости наличия каких-либо глубоких познаний как в самом Lucene так и в программировании в целом !
 
+<!-- cd ./dist/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Ddist/{}"></a>' | xclip -selection clipboard && cd - -->
+ 
+<!-- 
+<a href="{attach}dist/./bundle.js"></a>
+<a href="{attach}dist/./bundle.js.map"></a>
+<a href="{attach}dist/./favicon.ico"></a>
+<a href="{attach}dist/./index.html"></a>
+-->
+
+##UI ДЕМО
+
+Для лучшего понимания изложенного материала набросал простенький UI ([исходники]({attach}react-elastic-example.zip)) на [ReactJS](https://facebook.github.io/react/){:rel="nofollow"}. Для работы [демо]({attach}dist/index.html) из браузера нужно на сервере ElasticSearch, который мы сейчас настроим, разрешить ```http.cors``` например ```allow-origin: /https?:\/\/proiot\.ru/```, либо просто звёздочка  ```*``` - разрешить отовсюду.
+
+![screenshot]({attach}ui.gif){:style="width:100%; border:1px solid #ddd;"}
+
+[comment]: <> (byzanz-record -c --x=74 --y=26 --delay 5 -d 44 ui.gif)
+
 ##TL;DR
 
 Предполагается что ElasticSearch уже установлен и настроен:
