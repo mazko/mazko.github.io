@@ -1,5 +1,5 @@
 title: Автоматический определь языка в Apache Tika
-category: Java
+category: Admin
 tags: NLP, Tika
 
 
