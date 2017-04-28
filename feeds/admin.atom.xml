@@ -352,6 +352,18 @@ gnuplot &lt;span class="m"&gt;4&lt;/span&gt;.6 patchlevel &lt;span class="m"&gt;
 &lt;p&gt;Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1&lt;/p&gt;</content><category term="GnuPlot"></category></entry><entry><title>ElasticSearch - практическое введение</title><link href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="alternate"></link><published>2016-06-25T00:00:00+03:00</published><updated>2016-06-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-06-25:/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/</id><summary type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
 &lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/"&gt;подсветку …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
 &lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/"&gt;подсветку&lt;/a&gt; вхождений в результатах выдачи и &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;агрегацию данных&lt;/a&gt; в Elastic и всё это только лишь с помощью REST API без необходимости наличия каких-либо глубоких познаний как в самом Lucene так и в программировании в целом !&lt;/p&gt;
+&lt;!-- cd ./dist/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Ddist/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
+
+&lt;!-- 
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/bundle.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/bundle.js.map"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/favicon.ico"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/index.html"&gt;&lt;/a&gt;
+--&gt;
+
+&lt;h2&gt;UI ДЕМО&lt;/h2&gt;
+&lt;p&gt;Для лучшего понимания изложенного материала набросал простенький UI (&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/react-elastic-example.zip"&gt;исходники&lt;/a&gt;) на &lt;a href="https://facebook.github.io/react/" rel="nofollow"&gt;ReactJS&lt;/a&gt;. Для работы &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/index.html"&gt;демо&lt;/a&gt; из браузера нужно на сервере ElasticSearch, который мы сейчас настроим, разрешить &lt;code&gt;http.cors&lt;/code&gt; например &lt;code&gt;allow-origin: /https?:\/\/proiot\.ru/&lt;/code&gt;, либо просто звёздочка  &lt;code&gt;*&lt;/code&gt; - разрешить отовсюду.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;Предполагается что ElasticSearch уже установлен и настроен:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ curl -XGET localhost:9200
@@ -2583,4 +2595,106 @@ AT
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;P.S. Совсем необязательно иметь ПК чтобы получить MCC, MNC, LAC, CID с телефона - просто так удобнее для текущей задачи. Большинство производителей предоставляют API для доступа к подобного рода данным из приложений, запускаемых в их телефонах. В этом случае можно (и даже нужно) обойтись без AT команд. Вот например API для мидлетов &lt;a href="http://developer.nokia.com/Community/Wiki/CS000947_-_Getting_Cell_ID_in_Java_ME" rel="nofollow"&gt;Nokia&lt;/a&gt; и т.д.&lt;/p&gt;</content><category term="GSM"></category><category term="Google Maps"></category><category term="Bluetooth"></category><category term="socat"></category></entry></feed>
+&lt;p&gt;P.S. Совсем необязательно иметь ПК чтобы получить MCC, MNC, LAC, CID с телефона - просто так удобнее для текущей задачи. Большинство производителей предоставляют API для доступа к подобного рода данным из приложений, запускаемых в их телефонах. В этом случае можно (и даже нужно) обойтись без AT команд. Вот например API для мидлетов &lt;a href="http://developer.nokia.com/Community/Wiki/CS000947_-_Getting_Cell_ID_in_Java_ME" rel="nofollow"&gt;Nokia&lt;/a&gt; и т.д.&lt;/p&gt;</content><category term="GSM"></category><category term="Google Maps"></category><category term="Bluetooth"></category><category term="socat"></category></entry><entry><title>Автоматический определь языка в Apache Tika</title><link href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="alternate"></link><published>2013-01-21T00:00:00+02:00</published><updated>2013-01-21T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2013-01-21:/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/</id><summary type="html">&lt;p&gt;&lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Apache Tika&lt;/a&gt; - это кроссплатформенный набор инструментов, написанный на &lt;code&gt;Java&lt;/code&gt; для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации &lt;a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow"&gt;N-gram&lt;/a&gt;-файлов для интересующих языков, не …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Apache Tika&lt;/a&gt; - это кроссплатформенный набор инструментов, написанный на &lt;code&gt;Java&lt;/code&gt; для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации &lt;a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow"&gt;N-gram&lt;/a&gt;-файлов для интересующих языков, не поддерживаемых Tika из коробки, чтобы с их помощью можно было автоматически определять языки для текстов.
+Для начала было бы неплохо скачать и попробовать запустить само приложение &lt;a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow"&gt;tika-app-1.2.jar&lt;/a&gt; ~ 27 МБ. Как и любое другое &lt;code&gt;Java&lt;/code&gt; приложение &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; можно запустить универсальным способом &lt;code&gt;java -jar tika-app-1.2.jar --help&lt;/code&gt;, хотя в &lt;em&gt;Linux&lt;/em&gt; можно ещё проще:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ java -version
+~$ chmod +x tika-app-1.2.jar
+~$ ./tika-app-1.2.jar --help
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Если на машине стоит &lt;code&gt;Java&lt;/code&gt;, после выполнения следует ожидать перечисление списка поддерживаемых команд. Предположим мы хотим посмотреть список поддерживаемых форматов входных файлов:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar --list-supported-types
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В результате будет выведен форматированный список, в котором выводится приблизительно такое содержимое, только намного больше:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;application/pdf
+  alias:     application/x-pdf
+  supertype: application/octet-stream
+  parser:    org.apache.tika.parser.DefaultParser
+application/msword
+  alias:     application/vnd.ms-word
+  supertype: application/x-tika-msoffice
+  parser:    org.apache.tika.parser.DefaultParser
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Давайте уберём все строчки, которые начинаются с пробела, а затем посчитаем сколько их осталось:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar --list-supported-types &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;/^ /d&amp;#39;&lt;/span&gt;
+~$ ./tika-app-1.2.jar --list-supported-types &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;/^ /d&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; wc -l
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Таким образом &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; версия 1.2 из коробки поддерживает 1372 различных формата. &lt;/p&gt;
+&lt;p&gt;В текущей версии &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; поддерживается ~27 языков среди которых например точно нет турецкого - поставим себе задачу это поправить. Для выделения &lt;a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow"&gt;N-gram&lt;/a&gt; нам понадобится связный текст - чем больше тем лучше, и уверенность в том что мы заранее знаем язык этого текста. Для экспериментов вот нашелся в Гугле довольно большой &lt;a href="http://www.ittihad.com.tr/ipa.pdf" rel="nofollow"&gt;ipa.pdf&lt;/a&gt; файл на турецком языке. Предлагаю проверить с помощью &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; действительно ли формат соответствует указанному расширению:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar -d ipa.pdf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод: &lt;code&gt;application/pdf&lt;/code&gt;. Ради интереса попросим вывести более подробно метаинформацию из файла:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar -m ipa.pdf 
+ERROR - Error: Could not parse predefined CMAP file &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Adobe-Ide-UCS2&amp;#39;&lt;/span&gt;
+Content-Length: &lt;span class="m"&gt;9055059&lt;/span&gt;
+Content-Type: application/pdf
+Creation-Date: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+created: Sun Jan &lt;span class="m"&gt;27&lt;/span&gt; &lt;span class="m"&gt;01&lt;/span&gt;:40:04 EET &lt;span class="m"&gt;2008&lt;/span&gt;
+date: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+dcterms:created: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+meta:creation-date: &lt;span class="m"&gt;2008&lt;/span&gt;-01-26T23:40:04Z
+producer: PDF Creator Plus &lt;span class="m"&gt;4&lt;/span&gt;.0 - http://www.peernet.com
+resourceName: ipa.pdf
+xmp:CreatorTool: PDF Creator Plus &lt;span class="m"&gt;4&lt;/span&gt;.0 - http://www.peernet.com
+xmpTPg:NPages: &lt;span class="m"&gt;2351&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ошибка &lt;code&gt;Adobe-Ide-UCS2&lt;/code&gt; связана скорее всего не с &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt;, а с &lt;a href="http://pdfbox.apache.org/" rel="nofollow"&gt;pdfbox&lt;/a&gt; - но в любом случае мы увидели что хотели, поэтому далее предлагаю эту ошибку просто игнорировать. Теперь извлечем из нашего &lt;em&gt;pdf&lt;/em&gt; полезный текст:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar -t ipa.pdf &amp;gt; trout
+~$ ./tika-app-1.2.jar -T ipa.pdf &amp;gt; trout
+~$ file -bi trout
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод последней команды: &lt;code&gt;text/plain; charset=utf-8&lt;/code&gt;. В случае &lt;code&gt;-T&lt;/code&gt; текст будет немного &lt;em&gt;плотнее&lt;/em&gt; за счёт удаления лишних пробелов, отступов и т.д. В результате размер файла с полезным текстом ~5,6 МБ в сравнении с 9 МБ оригинального &lt;em&gt;pdf&lt;/em&gt;. Ну и наконец попробуем автоматически определить язык документа:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar -l ipa.pdf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод: &lt;code&gt;et&lt;/code&gt;. Тут удивляться нечему - для корректного определения турецкого языка в &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; должен быть список &lt;a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow"&gt;N-gram&lt;/a&gt;, характерный для этого языка. Сгенерировать небходимый файл можно на основе имеющегося текста, где в следующей команде &lt;em&gt;tr&lt;/em&gt; - это идентификатор турецкого языка в формате &lt;a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" rel="nofollow"&gt;ISO 639-2&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ./tika-app-1.2.jar --create-profile&lt;span class="o"&gt;=&lt;/span&gt;tr -eUTF-8 trout
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В результате появится файл &lt;em&gt;tr.ngp&lt;/em&gt;. &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; считывает список &lt;em&gt;.ngp&lt;/em&gt; профайлов из специального файла &lt;code&gt;tika.language.properties&lt;/code&gt;. Этот файл скрывается в недрах &lt;a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow"&gt;tika-app-1.2.jar&lt;/a&gt;, но его можно подменить - создать копию &lt;code&gt;tika.language.override.properties&lt;/code&gt; и сообщить об этом через &lt;code&gt;java classpath&lt;/code&gt;. После чего в &lt;code&gt;tika.language.override.properties&lt;/code&gt; необходимо расширить ключ &lt;code&gt;languages&lt;/code&gt; турецким языком (через запятую) и добавить новый ключ &lt;code&gt;name.tr&lt;/code&gt; со значением &lt;em&gt;Turkish&lt;/em&gt;. Пробуем:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ mkdir -p org/apache/tika/language
+~$ cp tr.ngp org/apache/tika/language
+&lt;span class="c1"&gt;#cp tika.language.override.properties org/apache/tika/language&lt;/span&gt;
+&lt;span class="c1"&gt;#tika.language.override.properties languages &amp;lt;&amp;lt; tr&lt;/span&gt;
+&lt;span class="c1"&gt;#tika.language.override.properties name.tr=Turkish&lt;/span&gt;
+~$ java -cp .:tika-app-1.2.jar org.apache.tika.cli.TikaCLI -l &lt;span class="se"&gt;\&lt;/span&gt;
+http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод: &lt;code&gt;tr&lt;/code&gt;. Ура ! Мы с Вами только что обучили &lt;a href="http://tika.apache.org/" rel="nofollow"&gt;Tika&lt;/a&gt; новому языку ! Теперь ещё одна дача - преобразовать &lt;em&gt;tr.ngp&lt;/em&gt; в &lt;a href="http://mazko.github.io/jsli/" rel="nofollow"&gt;javascript&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;LNG&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;basename &lt;span class="nv"&gt;$1&lt;/span&gt; .ngp&lt;span class="sb"&gt;`&lt;/span&gt;
+&lt;span class="nv"&gt;SUM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; COUNT in &lt;span class="k"&gt;$(&lt;/span&gt;sed &lt;span class="s1"&gt;&amp;#39;/^#/d;s/^\S\+\s\+\([0-9]\+\)$/\1/&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.ngp&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+&lt;span class="nv"&gt;SUM&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;expr &lt;span class="nv"&gt;$SUM&lt;/span&gt; + &lt;span class="nv"&gt;$COUNT&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;(function() {&amp;quot;&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;var ngrams = {&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+perl -CSD -p -e &lt;span class="s1"&gt;&amp;#39;s{([^\t\n\x20-\x7E])}{sprintf &amp;quot;\\u%04x&amp;quot;, ord $1}eg&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-f &lt;span class="nv"&gt;$LNG&lt;/span&gt;.ngp &lt;span class="p"&gt;|&lt;/span&gt; sed &lt;span class="s1"&gt;&amp;#39;/^#/d;s/^\(\S\+\)\s\+\([0-9]\+\)$/&amp;quot;\1&amp;quot;:\2,/&amp;#39;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+sed -i &lt;span class="s1"&gt;&amp;#39;$s/,$//&amp;#39;&lt;/span&gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;};&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;LanguageIdentifier.addProfile(&amp;#39;&lt;/span&gt;&lt;span class="nv"&gt;$LNG&lt;/span&gt;&lt;span class="s2"&gt;&amp;#39;, ngrams, &lt;/span&gt;&lt;span class="nv"&gt;$SUM&lt;/span&gt;&lt;span class="s2"&gt;);&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;}());&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class="nv"&gt;$LNG&lt;/span&gt;.js
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Сохраним как &lt;code&gt;ngp2js&lt;/code&gt;, затем &lt;code&gt;chmod +x ngp2js&lt;/code&gt; и запускаем: &lt;code&gt;./ngp2js tr.ngp&lt;/code&gt;. В результате будет сгенерирован &lt;code&gt;tr.js&lt;/code&gt; размером ~13 КБ.
+Если очень коротко резюмировать - для генерации качественных &lt;a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow"&gt;N-gram&lt;/a&gt; файлов нужно много хорошего связного текста заранее известного языка. Сам процесс создания &lt;em&gt;.ngp&lt;/em&gt; профайлов очень прост и требует минимум усилий.&lt;/p&gt;</content><category term="NLP"></category><category term="Tika"></category></entry></feed>

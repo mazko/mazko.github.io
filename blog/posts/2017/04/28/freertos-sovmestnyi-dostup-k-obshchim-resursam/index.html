@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>FreeRTOS - совместный доступ к общим ресурсам</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/" rel="bookmark"
+           title="Permalink to FreeRTOS - совместный доступ к общим ресурсам">FreeRTOS - совместный доступ к общим ресурсам</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-28T00:00:00+03:00">
+                Published: Пт. 28 Апрель 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->      <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти:</p>
+<ul>
+<li>
+<p>в случае с вытесняющей многозадачностью — переключение контекста задачи </p>
+</li>
+<li>
+<p>в любой системе даже без RTOS — <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">прерывание</a> </p>
+</li>
+</ul>
+<p>Если другая задача или обработчик возникшего прерывания обратятся к этому же самому ресурсу, состояние которого носит промежуточный характер из-за воздействия первой задачи, то результат работы программы очень сложно предугадать. Баги, связанные с многозадачностью потенциально очень коварны, так как при тестировании могут проявляться почти случайным образом и тут многое зависит от внимательности и квалификации программиста. </p>
+<p>В нашем случае левые и правые RGB светодиоды имеют общие порты P4OUT, P5OUT и P6OUT — биты 0..4 за левыми, а 5..7 за правыми. Аналогичная ситуация с портом P3OUT, где два младших бита за дисплеем, а остальные 6 для двух правых RGB светодиодов. Проблема заключается в том, что последовательность действий над портами с очень большой долей вероятности является не атомарной, поскольку занимает больше одной инструкции до полного завершения, и соответственно может быть прервана посередине. Например пусть стоит задача установить (сбросить, инвертировать — не имеет значения) один бит в регистре порта ввода/вывода. Большинство компиляторов транслирует такой код в несколько последовательных инструкций ассемблера:</p>
+<ul>
+<li>
+<p>копирование значения порта микроконтроллера в регистр общего назначения</p>
+</li>
+<li>
+<p>модификация (сбросить, инвертировать и т.д.) регистра общего назначения</p>
+</li>
+<li>
+<p>обратное копирование результата из регистра общего назначения в порт</p>
+</li>
+</ul>
+<p>Задача А загружает значение порта в регистр общего назначения --&gt; в этот момент ее вытесняет задача Б, при этом задача А не «успела» модифицировать и записать данные обратно в порт --&gt; задача Б в свою очередь тоже изменяет значение порта и блокируется --&gt; задача А продолжает выполняться с точки, в которой ее выполнение было прервано. Какое значение будет записано в порт ? Явно не то, что задумывал программист.</p>
+<p><a href="http://mazko.github.io/MSP430.js/fb921e5be78d0de2cd0620c4fb8e36c7">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/mutex.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Для того, чтобы обеспечить целостность данных в любой момент времени доступ к ресурсу, который является общим для задач, либо общим для задач и прерываний, в RTOS предусмотрен механизм взаимного исключения (mutual exclusion). Этот механизм гарантирует, что если задача начала выполнять некоторые действия с ресурсом, то никакая другая задача (или прерывание) не сможет получить доступ к данному ресурсу, пока операции с ним не будут завершены первой задачей.</p>
+<p>FreeRTOS предоставляет несколько возможностей, которые можно использовать для реализации взаимного исключения — критические секции, мьютексы, задачи-сторожа. Критические секции — это очень грубый способ реализации взаимного исключения, т.к. они работают либо просто путем запрета прерываний либо приостановкой всего планировщика. Лучше по мере возможности (использование мьютекса из тела обработчика прерывания невозможно) использовать мьютексы — для этого нужно в файле конфигурации <em>FreeRTOSConfig.h</em> добавить макроопределение <code>#define configUSE_MUTEXES 1</code> и также мьютекс должен быть явно создан перед первым его использованием например <code>xP4P5P6Mutex = xSemaphoreCreateMutex();</code> в main.c перед запуском планировщика. Макроопределение <code>#define INCLUDE_vTaskSuspend 1</code> опционально — если определено, то при использовании константы <code>portMAX_DELAY</code> задача может находиться в блокированном состоянии сколь угодно долго. Это касается не только мьютексов, но и других API FreeRTOS — например очередей, которые будут рассмотрены в следующем материале.</p>
+<p>Вот как будет теперь выглядеть модифицированная версия задачи для анимации левых светодиодов:</p>
+<p><em>task_l_leds.h</em></p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">);</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;semphr.h&gt;</span><span class="cp"></span>
+
+<span class="k">extern</span> <span class="k">volatile</span> <span class="n">xSemaphoreHandle</span> <span class="n">xP4P5P6Mutex</span><span class="p">;</span>
+</pre></div>
+
+
+<p><em>task_l_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+
+<span class="k">volatile</span> <span class="n">xSemaphoreHandle</span> <span class="n">xP4P5P6Mutex</span><span class="p">;</span>
+<span class="k">static</span> <span class="n">portTickType</span> <span class="n">xLastWakeTime</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">rotate_rgb</span><span class="p">(</span><span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="o">*</span> <span class="k">const</span> <span class="n">port</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+      <span class="cm">/* Attempt to take the mutex, blocking indefinitely to wait for the mutex */</span>
+      <span class="n">xSemaphoreTake</span><span class="p">(</span> <span class="n">xP4P5P6Mutex</span><span class="p">,</span> <span class="n">portMAX_DELAY</span> <span class="p">);</span>
+
+      <span class="o">*</span><span class="n">port</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">port</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="mi">0</span><span class="n">b10000</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">);</span>
+
+      <span class="cm">/* The mutex MUST be given back! */</span>
+      <span class="n">xSemaphoreGive</span><span class="p">(</span> <span class="n">xP4P5P6Mutex</span> <span class="p">);</span>
+
+      <span class="n">vTaskDelayUntil</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">xLastWakeTime</span><span class="p">,</span> <span class="mi">5</span> <span class="cm">/* ticks */</span> <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+
+   <span class="n">xLastWakeTime</span> <span class="o">=</span> <span class="n">xTaskGetTickCount</span><span class="p">();</span>
+
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P4OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P5OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P6OUT</span><span class="p">);</span>
+   <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Только одна задача может владеть мьютексом. В приведенном примере осуществляется попытка взять мьютекс  <code>xSemaphoreTake</code> с бесконечным временем ожидания <code>portMAX_DELAY</code> в случае, если он пока недоступен. Выход из <code>xSemaphoreTake()</code> произойдет только тогда, когда мьютекс успешно получен, так что нет необходимости проверять результат возврата функции, но если используется любой другой период задержки, отличный от <code>portMAX_DELAY</code>, то код должен проверить, что <code>xSemaphoreTake()</code> вернула <code>pdTRUE</code>. По окончании необходимых действий над общим ресурсом мьютекс должен быть возвращен обратно <code>xSemaphoreGive</code>.</p>
+<p>В других задачах с анимациями любые модификации разделяемых портов ввода/вывода тоже необходимо пропускать через мьютекс — например <code>xSemaphoreTake( xP4P5P6Mutex, portMAX_DELAY ); P4OUT |= ~0b11111; xSemaphoreGive( xP4P5P6Mutex );</code></p>
+<p>Мьютекс бывает и рекурсивным т.е. когда одна задача может его взять дважды, например в результате вложенной фукнции. В этом случае для освобождения его она должна его столько же раз вернуть обратно. Еще одна важная особенность мутекса в том, что он может <strong>инвертировать приоритет</strong> — это когда выполнение высокоприоритетной задачи откладывается низкоприоритетной задачей, владеющей мутексом на данный момент. И наконец мутексы могут привести к <strong>взаимной блокировке</strong> (Deadlock или Deadly Embrace) — это ситуация в многозадачной системе, когда несколько задач находятся в состоянии бесконечного ожидания доступа к ресурсам, занятым самими этими задачами.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">Далее</a> обмен данными между задачами.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

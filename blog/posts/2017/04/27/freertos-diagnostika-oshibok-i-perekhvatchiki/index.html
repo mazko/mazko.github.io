@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>FreeRTOS - диагностика ошибок и перехватчики</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/" rel="bookmark"
+           title="Permalink to FreeRTOS - диагностика ошибок и перехватчики">FreeRTOS - диагностика ошибок и перехватчики</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-27T00:00:00+03:00">
+                Published: Чт. 27 Апрель 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->      <blockquote>
+<p>Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz</p>
+</blockquote>
+<p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые нельзя проверить на этапе компиляции приложения ? Во FreeRTOS для этих целей предусмотрены следующие механизмы:</p>
+<ul>
+<li>
+<p>макрос <code>configASSERT()</code> активно используется ядром, а разработчик приложения может (должен) задать свою реализацию в зависимости от доступного устройства вывода в конкретном устройстве</p>
+</li>
+<li>
+<p>во FreeRTOS реализован собственный механизм динамического выделения памяти, а для диагностики подобного рода ошибок предусмотрены специальные перехватчики (хуки) <code>configUSE_MALLOC_FAILED_HOOK</code> и <code>configCHECK_FOR_STACK_OVERFLOW</code> и возможно что-то еще — доки в руки</p>
+</li>
+</ul>
+<p>В нашем устройстве присутствует монохромный <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">дисплей</a> и туда же будем кидать все диагностированные ошибки. Будет две задачи — анимация на левых светодиодах и вывод различной системной информации на экран. При обнаружении ошибки ядра или выделения памяти будет «BSoD» — не баг, это фича. Будем надеяться заказчик нашего устройства его не увидит — для этого в релизе, уже после того как всё заработает как надо, диагностику ошибок FreeRTOS можно (даже нужно) просто закомментировать.</p>
+<p><a href="http://mazko.github.io/MSP430.js/24a92b4d7a9052f4214b73dac3355e24">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/hooks.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Вывод текста на экран осуществляется функциями с префиксом <code>draw</code>, как это работает было <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">рассмотрено</a> в одном из предыдущих материалов. После внимательного изучения официальной документации добавим в где-то в конец файла конфигурации <em>FreeRTOSConfig.h</em> следующее:</p>
+<p><em>FreeRTOSConfig.h</em></p>
+<div class="highlight"><pre><span></span><span class="c1">// tutorial: 2</span>
+<span class="k">extern</span> <span class="kt">void</span> <span class="nf">vAssertCalled</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="p">);</span>
+<span class="cp">#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __LINE__, __FILE__ )</span>
+
+<span class="c1">// Method 2 is a bit slower than method 1 but it will most likely catch all stack overflows.</span>
+<span class="cp">#define configCHECK_FOR_STACK_OVERFLOW     2</span>
+<span class="cp">#define configUSE_MALLOC_FAILED_HOOK       1</span>
+</pre></div>
+
+
+<p><em>hooks.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">vApplicationStackOverflowHook</span><span class="p">(</span> <span class="n">xTaskHandle</span> <span class="o">*</span><span class="n">pxTask</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">portCHAR</span> <span class="o">*</span><span class="n">pcTaskName</span> <span class="p">);</span>
+<span class="kt">void</span> <span class="nf">vApplicationStackOverflowHook</span><span class="p">(</span> <span class="n">xTaskHandle</span> <span class="o">*</span><span class="n">pxTask</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">portCHAR</span> <span class="o">*</span><span class="n">pcTaskName</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="n">taskDISABLE_INTERRUPTS</span><span class="p">();</span> <span class="c1">// game over</span>
+
+  <span class="n">draw_clr</span><span class="p">();</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="s">&quot;Error: StackOverflow&quot;</span><span class="p">);</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="s">&quot;Task Name:&quot;</span><span class="p">);</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="s">&quot;Task Name:&quot;</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span>  <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">pcTaskName</span><span class="p">);</span>
+
+  <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vApplicationMallocFailedHook</span><span class="p">(</span> <span class="kt">void</span> <span class="p">);</span>
+<span class="kt">void</span> <span class="nf">vApplicationMallocFailedHook</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="n">taskDISABLE_INTERRUPTS</span><span class="p">();</span> <span class="c1">// game over</span>
+
+  <span class="n">draw_clr</span><span class="p">();</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="s">&quot;Error: MallocFailed&quot;</span><span class="p">);</span>
+
+  <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vAssertCalled</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ulLine</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">pcFileName</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="n">taskDISABLE_INTERRUPTS</span><span class="p">();</span> <span class="c1">// game over</span>
+
+  <span class="n">draw_clr</span><span class="p">();</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="s">&quot;Error: AssertCalled&quot;</span><span class="p">);</span>
+  <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&quot;File Name:&quot;</span><span class="p">,</span> <span class="n">ulLine</span><span class="p">);</span>
+
+  <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Задача с анимациями для левых светодиодов почти ничем не отличается от предыдущего материала, только вместо API временной задержки <code>vTaskDelay</code> теперь <code>vTaskDelayUntil</code>, которая точнее первой. Для данной задачи точность не критична, но при передаче в функцию <code>vTaskDelayUntil</code> неправильных аргументов сработает <code>configASSERT</code>, что даст возможность проверить саму проверку:</p>
+<p><em>task_l_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="n">portTickType</span> <span class="n">xLastWakeTime</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">rotate_rgb</span><span class="p">(</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">port</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">port</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b10000</span><span class="p">;</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="n">vTaskDelayUntil</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">xLastWakeTime</span><span class="p">,</span> <span class="mi">5</span> <span class="cm">/* ticks */</span> <span class="p">);</span>
+        <span class="o">*</span><span class="n">port</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">port</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+
+   <span class="n">xLastWakeTime</span> <span class="o">=</span> <span class="n">xTaskGetTickCount</span><span class="p">();</span>
+
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P4OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P5OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P6OUT</span><span class="p">);</span>
+   <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Вывод полезной текущей информации о системе мог бы выглядеть примерно следующим образом — опять-таки если хорошо покопаться в официальной документации к FreeRTOS то наверняка можно найти ещё какие-нибудь интересные штуковины, это только набросок того что попалось на глаза: </p>
+<p><em>task_stat.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;task_stat.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">vTaskStat</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// once</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">128</span> <span class="o">/</span> <span class="mi">6</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">draw_char</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">6</span><span class="p">)</span> <span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="sc">&#39;-&#39;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&quot;portBASE_TYPE&quot;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">portBASE_TYPE</span><span class="p">));</span>
+  <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&quot;portTickType&quot;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">portTickType</span><span class="p">));</span>
+  <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s">&quot;tick rate (Hz)&quot;</span><span class="p">,</span> <span class="n">configTICK_RATE_HZ</span><span class="p">);</span>
+
+  <span class="c1">// loop</span>
+  <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s">&quot;uptime&quot;</span><span class="p">,</span> <span class="n">xTaskGetTickCount</span><span class="p">());</span>
+    <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;freeHeapSize&quot;</span><span class="p">,</span> <span class="n">xPortGetFreeHeapSize</span><span class="p">());</span>
+    <span class="n">draw_str_hex</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&quot;numberOfTasks&quot;</span><span class="p">,</span> <span class="n">uxTaskGetNumberOfTasks</span><span class="p">());</span>
+  <span class="p">}</span>
+
+  <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>И как вы думаете что произойдёт при запуске ? А получим мы вот такую красоту !</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/stackoverflow.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Как несложно догадаться сработал перехватчик <code>vApplicationStackOverflowHook</code>. Чтобы починить это достаточно увеличить <code>configMINIMAL_STACK_SIZE</code> с 50 до 100. Точно так же в качестве эксперимента можно теперь уменьшить <code>configTOTAL_HEAP_SIZE</code> скажем до 42 для проверки хука <code>vApplicationMallocFailedHook</code>:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/maloocfailed.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Ну и напоследок достаточно передать в при вызове <code>vTaskDelayUntil</code> качестве любого аргумента 0 и сработает <code>configASSERT</code>, который знает имя файла и номер строки где случилась ошибка диагностики ядра: </p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/assert.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Ещё у FreeRTOS есть один интересный перехватчик для задачи Бездействия (Idle task) — <code>configUSE_IDLE_HOOK</code>. Задача idle автоматически создаётся при запуске планировщика и она постоянно находится в состоянии готовности к выполнению. Ее приоритет задается макроопределением <code>tskIDLE_PRIORITY</code> как самый низкий в программе (обычно 0). Это гарантирует, что задача Бездействие не будет выполняться, пока в программе есть хотя бы одна задача в состоянии готовности к выполнению и как только появится любая готовая к выполнению задача, задача Бездействие будет ею вытеснена. Ещё эта задача занимается освобождением памяти, выделенной задачам, которые были удалены и поэтому в приложениях, использующих <code>vTaskDelete()</code>, важно обеспечить время для задачи idle. Также часто задачу Бездействие используют для того, чтобы вызывать режим энергосбережения процессора.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">Далее</a> о проблемах организации
+совместного доступа нескольких задач/прерываний к одному ресурсу.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,6 +1,804 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-03-22T00:00:00+02:00</updated><entry><title>С++ для микроконтроллеров - «Декоратор»</title><link href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/" rel="alternate"></link><published>2017-03-22T00:00:00+02:00</published><updated>2017-03-22T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-03-22:/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/</id><summary type="html">&lt;p&gt;«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.&lt;/p&gt;
-&lt;p&gt;GoF даёт следующее классическое определение: декоратор (англ. Decorator) — паттерн, структурирующий …&lt;/p&gt;</summary><content type="html">&lt;p&gt;«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-04-29T00:00:00+03:00</updated><entry><title>FreeRTOS - обмен данными между задачами</title><link href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/" rel="alternate"></link><published>2017-04-29T00:00:00+03:00</published><updated>2017-04-29T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-04-29:/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/</id><summary type="html">&lt;p&gt;Продолжаем осваивать &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;FreeRTOS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;кооперативной&lt;/a&gt; многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы &lt;a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/"&gt;атомарности&lt;/a&gt; и поэтому во FreeRTOS для передачи информации …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Продолжаем осваивать &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;FreeRTOS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;кооперативной&lt;/a&gt; многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы &lt;a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/"&gt;атомарности&lt;/a&gt; и поэтому во FreeRTOS для передачи информации между задачами придумали &lt;em&gt;очереди&lt;/em&gt;. Очереди представляют собой фундаментальный механизм FreeRTOS, который лежит в основе различного рода взаимодействий задач друг с другом. Очереди могут быть использованы для передачи информации как между задачами, так и между прерываниями и задачами. Если сравнивать с глобальными переменными, то помимо решения проблем с атомарностью очередь обладает рядом дополнительных возможностей — блокировка на чтение/запись, позволяющая задаче не расходовать процессорное время на периодически опрос глобальной переменной, размер очереди не ограничен 1, данные можно класть либо в начало либо в конец очереди. &lt;/p&gt;
+&lt;p&gt;В рассматриваемом примере одна задача будет сканировать кнопки и передавать данные о нажатии двум другим задачам светодиодных анимаций с помощью двух очередей. &lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/6ac96e5ec9bcc3297d04e3e8c0982a46"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/event.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Очередь может хранить в себе конечное число элементов фиксированного размера.
+Максимальное число элементов, которое может хранить очередь, называется размером очереди. Как размер элемента, так и размер очереди задаются при создании очереди и остаются неизменными до ее удаления. В нашем случае перед запуском планировщика в файле main.c создаются две очереди &lt;code&gt;xQueueBtnsL = xQueueCreate(1, sizeof(char));&lt;/code&gt; для левых и правых кнопок соответственно. Поскольку у задачи, которая кладёт данные в очередь, приоритет ниже, чем у забирающей эти данные, то размера очереди в 1 элемент оказывается достаточно. При других раскладах приоритетов размер очереди возможно потребуется увеличить — в противном случае возможна ситуация, когда данные о нажатой кнопке не успели дойти до адресата, а кнопочку нажали заново и тогда сработает &lt;code&gt;configASSERT&lt;/code&gt; т.к. в очереди закончилось место:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_btn_scan.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskScanBtns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;queue.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="n"&gt;QueueHandle_t&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsR&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;task_btn_scan.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_btn_scan.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="n"&gt;QueueHandle_t&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsR&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskScanBtns&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// button pushed&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b1111&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+      &lt;span class="cm"&gt;/* Send a char to the queue. Don&amp;#39;t block if the queue is already full &lt;/span&gt;
+&lt;span class="cm"&gt;        (the third parameter is zero, so not block time is specified). */&lt;/span&gt;
+      &lt;span class="n"&gt;configASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xQueueSend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;pdPASS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;configASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xQueueSend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;pdPASS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;  &lt;span class="c1"&gt;// button released&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Для записи элемента в конец очереди используется API-функция &lt;code&gt;xQueueSend()&lt;/code&gt;. В нашем случае на момент записи очередь всегда пуста, т.к. у задачи-получателя более высокий приоритет, поэтому таймаут (третий параметр) логично задать «0». Может возвращать 2 значения:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;pdPASS — означает, что данные успешно записаны в очередь. Если таймаут не равен «0», то возврат значения pdPASS говорит о том, что свободное место в очереди появилось до истечения таймаута и элемент был помещен в очередь&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;errQUEUE_FULL — означает, что данные не записаны в очередь, так как
+очередь заполнена. Если таймаут не равен «0», то возврат значения errQUEUE_FULL говорит о том, что таймаут завершен, а место в очереди так и не освободилось&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Задача-получатель информации о нажатии кнопки, которая заправляет анимациями левых светодиодов принимает следующий вид:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_l_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_btn_scan.h&amp;quot; // queues&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="n"&gt;xSemaphoreHandle&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// C99&lt;/span&gt;
+&lt;span class="c1"&gt;// an object that has static storage duration is not initialized explicitly, then:&lt;/span&gt;
+&lt;span class="c1"&gt;// — if it has pointer type, it is initialized to a null pointer;&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+      &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+      &lt;span class="c1"&gt;// portMAX_DELAY will cause the task to wait indefinitely&lt;/span&gt;
+      &lt;span class="c1"&gt;// (without timing out) provided INCLUDE_vTaskSuspend is set to 1&lt;/span&gt;
+      &lt;span class="n"&gt;portBASE_TYPE&lt;/span&gt; &lt;span class="n"&gt;xStatus&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;xQueueReceive&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; 
+                &lt;span class="n"&gt;xQueueBtnsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;?&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;portMAX_DELAY&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="cm"&gt;/* Attempt to take the mutex, blocking indefinitely to wait for the mutex */&lt;/span&gt;
+      &lt;span class="n"&gt;xSemaphoreTake&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;portMAX_DELAY&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xStatus&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;pdPASS&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;// set leds color&lt;/span&gt;
+        &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="nl"&gt;b10&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;   &lt;span class="cm"&gt;/* red blink */&lt;/span&gt;
+            &lt;span class="n"&gt;P5OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P6OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P4OUT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="nl"&gt;b100&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;  &lt;span class="cm"&gt;/* green blink */&lt;/span&gt;
+            &lt;span class="n"&gt;P4OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P6OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P5OUT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="nl"&gt;b1000&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="cm"&gt;/* blue blink */&lt;/span&gt;
+            &lt;span class="n"&gt;P4OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P5OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P6OUT&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+          &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="nl"&gt;b1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;    &lt;span class="cm"&gt;/* off blink */&lt;/span&gt;
+            &lt;span class="n"&gt;P4OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P5OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P6OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  
+        &lt;span class="p"&gt;}&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+      &lt;span class="p"&gt;}&lt;/span&gt;
+
+      &lt;span class="cm"&gt;/* The mutex MUST be given back! */&lt;/span&gt;
+      &lt;span class="n"&gt;xSemaphoreGive&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Для считывания элемента с удалением его из очереди используется API-функция &lt;code&gt;xQueueReceive()&lt;/code&gt;. Таймаут &lt;code&gt;portMAX_DELAY&lt;/code&gt; в &lt;a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/"&gt;паре&lt;/a&gt; с &lt;code&gt;INCLUDE_vTaskSuspend&lt;/code&gt; задаёт бесконечное время ожидания. Также может возвращать 2 значения:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;pdPASS — означает, что данные успешно прочитаны из очереди. Если таймаут не равен «0», то возврат значения pdPASS говорит о том, что элемент в очереди появился (или уже был там) до истечения тайм-аута и был успешно прочитан&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;errQUEUE_EMPTY — означает, что элемент не прочитан из очереди, так как очередь пуста. Если таймаут не равен «0», то возврат значения errQUEUE_FULL говорит о том, что таймаут завершен, а никакая другая задача или прерывание так и не записали элемент в очередь&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Всё бы хорошо, оно работает но есть одно но — зачем нам вообще отдельная задача для считывания кнопок ? Ведь она постоянно крутится в памяти микроконтроллера и потребляет ресурсы даже когда не происходит никакой активности со стороны пользователя. Куда более оптимальным решением было бы использовать для подобных целей &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;прерывание&lt;/a&gt;, вызываемое при нажатии на кнопку.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/abb4216611a94d97da323920d61175b6"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/event_isr.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/isr.png" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;btn_scan.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;btn_scan.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="n"&gt;QueueHandle_t&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xQueueBtnsR&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;btn_scan_init&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;// clear the interrupt flag&lt;/span&gt;
+  &lt;span class="n"&gt;P1IFG&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;// enable interrupt on BIT 0..7&lt;/span&gt;
+  &lt;span class="n"&gt;P1IE&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;__attribute__&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;interrupt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORT1_VECTOR&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="n"&gt;Port1_ISR&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;__attribute__&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="n"&gt;interrupt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PORT1_VECTOR&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt; &lt;span class="n"&gt;Port1_ISR&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;P1IFG&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;  &lt;span class="c1"&gt;// clear the interrupt flag&lt;/span&gt;
+
+  &lt;span class="n"&gt;BaseType_t&lt;/span&gt; &lt;span class="n"&gt;xHigherPriorityTaskWoken&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* xHigherPriorityTaskWoken must be initialised to pdFALSE. */&lt;/span&gt;
+  &lt;span class="n"&gt;xHigherPriorityTaskWoken&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pdFALSE&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b1111&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="cm"&gt;/* xHigherPriorityTaskWoken will get set to pdTRUE if writing to the &lt;/span&gt;
+&lt;span class="cm"&gt;       queue causes a task to leave the Blocked state, and the task &lt;/span&gt;
+&lt;span class="cm"&gt;       leaving the Blocked state has a priority higher than the currently &lt;/span&gt;
+&lt;span class="cm"&gt;       executing task (the task that was interrupted). */&lt;/span&gt;
+
+    &lt;span class="n"&gt;configASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xQueueSendFromISR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; 
+        &lt;span class="n"&gt;xQueueBtnsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;xHigherPriorityTaskWoken&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;pdPASS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;configASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xQueueSendFromISR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; 
+        &lt;span class="n"&gt;xQueueBtnsR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P1IN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;xHigherPriorityTaskWoken&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;pdPASS&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* If xHigherPriorityTaskWoken is now set to pdTRUE then a context&lt;/span&gt;
+&lt;span class="cm"&gt;     switch should be requested. */&lt;/span&gt;
+  &lt;span class="n"&gt;portYIELD_FROM_ISR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xHigherPriorityTaskWoken&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;После оптимизации количество задач сократилось с 5 до 4 и соответственно освободилась RAM. Функцию &lt;code&gt;xQueueSend()&lt;/code&gt; нельзя использовать в прерываниях — для этого есть &lt;code&gt;xQueueSendFromISR()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;Гибридная&lt;/a&gt; многозадачность во FreeRTOS является комбинацией вытесняющей и кооперативной. В нашем случае происходит прерывание по нажатию на кнопку, но по окончании работы обработчика прерывания выполнение возвращается не к текущей низкоприоритетной задаче, а к более высокоприоритетной путём немедленного переключения контекста &lt;code&gt;portYIELD_FROM_ISR&lt;/code&gt; не дожидаясь окончания текущего кванта времени планировщика. Гибридная подход позволяет сократить время реакции системы на прерывание.&lt;/p&gt;</content><category term="msp430"></category><category term="RTOS"></category></entry><entry><title>FreeRTOS - совместный доступ к общим ресурсам</title><link href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/" rel="alternate"></link><published>2017-04-28T00:00:00+03:00</published><updated>2017-04-28T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-04-28:/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/</id><summary type="html">&lt;p&gt;Продолжаем осваивать &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;FreeRTOS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Продолжаем осваивать &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;FreeRTOS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;в случае с вытесняющей многозадачностью — переключение контекста задачи &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;в любой системе даже без RTOS — &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;прерывание&lt;/a&gt; &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Если другая задача или обработчик возникшего прерывания обратятся к этому же самому ресурсу, состояние которого носит промежуточный характер из-за воздействия первой задачи, то результат работы программы очень сложно предугадать. Баги, связанные с многозадачностью потенциально очень коварны, так как при тестировании могут проявляться почти случайным образом и тут многое зависит от внимательности и квалификации программиста. &lt;/p&gt;
+&lt;p&gt;В нашем случае левые и правые RGB светодиоды имеют общие порты P4OUT, P5OUT и P6OUT — биты 0..4 за левыми, а 5..7 за правыми. Аналогичная ситуация с портом P3OUT, где два младших бита за дисплеем, а остальные 6 для двух правых RGB светодиодов. Проблема заключается в том, что последовательность действий над портами с очень большой долей вероятности является не атомарной, поскольку занимает больше одной инструкции до полного завершения, и соответственно может быть прервана посередине. Например пусть стоит задача установить (сбросить, инвертировать — не имеет значения) один бит в регистре порта ввода/вывода. Большинство компиляторов транслирует такой код в несколько последовательных инструкций ассемблера:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;копирование значения порта микроконтроллера в регистр общего назначения&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;модификация (сбросить, инвертировать и т.д.) регистра общего назначения&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;обратное копирование результата из регистра общего назначения в порт&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Задача А загружает значение порта в регистр общего назначения --&amp;gt; в этот момент ее вытесняет задача Б, при этом задача А не «успела» модифицировать и записать данные обратно в порт --&amp;gt; задача Б в свою очередь тоже изменяет значение порта и блокируется --&amp;gt; задача А продолжает выполняться с точки, в которой ее выполнение было прервано. Какое значение будет записано в порт ? Явно не то, что задумывал программист.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/fb921e5be78d0de2cd0620c4fb8e36c7"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/mutex.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Для того, чтобы обеспечить целостность данных в любой момент времени доступ к ресурсу, который является общим для задач, либо общим для задач и прерываний, в RTOS предусмотрен механизм взаимного исключения (mutual exclusion). Этот механизм гарантирует, что если задача начала выполнять некоторые действия с ресурсом, то никакая другая задача (или прерывание) не сможет получить доступ к данному ресурсу, пока операции с ним не будут завершены первой задачей.&lt;/p&gt;
+&lt;p&gt;FreeRTOS предоставляет несколько возможностей, которые можно использовать для реализации взаимного исключения — критические секции, мьютексы, задачи-сторожа. Критические секции — это очень грубый способ реализации взаимного исключения, т.к. они работают либо просто путем запрета прерываний либо приостановкой всего планировщика. Лучше по мере возможности (использование мьютекса из тела обработчика прерывания невозможно) использовать мьютексы — для этого нужно в файле конфигурации &lt;em&gt;FreeRTOSConfig.h&lt;/em&gt; добавить макроопределение &lt;code&gt;#define configUSE_MUTEXES 1&lt;/code&gt; и также мьютекс должен быть явно создан перед первым его использованием например &lt;code&gt;xP4P5P6Mutex = xSemaphoreCreateMutex();&lt;/code&gt; в main.c перед запуском планировщика. Макроопределение &lt;code&gt;#define INCLUDE_vTaskSuspend 1&lt;/code&gt; опционально — если определено, то при использовании константы &lt;code&gt;portMAX_DELAY&lt;/code&gt; задача может находиться в блокированном состоянии сколь угодно долго. Это касается не только мьютексов, но и других API FreeRTOS — например очередей, которые будут рассмотрены в следующем материале.&lt;/p&gt;
+&lt;p&gt;Вот как будет теперь выглядеть модифицированная версия задачи для анимации левых светодиодов:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_l_leds.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;semphr.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="n"&gt;xSemaphoreHandle&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;task_l_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="n"&gt;xSemaphoreHandle&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;portTickType&lt;/span&gt; &lt;span class="n"&gt;xLastWakeTime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+      &lt;span class="cm"&gt;/* Attempt to take the mutex, blocking indefinitely to wait for the mutex */&lt;/span&gt;
+      &lt;span class="n"&gt;xSemaphoreTake&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;portMAX_DELAY&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11111&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b10000&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="cm"&gt;/* The mutex MUST be given back! */&lt;/span&gt;
+      &lt;span class="n"&gt;xSemaphoreGive&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xP4P5P6Mutex&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+      &lt;span class="n"&gt;vTaskDelayUntil&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;xLastWakeTime&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="cm"&gt;/* ticks */&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+   &lt;span class="n"&gt;xLastWakeTime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;xTaskGetTickCount&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P4OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P5OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P6OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Только одна задача может владеть мьютексом. В приведенном примере осуществляется попытка взять мьютекс  &lt;code&gt;xSemaphoreTake&lt;/code&gt; с бесконечным временем ожидания &lt;code&gt;portMAX_DELAY&lt;/code&gt; в случае, если он пока недоступен. Выход из &lt;code&gt;xSemaphoreTake()&lt;/code&gt; произойдет только тогда, когда мьютекс успешно получен, так что нет необходимости проверять результат возврата функции, но если используется любой другой период задержки, отличный от &lt;code&gt;portMAX_DELAY&lt;/code&gt;, то код должен проверить, что &lt;code&gt;xSemaphoreTake()&lt;/code&gt; вернула &lt;code&gt;pdTRUE&lt;/code&gt;. По окончании необходимых действий над общим ресурсом мьютекс должен быть возвращен обратно &lt;code&gt;xSemaphoreGive&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;В других задачах с анимациями любые модификации разделяемых портов ввода/вывода тоже необходимо пропускать через мьютекс — например &lt;code&gt;xSemaphoreTake( xP4P5P6Mutex, portMAX_DELAY ); P4OUT |= ~0b11111; xSemaphoreGive( xP4P5P6Mutex );&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Мьютекс бывает и рекурсивным т.е. когда одна задача может его взять дважды, например в результате вложенной фукнции. В этом случае для освобождения его она должна его столько же раз вернуть обратно. Еще одна важная особенность мутекса в том, что он может &lt;strong&gt;инвертировать приоритет&lt;/strong&gt; — это когда выполнение высокоприоритетной задачи откладывается низкоприоритетной задачей, владеющей мутексом на данный момент. И наконец мутексы могут привести к &lt;strong&gt;взаимной блокировке&lt;/strong&gt; (Deadlock или Deadly Embrace) — это ситуация в многозадачной системе, когда несколько задач находятся в состоянии бесконечного ожидания доступа к ресурсам, занятым самими этими задачами.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/"&gt;Далее&lt;/a&gt; обмен данными между задачами.&lt;/p&gt;</content><category term="msp430"></category><category term="RTOS"></category></entry><entry><title>FreeRTOS - диагностика ошибок и перехватчики</title><link href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/" rel="alternate"></link><published>2017-04-27T00:00:00+03:00</published><updated>2017-04-27T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-04-27:/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Продолжаем осваивать &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;FreeRTOS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
+&lt;p&gt;Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Продолжаем осваивать &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;FreeRTOS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые нельзя проверить на этапе компиляции приложения ? Во FreeRTOS для этих целей предусмотрены следующие механизмы:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;макрос &lt;code&gt;configASSERT()&lt;/code&gt; активно используется ядром, а разработчик приложения может (должен) задать свою реализацию в зависимости от доступного устройства вывода в конкретном устройстве&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;во FreeRTOS реализован собственный механизм динамического выделения памяти, а для диагностики подобного рода ошибок предусмотрены специальные перехватчики (хуки) &lt;code&gt;configUSE_MALLOC_FAILED_HOOK&lt;/code&gt; и &lt;code&gt;configCHECK_FOR_STACK_OVERFLOW&lt;/code&gt; и возможно что-то еще — доки в руки&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;В нашем устройстве присутствует монохромный &lt;a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/"&gt;дисплей&lt;/a&gt; и туда же будем кидать все диагностированные ошибки. Будет две задачи — анимация на левых светодиодах и вывод различной системной информации на экран. При обнаружении ошибки ядра или выделения памяти будет «BSoD» — не баг, это фича. Будем надеяться заказчик нашего устройства его не увидит — для этого в релизе, уже после того как всё заработает как надо, диагностику ошибок FreeRTOS можно (даже нужно) просто закомментировать.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/24a92b4d7a9052f4214b73dac3355e24"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/hooks.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Вывод текста на экран осуществляется функциями с префиксом &lt;code&gt;draw&lt;/code&gt;, как это работает было &lt;a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/"&gt;рассмотрено&lt;/a&gt; в одном из предыдущих материалов. После внимательного изучения официальной документации добавим в где-то в конец файла конфигурации &lt;em&gt;FreeRTOSConfig.h&lt;/em&gt; следующее:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;FreeRTOSConfig.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// tutorial: 2&lt;/span&gt;
+&lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vAssertCalled&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="cp"&gt;#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __LINE__, __FILE__ )&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Method 2 is a bit slower than method 1 but it will most likely catch all stack overflows.&lt;/span&gt;
+&lt;span class="cp"&gt;#define configCHECK_FOR_STACK_OVERFLOW     2&lt;/span&gt;
+&lt;span class="cp"&gt;#define configUSE_MALLOC_FAILED_HOOK       1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;hooks.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;draw.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;taskDISABLE_INTERRUPTS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// game over&lt;/span&gt;
+
+  &lt;span class="n"&gt;draw_clr&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Error: StackOverflow&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationMallocFailedHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationMallocFailedHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;taskDISABLE_INTERRUPTS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// game over&lt;/span&gt;
+
+  &lt;span class="n"&gt;draw_clr&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Error: MallocFailed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vAssertCalled&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt; &lt;span class="n"&gt;ulLine&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;pcFileName&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;taskDISABLE_INTERRUPTS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// game over&lt;/span&gt;
+
+  &lt;span class="n"&gt;draw_clr&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Error: AssertCalled&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;File Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;ulLine&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Задача с анимациями для левых светодиодов почти ничем не отличается от предыдущего материала, только вместо API временной задержки &lt;code&gt;vTaskDelay&lt;/code&gt; теперь &lt;code&gt;vTaskDelayUntil&lt;/code&gt;, которая точнее первой. Для данной задачи точность не критична, но при передаче в функцию &lt;code&gt;vTaskDelayUntil&lt;/code&gt; неправильных аргументов сработает &lt;code&gt;configASSERT&lt;/code&gt;, что даст возможность проверить саму проверку:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_l_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;portTickType&lt;/span&gt; &lt;span class="n"&gt;xLastWakeTime&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b10000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;vTaskDelayUntil&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;xLastWakeTime&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="cm"&gt;/* ticks */&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+   &lt;span class="n"&gt;xLastWakeTime&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;xTaskGetTickCount&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P4OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P5OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P6OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод полезной текущей информации о системе мог бы выглядеть примерно следующим образом — опять-таки если хорошо покопаться в официальной документации к FreeRTOS то наверняка можно найти ещё какие-нибудь интересные штуковины, это только набросок того что попалось на глаза: &lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_stat.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;draw.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_stat.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskStat&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// once&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;128&lt;/span&gt; &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;draw_char&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="sc"&gt;&amp;#39;-&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;portBASE_TYPE&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;portBASE_TYPE&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;portTickType&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;portTickType&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;tick rate (Hz)&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;configTICK_RATE_HZ&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// loop&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;uptime&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xTaskGetTickCount&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+    &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;freeHeapSize&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xPortGetFreeHeapSize&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+    &lt;span class="n"&gt;draw_str_hex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;numberOfTasks&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;uxTaskGetNumberOfTasks&lt;/span&gt;&lt;span class="p"&gt;());&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;И как вы думаете что произойдёт при запуске ? А получим мы вот такую красоту !&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/stackoverflow.png" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Как несложно догадаться сработал перехватчик &lt;code&gt;vApplicationStackOverflowHook&lt;/code&gt;. Чтобы починить это достаточно увеличить &lt;code&gt;configMINIMAL_STACK_SIZE&lt;/code&gt; с 50 до 100. Точно так же в качестве эксперимента можно теперь уменьшить &lt;code&gt;configTOTAL_HEAP_SIZE&lt;/code&gt; скажем до 42 для проверки хука &lt;code&gt;vApplicationMallocFailedHook&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/maloocfailed.png" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Ну и напоследок достаточно передать в при вызове &lt;code&gt;vTaskDelayUntil&lt;/code&gt; качестве любого аргумента 0 и сработает &lt;code&gt;configASSERT&lt;/code&gt;, который знает имя файла и номер строки где случилась ошибка диагностики ядра: &lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/assert.png" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Ещё у FreeRTOS есть один интересный перехватчик для задачи Бездействия (Idle task) — &lt;code&gt;configUSE_IDLE_HOOK&lt;/code&gt;. Задача idle автоматически создаётся при запуске планировщика и она постоянно находится в состоянии готовности к выполнению. Ее приоритет задается макроопределением &lt;code&gt;tskIDLE_PRIORITY&lt;/code&gt; как самый низкий в программе (обычно 0). Это гарантирует, что задача Бездействие не будет выполняться, пока в программе есть хотя бы одна задача в состоянии готовности к выполнению и как только появится любая готовая к выполнению задача, задача Бездействие будет ею вытеснена. Ещё эта задача занимается освобождением памяти, выделенной задачам, которые были удалены и поэтому в приложениях, использующих &lt;code&gt;vTaskDelete()&lt;/code&gt;, важно обеспечить время для задачи idle. Также часто задачу Бездействие используют для того, чтобы вызывать режим энергосбережения процессора.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/"&gt;Далее&lt;/a&gt; о проблемах организации
+совместного доступа нескольких задач/прерываний к одному ресурсу.&lt;/p&gt;</content><category term="msp430"></category><category term="RTOS"></category></entry><entry><title>FreeRTOS - операционная система для микроконтроллеров</title><link href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/" rel="alternate"></link><published>2017-04-26T00:00:00+03:00</published><updated>2017-04-26T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-04-26:/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/</id><summary type="html">&lt;p&gt;FreeRTOS — многозадачная, мультиплатформенная операционная система жесткого реального времени (&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;RTOS&lt;/a&gt;) для встраиваемых систем. Написана на языке Си с ассемблерными вставками для конкретной аппаратной платформы. Планировщик FreeRTOS поддерживает три типа многозадачности: вытесняющую с приоритетами, &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;кооперативную&lt;/a&gt; и гибридную. Какая из них лучше ? В большинстве случаев вытесняющая многозадачность является более предпочтительной т.к. в …&lt;/p&gt;</summary><content type="html">&lt;p&gt;FreeRTOS — многозадачная, мультиплатформенная операционная система жесткого реального времени (&lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;RTOS&lt;/a&gt;) для встраиваемых систем. Написана на языке Си с ассемблерными вставками для конкретной аппаратной платформы. Планировщик FreeRTOS поддерживает три типа многозадачности: вытесняющую с приоритетами, &lt;a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/"&gt;кооперативную&lt;/a&gt; и гибридную. Какая из них лучше ? В большинстве случаев вытесняющая многозадачность является более предпочтительной т.к. в отличие от кооперативной многозадачности управление операционной системе передаётся вне зависимости от состояния работающих задач, благодаря чему гарантируется своевременная реакция системы на какое-либо более приоритетное событие. Такие системы принято называть системами &lt;strong&gt;жесткого&lt;/strong&gt; реального времени. Соответственно кооперативная многозадачность по своей природе является системой &lt;strong&gt;мягкого&lt;/strong&gt; реального времени т.к. планировщик самостоятельно не может прервать выполнение текущей задачи даже если появилась готовая к выполнению задача с более высоким приоритетом — тут каждая задача должна самостоятельно передать управление планировщику. Гибридная и кооперативная многозадачность во FreeRTOS является опциональными и в основном служат для более рационального использования ресурсов микроконтроллера, которых всегда очень мало :)&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/4762128c15a0dcc8e4d8f849a0998f20"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/tasks.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;При создании приложения на FreeRTOS рекомендуется брать за основу демонстрационный проект из официальных примеров. В нашем случае микроконтроллер &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;MSP430F1611&lt;/a&gt;, организация файлов проекта makefile и компилятор (msp430-gcc 6.2.1.16) самый свежий на текущий момент от &lt;a href="http://www.ti.com/tool/msp430-gcc-opensource" rel="nofollow"&gt;производителя&lt;/a&gt;. Все настройки конфигурации, касающиеся FreeRTOS, принято помещать в один отдельный заголовочный файл &lt;em&gt;FreeRTOSConfig.h&lt;/em&gt;. Большинство настроек в этом файле являются опциональными т.к. уже имеют значения по умолчанию, однако некоторые нужно обязательно определять в каждом проекте ибо сломается компиляция:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;FreeRTOSConfig.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#ifndef FREERTOS_CONFIG_H&lt;/span&gt;
+&lt;span class="cp"&gt;#define FREERTOS_CONFIG_H&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;msp430.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cm"&gt;/*-----------------------------------------------------------&lt;/span&gt;
+&lt;span class="cm"&gt; * Application specific definitions.&lt;/span&gt;
+&lt;span class="cm"&gt; *&lt;/span&gt;
+&lt;span class="cm"&gt; * These definitions should be adjusted for your particular hardware and&lt;/span&gt;
+&lt;span class="cm"&gt; * application requirements.&lt;/span&gt;
+&lt;span class="cm"&gt; *&lt;/span&gt;
+&lt;span class="cm"&gt; * THESE PARAMETERS ARE DESCRIBED WITHIN THE &amp;#39;CONFIGURATION&amp;#39; SECTION OF THE&lt;/span&gt;
+&lt;span class="cm"&gt; * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE. &lt;/span&gt;
+&lt;span class="cm"&gt; *&lt;/span&gt;
+&lt;span class="cm"&gt; * See http://www.freertos.org/a00110.html.&lt;/span&gt;
+&lt;span class="cm"&gt; *----------------------------------------------------------*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define configUSE_PREEMPTION        1&lt;/span&gt;
+&lt;span class="cp"&gt;#define configUSE_IDLE_HOOK         0&lt;/span&gt;
+&lt;span class="cp"&gt;#define configUSE_TICK_HOOK         0&lt;/span&gt;
+&lt;span class="cp"&gt;#define configCPU_CLOCK_HZ          ( ( unsigned long ) 130000 )&lt;/span&gt;
+&lt;span class="cp"&gt;#define configTICK_RATE_HZ          ( ( TickType_t ) 10 )&lt;/span&gt;
+&lt;span class="cp"&gt;#define configMAX_PRIORITIES        2&lt;/span&gt;
+&lt;span class="cp"&gt;#define configMINIMAL_STACK_SIZE    ( ( unsigned short ) 50 )&lt;/span&gt;
+&lt;span class="cp"&gt;#define configTOTAL_HEAP_SIZE       ( ( size_t ) ( 8 * 1024 ) )&lt;/span&gt;
+&lt;span class="cp"&gt;#define configUSE_16_BIT_TICKS      1&lt;/span&gt;
+
+&lt;span class="cp"&gt;#endif &lt;/span&gt;&lt;span class="cm"&gt;/* FREERTOS_CONFIG_H */&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Итак пробежимся по порядку по всем указанным настройкам:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configUSE_PREEMPTION&lt;/em&gt; задаёт режим многозадачности — кооперативная (0) или вытесняющая (1)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configUSE_IDLE_HOOK&lt;/em&gt;, &lt;em&gt;configUSE_TICK_HOOK&lt;/em&gt; — хуки сейчас не используем (0), но будем в следующем материале&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configCPU_CLOCK_HZ&lt;/em&gt; — в подавляющем большинстве задач необходимо отмерять интервалы времени, данная величина — тактовая частоты микроконтроллера, которую будет использовать RTOS при расчёте временных промежутков&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configTICK_RATE_HZ&lt;/em&gt; — переключение между задачами осуществляется через равные кванты времени работы планировщика и время реакции FreeRTOS на внешние события в режиме вытесняющей многозадачности не превышает одного кванта. По идее чем меньше квант тем лучше, однако за увеличением частоты переключений следует то, что ядро системы использует больше процессорного времени и тогда соответственно меньше процессорного время остаётся под задачи. Чем выше тактовая частота, тем большую частоту переключения можно задавать&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configMAX_PRIORITIES&lt;/em&gt; — каждой задаче назначается приоритет от 0 до (configMAX_PRIORITIES - 1). Наиболее низкий приоритет у задачи «бездействие», значение которого по умолчанию определено как 0. Уменьшение configMAX_PRIORITIES позволяет уменьшить объем ОЗУ, потребляемый ядром&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configMINIMAL_STACK_SIZE&lt;/em&gt;, &lt;em&gt;configTOTAL_HEAP_SIZE&lt;/em&gt; — пока что пусть это будут некие &lt;a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/"&gt;магические числа&lt;/a&gt;, определяющие достаточный объём памяти для нормального функционирования задач. Что будет если их поменять или задать неправильно посмотрим в следующем материале&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;configUSE_16_BIT_TICKS&lt;/em&gt; — разрядность счётчика квантов времени, прошедших с начала работы системы 16 бит (1) или 32 бит (0)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Приложение RTOS представляет из себя набор сообщающихся между собой независимых задач. Каждая задача выполняется в своём собственном контексте. В рамках приложения одновременно может выполняться только одна задача, и планировщик отвечает за то, какие задачи когда должны выполняться. Вытесняющий планировщик сам приостанавливает и возобновляет задачи (переключает задачи) во время выполнения приложения, и т.к. задача не знает о деятельности планировщика, то именно он и отвечает за сохранение контекста, чтобы задача была возобновлена в том же состоянии, что и была приостановлена. Для этого каждой задаче предоставляется отдельный стек. Когда задача приостановлена, контекст задачи хранится в стеке и может быть восстановлен перед возобновлением.&lt;/p&gt;
+&lt;p&gt;Теперь собственно пора определить и сами задачи. У нас две группы светодиодов — левые и правые и соответственно две независимые задачи с анимациями для каждой группы.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_r_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_r_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+     &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11&lt;/span&gt; &lt;span class="cm"&gt;/* don&amp;#39;t toggle LCD pins 0b11 */&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+     &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;10000&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// delay&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* Should the task implementation ever break out of the above loop, then the task&lt;/span&gt;
+&lt;span class="cm"&gt;    must be deleted before reaching the end of its implementing function. The NULL&lt;/span&gt;
+&lt;span class="cm"&gt;    parameter passed to the vTaskDelete() API function indicates that the task to be&lt;/span&gt;
+&lt;span class="cm"&gt;    deleted is the calling (this) task. */&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;task_l_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b10000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt; &lt;span class="c1"&gt;// delay&lt;/span&gt;
+        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+     &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;42000&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;   &lt;span class="c1"&gt;// delay&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P4OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P5OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P6OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Имена идентификаторов в исходном коде ядра FreeRTOS и демонстрационных проектах подчиняются определенным соглашениям об именовании, зная которые проще понимать тексты программ. Имена переменных и функций представлены в префиксной форме (так называемая
+Венгерская нотация), например &lt;code&gt;ulMemCheck&lt;/code&gt; — переменная типа &lt;code&gt;unsigned long&lt;/code&gt;, &lt;code&gt;pxCreatedTask&lt;/code&gt; — переменная типа «указатель на структуру», в нашем случае &lt;code&gt;vTaskDelete&lt;/code&gt; — функция, которая ничего не возвращает &lt;code&gt;void&lt;/code&gt;. Функции-задачи никогда не прерываются, поэтому обычно реализуются при помощи непрерывного цикла, а если все-таки произойдет выход из бесконечного цикла, то задача должна быть уничтожена до конца функции — по крайней мере так показано в официальных примерах к FreeRTOS. Параметр NULL обозначает, что уничтожается сама задача, из которой непосредственно происходит вызов API-функции &lt;code&gt;vTaskDelete()&lt;/code&gt; (харакири).&lt;/p&gt;
+&lt;p&gt;Фрагмент кода с &lt;code&gt;disable_watchdog&lt;/code&gt; не имеет отношения к FreeRTOS — это обход граблей компилятора. Без этого костыля при инициализация больших массивов при старте срабатывает &lt;a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/"&gt;сторожевой таймер&lt;/a&gt; ещё до точки входа &lt;code&gt;int main( void )&lt;/code&gt; и сбрасывает микроконтроллер :(&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;main.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_r_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;// !!!!   msp430-gcc 6.2.1.16   !!!!&lt;/span&gt;
+&lt;span class="c1"&gt;// msp430_gcc/examples/watchdog.txt&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;__attribute__&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="kr"&gt;naked&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;section&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;.crt_0042&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;used&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;disable_watchdog&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;WDTCTL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;WDTPW&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;WDTHOLD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// Stop watchdog timer&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="cm"&gt;/* Demo task priorities. */&lt;/span&gt;
+
+&lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; 
+  &lt;span class="n"&gt;main_TASK_PRIORITY_LEDS_L&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tskIDLE_PRIORITY&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="n"&gt;main_TASK_PRIORITY_LEDS_R&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;main_TASK_PRIORITY_LEDS_L&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt; * Start the demo application tasks - then start the real time scheduler.&lt;/span&gt;
+&lt;span class="cm"&gt; */&lt;/span&gt;
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* Setup the hardware ready for the demo. */&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// DCO = 3, RSEL = 0, f = 0.13 MHz&lt;/span&gt;
+  &lt;span class="n"&gt;DCOCTL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="cm"&gt;/* DCO2 + */&lt;/span&gt; &lt;span class="n"&gt;DCO1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;DCO0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+  &lt;span class="n"&gt;BCSCTL1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;XT2OFF&lt;/span&gt; &lt;span class="cm"&gt;/* + RSEL1 + RSEL0 + RSEL2 */&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// Shared between L/R tasks 8*RGB LEDS &lt;/span&gt;
+  &lt;span class="n"&gt;P4OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P5OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P6OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;P4DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;P5DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;P6DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// 2 RGB LEDS (pins 2..7)&lt;/span&gt;
+  &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P3DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;// create tasks&lt;/span&gt;
+  &lt;span class="c1"&gt;// Passing a uxPriority value above (configMAX_PRIORITIES – 1) will result in the&lt;/span&gt;
+  &lt;span class="c1"&gt;// priority assigned to the task being capped silently to the maximum legitimate value.&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* Task: left side LEDS animation */&lt;/span&gt;
+  &lt;span class="n"&gt;xTaskCreate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="s"&gt;&amp;quot;LedsL&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="n"&gt;configMINIMAL_STACK_SIZE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="n"&gt;main_TASK_PRIORITY_LEDS_L&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* Task: right side LEDS animation */&lt;/span&gt;
+  &lt;span class="n"&gt;xTaskCreate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vTaskLedsR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="s"&gt;&amp;quot;LedsR&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="n"&gt;configMINIMAL_STACK_SIZE&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="nb"&gt;NULL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="n"&gt;main_TASK_PRIORITY_LEDS_R&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+          &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* Start the scheduler. */&lt;/span&gt;
+  &lt;span class="n"&gt;vTaskStartScheduler&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+  &lt;span class="cm"&gt;/* As the scheduler has been started the demo applications tasks will be&lt;/span&gt;
+&lt;span class="cm"&gt;  executing and we should never get here! */&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Все задачи могут находиться в одном из следующих состояний:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Running (запущена) — задача выполняется, процессор занят ее выполнением&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Ready (готова) — готова выполнению, но в данный момент времени процессор занят выполнением другой задачи. По окончании текущего кванта времени из всех готовых к выполнению задач будет запущена (перейдёт в состояние выполнения) задача с наибольшим приоритетом. Если к выполнению готовы несколько задач с одинаковым приоритетом, то бишь как в нашем случае с &lt;code&gt;vTaskLedsL&lt;/code&gt; и &lt;code&gt;vTaskLedsR&lt;/code&gt;, то они по очереди переходят в состояние выполнения и пребывают в нем в течение одного системного кванта&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Blocked (заблокирована) — задача ожидает временного или внешнего события. Например,
+вызвав API-функцию &lt;code&gt;vTaskDelay(42)&lt;/code&gt;, задача переведет себя в блокированное состояние до тех пор, пока не пройдет временной период задержки 42. Блокированная задача не расходует процессорного времени, это время можно с пользой для дела использовать в менее приоритетных задачах&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Suspended (приостановлена) — такие задачи также не получает процессорного времени, однако в отличие от блокированного состояния, переход в приостановленное состояние и выход из него осуществляется в явном виде вызовом API-функций &lt;code&gt;vTaskSuspend()&lt;/code&gt; и &lt;code&gt;xTaskResume()&lt;/code&gt;. Задача может оставаться приостановленной сколь угодно долго&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;В приведенном примере задачи &lt;code&gt;vTaskLedsL&lt;/code&gt; и &lt;code&gt;vTaskLedsR&lt;/code&gt; выполняют полезное действие (в нашем случае — мигают), после чего ожидают определенный промежуток времени. Реализация задержки в виде пустого цикла &lt;code&gt;for(volatile uint16_t i = 42; i--;);&lt;/code&gt; крайне не эффективна — она как бы слишком «жадная». Что будет, если таким задачам назначить разный приоритет ? Высокоприоритетная задача все время остается в состоянии готовности к выполнению (не переходит ни в блокированное, ни в приостановленное состояние), она поглощает все процессорное время, вследствие чего низкоприоритетные задачи никогда не выполняются. Для корректной реализации задержек средствами FreeRTOS предусмотрена API-функция &lt;code&gt;vTaskDelay()&lt;/code&gt;, которая переводит задачу, вызывающую эту функцию, в блокированное состояние на требуемое количество квантов времени. Для использования этой функции необходимо в файле конфигурации &lt;em&gt;FreeRTOSConfig.h&lt;/em&gt; добавить макроопределение &lt;code&gt;#define INCLUDE_vTaskDelay 1&lt;/code&gt;, а если забыть это сделать, то проект попросту не соберётся:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;task_r_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_r_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsR&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+     &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;^&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b11&lt;/span&gt; &lt;span class="cm"&gt;/* don&amp;#39;t toggle LCD pins 0b11 */&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+     &lt;span class="n"&gt;vTaskDelay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt; &lt;span class="cm"&gt;/* ticks */&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;task_l_leds.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;FreeRTOS.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;task.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;task_l_leds.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="n"&gt;b10000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;vTaskDelay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="cm"&gt;/* ticks */&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;port&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pvParameters&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+     &lt;span class="n"&gt;vTaskDelay&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt; &lt;span class="cm"&gt;/* ticks */&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P4OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P5OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+     &lt;span class="n"&gt;rotate_rgb&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;P6OUT&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+   &lt;span class="p"&gt;}&lt;/span&gt;
+
+   &lt;span class="n"&gt;vTaskDelete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="nb"&gt;NULL&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Ок, а почему в файле конфигурации &lt;em&gt;FreeRTOSConfig.h&lt;/em&gt; отсутствует макроопределение &lt;code&gt;#define INCLUDE_vTaskDelete 1&lt;/code&gt;, а проект проходит компиляцию без ошибок ? Тут всё дело в оптимизации компилятора — перед вызовом &lt;code&gt;vTaskDelete&lt;/code&gt; компилятор видит бесконечный цикл и просто игнорирует весь код после него, что в принципе правильно. Но стоит например по ошибке выйти из цикла &lt;code&gt;break&lt;/code&gt; и будет ошибка при сборке.&lt;/p&gt;
+&lt;p&gt;P.S. В официальной документации имена подключаемых файлов FreeRTOS берутся в кавычки например &lt;code&gt;#include "FreeRTOS.h"&lt;/code&gt;, в текущих примерах есть небольшое отличие &lt;code&gt;#include &amp;lt;FreeRTOS.h&amp;gt;&lt;/code&gt;. Это легко при желании поменять:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ls -1 *.h *.c &lt;span class="p"&gt;|&lt;/span&gt; xargs -n1 sed -i                          &lt;span class="se"&gt;\&lt;/span&gt;
+      -e &lt;span class="s1"&gt;&amp;#39;s/#include\s\+&amp;lt;FreeRTOS.h&amp;gt;/#include &amp;quot;FreeRTOS.h&amp;quot;/&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+      -e &lt;span class="s1"&gt;&amp;#39;s/#include\s\+&amp;lt;task.h&amp;gt;/#include &amp;quot;task.h&amp;quot;/&amp;#39;&lt;/span&gt;         &lt;span class="se"&gt;\&lt;/span&gt;
+      -e &lt;span class="s1"&gt;&amp;#39;s/#include\s\+&amp;lt;semphr.h&amp;gt;/#include &amp;quot;semphr.h&amp;quot;/&amp;#39;&lt;/span&gt;     &lt;span class="se"&gt;\&lt;/span&gt;
+      -e &lt;span class="s1"&gt;&amp;#39;s/#include\s\+&amp;lt;queue.h&amp;gt;/#include &amp;quot;queue.h&amp;quot;/&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;На результат компиляции данных примеров это никак не влияет — бинарник на выходе &lt;em&gt;a.out&lt;/em&gt; будет одинаков в обоих случаях.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/"&gt;Далее&lt;/a&gt; хуки.&lt;/p&gt;</content><category term="msp430"></category><category term="RTOS"></category></entry><entry><title>Монохромный OLED дисплей на контроллере SSD1306</title><link href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="alternate"></link><published>2017-04-25T00:00:00+03:00</published><updated>2017-04-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-04-25:/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/</id><summary type="html">&lt;p&gt;Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;HD44780&lt;/a&gt; - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;HD44780&lt;/a&gt; - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один бит для синхронизации этой парочки итого минимум 10 ног микроконтроллера. Последовательные интерфейсы позволяют обойтись меньшим количеством соединений, но теоретически уступают в скорости обмена данными. У микроконтроллера msp430f1611 предостаточно выводов и в данном обучающем материале рассматривается параллельный интерфейс для которого не требуется дополнительно настраивать периферию I2C/SPI, что позволяет сосредоточиться непосредственно на особенностях SSD1306. При переходе на последовательный интерфейс достаточно будет изменить только две функции - &lt;code&gt;ssd1306_write_data&lt;/code&gt; и &lt;code&gt;ssd1306_write_instruction&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/4a1dee2b02e6d149594b10d03b7925c8"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/img.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Управление SSD1306 ограничивается двумя функциями - запись данных и запись команд. Карта памяти GDDRAM организована 8-ю страницами по 128 байт. Система координат имеет начало в левом верхнем углу. Для записи произвольного отображаемого байта страницы по заданному адресу используется функция &lt;code&gt;ssd1306_write_byte&lt;/code&gt;. Организация памяти SSD1306 не даёт возможность задавать отдельную точку на дисплее, только байт. Если потребуется прорисовывать отдельные пиксели вместо байт нужно держать все пиксели в памяти микроконтроллера (буфер 128x8) и периодически скидывать их на дисплей побайтово. При записи последовательности байт достаточно задать начальный адрес т.к. каждое обращение к GDDRAM приводит к автоматическому инкременту адреса столбца, по достижении конечного значения (128) счётчик адреса столбца сбрасывается в начальное значение (0), а счётчик адреса страницы увеличивается на единицу. После достижения счётчиком адреса страницы конечного значения (8) оба счётчика сбросятся в начальные значения и процесс пойдёт по второму кругу.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;ssd1306.c&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;// Address setting commands&lt;/span&gt;
+&lt;span class="cp"&gt;#define SSD1306_SET_COL_LO_NIBBLE    0x00&lt;/span&gt;
+&lt;span class="cp"&gt;#define SSD1306_SET_COL_HI_NIBBLE    0x10&lt;/span&gt;
+&lt;span class="cp"&gt;#define SSD1306_SET_PAGE_START_ADDR  0xB0&lt;/span&gt;
+
+&lt;span class="c1"&gt;// pins&lt;/span&gt;
+&lt;span class="cp"&gt;#define SSD1306_DATA_INST            0&lt;/span&gt;
+&lt;span class="cp"&gt;#define SSD1306_DATA_E               1&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;strobe&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;SSD1306_DATA_E&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;SSD1306_DATA_E&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;ssd1306_write_data&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;byte&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;P2OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;byte&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;|=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;SSD1306_DATA_INST&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;strobe&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;ssd1306_write_instruction&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;byte&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;P2OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;byte&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;=&lt;/span&gt; &lt;span class="o"&gt;~&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;SSD1306_DATA_INST&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;strobe&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;void&lt;/span&gt;
+&lt;span class="nf"&gt;ssd1306_write_byte&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;byte&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="n"&gt;ssd1306_write_instruction&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SSD1306_SET_PAGE_START_ADDR&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;ssd1306_write_instruction&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SSD1306_SET_COL_LO_NIBBLE&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0xF&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;ssd1306_write_instruction&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;SSD1306_SET_COL_HI_NIBBLE&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;ssd1306_write_data&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;byte&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Любая картинка или текст это всего-лишь набор пикселей. В случае SSD1306 цвета всего два один из них чёрный. Для преобразования любого файла изображения в Си массив послужит следующий скрипт на питоне + ImageMagick:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# http://grep.js.org/?gist=96caa480d220062b18a693f1b2e9f275&lt;/span&gt;
+~$ convert -resize 128x64&lt;span class="se"&gt;\!&lt;/span&gt; eyes.eps xbm:- &lt;span class="p"&gt;|&lt;/span&gt; grep -o &lt;span class="s1"&gt;&amp;#39;0[xX][0-9a-fA-F]\+&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+
+&lt;span class="s1"&gt;import sys&lt;/span&gt;
+
+&lt;span class="s1"&gt;# parse stdin image&lt;/span&gt;
+&lt;span class="s1"&gt;xbm = [int(line, 16) for line in sys.stdin]&lt;/span&gt;
+
+&lt;span class="s1"&gt;# convert&lt;/span&gt;
+&lt;span class="s1"&gt;out = [[0]*128 for i in range(8)]&lt;/span&gt;
+&lt;span class="s1"&gt;for y in range(64):&lt;/span&gt;
+&lt;span class="s1"&gt;  for x in range(128):&lt;/span&gt;
+&lt;span class="s1"&gt;    if x &amp;amp; 7:&lt;/span&gt;
+&lt;span class="s1"&gt;      byte &amp;gt;&amp;gt;= 1&lt;/span&gt;
+&lt;span class="s1"&gt;    else:&lt;/span&gt;
+&lt;span class="s1"&gt;      # 128 / 8 = 16 bytes in one xbm row&lt;/span&gt;
+&lt;span class="s1"&gt;      byte = xbm[y * 16 + x // 8]&lt;/span&gt;
+&lt;span class="s1"&gt;    if not byte &amp;amp; 1:&lt;/span&gt;
+&lt;span class="s1"&gt;      out[y // 8][x] |= (1 &amp;lt;&amp;lt; y % 8)&lt;/span&gt;
+
+&lt;span class="s1"&gt;# print array&lt;/span&gt;
+&lt;span class="s1"&gt;for p in out:&lt;/span&gt;
+&lt;span class="s1"&gt;  print(&amp;quot;{&amp;quot; + &amp;quot;,&amp;quot;.join(hex(x) for x in p) + &amp;quot;},&amp;quot;)&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Для отображения текста тоже понадобится набор готовых изображений для каждого символа. Наиболее простой случай - моноширинный шрифт все знаки (площадки знаков) которого имеют одинаковую ширину. Например &lt;a href="https://github.com/adafruit/Adafruit-GFX-Library/blob/master/glcdfont.c" rel="nofollow"&gt;шрифт&lt;/a&gt; для ASCII символов 5x7.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.png" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/56a600e7efa1f648c5305d652d14be6a"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+
+&lt;span class="cm"&gt;reset &amp;amp;&amp;amp; (export GCC_DIR=~/ti/msp430_gcc ; &lt;/span&gt;
+&lt;span class="cm"&gt;    $GCC_DIR/bin/msp430-elf-gcc \&lt;/span&gt;
+&lt;span class="cm"&gt;    -I $GCC_DIR/include -L $GCC_DIR/include \&lt;/span&gt;
+&lt;span class="cm"&gt;    -Werror -Wall -mmcu=msp430f1611 -O2 test.c ssd1306.c)&lt;/span&gt;
+
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;msp430.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;ssd1306.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;font.c&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="cp"&gt;#define STATIC_ASSERT(cond) typedef int foo[(cond) ? 1 : -1]&lt;/span&gt;
+&lt;span class="n"&gt;STATIC_ASSERT&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;font&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;256&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="cm"&gt;/* uint8_t values 0..255 == 256 */&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="cp"&gt;#undef STATIC_ASSERT&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;drawchar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;ssd1306_write_byte&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;font&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;drawstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;drawchar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;     &lt;span class="c1"&gt;// 6 pixels wide&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;SSD1306_X_PIXELS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;    &lt;span class="c1"&gt;// ran out of this page&lt;/span&gt;
+      &lt;span class="n"&gt;page&lt;/span&gt;&lt;span class="o"&gt;++&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;page&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;SSD1306_PIXEL_PAGES&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;    &lt;span class="c1"&gt;// ran out of space :(&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="nf"&gt;main&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;WDTCTL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;WDTPW&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;WDTHOLD&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;     &lt;span class="c1"&gt;// Stop watchdog timer&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// DCO = 3, RSEL = 0, f = 0.13 MHz&lt;/span&gt;
+    &lt;span class="n"&gt;DCOCTL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="cm"&gt;/* DCO2 + */&lt;/span&gt; &lt;span class="n"&gt;DCO1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;DCO0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+    &lt;span class="n"&gt;BCSCTL1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;XT2OFF&lt;/span&gt; &lt;span class="cm"&gt;/* + RSEL1 + RSEL0 + RSEL2 */&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;P2OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="n"&gt;P2DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;P3DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="n"&gt;ssd1306_init_display&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+    &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+      &lt;span class="n"&gt;drawstr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;!&lt;/span&gt;&lt;span class="se"&gt;\&amp;quot;&lt;/span&gt;&lt;span class="s"&gt;#$%&amp;amp;&amp;#39;()*+,-./0123456789:;&amp;lt;=&amp;gt;?@&amp;quot;&lt;/span&gt;
+                    &lt;span class="s"&gt;&amp;quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ[&lt;/span&gt;&lt;span class="se"&gt;\\&lt;/span&gt;&lt;span class="s"&gt;]^_`&amp;quot;&lt;/span&gt;
+                    &lt;span class="s"&gt;&amp;quot;abcdefghijklmnopqrstuvwxyz{|}~&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Здесь &lt;code&gt;STATIC_ASSERT&lt;/code&gt; это &lt;a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/"&gt;идиома&lt;/a&gt; Си, проверка на этапе компиляции будет полезна в случае смены шрифта - на ту же кириллицу например. Текущая реализация конечно простейшая, смещение по горизонтали задаётся в пикселях, но накладывается ограничение на смещение по вертикали - максимум 8 строк. В более сложных случаях можно задействовать какую-нибудь готовую графическую библиотеку для графического дисплея.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/"&gt;Далее&lt;/a&gt; операционная система реального времени FreeRTOS.&lt;/p&gt;</content><category term="msp430"></category><category term="SSD1306"></category></entry><entry><title>С++ для микроконтроллеров - «Декоратор»</title><link href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/" rel="alternate"></link><published>2017-03-22T00:00:00+02:00</published><updated>2017-03-22T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-03-22:/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Есть два способа создания дизайна программы. Один из них, это сделать его настолько простым, что в нем, очевидно, не будет недостатков. Другой способ — сделать его настолько запутанным, что в нем не будет очевидных недостатков. — C.A. R. Hoare&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
+&lt;p&gt;Есть два способа создания дизайна программы. Один из них, это сделать его настолько простым, что в нем, очевидно, не будет недостатков. Другой способ — сделать его настолько запутанным, что в нем не будет очевидных недостатков. — C.A. R. Hoare&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.&lt;/p&gt;
 &lt;p&gt;GoF даёт следующее классическое определение: декоратор (англ. Decorator) — паттерн, структурирующий объекты. Динамически добавляет объекту новые обязанности. Является гибкой альтернативой порождению подклассов с целью расширения функциональности.&lt;/p&gt;
 &lt;p&gt;Объект, который предполагается использовать (в нашем случае &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;слой&lt;/a&gt; для лампочек), выполняет основные функции. Однако может потребоваться добавить к нему некоторую дополнительную функциональность (&lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;анимации&lt;/a&gt;), которая будет выполняться до, после или даже вместо основной функциональности объекта.&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/ui.gif" style="width:50%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
@@ -3516,6 +4314,18 @@ gnuplot &lt;span class="m"&gt;4&lt;/span&gt;.6 patchlevel &lt;span class="m"&gt;
 &lt;p&gt;Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1&lt;/p&gt;</content><category term="GnuPlot"></category></entry><entry><title>ElasticSearch - практическое введение</title><link href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="alternate"></link><published>2016-06-25T00:00:00+03:00</published><updated>2016-06-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-06-25:/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/</id><summary type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
 &lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/"&gt;подсветку …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
 &lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/"&gt;подсветку&lt;/a&gt; вхождений в результатах выдачи и &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;агрегацию данных&lt;/a&gt; в Elastic и всё это только лишь с помощью REST API без необходимости наличия каких-либо глубоких познаний как в самом Lucene так и в программировании в целом !&lt;/p&gt;
+&lt;!-- cd ./dist/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Ddist/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
+
+&lt;!-- 
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/bundle.js"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/bundle.js.map"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/favicon.ico"&gt;&lt;/a&gt;
+&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/index.html"&gt;&lt;/a&gt;
+--&gt;
+
+&lt;h2&gt;UI ДЕМО&lt;/h2&gt;
+&lt;p&gt;Для лучшего понимания изложенного материала набросал простенький UI (&lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/react-elastic-example.zip"&gt;исходники&lt;/a&gt;) на &lt;a href="https://facebook.github.io/react/" rel="nofollow"&gt;ReactJS&lt;/a&gt;. Для работы &lt;a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/index.html"&gt;демо&lt;/a&gt; из браузера нужно на сервере ElasticSearch, который мы сейчас настроим, разрешить &lt;code&gt;http.cors&lt;/code&gt; например &lt;code&gt;allow-origin: /https?:\/\/proiot\.ru/&lt;/code&gt;, либо просто звёздочка  &lt;code&gt;*&lt;/code&gt; - разрешить отовсюду.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;Предполагается что ElasticSearch уже установлен и настроен:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ curl -XGET localhost:9200

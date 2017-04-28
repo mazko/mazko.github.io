@@ -27,160 +27,189 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">С++ для микроконтроллеров - «Декоратор»</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">FreeRTOS - обмен данными между задачами</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2017-03-22T00:00:00+02:00">
-                Published: Ср. 22 Март 2017
+        <abbr class="published" title="2017-04-29T00:00:00+03:00">
+                Published: Сб. 29 Апрель 2017
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
-</footer><!-- /.post-info --><p>«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.</p>
-<p>GoF даёт следующее классическое определение: декоратор (англ. Decorator) — паттерн, структурирующий объекты. Динамически добавляет объекту новые обязанности. Является гибкой альтернативой порождению подклассов с целью расширения функциональности.</p>
-<p>Объект, который предполагается использовать (в нашем случае <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">слой</a> для лампочек), выполняет основные функции. Однако может потребоваться добавить к нему некоторую дополнительную функциональность (<a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">анимации</a>), которая будет выполняться до, после или даже вместо основной функциональности объекта.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
-<p>Поскольку анимации и их последовательность заранее известны на этапе компиляции, декоратор легко реализуется на С++ шаблонах. Такая реализация позволяет не использовать виртуальные функции и будет занимать больше памяти ROM (code bloat), но работать должна шустрее - хотя для мигающих лампочек это не критично. Ещё использование шаблонов даёт удобную возможность делать простые проверки <code>static_assert()</code> на этапе компиляции. Нечто подобное <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">можно</a> конечно же соорудить и на Си с помощью макросов, но в С++ <code>static_assert()</code> это уже встроенный и весьма полезный механизм так что не приходится заново изобретать велосипед.</p>
-<p>Все классы для создания анимаций реализуют интерфейс Декоратора - методы <code>void draw(RgbStripLayer&amp; layer);</code> и <code>void set_color(const auto&amp; co)</code>. Работая в цепочке каждый последовательно добавляет (декорирует) к слою <code>RgbStripLayer</code> новые свойства. Эти классы взаимозаменяемы, их последовательность определяет конкретную анимацию. В прилагаемых исходниках добавлено больше анимаций плюс пример использования стандартной библиотекой шаблонов (STL) в С++ - алгоритм <code>std::rotate</code> для массивов.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/a.out">elf</a> | <a href="http://mazko.github.io/MSP430.js/3523e01e3e6c96088d0ac6a4c335609b">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/src.zip">исходники</a></p>
-<p><em>app.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;animation.h&quot;</span><span class="cp"></span>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info --><p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативной</a> многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарности</a> и поэтому во FreeRTOS для передачи информации между задачами придумали <em>очереди</em>. Очереди представляют собой фундаментальный механизм FreeRTOS, который лежит в основе различного рода взаимодействий задач друг с другом. Очереди могут быть использованы для передачи информации как между задачами, так и между прерываниями и задачами. Если сравнивать с глобальными переменными, то помимо решения проблем с атомарностью очередь обладает рядом дополнительных возможностей — блокировка на чтение/запись, позволяющая задаче не расходовать процессорное время на периодически опрос глобальной переменной, размер очереди не ограничен 1, данные можно класть либо в начало либо в конец очереди. </p>
+<p>В рассматриваемом примере одна задача будет сканировать кнопки и передавать данные о нажатии двум другим задачам светодиодных анимаций с помощью двух очередей. </p>
+<p><a href="http://mazko.github.io/MSP430.js/6ac96e5ec9bcc3297d04e3e8c0982a46">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/event.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Очередь может хранить в себе конечное число элементов фиксированного размера.
+Максимальное число элементов, которое может хранить очередь, называется размером очереди. Как размер элемента, так и размер очереди задаются при создании очереди и остаются неизменными до ее удаления. В нашем случае перед запуском планировщика в файле main.c создаются две очереди <code>xQueueBtnsL = xQueueCreate(1, sizeof(char));</code> для левых и правых кнопок соответственно. Поскольку у задачи, которая кладёт данные в очередь, приоритет ниже, чем у забирающей эти данные, то размера очереди в 1 элемент оказывается достаточно. При других раскладах приоритетов размер очереди возможно потребуется увеличить — в противном случае возможна ситуация, когда данные о нажатой кнопке не успели дойти до адресата, а кнопочку нажали заново и тогда сработает <code>configASSERT</code> т.к. в очереди закончилось место:</p>
+<p><em>task_btn_scan.h</em></p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">vTaskScanBtns</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">);</span>
 
-<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
+<span class="cp">#include</span> <span class="cpf">&lt;queue.h&gt;</span><span class="cp"></span>
 
-    <span class="k">using</span> <span class="k">namespace</span> <span class="n">animation</span><span class="p">;</span>
+<span class="k">extern</span> <span class="k">volatile</span> <span class="n">QueueHandle_t</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="n">xQueueBtnsR</span><span class="p">;</span>
+</pre></div>
 
-    <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">SZ</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">STRIP_SZ</span><span class="p">;</span>
 
-    <span class="kt">int</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
+<p><em>task_btn_scan.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
 
-        <span class="n">RgbStripLayer</span> <span class="n">l1</span><span class="p">;</span>
+<span class="cp">#include</span> <span class="cpf">&quot;task_btn_scan.h&quot;</span><span class="cp"></span>
 
-        <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">DynFill</span><span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">55555</span><span class="p">,</span> <span class="n">Nop</span> <span class="o">&gt;&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
-            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">FillCW</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">4444</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;&gt;</span> <span class="o">&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
-            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">FillCCW</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">4444</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;&gt;</span> <span class="o">&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
-        <span class="p">}</span>
+<span class="k">volatile</span> <span class="n">QueueHandle_t</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="n">xQueueBtnsR</span><span class="p">;</span>
 
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">void</span> <span class="nf">vTaskScanBtns</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">P1IN</span><span class="p">);</span> <span class="c1">// button pushed</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">P1IN</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">b1111</span><span class="p">)</span> <span class="p">{</span>
+
+      <span class="cm">/* Send a char to the queue. Don&#39;t block if the queue is already full </span>
+<span class="cm">        (the third parameter is zero, so not block time is specified). */</span>
+      <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSend</span><span class="p">(</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSend</span><span class="p">(</span> <span class="n">xQueueBtnsR</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
     <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">P1IN</span><span class="p">);</span>  <span class="c1">// button released</span>
+  <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<p><em>animation.h</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;rgb.h&quot;</span><span class="cp"></span>
+<p>Для записи элемента в конец очереди используется API-функция <code>xQueueSend()</code>. В нашем случае на момент записи очередь всегда пуста, т.к. у задачи-получателя более высокий приоритет, поэтому таймаут (третий параметр) логично задать «0». Может возвращать 2 значения:</p>
+<ul>
+<li>
+<p>pdPASS — означает, что данные успешно записаны в очередь. Если таймаут не равен «0», то возврат значения pdPASS говорит о том, что свободное место в очереди появилось до истечения таймаута и элемент был помещен в очередь</p>
+</li>
+<li>
+<p>errQUEUE_FULL — означает, что данные не записаны в очередь, так как
+очередь заполнена. Если таймаут не равен «0», то возврат значения errQUEUE_FULL говорит о том, что таймаут завершен, а место в очереди так и не освободилось</p>
+</li>
+</ul>
+<p>Задача-получатель информации о нажатии кнопки, которая заправляет анимациями левых светодиодов принимает следующий вид:</p>
+<p><em>task_l_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="n">animation</span> <span class="p">{</span>
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;task_btn_scan.h&quot; // queues</span><span class="cp"></span>
 
-    <span class="k">using</span> <span class="k">namespace</span> <span class="n">rgb</span><span class="p">;</span>
+<span class="k">volatile</span> <span class="n">xSemaphoreHandle</span> <span class="n">xP4P5P6Mutex</span><span class="p">;</span>
 
-    <span class="k">struct</span> <span class="nl">Nop</span> <span class="p">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{}</span>
-    <span class="p">};</span>
+<span class="c1">// C99</span>
+<span class="c1">// an object that has static storage duration is not initialized explicitly, then:</span>
+<span class="c1">// — if it has pointer type, it is initialized to a null pointer;</span>
+<span class="k">static</span> <span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">port</span><span class="p">;</span>
 
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span> <span class="o">=</span> <span class="n">Nop</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">Flush</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">layer</span><span class="p">.</span><span class="n">flush</span><span class="p">();</span>
-            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+
+      <span class="kt">uint8_t</span> <span class="n">button</span><span class="p">;</span>
+
+      <span class="c1">// portMAX_DELAY will cause the task to wait indefinitely</span>
+      <span class="c1">// (without timing out) provided INCLUDE_vTaskSuspend is set to 1</span>
+      <span class="n">portBASE_TYPE</span> <span class="n">xStatus</span> <span class="o">=</span> <span class="n">xQueueReceive</span><span class="p">(</span> 
+                <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">button</span><span class="p">,</span> <span class="n">port</span> <span class="o">?</span> <span class="mi">10</span> <span class="o">:</span> <span class="n">portMAX_DELAY</span> <span class="p">);</span>
+
+      <span class="cm">/* Attempt to take the mutex, blocking indefinitely to wait for the mutex */</span>
+      <span class="n">xSemaphoreTake</span><span class="p">(</span> <span class="n">xP4P5P6Mutex</span><span class="p">,</span> <span class="n">portMAX_DELAY</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="n">xStatus</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// set leds color</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">button</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b10</span><span class="p">:</span>   <span class="cm">/* red blink */</span>
+            <span class="n">P5OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">P4OUT</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b100</span><span class="p">:</span>  <span class="cm">/* green blink */</span>
+            <span class="n">P4OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">P5OUT</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b1000</span><span class="p">:</span> <span class="cm">/* blue blink */</span>
+            <span class="n">P4OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P5OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">P6OUT</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b1</span><span class="p">:</span>    <span class="cm">/* off blink */</span>
+            <span class="n">P4OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P5OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>  
         <span class="p">}</span>
-    <span class="p">};</span>
+      <span class="p">}</span>
 
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span> <span class="n">cycles</span><span class="p">,</span> <span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">Sleep</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">cycles</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
-            <span class="n">__delay_cycles</span><span class="p">(</span><span class="n">cycles</span><span class="p">);</span>
-            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">port</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">*</span><span class="n">port</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">port</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="o">*</span><span class="n">port</span> <span class="o">^</span> <span class="mi">0</span><span class="n">b11111</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">b11111</span><span class="p">);</span>
+      <span class="p">}</span>
 
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span><span class="o">&amp;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">FillCW</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="cm">/* clockwise */</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">m</span> <span class="p">:</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
+      <span class="cm">/* The mutex MUST be given back! */</span>
+      <span class="n">xSemaphoreGive</span><span class="p">(</span> <span class="n">xP4P5P6Mutex</span> <span class="p">);</span>
+   <span class="p">}</span>
 
-        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span><span class="o">&amp;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">FillCCW</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="cm">/* counterclockwise */</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// while a pointer is a form of iterator,</span>
-            <span class="c1">// not all iterators have the same functionality of pointer</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">it</span> <span class="o">=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">rbegin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">crend</span><span class="p">();</span> <span class="n">it</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-                <span class="o">*</span><span class="n">it</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-
-        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">EachColor</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="k">static</span> <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">,</span>    <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">GREEN</span><span class="p">,</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">BLUE</span><span class="p">,</span>   <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">YELLOW</span><span class="p">,</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">VIOLET</span><span class="p">,</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">CYAN</span><span class="p">,</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">WHITE</span><span class="p">,</span>  
-        <span class="p">};</span>
-
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">colors</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span> <span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span> <span class="n">l</span><span class="p">,</span> <span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">DynFill</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">);</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">l</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<p>Применение паттернов и ООП в микроконтроллерах имеет свою специфику, накладываемую в основном моделью управления памятью. Неважно на чём писать - Си или С++ для встраиваемых систем предпочтительней использовать память в стеке т.к. она проверяется компилятором. В свою очередь динамическое выделение памяти на куче не гарантирует её наличия в нужный момент и в таком случае получаются грабли. ООП же больше любит динамическое выделение памяти - операторы new, malloc, умные указатели. Не стоит этого всего использовать в микроконтроллерах без ясного понимания возможных последствий.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/#disqus_thread">comments</a>.</p>                </article>
+<p>Для считывания элемента с удалением его из очереди используется API-функция <code>xQueueReceive()</code>. Таймаут <code>portMAX_DELAY</code> в <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">паре</a> с <code>INCLUDE_vTaskSuspend</code> задаёт бесконечное время ожидания. Также может возвращать 2 значения:</p>
+<ul>
+<li>
+<p>pdPASS — означает, что данные успешно прочитаны из очереди. Если таймаут не равен «0», то возврат значения pdPASS говорит о том, что элемент в очереди появился (или уже был там) до истечения тайм-аута и был успешно прочитан</p>
+</li>
+<li>
+<p>errQUEUE_EMPTY — означает, что элемент не прочитан из очереди, так как очередь пуста. Если таймаут не равен «0», то возврат значения errQUEUE_FULL говорит о том, что таймаут завершен, а никакая другая задача или прерывание так и не записали элемент в очередь</p>
+</li>
+</ul>
+<p>Всё бы хорошо, оно работает но есть одно но — зачем нам вообще отдельная задача для считывания кнопок ? Ведь она постоянно крутится в памяти микроконтроллера и потребляет ресурсы даже когда не происходит никакой активности со стороны пользователя. Куда более оптимальным решением было бы использовать для подобных целей <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">прерывание</a>, вызываемое при нажатии на кнопку.</p>
+<p><a href="http://mazko.github.io/MSP430.js/abb4216611a94d97da323920d61175b6">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/event_isr.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/isr.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><em>btn_scan.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;btn_scan.h&quot;</span><span class="cp"></span>
+
+<span class="k">volatile</span> <span class="n">QueueHandle_t</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="n">xQueueBtnsR</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">btn_scan_init</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// clear the interrupt flag</span>
+  <span class="n">P1IFG</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="c1">// enable interrupt on BIT 0..7</span>
+  <span class="n">P1IE</span>  <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">__attribute__</span> <span class="p">((</span><span class="n">interrupt</span><span class="p">(</span><span class="n">PORT1_VECTOR</span><span class="p">)))</span> <span class="n">Port1_ISR</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__attribute__</span> <span class="p">((</span><span class="n">interrupt</span><span class="p">(</span><span class="n">PORT1_VECTOR</span><span class="p">)))</span> <span class="n">Port1_ISR</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">P1IFG</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// clear the interrupt flag</span>
+
+  <span class="n">BaseType_t</span> <span class="n">xHigherPriorityTaskWoken</span><span class="p">;</span>
+
+  <span class="cm">/* xHigherPriorityTaskWoken must be initialised to pdFALSE. */</span>
+  <span class="n">xHigherPriorityTaskWoken</span> <span class="o">=</span> <span class="n">pdFALSE</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">P1IN</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">b1111</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="cm">/* xHigherPriorityTaskWoken will get set to pdTRUE if writing to the </span>
+<span class="cm">       queue causes a task to leave the Blocked state, and the task </span>
+<span class="cm">       leaving the Blocked state has a priority higher than the currently </span>
+<span class="cm">       executing task (the task that was interrupted). */</span>
+
+    <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSendFromISR</span><span class="p">(</span> 
+        <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">xHigherPriorityTaskWoken</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSendFromISR</span><span class="p">(</span> 
+        <span class="n">xQueueBtnsR</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">xHigherPriorityTaskWoken</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* If xHigherPriorityTaskWoken is now set to pdTRUE then a context</span>
+<span class="cm">     switch should be requested. */</span>
+  <span class="n">portYIELD_FROM_ISR</span><span class="p">(</span> <span class="n">xHigherPriorityTaskWoken</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>После оптимизации количество задач сократилось с 5 до 4 и соответственно освободилась RAM. Функцию <code>xQueueSend()</code> нельзя использовать в прерываниях — для этого есть <code>xQueueSendFromISR()</code>.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Гибридная</a> многозадачность во FreeRTOS является комбинацией вытесняющей и кооперативной. В нашем случае происходит прерывание по нажатию на кнопку, но по окончании работы обработчика прерывания выполнение возвращается не к текущей низкоприоритетной задаче, а к более высокоприоритетной путём немедленного переключения контекста <code>portYIELD_FROM_ISR</code> не дожидаясь окончания текущего кванта времени планировщика. Гибридная подход позволяет сократить время реакции системы на прерывание.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -189,97 +218,99 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/" rel="bookmark"
-                           title="Permalink to С++ (18+) для микроконтроллеров - разведка боем">С++ (18+) для микроконтроллеров - разведка боем</a></h1>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/" rel="bookmark"
+                           title="Permalink to FreeRTOS - совместный доступ к общим ресурсам">FreeRTOS - совместный доступ к общим ресурсам</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2017-03-20T00:00:00+02:00">
-                Published: Пн. 20 Март 2017
+        <abbr class="published" title="2017-04-28T00:00:00+03:00">
+                Published: Пт. 28 Апрель 2017
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/" rel="bookmark"
+                           title="Permalink to FreeRTOS - диагностика ошибок и перехватчики">FreeRTOS - диагностика ошибок и перехватчики</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-27T00:00:00+03:00">
+                Published: Чт. 27 Апрель 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
 </footer><!-- /.post-info -->                <blockquote>
-<p>Большинство С++ программистов не знают, что делает большинство С++ программистов. — Андрей Александреску</p>
+<p>Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz</p>
 </blockquote>
-<p>Программы для микроконтроллеров де-факто <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">пишутся</a> либо на Си либо на ассемблере. Си это процедурный язык программирования со статической слабой типизацией, обладающий простым и понятным синтаксисом, высокой переносимостью (в сравнении с ассемблером), он хорошо подходит для системного программирования и …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/" rel="bookmark"
-                           title="Permalink to PICSim.js - калькулятор и обратная польская запись">PICSim.js - калькулятор и обратная польская запись</a></h1>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/" rel="bookmark"
+                           title="Permalink to FreeRTOS - операционная система для микроконтроллеров">FreeRTOS - операционная система для микроконтроллеров</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2017-02-14T00:00:00+02:00">
-                Published: Вт. 14 Февраль 2017
+        <abbr class="published" title="2017-04-26T00:00:00+03:00">
+                Published: Ср. 26 Апрель 2017
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/re2c">re2c</a> </p>
-</footer><!-- /.post-info -->                <p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->                <p>FreeRTOS — многозадачная, мультиплатформенная операционная система жесткого реального времени (<a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">RTOS</a>) для встраиваемых систем. Написана на языке Си с ассемблерными вставками для конкретной аппаратной платформы. Планировщик FreeRTOS поддерживает три типа многозадачности: вытесняющую с приоритетами, <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативную</a> и гибридную. Какая из них лучше ? В большинстве случаев вытесняющая многозадачность является более предпочтительной т.к. в …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="bookmark"
-                           title="Permalink to PICSim.js - сопрограммы и простейшая многозадачность">PICSim.js - сопрограммы и простейшая многозадачность</a></h1>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="bookmark"
+                           title="Permalink to Монохромный OLED дисплей на контроллере SSD1306">Монохромный OLED дисплей на контроллере SSD1306</a></h1>
                 </header>
 
                 <div class="entry-content">
 <footer class="post-info">
-        <abbr class="published" title="2017-02-05T00:00:00+02:00">
-                Published: Вс. 05 Февраль 2017
+        <abbr class="published" title="2017-04-25T00:00:00+03:00">
+                Published: Вт. 25 Апрель 2017
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <p>Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">программа</a> для микроконтроллера это <em>суперцикл</em> - одна точка входа <code>main</code> с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">прерываний</a> - немедленную обработку событий, что позволяет решать более сложные задачи …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/" rel="bookmark"
-                           title="Permalink to PICSim.js - часы реального времени DS1307">PICSim.js - часы реального времени DS1307</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-02-02T00:00:00+02:00">
-                Published: Чт. 02 Февраль 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/ds1307">DS1307</a> <a href="http://proiot.ru/blog/tag/i2c">I2C</a> </p>
-</footer><!-- /.post-info -->                <p>Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> </p>
+</footer><!-- /.post-info -->                <p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 4
+    Page 1 / 5
         <a href="http://proiot.ru/blog/category/embedded/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->

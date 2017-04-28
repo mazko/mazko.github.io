@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>FreeRTOS - операционная система для микроконтроллеров</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/" rel="bookmark"
+           title="Permalink to FreeRTOS - операционная система для микроконтроллеров">FreeRTOS - операционная система для микроконтроллеров</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-26T00:00:00+03:00">
+                Published: Ср. 26 Апрель 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->      <p>FreeRTOS — многозадачная, мультиплатформенная операционная система жесткого реального времени (<a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">RTOS</a>) для встраиваемых систем. Написана на языке Си с ассемблерными вставками для конкретной аппаратной платформы. Планировщик FreeRTOS поддерживает три типа многозадачности: вытесняющую с приоритетами, <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативную</a> и гибридную. Какая из них лучше ? В большинстве случаев вытесняющая многозадачность является более предпочтительной т.к. в отличие от кооперативной многозадачности управление операционной системе передаётся вне зависимости от состояния работающих задач, благодаря чему гарантируется своевременная реакция системы на какое-либо более приоритетное событие. Такие системы принято называть системами <strong>жесткого</strong> реального времени. Соответственно кооперативная многозадачность по своей природе является системой <strong>мягкого</strong> реального времени т.к. планировщик самостоятельно не может прервать выполнение текущей задачи даже если появилась готовая к выполнению задача с более высоким приоритетом — тут каждая задача должна самостоятельно передать управление планировщику. Гибридная и кооперативная многозадачность во FreeRTOS является опциональными и в основном служат для более рационального использования ресурсов микроконтроллера, которых всегда очень мало :)</p>
+<p><a href="http://mazko.github.io/MSP430.js/4762128c15a0dcc8e4d8f849a0998f20">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/tasks.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>При создании приложения на FreeRTOS рекомендуется брать за основу демонстрационный проект из официальных примеров. В нашем случае микроконтроллер <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">MSP430F1611</a>, организация файлов проекта makefile и компилятор (msp430-gcc 6.2.1.16) самый свежий на текущий момент от <a href="http://www.ti.com/tool/msp430-gcc-opensource" rel="nofollow">производителя</a>. Все настройки конфигурации, касающиеся FreeRTOS, принято помещать в один отдельный заголовочный файл <em>FreeRTOSConfig.h</em>. Большинство настроек в этом файле являются опциональными т.к. уже имеют значения по умолчанию, однако некоторые нужно обязательно определять в каждом проекте ибо сломается компиляция:</p>
+<p><em>FreeRTOSConfig.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#ifndef FREERTOS_CONFIG_H</span>
+<span class="cp">#define FREERTOS_CONFIG_H</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
+
+<span class="cm">/*-----------------------------------------------------------</span>
+<span class="cm"> * Application specific definitions.</span>
+<span class="cm"> *</span>
+<span class="cm"> * These definitions should be adjusted for your particular hardware and</span>
+<span class="cm"> * application requirements.</span>
+<span class="cm"> *</span>
+<span class="cm"> * THESE PARAMETERS ARE DESCRIBED WITHIN THE &#39;CONFIGURATION&#39; SECTION OF THE</span>
+<span class="cm"> * FreeRTOS API DOCUMENTATION AVAILABLE ON THE FreeRTOS.org WEB SITE. </span>
+<span class="cm"> *</span>
+<span class="cm"> * See http://www.freertos.org/a00110.html.</span>
+<span class="cm"> *----------------------------------------------------------*/</span>
+
+<span class="cp">#define configUSE_PREEMPTION        1</span>
+<span class="cp">#define configUSE_IDLE_HOOK         0</span>
+<span class="cp">#define configUSE_TICK_HOOK         0</span>
+<span class="cp">#define configCPU_CLOCK_HZ          ( ( unsigned long ) 130000 )</span>
+<span class="cp">#define configTICK_RATE_HZ          ( ( TickType_t ) 10 )</span>
+<span class="cp">#define configMAX_PRIORITIES        2</span>
+<span class="cp">#define configMINIMAL_STACK_SIZE    ( ( unsigned short ) 50 )</span>
+<span class="cp">#define configTOTAL_HEAP_SIZE       ( ( size_t ) ( 8 * 1024 ) )</span>
+<span class="cp">#define configUSE_16_BIT_TICKS      1</span>
+
+<span class="cp">#endif </span><span class="cm">/* FREERTOS_CONFIG_H */</span><span class="cp"></span>
+</pre></div>
+
+
+<p>Итак пробежимся по порядку по всем указанным настройкам:</p>
+<ul>
+<li>
+<p><em>configUSE_PREEMPTION</em> задаёт режим многозадачности — кооперативная (0) или вытесняющая (1)</p>
+</li>
+<li>
+<p><em>configUSE_IDLE_HOOK</em>, <em>configUSE_TICK_HOOK</em> — хуки сейчас не используем (0), но будем в следующем материале</p>
+</li>
+<li>
+<p><em>configCPU_CLOCK_HZ</em> — в подавляющем большинстве задач необходимо отмерять интервалы времени, данная величина — тактовая частоты микроконтроллера, которую будет использовать RTOS при расчёте временных промежутков</p>
+</li>
+<li>
+<p><em>configTICK_RATE_HZ</em> — переключение между задачами осуществляется через равные кванты времени работы планировщика и время реакции FreeRTOS на внешние события в режиме вытесняющей многозадачности не превышает одного кванта. По идее чем меньше квант тем лучше, однако за увеличением частоты переключений следует то, что ядро системы использует больше процессорного времени и тогда соответственно меньше процессорного время остаётся под задачи. Чем выше тактовая частота, тем большую частоту переключения можно задавать</p>
+</li>
+<li>
+<p><em>configMAX_PRIORITIES</em> — каждой задаче назначается приоритет от 0 до (configMAX_PRIORITIES - 1). Наиболее низкий приоритет у задачи «бездействие», значение которого по умолчанию определено как 0. Уменьшение configMAX_PRIORITIES позволяет уменьшить объем ОЗУ, потребляемый ядром</p>
+</li>
+<li>
+<p><em>configMINIMAL_STACK_SIZE</em>, <em>configTOTAL_HEAP_SIZE</em> — пока что пусть это будут некие <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">магические числа</a>, определяющие достаточный объём памяти для нормального функционирования задач. Что будет если их поменять или задать неправильно посмотрим в следующем материале</p>
+</li>
+<li>
+<p><em>configUSE_16_BIT_TICKS</em> — разрядность счётчика квантов времени, прошедших с начала работы системы 16 бит (1) или 32 бит (0)</p>
+</li>
+</ul>
+<p>Приложение RTOS представляет из себя набор сообщающихся между собой независимых задач. Каждая задача выполняется в своём собственном контексте. В рамках приложения одновременно может выполняться только одна задача, и планировщик отвечает за то, какие задачи когда должны выполняться. Вытесняющий планировщик сам приостанавливает и возобновляет задачи (переключает задачи) во время выполнения приложения, и т.к. задача не знает о деятельности планировщика, то именно он и отвечает за сохранение контекста, чтобы задача была возобновлена в том же состоянии, что и была приостановлена. Для этого каждой задаче предоставляется отдельный стек. Когда задача приостановлена, контекст задачи хранится в стеке и может быть восстановлен перед возобновлением.</p>
+<p>Теперь собственно пора определить и сами задачи. У нас две группы светодиодов — левые и правые и соответственно две независимые задачи с анимациями для каждой группы.</p>
+<p><em>task_r_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_r_leds.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsR</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+     <span class="n">P3OUT</span> <span class="o">=</span> <span class="p">(</span><span class="n">P3OUT</span> <span class="o">^</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11</span> <span class="cm">/* don&#39;t toggle LCD pins 0b11 */</span><span class="p">;</span>
+     <span class="k">for</span><span class="p">(</span> <span class="k">volatile</span> <span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">10000</span> <span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">;</span> <span class="p">);</span> <span class="c1">// delay</span>
+   <span class="p">}</span>
+
+  <span class="cm">/* Should the task implementation ever break out of the above loop, then the task</span>
+<span class="cm">    must be deleted before reaching the end of its implementing function. The NULL</span>
+<span class="cm">    parameter passed to the vTaskDelete() API function indicates that the task to be</span>
+<span class="cm">    deleted is the calling (this) task. */</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>task_l_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">rotate_rgb</span><span class="p">(</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">port</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">port</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b10000</span><span class="p">;</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span> <span class="k">volatile</span> <span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5000</span> <span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">;</span> <span class="p">);</span> <span class="c1">// delay</span>
+        <span class="o">*</span><span class="n">port</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">port</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+     <span class="k">for</span><span class="p">(</span> <span class="k">volatile</span> <span class="kt">uint16_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">42000</span> <span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">;</span> <span class="p">);</span>   <span class="c1">// delay</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P4OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P5OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P6OUT</span><span class="p">);</span>
+   <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Имена идентификаторов в исходном коде ядра FreeRTOS и демонстрационных проектах подчиняются определенным соглашениям об именовании, зная которые проще понимать тексты программ. Имена переменных и функций представлены в префиксной форме (так называемая
+Венгерская нотация), например <code>ulMemCheck</code> — переменная типа <code>unsigned long</code>, <code>pxCreatedTask</code> — переменная типа «указатель на структуру», в нашем случае <code>vTaskDelete</code> — функция, которая ничего не возвращает <code>void</code>. Функции-задачи никогда не прерываются, поэтому обычно реализуются при помощи непрерывного цикла, а если все-таки произойдет выход из бесконечного цикла, то задача должна быть уничтожена до конца функции — по крайней мере так показано в официальных примерах к FreeRTOS. Параметр NULL обозначает, что уничтожается сама задача, из которой непосредственно происходит вызов API-функции <code>vTaskDelete()</code> (харакири).</p>
+<p>Фрагмент кода с <code>disable_watchdog</code> не имеет отношения к FreeRTOS — это обход граблей компилятора. Без этого костыля при инициализация больших массивов при старте срабатывает <a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">сторожевой таймер</a> ещё до точки входа <code>int main( void )</code> и сбрасывает микроконтроллер :(</p>
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_r_leds.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+
+<span class="c1">// !!!!   msp430-gcc 6.2.1.16   !!!!</span>
+<span class="c1">// msp430_gcc/examples/watchdog.txt</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="kr">naked</span><span class="p">,</span> <span class="n">section</span><span class="p">(</span><span class="s">&quot;.crt_0042&quot;</span><span class="p">),</span> <span class="n">used</span><span class="p">))</span>
+<span class="n">disable_watchdog</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">WDTCTL</span> <span class="o">=</span> <span class="n">WDTPW</span> <span class="o">|</span> <span class="n">WDTHOLD</span><span class="p">;</span> <span class="c1">// Stop watchdog timer</span>
+<span class="p">}</span>
+
+<span class="cm">/* Demo task priorities. */</span>
+
+<span class="k">enum</span> <span class="p">{</span> 
+  <span class="n">main_TASK_PRIORITY_LEDS_L</span> <span class="o">=</span> <span class="n">tskIDLE_PRIORITY</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="n">main_TASK_PRIORITY_LEDS_R</span> <span class="o">=</span> <span class="n">main_TASK_PRIORITY_LEDS_L</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="cm">/*</span>
+<span class="cm"> * Start the demo application tasks - then start the real time scheduler.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="p">{</span>
+
+  <span class="cm">/* Setup the hardware ready for the demo. */</span>
+
+  <span class="c1">// DCO = 3, RSEL = 0, f = 0.13 MHz</span>
+  <span class="n">DCOCTL</span> <span class="o">=</span> <span class="cm">/* DCO2 + */</span> <span class="n">DCO1</span> <span class="o">+</span> <span class="n">DCO0</span><span class="p">;</span> 
+  <span class="n">BCSCTL1</span> <span class="o">=</span> <span class="n">XT2OFF</span> <span class="cm">/* + RSEL1 + RSEL0 + RSEL2 */</span><span class="p">;</span>
+
+  <span class="c1">// Shared between L/R tasks 8*RGB LEDS </span>
+  <span class="n">P4OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">P5OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">P4DIR</span> <span class="o">=</span> <span class="n">P5DIR</span> <span class="o">=</span> <span class="n">P6DIR</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+  <span class="c1">// 2 RGB LEDS (pins 2..7)</span>
+  <span class="n">P3OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">P3DIR</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+  <span class="c1">// create tasks</span>
+  <span class="c1">// Passing a uxPriority value above (configMAX_PRIORITIES – 1) will result in the</span>
+  <span class="c1">// priority assigned to the task being capped silently to the maximum legitimate value.</span>
+
+  <span class="cm">/* Task: left side LEDS animation */</span>
+  <span class="n">xTaskCreate</span><span class="p">(</span><span class="n">vTaskLedsL</span><span class="p">,</span> 
+          <span class="s">&quot;LedsL&quot;</span><span class="p">,</span> 
+          <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> 
+          <span class="nb">NULL</span><span class="p">,</span> 
+          <span class="n">main_TASK_PRIORITY_LEDS_L</span><span class="p">,</span> 
+          <span class="nb">NULL</span> <span class="p">);</span>
+
+  <span class="cm">/* Task: right side LEDS animation */</span>
+  <span class="n">xTaskCreate</span><span class="p">(</span><span class="n">vTaskLedsR</span><span class="p">,</span> 
+          <span class="s">&quot;LedsR&quot;</span><span class="p">,</span> 
+          <span class="n">configMINIMAL_STACK_SIZE</span><span class="p">,</span> 
+          <span class="nb">NULL</span><span class="p">,</span> 
+          <span class="n">main_TASK_PRIORITY_LEDS_R</span><span class="p">,</span> 
+          <span class="nb">NULL</span> <span class="p">);</span>
+
+  <span class="cm">/* Start the scheduler. */</span>
+  <span class="n">vTaskStartScheduler</span><span class="p">();</span>
+
+  <span class="cm">/* As the scheduler has been started the demo applications tasks will be</span>
+<span class="cm">  executing and we should never get here! */</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Все задачи могут находиться в одном из следующих состояний:</p>
+<ul>
+<li>
+<p>Running (запущена) — задача выполняется, процессор занят ее выполнением</p>
+</li>
+<li>
+<p>Ready (готова) — готова выполнению, но в данный момент времени процессор занят выполнением другой задачи. По окончании текущего кванта времени из всех готовых к выполнению задач будет запущена (перейдёт в состояние выполнения) задача с наибольшим приоритетом. Если к выполнению готовы несколько задач с одинаковым приоритетом, то бишь как в нашем случае с <code>vTaskLedsL</code> и <code>vTaskLedsR</code>, то они по очереди переходят в состояние выполнения и пребывают в нем в течение одного системного кванта</p>
+</li>
+<li>
+<p>Blocked (заблокирована) — задача ожидает временного или внешнего события. Например,
+вызвав API-функцию <code>vTaskDelay(42)</code>, задача переведет себя в блокированное состояние до тех пор, пока не пройдет временной период задержки 42. Блокированная задача не расходует процессорного времени, это время можно с пользой для дела использовать в менее приоритетных задачах</p>
+</li>
+<li>
+<p>Suspended (приостановлена) — такие задачи также не получает процессорного времени, однако в отличие от блокированного состояния, переход в приостановленное состояние и выход из него осуществляется в явном виде вызовом API-функций <code>vTaskSuspend()</code> и <code>xTaskResume()</code>. Задача может оставаться приостановленной сколь угодно долго</p>
+</li>
+</ul>
+<p>В приведенном примере задачи <code>vTaskLedsL</code> и <code>vTaskLedsR</code> выполняют полезное действие (в нашем случае — мигают), после чего ожидают определенный промежуток времени. Реализация задержки в виде пустого цикла <code>for(volatile uint16_t i = 42; i--;);</code> крайне не эффективна — она как бы слишком «жадная». Что будет, если таким задачам назначить разный приоритет ? Высокоприоритетная задача все время остается в состоянии готовности к выполнению (не переходит ни в блокированное, ни в приостановленное состояние), она поглощает все процессорное время, вследствие чего низкоприоритетные задачи никогда не выполняются. Для корректной реализации задержек средствами FreeRTOS предусмотрена API-функция <code>vTaskDelay()</code>, которая переводит задачу, вызывающую эту функцию, в блокированное состояние на требуемое количество квантов времени. Для использования этой функции необходимо в файле конфигурации <em>FreeRTOSConfig.h</em> добавить макроопределение <code>#define INCLUDE_vTaskDelay 1</code>, а если забыть это сделать, то проект попросту не соберётся:</p>
+<p><em>task_r_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_r_leds.h&quot;</span><span class="cp"></span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsR</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+     <span class="n">P3OUT</span> <span class="o">=</span> <span class="p">(</span><span class="n">P3OUT</span> <span class="o">^</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11</span> <span class="cm">/* don&#39;t toggle LCD pins 0b11 */</span><span class="p">;</span>
+     <span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">15</span> <span class="cm">/* ticks */</span><span class="p">);</span>
+   <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>task_l_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">rotate_rgb</span><span class="p">(</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">port</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">port</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b10000</span><span class="p">;</span>
+    <span class="k">do</span> <span class="p">{</span>
+        <span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">5</span> <span class="cm">/* ticks */</span><span class="p">);</span>
+        <span class="o">*</span><span class="n">port</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">port</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+     <span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">42</span> <span class="cm">/* ticks */</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P4OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P5OUT</span><span class="p">);</span>
+     <span class="n">rotate_rgb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">P6OUT</span><span class="p">);</span>
+   <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Ок, а почему в файле конфигурации <em>FreeRTOSConfig.h</em> отсутствует макроопределение <code>#define INCLUDE_vTaskDelete 1</code>, а проект проходит компиляцию без ошибок ? Тут всё дело в оптимизации компилятора — перед вызовом <code>vTaskDelete</code> компилятор видит бесконечный цикл и просто игнорирует весь код после него, что в принципе правильно. Но стоит например по ошибке выйти из цикла <code>break</code> и будет ошибка при сборке.</p>
+<p>P.S. В официальной документации имена подключаемых файлов FreeRTOS берутся в кавычки например <code>#include "FreeRTOS.h"</code>, в текущих примерах есть небольшое отличие <code>#include &lt;FreeRTOS.h&gt;</code>. Это легко при желании поменять:</p>
+<div class="highlight"><pre><span></span>~$ ls -1 *.h *.c <span class="p">|</span> xargs -n1 sed -i                          <span class="se">\</span>
+      -e <span class="s1">&#39;s/#include\s\+&lt;FreeRTOS.h&gt;/#include &quot;FreeRTOS.h&quot;/&#39;</span> <span class="se">\</span>
+      -e <span class="s1">&#39;s/#include\s\+&lt;task.h&gt;/#include &quot;task.h&quot;/&#39;</span>         <span class="se">\</span>
+      -e <span class="s1">&#39;s/#include\s\+&lt;semphr.h&gt;/#include &quot;semphr.h&quot;/&#39;</span>     <span class="se">\</span>
+      -e <span class="s1">&#39;s/#include\s\+&lt;queue.h&gt;/#include &quot;queue.h&quot;/&#39;</span>
+</pre></div>
+
+
+<p>На результат компиляции данных примеров это никак не влияет — бинарник на выходе <em>a.out</em> будет одинаков в обоих случаях.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/">Далее</a> хуки.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
