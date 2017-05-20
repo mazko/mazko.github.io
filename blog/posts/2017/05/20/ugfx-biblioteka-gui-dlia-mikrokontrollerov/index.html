@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - Oleg Mazko</title>
+        <title>uGFX - библиотека GUI для микроконтроллеров</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -20,14 +20,19 @@
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/" rel="bookmark"
+           title="Permalink to uGFX - библиотека GUI для микроконтроллеров">uGFX - библиотека GUI для микроконтроллеров</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/">uGFX - библиотека GUI для микроконтроллеров</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-05-20T00:00:00+03:00">
                 Published: Сб. 20 Май 2017
@@ -38,7 +43,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> <a href="http://proiot.ru/blog/tag/ugfx">uGFX</a> </p>
-</footer><!-- /.post-info --><p>Когда говорят про графику для микроконтроллеров, то обычно подразумевают сравнительно небольшое количество графики низкого разрешения с минимум анимации — это обусловлено относительно высокими требованиями к быстродействию и объему ОЗУ. Если вся графика разрабатываемого устройства сводится к выводу числовой или текстовой информации, то оптимальным решением может быть использование либо <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">сегментных</a>, либо символьных дисплеев (например, на контроллере <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a>). Если же требуется вывод не только текстовой, но и графической информации (изображения, графики, диаграммы, анимация) и попутно обеспечить взаимодействие пользователя с устройством посредством полноценного графического интерфейса (GUI), то:</p>
+</footer><!-- /.post-info -->      <p>Когда говорят про графику для микроконтроллеров, то обычно подразумевают сравнительно небольшое количество графики низкого разрешения с минимум анимации — это обусловлено относительно высокими требованиями к быстродействию и объему ОЗУ. Если вся графика разрабатываемого устройства сводится к выводу числовой или текстовой информации, то оптимальным решением может быть использование либо <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">сегментных</a>, либо символьных дисплеев (например, на контроллере <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a>). Если же требуется вывод не только текстовой, но и графической информации (изображения, графики, диаграммы, анимация) и попутно обеспечить взаимодействие пользователя с устройством посредством полноценного графического интерфейса (GUI), то:</p>
 <ul>
 <li>
 <p>у микроконтроллера должно быть достаточно ресурсов — например 1Кбайт ОЗУ нужно только для кадрового буфера двухцветного дисплея 128x64, а для цветных дисплеев помножить ещё и на количество цветов</p>
@@ -157,112 +162,26 @@
 <p>Следующий не менее интересный пример демонстрирует возможности uGFX для отображения картинок и даже анимации на базе нескольких их них на примере кота, который умеет спать, точить когти и всё такое.</p>
 <p><a href="http://mazko.github.io/MSP430.js/48d80b182518a31aecac3beb4cef52a6">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/ugfx.cat.msp430.js.zip">исходники</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/ui-cat.gif" style="width:55%; margin: 0 auto; display:block;"></p>
-<p>В данных примерах RTOS не использовалась, однако в официальном архиве с исходниками uGFX есть достаточно различных примеров в том числе с <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a> и даже Raspberry Pi с голым Linux на борту. В дополнение ко всему есть даже отдельная программка µGFX-Studio (Windows, Linux and Mac OS X) для дизайна и разработки сложных пользовательских интерфейсов для uGFX.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>В данных примерах RTOS не использовалась, однако в официальном архиве с исходниками uGFX есть достаточно различных примеров в том числе с <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a> и даже Raspberry Pi с голым Linux на борту. В дополнение ко всему есть даже отдельная программка µGFX-Studio (Windows, Linux and Mac OS X) для дизайна и разработки сложных пользовательских интерфейсов для uGFX.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/" rel="bookmark"
-                           title="Permalink to FreeRTOS - обмен данными между задачами">FreeRTOS - обмен данными между задачами</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-29T00:00:00+03:00">
-                Published: Сб. 29 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
-<p>Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативной</a> многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарности</a> и поэтому во FreeRTOS для передачи информации …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/" rel="bookmark"
-                           title="Permalink to FreeRTOS - совместный доступ к общим ресурсам">FreeRTOS - совместный доступ к общим ресурсам</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-28T00:00:00+03:00">
-                Published: Пт. 28 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
-<p>Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/" rel="bookmark"
-                           title="Permalink to FreeRTOS - диагностика ошибок и перехватчики">FreeRTOS - диагностика ошибок и перехватчики</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-27T00:00:00+03:00">
-                Published: Чт. 27 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <blockquote>
-<p>Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz</p>
-</blockquote>
-<p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
-<p>Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-perekhvatchiki/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/" rel="bookmark"
-                           title="Permalink to FreeRTOS - операционная система для микроконтроллеров">FreeRTOS - операционная система для микроконтроллеров</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-26T00:00:00+03:00">
-                Published: Ср. 26 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <p>FreeRTOS — многозадачная, мультиплатформенная операционная система жесткого реального времени (<a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">RTOS</a>) для встраиваемых систем. Написана на языке Си с ассемблерными вставками для конкретной аппаратной платформы. Планировщик FreeRTOS поддерживает три типа многозадачности: вытесняющую с приоритетами, <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативную</a> и гибридную. Какая из них лучше ? В большинстве случаев вытесняющая многозадачность является более предпочтительной т.к. в …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 15
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

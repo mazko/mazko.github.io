@@ -27,7 +27,150 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">Монохромный OLED дисплей на контроллере SSD1306</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/">uGFX - библиотека GUI для микроконтроллеров</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-05-20T00:00:00+03:00">
+                Published: Сб. 20 Май 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> <a href="http://proiot.ru/blog/tag/ugfx">uGFX</a> </p>
+</footer><!-- /.post-info --><p>Когда говорят про графику для микроконтроллеров, то обычно подразумевают сравнительно небольшое количество графики низкого разрешения с минимум анимации — это обусловлено относительно высокими требованиями к быстродействию и объему ОЗУ. Если вся графика разрабатываемого устройства сводится к выводу числовой или текстовой информации, то оптимальным решением может быть использование либо <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">сегментных</a>, либо символьных дисплеев (например, на контроллере <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a>). Если же требуется вывод не только текстовой, но и графической информации (изображения, графики, диаграммы, анимация) и попутно обеспечить взаимодействие пользователя с устройством посредством полноценного графического интерфейса (GUI), то:</p>
+<ul>
+<li>
+<p>у микроконтроллера должно быть достаточно ресурсов — например 1Кбайт ОЗУ нужно только для кадрового буфера двухцветного дисплея 128x64, а для цветных дисплеев помножить ещё и на количество цветов</p>
+</li>
+<li>
+<p>ввиду сложности программной части реализовывать с нуля сложный графический интерфейс далеко не оптимальное решение — куда проще и надёжней использовать проверенную графическую библиотеку, чем заново изобретать велосипед</p>
+</li>
+</ul>
+<p>uGFX — платформенно независимая, модульная графическая библиотека, написанная на Си и предназначенная для взаимодействия с различными типами дисплеев и сенсорными панелями во встраиваемых системах. Из коробки поддерживаются большинство современных графических контроллеров в виде готовых драйверов, а от программиста лишь требуется взять шаблон конкретного контроллера и реализовать парочку функции для обмена данными между микроконтроллером и дисплеем. У нас дисплей <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">SSD1306</a>, а в шаблоне <em>board_SSD1306.h</em> реализованы только две функции — запись данных и запись команд.</p>
+<p>Ещё uGFX можно легко скомпилировать для настольных операционных систем (Linux, Windows, Mac OS), что весьма удобно для быстрого прототипирования графической части приложения прямо на персональном компьютере без перепрошивки микроконтроллера.</p>
+<p><a href="http://mazko.github.io/MSP430.js/a3b85b45081d40a4fdbf2a95af723b1c">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/ugfx.draw.msp430.js.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Библиотека uGFX разделена на несколько модулей, например модули GDISP, GINPUT отвечают за управление дисплеем и ввод данных из сенсорной панели / кнопок. Отключив неиспользуемые модули, можно добиться значительного снижения объема прошивки. Более того сами модули тоже можно гибко настраивать. Настройка осуществляется путем задания значений макроопределениям в конфигурационном файле <em>gfxconf.h</em>, который должен находиться в каждом проекте, использующем uGFX. Так, для подключения модуля GDISP конфигурационный файл должен содержать строку <code>#define GFX_USE_GDISP TRUE</code>. Ну а в качестве примера настроек самого модуля GDISP может быть макрос <code>#define GDISP_NEED_STARTUP_LOGO TRUE</code>, который отвечает за кратковременный вывод логотипа uGFX на дисплей сразу после старта программы.</p>
+<p>Следующий пример демонстрирует работу с графическими примитивами, доступными для рисования в uGFX. Большинство API идут в паре — контур или закраска. В uGFX используется общепринятая в машинной графике декартова система координат с началом отсчета в верхнем левом углу:</p>
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;gfx.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">show</span><span class="p">(</span><span class="n">delaytime_t</span> <span class="n">ms</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">gdispFlush</span><span class="p">();</span>
+    <span class="n">gfxSleepMilliseconds</span><span class="p">(</span><span class="n">ms</span><span class="p">);</span>
+    <span class="n">gdispClear</span><span class="p">(</span><span class="n">Black</span><span class="p">);</span>
+    <span class="n">gdispFlush</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Initialize and clear the display</span>
+    <span class="n">gfxInit</span><span class="p">();</span>
+
+    <span class="k">const</span> <span class="n">coord_t</span> <span class="n">h</span> <span class="o">=</span> <span class="n">gdispGetHeight</span><span class="p">(),</span> <span class="n">w</span> <span class="o">=</span> <span class="n">gdispGetWidth</span><span class="p">();</span>
+
+    <span class="c1">// Рисование по пикселям</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">coord_t</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">w</span><span class="p">;</span> <span class="n">x</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">coord_t</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">h</span><span class="p">;</span> <span class="n">y</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">gdispDrawPixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+    <span class="c1">// кириллица</span>
+    <span class="k">const</span> <span class="n">font_t</span> <span class="n">f</span> <span class="o">=</span> <span class="n">gdispOpenFont</span><span class="p">(</span><span class="s">&quot;Archangelsk Regular 12&quot;</span><span class="p">);</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">txt</span> <span class="o">=</span> <span class="s">&quot;Все Буде Добре&quot;</span><span class="p">;</span>
+    <span class="n">gdispDrawString</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">gdispGetStringWidth</span><span class="p">(</span><span class="n">txt</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+    <span class="kt">char</span> <span class="n">str</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+    <span class="n">sprintf</span> <span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="s">&quot;%dx%d&quot;</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">);</span>
+    <span class="n">gdispDrawString</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">gdispGetStringWidth</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">str</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+    <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="n">TRUE</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// линии</span>
+        <span class="n">gdispDrawLine</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawLine</span><span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawLine</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawLine</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+        <span class="c1">// Прямоугольники</span>
+        <span class="n">gdispDrawBox</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispFillArea</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="n">h</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawRoundedBox</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">h</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispFillRoundedBox</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+        <span class="c1">// Окружность, круг, эллипсы</span>
+        <span class="n">gdispDrawCircle</span><span class="p">(</span><span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawEllipse</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispFillCircle</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">h</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispFillEllipse</span><span class="p">(</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">h</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">w</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+        <span class="c1">// Дуга и сектор</span>
+        <span class="n">gdispFillArc</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawArc</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispFillArc</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispDrawArc</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+
+        <span class="c1">// многоугольник (полигон)</span>
+        <span class="k">static</span> <span class="k">const</span> <span class="n">point</span> <span class="n">shape</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">{</span><span class="o">-</span><span class="n">GDISP_SCREEN_WIDTH</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">GDISP_SCREEN_HEIGHT</span><span class="o">/</span><span class="mi">4</span><span class="p">},</span>
+            <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="p">{</span><span class="n">GDISP_SCREEN_WIDTH</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">GDISP_SCREEN_HEIGHT</span><span class="o">/</span><span class="mi">3</span><span class="p">},</span>
+        <span class="p">};</span>
+        <span class="n">gdispDrawPoly</span><span class="p">(</span><span class="n">w</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">gdispFillConvexPoly</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">w</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">White</span><span class="p">);</span>
+        <span class="n">show</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+    <span class="p">}</span>   
+<span class="p">}</span>
+</pre></div>
+
+
+<p>По выводу текста пожалуй стоит пройтись отдельно. Тут графическая библиотека uGFX предоставляет впечатляющие возможности, особенно учитывая изначальные высокие требования к производительности:</p>
+<ul>
+<li>
+<p>различные шрифты (в одной программе можно использовать несколько разных шрифтов)</p>
+</li>
+<li>
+<p>имеется возможность добавить свой собственный шрифт</p>
+</li>
+<li>
+<p>поддержка Unicode и стало быть кириллицы</p>
+</li>
+<li>
+<p>сглаживание (anti-aliased)</p>
+</li>
+<li>
+<p>кернинг (уплотнение текста за счет сдвига некоторых букв друг к другу)</p>
+</li>
+<li>
+<p>выравнивание по левому, правому краю или посередине</p>
+</li>
+<li>
+<p>API для расчёта длины строки с заданным шрифтом в пикселях перед выводом ее на экран </p>
+</li>
+</ul>
+<p>Следующий не менее интересный пример демонстрирует возможности uGFX для отображения картинок и даже анимации на базе нескольких их них на примере кота, который умеет спать, точить когти и всё такое.</p>
+<p><a href="http://mazko.github.io/MSP430.js/48d80b182518a31aecac3beb4cef52a6">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/ugfx.cat.msp430.js.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/ui-cat.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>В данных примерах RTOS не использовалась, однако в официальном архиве с исходниками uGFX есть достаточно различных примеров в том числе с <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a> и даже Raspberry Pi с голым Linux на борту. В дополнение ко всему есть даже отдельная программка µGFX-Studio (Windows, Linux and Mac OS X) для дизайна и разработки сложных пользовательских интерфейсов для uGFX.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="bookmark"
+                           title="Permalink to Монохромный OLED дисплей на контроллере SSD1306">Монохромный OLED дисплей на контроллере SSD1306</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-04-25T00:00:00+03:00">
                 Published: Вт. 25 Апрель 2017
@@ -38,147 +181,12 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> </p>
-</footer><!-- /.post-info --><p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один бит для синхронизации этой парочки итого минимум 10 ног микроконтроллера. Последовательные интерфейсы позволяют обойтись меньшим количеством соединений, но теоретически уступают в скорости обмена данными. У микроконтроллера msp430f1611 предостаточно выводов и в данном обучающем материале рассматривается параллельный интерфейс для которого не требуется дополнительно настраивать периферию I2C/SPI, что позволяет сосредоточиться непосредственно на особенностях SSD1306. При переходе на последовательный интерфейс достаточно будет изменить только две функции - <code>ssd1306_write_data</code> и <code>ssd1306_write_instruction</code>.</p>
-<p><a href="http://mazko.github.io/MSP430.js/4a1dee2b02e6d149594b10d03b7925c8">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/img.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
-<p>Управление SSD1306 ограничивается двумя функциями - запись данных и запись команд. Карта памяти GDDRAM организована 8-ю страницами по 128 байт. Система координат имеет начало в левом верхнем углу. Для записи произвольного отображаемого байта страницы по заданному адресу используется функция <code>ssd1306_write_byte</code>. Организация памяти SSD1306 не даёт возможность задавать отдельную точку на дисплее, только байт. Если потребуется прорисовывать отдельные пиксели вместо байт нужно держать все пиксели в памяти микроконтроллера (буфер 128x8) и периодически скидывать их на дисплей побайтово. При записи последовательности байт достаточно задать начальный адрес т.к. каждое обращение к GDDRAM приводит к автоматическому инкременту адреса столбца, по достижении конечного значения (128) счётчик адреса столбца сбрасывается в начальное значение (0), а счётчик адреса страницы увеличивается на единицу. После достижения счётчиком адреса страницы конечного значения (8) оба счётчика сбросятся в начальные значения и процесс пойдёт по второму кругу.</p>
-<p><em>ssd1306.c</em></p>
-<div class="highlight"><pre><span></span><span class="c1">// Address setting commands</span>
-<span class="cp">#define SSD1306_SET_COL_LO_NIBBLE    0x00</span>
-<span class="cp">#define SSD1306_SET_COL_HI_NIBBLE    0x10</span>
-<span class="cp">#define SSD1306_SET_PAGE_START_ADDR  0xB0</span>
-
-<span class="c1">// pins</span>
-<span class="cp">#define SSD1306_DATA_INST            0</span>
-<span class="cp">#define SSD1306_DATA_E               1</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">strobe</span><span class="p">()</span> <span class="p">{</span>
-  <span class="n">P3OUT</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_E</span><span class="p">);</span>
-  <span class="n">P3OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_E</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="kt">void</span>
-<span class="nf">ssd1306_write_data</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">P2OUT</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
-  <span class="n">P3OUT</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_INST</span><span class="p">);</span>
-  <span class="n">strobe</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kt">void</span>
-<span class="nf">ssd1306_write_instruction</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">P2OUT</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
-  <span class="n">P3OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_INST</span><span class="p">);</span>
-  <span class="n">strobe</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kt">void</span>
-<span class="nf">ssd1306_write_byte</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">page</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">ssd1306_write_instruction</span> <span class="p">(</span><span class="n">SSD1306_SET_PAGE_START_ADDR</span> <span class="o">|</span> <span class="n">page</span><span class="p">);</span>
-  <span class="n">ssd1306_write_instruction</span> <span class="p">(</span><span class="n">SSD1306_SET_COL_LO_NIBBLE</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">));</span>
-  <span class="n">ssd1306_write_instruction</span> <span class="p">(</span><span class="n">SSD1306_SET_COL_HI_NIBBLE</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">));</span>
-  <span class="n">ssd1306_write_data</span><span class="p">(</span><span class="n">byte</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Любая картинка или текст это всего-лишь набор пикселей. В случае SSD1306 цвета всего два один из них чёрный. Для преобразования любого файла изображения в Си массив послужит следующий скрипт на питоне + ImageMagick:</p>
-<div class="highlight"><pre><span></span><span class="c1"># http://grep.js.org/?gist=96caa480d220062b18a693f1b2e9f275</span>
-~$ convert -resize 128x64<span class="se">\!</span> eyes.eps xbm:- <span class="p">|</span> grep -o <span class="s1">&#39;0[xX][0-9a-fA-F]\+&#39;</span> <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
-
-<span class="s1">import sys</span>
-
-<span class="s1"># parse stdin image</span>
-<span class="s1">xbm = [int(line, 16) for line in sys.stdin]</span>
-
-<span class="s1"># convert</span>
-<span class="s1">out = [[0]*128 for i in range(8)]</span>
-<span class="s1">for y in range(64):</span>
-<span class="s1">  for x in range(128):</span>
-<span class="s1">    if x &amp; 7:</span>
-<span class="s1">      byte &gt;&gt;= 1</span>
-<span class="s1">    else:</span>
-<span class="s1">      # 128 / 8 = 16 bytes in one xbm row</span>
-<span class="s1">      byte = xbm[y * 16 + x // 8]</span>
-<span class="s1">    if not byte &amp; 1:</span>
-<span class="s1">      out[y // 8][x] |= (1 &lt;&lt; y % 8)</span>
-
-<span class="s1"># print array</span>
-<span class="s1">for p in out:</span>
-<span class="s1">  print(&quot;{&quot; + &quot;,&quot;.join(hex(x) for x in p) + &quot;},&quot;)</span>
-<span class="s1">&#39;</span>
-</pre></div>
-
-
-<p>Для отображения текста тоже понадобится набор готовых изображений для каждого символа. Наиболее простой случай - моноширинный шрифт все знаки (площадки знаков) которого имеют одинаковую ширину. Например <a href="https://github.com/adafruit/Adafruit-GFX-Library/blob/master/glcdfont.c" rel="nofollow">шрифт</a> для ASCII символов 5x7.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.png" style="width:55%; margin: 0 auto; display:block;"></p>
-<p><a href="http://mazko.github.io/MSP430.js/56a600e7efa1f648c5305d652d14be6a">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.zip">исходники</a></p>
-<div class="highlight"><pre><span></span><span class="cm">/*</span>
-
-<span class="cm">reset &amp;&amp; (export GCC_DIR=~/ti/msp430_gcc ; </span>
-<span class="cm">    $GCC_DIR/bin/msp430-elf-gcc \</span>
-<span class="cm">    -I $GCC_DIR/include -L $GCC_DIR/include \</span>
-<span class="cm">    -Werror -Wall -mmcu=msp430f1611 -O2 test.c ssd1306.c)</span>
-
-<span class="cm">*/</span>
-
-<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
-
-<span class="cp">#include</span> <span class="cpf">&quot;ssd1306.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;font.c&quot;</span><span class="cp"></span>
-
-<span class="cp">#define STATIC_ASSERT(cond) typedef int foo[(cond) ? 1 : -1]</span>
-<span class="n">STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">font</span><span class="p">)</span> <span class="o">==</span> <span class="mi">256</span> <span class="o">*</span> <span class="mi">5</span> <span class="cm">/* uint8_t values 0..255 == 256 */</span><span class="p">);</span>
-<span class="cp">#undef STATIC_ASSERT</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">drawchar</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">page</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="n">ssd1306_write_byte</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">font</span><span class="o">+</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">drawstr</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">x</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">page</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">drawchar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="o">++</span><span class="p">);</span>
-    <span class="n">x</span> <span class="o">+=</span> <span class="mi">6</span><span class="p">;</span>     <span class="c1">// 6 pixels wide</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">&gt;=</span> <span class="n">SSD1306_X_PIXELS</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>    <span class="c1">// ran out of this page</span>
-      <span class="n">page</span><span class="o">++</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">page</span> <span class="o">&gt;=</span> <span class="n">SSD1306_PIXEL_PAGES</span><span class="p">)</span>
-      <span class="k">break</span><span class="p">;</span>    <span class="c1">// ran out of space :(</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">WDTCTL</span> <span class="o">=</span> <span class="n">WDTPW</span> <span class="o">|</span> <span class="n">WDTHOLD</span><span class="p">;</span>     <span class="c1">// Stop watchdog timer</span>
-
-    <span class="c1">// DCO = 3, RSEL = 0, f = 0.13 MHz</span>
-    <span class="n">DCOCTL</span> <span class="o">=</span> <span class="cm">/* DCO2 + */</span> <span class="n">DCO1</span> <span class="o">+</span> <span class="n">DCO0</span><span class="p">;</span> 
-    <span class="n">BCSCTL1</span> <span class="o">=</span> <span class="n">XT2OFF</span> <span class="cm">/* + RSEL1 + RSEL0 + RSEL2 */</span><span class="p">;</span>
-
-    <span class="n">P2OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">P3OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="n">P2DIR</span> <span class="o">=</span> <span class="n">P3DIR</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
-
-    <span class="n">ssd1306_init_display</span><span class="p">();</span>
-
-    <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
-      <span class="n">drawstr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;!</span><span class="se">\&quot;</span><span class="s">#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?@&quot;</span>
-                    <span class="s">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ[</span><span class="se">\\</span><span class="s">]^_`&quot;</span>
-                    <span class="s">&quot;abcdefghijklmnopqrstuvwxyz{|}~&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Здесь <code>STATIC_ASSERT</code> это <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиома</a> Си, проверка на этапе компиляции будет полезна в случае смены шрифта - на ту же кириллицу например. Текущая реализация конечно простейшая, смещение по горизонтали задаётся в пикселях, но накладывается ограничение на смещение по вертикали - максимум 8 строк. В более сложных случаях можно задействовать какую-нибудь готовую графическую библиотеку для графического дисплея.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Далее</a> операционная система реального времени FreeRTOS.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
+</footer><!-- /.post-info -->                <p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

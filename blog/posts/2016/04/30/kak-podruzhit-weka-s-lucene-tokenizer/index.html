@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>Расширение функциональности Weka своей реализацией Tokenizer</title>
+        <title>Как подружить Weka с Lucene (Tokenizer)</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -28,8 +28,8 @@
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/" rel="bookmark"
-           title="Permalink to Расширение функциональности Weka своей реализацией Tokenizer">Расширение функциональности Weka своей реализацией Tokenizer</a></h1>
+        <a href="http://proiot.ru/blog/posts/2016/04/30/kak-podruzhit-weka-s-lucene-tokenizer/" rel="bookmark"
+           title="Permalink to Как подружить Weka с Lucene (Tokenizer)">Как подружить Weka с Lucene (Tokenizer)</a></h1>
     </header>
 
     <div class="entry-content">
@@ -44,7 +44,7 @@
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/weka">Weka</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
 </footer><!-- /.post-info -->      <p>В случае классификации <a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/">текстовой информации</a> качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается <a href="http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html" rel="nofollow">StringToWordVector</a> и одним из параметров у него задаётся тип <a href="http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html" rel="nofollow">токенайзера</a>. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но как нетрудно убедиться на картинке ниже если не полениться и задействовать более качественный <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">токенизатор</a>, взятый например из <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>, итоговая точность определения категорий в Weka-классификаторе повышается:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/04/30/kak-podruzhit-weka-s-lucene-tokenizer/weka-ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Итак <a href="https://maven.apache.org/guides/getting-started/" rel="nofollow">приступим</a>:</p>
 <div class="highlight"><pre><span></span>~$ apt install maven
 ~$ mvn -B archetype:generate <span class="se">\</span>
@@ -490,7 +490,7 @@
 </pre></div>
 
 
-<p>Проверка, <a href="http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/weka-lucene.zip">исходники</a>:</p>
+<p>Проверка, <a href="http://proiot.ru/blog/posts/2016/04/30/kak-podruzhit-weka-s-lucene-tokenizer/weka-lucene.zip">исходники</a>:</p>
 <div class="highlight"><pre><span></span>~$ mvn clean <span class="nb">test</span>
    Tests run: <span class="m">4</span>, Failures: <span class="m">0</span>, Errors: <span class="m">0</span>, Skipped: <span class="m">0</span>
 ~$ mvn clean install exec:java -Dexec.mainClass<span class="o">=</span><span class="s2">&quot;weka.gui.GUIChooser&quot;</span>
@@ -501,8 +501,8 @@
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         var disqus_shortname = 'mazko';
-        var disqus_identifier = 'blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/';
-        var disqus_url = 'http://proiot.ru/blog/posts/2016/04/30/rasshirenie-funktsionalnosti-weka-svoei-realizatsiei-tokenizer/';
+        var disqus_identifier = 'blog/posts/2016/04/30/kak-podruzhit-weka-s-lucene-tokenizer/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2016/04/30/kak-podruzhit-weka-s-lucene-tokenizer/';
         (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
         dsq.src = '//mazko.disqus.com/embed.js';
