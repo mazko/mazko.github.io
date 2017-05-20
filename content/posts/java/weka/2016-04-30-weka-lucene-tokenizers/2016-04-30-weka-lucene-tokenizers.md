@@ -1,4 +1,4 @@
-title: Расширение функциональности Weka своей реализацией Tokenizer
+title: Как подружить Weka с Lucene (Tokenizer)
 category: Java
 tags: NLP, Weka, Lucene, Maven
 
