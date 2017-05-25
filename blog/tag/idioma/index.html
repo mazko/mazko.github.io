@@ -27,351 +27,7 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">Автомат с конечным числом состояний</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2012-10-09T00:00:00+03:00">
-                Published: Вт. 09 Октябрь 2012
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
-</footer><!-- /.post-info --><p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого <em>ANSI C</em>.</p>
-<p>Для экспериментов нам понадобиться какой-то тестовый макет, который можно запустить / эмулировать в виртуальной среде (выбор пал на <em>Proteus VSM</em>). Есть простенький микроконтроллер (PIC16F1823), который управляет лампочками (гирляндой) и может менять их яркость с помощью встроенного цифро-аналогового преобразователя ЦАП (в реальном устройстве для этого лучше использовать ШИМ, ЦАП лучше подходит для эмуляции в <em>Proteus VSM</em>). Быстро вникнуть в суть дела можно посмотрев следующее видео:</p>
-<video width="100%" controls>
-  <source src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/video.mp4" type="video/mp4">
-Your browser does not support the video tag.
-</video>
-
-<p>Начнём с простого - напишем программу для гирлянды с <em>двумя</em> состояниями - в первом светодиоды поочерёдно вспыхивают слева направо, во втором справа налево. В системе два события - нажали кнопочку (NEXT) и внутреннее (недоступно пользователю гирлянды) событие от таймера (TICK). Событие NEXT изменяет состояние:</p>
-<p><img alt="Диаграмма состояний Скриншот" src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;"></p>
-<h3>Операторы switch/case</h3>
-<p>Прибегнув к помощи условных операторов <code>if</code> / <code>else</code> или <code>switch</code> / <code>case</code> по-старинке задачу решили так:</p>
-<p><em>FSM/Child/src/main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;main.h&quot;</span><span class="cp"></span>
-
-<span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-    <span class="n">LEFT_TO_RIGHT</span><span class="p">,</span>
-    <span class="n">RIGHT_TO_LEFT</span>
-<span class="p">}</span> <span class="n">State</span><span class="p">;</span>
-
-<span class="cm">/* Global variable to hold current state */</span>
-
-<span class="k">static</span> <span class="n">State</span> <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_TO_LEFT</span><span class="p">;</span>
-
-<span class="cm">/* Event handlers implementations */</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onLeftToRightTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextLeftLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onLeftToRightNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_TO_LEFT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextRightLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">LEFT_TO_RIGHT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="n">initHardware</span><span class="p">();</span> <span class="c1">// in main.h</span>
-
-    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-
-        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-            <span class="n">NEXT</span><span class="p">,</span>
-            <span class="n">TICK</span>
-        <span class="p">}</span> <span class="n">Event</span><span class="p">;</span>
-
-        <span class="cm">/* Событие по-умолчанию */</span>
-
-        <span class="n">Event</span> <span class="n">eventToFire</span> <span class="o">=</span> <span class="n">TICK</span><span class="p">;</span>
-
-        <span class="cm">/* Если нажали кнопку, событие NEXT */</span>
-
-        <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="n">i</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">isNextButtonPressed</span><span class="p">())</span> <span class="p">{</span>
-                <span class="n">eventToFire</span> <span class="o">=</span> <span class="n">NEXT</span><span class="p">;</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// Fire NEXT event</span>
-            <span class="p">}</span> 
-        <span class="p">}</span>
-
-        <span class="k">switch</span> <span class="p">(</span><span class="n">currentState</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="nl">LEFT_TO_RIGHT</span> <span class="p">:</span> 
-                <span class="k">switch</span> <span class="p">(</span><span class="n">eventToFire</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="k">case</span> <span class="nl">TICK</span><span class="p">:</span>
-                        <span class="n">onLeftToRightTickImpl</span><span class="p">();</span>
-                        <span class="k">break</span><span class="p">;</span> <span class="c1">// TICK</span>
-                    <span class="k">case</span> <span class="nl">NEXT</span><span class="p">:</span>
-                        <span class="n">onLeftToRightNextImpl</span><span class="p">();</span>
-                        <span class="k">break</span><span class="p">;</span> <span class="c1">// NEXT</span>
-
-                <span class="p">}</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// LEFT_TO_RIGHT</span>
-            <span class="k">case</span> <span class="nl">RIGHT_TO_LEFT</span> <span class="p">:</span> 
-                <span class="k">switch</span> <span class="p">(</span><span class="n">eventToFire</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="k">case</span> <span class="nl">TICK</span><span class="p">:</span>
-                        <span class="n">onRightToLeftTickImpl</span><span class="p">();</span>
-                        <span class="k">break</span><span class="p">;</span> <span class="c1">// TICK</span>
-                    <span class="k">case</span> <span class="nl">NEXT</span><span class="p">:</span>
-                        <span class="n">onRightToLeftNextImpl</span><span class="p">();</span>
-                        <span class="k">break</span><span class="p">;</span> <span class="c1">// NEXT</span>
-
-                <span class="p">}</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// RIGHT_TO_LEFT</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Некоторые детали реализации вынесены в заголовочный файл <strong>main.h</strong>, который прилагается к исходникам. Для сборки использовался компилятор HI-TECH PICC:</p>
-<div class="highlight"><pre><span></span>/usr/hitech/picc/9.83/bin/PICC --opt<span class="o">=</span>all --chip<span class="o">=</span>16F1823 --ASMLIST main.c
-</pre></div>
-
-
-<p>Что мы можем сказать об этом решении, кроме того, что там много одинаковых слов <code>switch</code> и <code>case</code> ?</p>
-<ul>
-<li>
-<p>Представьте себе несколько страниц кода с монолитным оператором <code>switch</code> / <code>case</code>. Такой код сложно читать и сопровождать. В самих <code>switch</code> / <code>case</code> или <code>if</code> / <code>else</code> нет ничего плохого - в конце-концов это ключевые слова <strong>С</strong>. Но когда их очень много в одном месте, с этим нужно бороться.</p>
-</li>
-<li>
-<p>Hет удачного разделения между логикой обработки событий машиной с конечным числом состояний и реализацией соответствующих действий. В результате добавление нового состояния требует больших изменений в разных местах.</p>
-</li>
-</ul>
-<h3>Табличная альтернатива</h3>
-<p>Второй способ решения задачи состоит в использовании таблицы переходов:</p>
-<p><em>FSM/Table/Simple/src/main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;main.h&quot;</span><span class="cp"></span>
-
-<span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-    <span class="n">LEFT_TO_RIGHT</span><span class="p">,</span>
-    <span class="n">RIGHT_TO_LEFT</span>
-<span class="p">}</span> <span class="n">State</span><span class="p">;</span>
-
-<span class="cm">/* Global variable to hold current state */</span>
-
-<span class="k">static</span> <span class="n">State</span> <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_TO_LEFT</span><span class="p">;</span>
-
-<span class="cm">/* Event handlers implementations */</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onLeftToRightTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextLeftLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onLeftToRightNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_TO_LEFT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextRightLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">LEFT_TO_RIGHT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="n">initHardware</span><span class="p">();</span> <span class="c1">// in main.h</span>
-
-    <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-        <span class="n">NEXT</span><span class="p">,</span>
-        <span class="n">TICK</span>
-    <span class="p">}</span> <span class="n">Event</span><span class="p">;</span>
-
-    <span class="k">typedef</span> <span class="k">struct</span> <span class="n">_Transition</span> <span class="p">{</span>
-        <span class="n">State</span> <span class="n">state</span><span class="p">;</span>
-        <span class="n">Event</span> <span class="n">event</span><span class="p">;</span>
-        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">EventFunc</span><span class="p">)();</span>
-    <span class="p">}</span> <span class="n">Transition</span><span class="p">;</span>
-
-    <span class="k">const</span> <span class="n">Transition</span> <span class="n">transitionTable</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="p">{</span><span class="n">LEFT_TO_RIGHT</span><span class="p">,</span> <span class="n">TICK</span><span class="p">,</span> <span class="n">onLeftToRightTickImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">LEFT_TO_RIGHT</span><span class="p">,</span> <span class="n">NEXT</span><span class="p">,</span> <span class="n">onLeftToRightNextImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">RIGHT_TO_LEFT</span><span class="p">,</span> <span class="n">TICK</span><span class="p">,</span> <span class="n">onRightToLeftTickImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">RIGHT_TO_LEFT</span><span class="p">,</span> <span class="n">NEXT</span><span class="p">,</span> <span class="n">onRightToLeftNextImpl</span><span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-
-        <span class="cm">/* Событие по-умолчанию */</span>
-
-        <span class="n">Event</span> <span class="n">eventToFire</span> <span class="o">=</span> <span class="n">TICK</span><span class="p">;</span>
-
-        <span class="cm">/* Если нажали кнопку, событие NEXT */</span>
-
-        <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="n">i</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">isNextButtonPressed</span><span class="p">())</span> <span class="p">{</span>
-                <span class="n">eventToFire</span> <span class="o">=</span> <span class="n">NEXT</span><span class="p">;</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// Fire NEXT event</span>
-            <span class="p">}</span> 
-        <span class="p">}</span>
-
-        <span class="cm">/* Обработка события */</span>
-
-        <span class="kt">int</span> <span class="n">elementsCount</span> <span class="o">=</span> 
-            <span class="k">sizeof</span><span class="p">(</span><span class="n">transitionTable</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">transitionTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">elementsCount</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">Transition</span> <span class="n">transition</span> <span class="o">=</span> <span class="n">transitionTable</span><span class="p">[</span><span class="n">elementsCount</span><span class="p">];</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">transition</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">currentState</span> <span class="o">&amp;&amp;</span> 
-                <span class="n">transition</span><span class="p">.</span><span class="n">event</span> <span class="o">==</span> <span class="n">eventToFire</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">transition</span><span class="p">.</span><span class="n">EventFunc</span><span class="p">();</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// Функция EventFunc найдена и выполнена!</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Давайте сравним данное решение с предыдущим:</p>
-<ul>
-<li>
-<p>Табличная реализация несколько медленнее - как минимум добавился цикл <code>while</code>. Для обхода элементов таблицы задействована идиома КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ, которая уже подробно описывалась <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">ранее</a>.</p>
-</li>
-<li>
-<p>Bся логика переходов сконцентрирована в одной таблице. Всё видно, как на ладони. Теперь можно быстрее разобраться / вспомнить, как всё это работает.</p>
-</li>
-<li>
-<p>Добавление нового состояния не требует изменений логики обработки событий машиной с конечным числом состояний.  Давайте добавим ещё одно состояние - лампочки <strong>плавно</strong> меняют яркость:</p>
-</li>
-</ul>
-<p><em>FSM/Table/Scale/src/main.c</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;main.h&quot;</span><span class="cp"></span>
-
-<span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-    <span class="n">LEFT_TO_RIGHT</span><span class="p">,</span>
-    <span class="n">RIGHT_TO_LEFT</span><span class="p">,</span>
-
-    <span class="cm">/* Add brightness algoritms States */</span>
-
-    <span class="n">RIGHT_LEFT_TO_BRIGHT</span>
-<span class="p">}</span> <span class="n">State</span><span class="p">;</span>
-
-<span class="cm">/* Global variable to hold current state */</span>
-
-<span class="k">static</span> <span class="n">State</span> <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_TO_LEFT</span><span class="p">;</span>
-
-<span class="cm">/* Event handlers implementations */</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onLeftToRightTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextLeftLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onLeftToRightNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_TO_LEFT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextRightLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="cm">/* LEFT_TO_RIGHT ==&gt; RIGHT_LEFT_TO_BRIGHT */</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">RIGHT_LEFT_TO_BRIGHT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="cm">/* Add brightness handlers */</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftBrigtTickImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">nextRightBrightLed</span><span class="p">();</span> <span class="c1">// in main.h</span>
-<span class="p">}</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">onRightToLeftBrigtNextImpl</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">resetLeds</span><span class="p">();</span> <span class="c1">// in main.h</span>
-    <span class="n">currentState</span> <span class="o">=</span> <span class="n">LEFT_TO_RIGHT</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">main</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
-
-    <span class="n">initHardware</span><span class="p">();</span> <span class="c1">// in main.h</span>
-
-    <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-        <span class="n">NEXT</span><span class="p">,</span>
-        <span class="n">TICK</span>
-    <span class="p">}</span> <span class="n">Event</span><span class="p">;</span>
-
-    <span class="k">typedef</span> <span class="k">struct</span> <span class="n">_Transition</span> <span class="p">{</span>
-        <span class="n">State</span> <span class="n">state</span><span class="p">;</span>
-        <span class="n">Event</span> <span class="n">event</span><span class="p">;</span>
-        <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">EventFunc</span><span class="p">)();</span>
-    <span class="p">}</span> <span class="n">Transition</span><span class="p">;</span>
-
-    <span class="k">const</span> <span class="n">Transition</span> <span class="n">transitionTable</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="p">{</span><span class="n">LEFT_TO_RIGHT</span><span class="p">,</span> <span class="n">TICK</span><span class="p">,</span> <span class="n">onLeftToRightTickImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">LEFT_TO_RIGHT</span><span class="p">,</span> <span class="n">NEXT</span><span class="p">,</span> <span class="n">onLeftToRightNextImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">RIGHT_TO_LEFT</span><span class="p">,</span> <span class="n">TICK</span><span class="p">,</span> <span class="n">onRightToLeftTickImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">RIGHT_TO_LEFT</span><span class="p">,</span> <span class="n">NEXT</span><span class="p">,</span> <span class="n">onRightToLeftNextImpl</span><span class="p">},</span>
-
-        <span class="cm">/* Add brightness algoritms transitions */</span>
-
-        <span class="p">{</span><span class="n">RIGHT_LEFT_TO_BRIGHT</span><span class="p">,</span> <span class="n">TICK</span><span class="p">,</span> <span class="n">onRightToLeftBrigtTickImpl</span><span class="p">},</span>
-        <span class="p">{</span><span class="n">RIGHT_LEFT_TO_BRIGHT</span><span class="p">,</span> <span class="n">NEXT</span><span class="p">,</span> <span class="n">onRightToLeftBrigtNextImpl</span><span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-
-        <span class="cm">/* Событие по-умолчанию */</span>
-
-        <span class="n">Event</span> <span class="n">eventToFire</span> <span class="o">=</span> <span class="n">TICK</span><span class="p">;</span>
-
-        <span class="cm">/* Если нажали кнопку, событие NEXT */</span>
-
-        <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="n">i</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">isNextButtonPressed</span><span class="p">())</span> <span class="p">{</span>
-                <span class="n">eventToFire</span> <span class="o">=</span> <span class="n">NEXT</span><span class="p">;</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// Fire NEXT event</span>
-            <span class="p">}</span> 
-        <span class="p">}</span>
-
-        <span class="cm">/* Обработка события */</span>
-
-        <span class="kt">int</span> <span class="n">elementsCount</span> <span class="o">=</span> 
-            <span class="k">sizeof</span><span class="p">(</span><span class="n">transitionTable</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">transitionTable</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">elementsCount</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">Transition</span> <span class="n">transition</span> <span class="o">=</span> <span class="n">transitionTable</span><span class="p">[</span><span class="n">elementsCount</span><span class="p">];</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">transition</span><span class="p">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">currentState</span> <span class="o">&amp;&amp;</span> 
-                <span class="n">transition</span><span class="p">.</span><span class="n">event</span> <span class="o">==</span> <span class="n">eventToFire</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">transition</span><span class="p">.</span><span class="n">EventFunc</span><span class="p">();</span>
-                <span class="k">break</span><span class="p">;</span> <span class="c1">// Функция EventFunc найдена и выполнена!</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Несложно заметить, что код в суперцикле <code>for(;;)</code> остался без изменений, т.е. решение с использованием таблиц характеризуется лучшей <em>расширяемостью</em> кода.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">Далее</a> сопрограммы.</p>
-<p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/" rel="bookmark"
-                           title="Permalink to Идиомы в ANSI C">Идиомы в ANSI C</a></h1>
-                </header>
-
-                <div class="entry-content">
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">Идиомы в ANSI C</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2012-10-08T00:00:00+03:00">
                 Published: Пн. 08 Октябрь 2012
@@ -382,12 +38,480 @@ Your browser does not support the video tag.
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
-</footer><!-- /.post-info -->                <p><em>Шаблоны проектирования</em>, они же просто <a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow">паттерны</a>, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются <strong>идиомами</strong>, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот <strong>идиом</strong> в чистом <strong>С</strong> (<em>ANSI C</em>), по большей части это вольный перевод <a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow">Idiomatic Expressions in C</a> от …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+</footer><!-- /.post-info --><p><em>Шаблоны проектирования</em>, они же просто <a href="http://ru.wikipedia.org/wiki/%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD_%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F" rel="nofollow">паттерны</a>, можно встретить на всех уровнях разработки программного обеспечения. «Низкоуровневые» шаблоны называются <strong>идиомами</strong>, поскольку они зависят от особенностей конкретного языка программирования. В данной статье описывается подборка таких вот <strong>идиом</strong> в чистом <strong>С</strong> (<em>ANSI C</em>), по большей части это вольный перевод <a href="http://www.adampetersen.se/Idiomatic_expressions_in_C.pdf" rel="nofollow">Idiomatic Expressions in C</a> от <a href="http://www.adampetersen.se/articles.htm" rel="nofollow">Adam Petersen</a>.</p>
+<p>К сожалению идиомы очень редко и, как правило, выборочно описываются в соответствующей литературе по программированию - данный материал может показаться достаточно сложным для новичков, в то же время при изложении более серьёзного материала авторы подразумевают, что читатель со всем этим уже знаком. Как бы там ни было, ясно одно - даже если программист не использует некоторые идиомы в своих работах, это ещё не означает, что он не должен быть с ними знаком хотя бы для того, чтобы более эффективно и быстро разбираться в чужом коде.</p>
+<p>Описываемые в данном материале идиомы можно условно разделить на две категории:</p>
+<ul>
+<li>
+<p><strong>Идиомы для надёжности</strong>: помогают избежать распространенных ошибок в <strong>С</strong>. Например, идиома ИНИЦИАЛИЗАЦИЯ СОСТАВНЫХ ТИПОВ С ПОМОЩЬЮ {0} обеспечивает надёжный и переносимый способ инициализации структур и массивов.</p>
+</li>
+<li>
+<p><strong>Идиомы для выразительности</strong>: делают исходный код более читабельным и понятным, в результате поведение программы становится более предсказуемым, а процесс отладки проще и прозрачней. Например, идиома ДИАГНОСТИКА С ОПИСАНИЕМ позволяет добавить к механизму проверок (макрос <code>assert</code>) словесное описание возникшей проблемы.</p>
+</li>
+</ul>
+<h3>SIZEOF ДЛЯ ПЕРЕМЕННЫХ</h3>
+<p>Функции стандартной библиотеки в <strong>С</strong> очень часто используют тип <code>void*</code> - указатель на объект неизвестного типа, это позволяет сделать их (функции) более универсальными и абстрагироваться от конкретного типа данных. Например результатом вызова функций для динамического выделения памяти (<code>malloc</code>, <code>calloc</code> и <code>realloc</code>) является указатель <code>void*</code>, при этом самим функциям на этапе компиляции ничего не известно о типе данных, для которых выделяется память. Вся ответственность ложится на код клиента, вызывающего функцию - именно он должен указать объём необходимый памяти:</p>
+<div class="highlight"><pre><span></span><span class="n">HelloTelegram</span><span class="o">*</span> <span class="n">telegram</span> <span class="o">=</span> <span class="p">(</span><span class="n">HelloTelegram</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">HelloTelegram</span><span class="p">));</span>
+</pre></div>
+
+
+<p>Данный код легко читается и до тех пор, пока <code>telegram</code> остаётся <code>HelloTelegram</code> всё работает как надо. Однако в процессе сопровождения / изменений очень легко запутаться и допустить ошибку:</p>
+<div class="highlight"><pre><span></span><span class="n">ByeTelegram</span><span class="o">*</span> <span class="n">telegram</span> <span class="o">=</span> <span class="p">(</span><span class="n">ByeTelegram</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">HelloTelegram</span><span class="p">));</span>
+</pre></div>
+
+
+<p>Поскольку нет никакой гарантии, что размеры <code>HelloTelegram</code> и <code>ByeTelegram</code> равны (точнее это было бы счастливым стечением обстоятельств), в процессе выполнения этот код приведёт к печальным последствиям. Проблема  в том, что при работе с функцией <code>malloc</code> и ей подобными на этапе компиляции теряется информация о реальном типе данных и поэтому далеко не факт, что компилятор подобную ошибку сможет обнаружить - он не обязан этим заниматься.</p>
+<p>Используя идиому SIZEOF ДЛЯ ПЕРЕМЕННЫХ подобные ошибки можно предотвратить:</p>
+<div class="highlight"><pre><span></span><span class="n">HelloTelegram</span><span class="o">*</span> <span class="n">telegram</span> <span class="o">=</span> <span class="p">(</span><span class="n">HelloTelegram</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">telegram</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Но минуточку ! Не происходит ли тут разыменование указателя, который, ко всему прочему, к этому моменту ещё и не был инициализирован ? Нет, и причина, по которой это работает в том, что <code>sizeof</code> это оператор а не функция. Оператор <code>sizeof</code> не генерирует код, а выражение <code>sizeof *telegram</code> рассчитывается на этапе компиляции. Теперь, если тип <code>telegram</code> изменится ну скажем на <code>ByeTelegram</code>, компилятор автоматически пересчитает аргумент, передаваемый функции <code>malloc</code>. Таким образом, ответственность за корректный размер выделяемой памяти под заданный тип данных перекладывается с плеч программиста на компилятор. Поскольку в нашем примере <code>telegram</code> это указатель, то унарный оператор <code>*</code> в данном случае необходим.</p>
+<p>Применение идиомы SIZEOF ДЛЯ ПЕРЕМЕННЫХ отнюдь не ограничивается указателями. Вот пример идиомы при работе с функцией <code>memcpy</code>, которая также использует <code>void*</code>, однако уже в качестве одного из аргументов:</p>
+<div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">telegramSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">telegramSize</span><span class="p">,</span> <span class="n">binaryDatastream</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">telegramSize</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Теперь, если изменится тип данных с <code>uint32_t telegramSize = 0</code>; на <code>uintXX_t telegramSize = 0</code>; код с <code>memcpy</code> останется без изменений и будет (должен) работать корректно.</p>
+<h3>ИНИЦИАЛИЗАЦИЯ СОСТАВНЫХ ТИПОВ С ПОМОЩЬЮ {0}</h3>
+<p>Неинициализированные переменные - распространенный источник ошибок в любых программах. В <strong>С</strong> инициализация <a href="http://ru.wikipedia.org/wiki/%D0%9F%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%D0%BD%D1%8B%D0%B9_%D1%82%D0%B8%D0%BF" rel="nofollow">примитивных типов</a> данных, таких как <code>int</code>, <code>char</code> и т.д. осуществляется очень просто, но как правильно инициализировать составные типы, такие как <strong>массивы</strong> или <strong>структуры</strong> ? Опасной, но увы, достаточно распространённой практикой является вот такой способ:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">TemperatureNode</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">todaysAverage</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TemperatureNode</span><span class="o">*</span> <span class="n">nextTemperature</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="n">TemperatureNode</span> <span class="n">node</span><span class="p">;</span>
+<span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">node</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Проблема с использованием <code>memset</code> заключается в том, что данная функция просто обнуляет биты, не заботясь о деталях внутренней реализации источника данных, с которым ей приходится работать. В <strong>С</strong> можно встретить типы данных, например <code>NULL</code> - указатель или числа с <em>плавающей запятой</em>, у которых все биты в ноль ещё не означают, что фактическое значение экземпляра тоже будет ноль. Таким образом, можно получить программу, поведение которой отличается от ожидаемого.</p>
+<p>Альтернативный способ инициализации структуры путём явной пошаговой инициализации её полей выглядит громоздко и его трудно сопровождать. Даже если избежать дублирования кода (например с использованием отдельных функций, которые будут инициализировать необходимые значения), каждый раз при добавлении / удалении у структуры полей необходимо вносить изменения и в код, занимающийся инициализацией.</p>
+<p>К счастью, тут можно задействовать идиому ИНИЦИАЛИЗАЦИЯ СОСТАВНЫХ ТИПОВ С ПОМОЩЬЮ {0}. Данный приём <strong>гарантирует</strong> корректную инициализацию всех полей структуры (включая числа с плавающей запятой и т.д.)  нулевыми значениями. Переносимость данного кода для конкретной целевой платформы обеспечивается компилятором:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">TemperatureNode</span> <span class="n">node</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</pre></div>
+
+
+<p>Также данная идиома может быть полезна при обнулении уже инициализированных массивов или полей структур в любом месте программы, для этой цели необходимо создать эталон (лучше константу <code>const</code>), а его значение по мере необходимости копировать:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* Эталонная структура с нулевыми полями */</span>
+
+<span class="k">const</span> <span class="k">struct</span> <span class="n">TemperatureNode</span> <span class="n">zeroNode</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="k">struct</span> <span class="n">TemperatureNode</span> <span class="n">node</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="cm">/* Что-то делается с структурой node. */</span>
+<span class="p">...</span>
+<span class="cm">/* Необходимо обнулить все поля node */</span>
+
+<span class="n">node</span> <span class="o">=</span> <span class="n">zeroNode</span><span class="p">;</span>
+</pre></div>
+
+
+<p>При обнулении массивов операция простого присваивания не сработает - необходимо перебирать все элементы в цикле. Как вариант, можно задействовать <code>memcpy</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">double</span> <span class="n">zeroArray</span><span class="p">[</span><span class="n">NO_OF_TEMPERATURES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="kt">double</span> <span class="n">temperatures</span><span class="p">[</span><span class="n">NO_OF_TEMPERATURES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="cm">/* Что-то делается с массивом temperatures. */</span>
+<span class="p">...</span>
+<span class="cm">/* Обнулить все элементы массива temperatures. */</span>
+
+<span class="n">memcpy</span><span class="p">(</span><span class="n">temperatures</span><span class="p">,</span> <span class="n">zeroArray</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">temperatures</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Для многомерных массивов и вложенных структур могут понадобиться дополнительный фигурные скобки например <code>{{0}}</code>.</p>
+<h3>КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ</h3>
+<p>Как известно, <strong>С</strong> не изобилует удобствами при работе с массивами. При передаче массива в качестве аргумента функции, попросту передаётся указатель на его первый элемент. Без дополнительных соглашений (пример такого соглашения - строка, тот же массив, но он всегда завершается нулевым символом), этой информации недостаточно, чтобы в теле функции узнать количество элементов массива. В результате большинство API вешают всю чёрную бухгалтерию по вычислению количества элементов массива на программиста. Одним из примеров может быть функция <code>poll()</code> в POSIX API. В качестве первого аргумента ей передаётся массив структур <code>pollfd</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">pollfd</span> <span class="n">handles</span><span class="p">[</span><span class="n">NO_OF_HANDLES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="cm">/* Заполняется массив необходимыми значениями */</span>
+
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">poll</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">NO_OF_HANDLES</span><span class="p">,</span> <span class="n">TIMEOUT</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Проблема данного кода в том, что за исключением красивого имени ничего не указывает на то, что константа NO_OF_HANDLES это реальное количество элементов в массиве. Хорошие имена имеют большое значение, но только для программиста. Компилятору они ни о чем не говорят, он не будет ругаться на такой, явно подозрительный код с "душком":</p>
+<div class="highlight"><pre><span></span><span class="cp">#define NO_OF_HANDLES x</span>
+<span class="k">struct</span> <span class="n">pollfd</span> <span class="n">handles</span><span class="p">[</span><span class="n">NO_OF_HANDLES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="cm">/* Заполняется массив необходимыми значениями */</span>
+
+<span class="cp">#undef NO_OF_HANDLES</span>
+<span class="cp">#define NO_OF_HANDLES y</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">poll</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">NO_OF_HANDLES</span><span class="p">,</span> <span class="n">TIMEOUT</span><span class="p">);</span>
+</pre></div>
+
+
+<p>При использовании идиомы КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ, мы можем гарантировать, что вычисляемое на этапе компиляции количество элементов массива всегда будет равным реальному количеству элементов в массиве:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">pollfd</span> <span class="n">handles</span><span class="p">[</span><span class="n">NO_OF_HANDLES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+<span class="cm">/* Заполняется массив необходимыми значениями */</span>
+
+<span class="k">const</span> <span class="kt">size_t</span> <span class="n">noOfHandles</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="n">handles</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="n">handles</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">poll</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="n">noOfHandles</span><span class="p">,</span> <span class="n">TIMEOUT</span><span class="p">);</span>
+</pre></div>
+
+
+<p>В основе идиомы лежит утверждение, что результатом деления размера всего массива на размер одного из его элементов является общее количество элементов.</p>
+<h3>ENUM ДЛЯ ЦЕЛОЧИСЛЕННЫХ КОНСТАНТ</h3>
+<p>В предыдущем примере размерность массива задаётся макросом <code>#define NO_OF_HANDLES</code>, но это же можно сделать и более строгим способом через перечисление enum:</p>
+<div class="highlight"><pre><span></span><span class="k">enum</span> <span class="p">{</span><span class="n">NO_OF_HANDLES</span><span class="o">=</span><span class="mi">42</span><span class="p">};</span>
+<span class="k">struct</span> <span class="n">pollfd</span> <span class="n">handles</span><span class="p">[</span><span class="n">NO_OF_HANDLES</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</pre></div>
+
+
+<p>Такое решение более надёжно т.к. для enum нельзя сделать какую-нибудь пакость типа <code>#undef</code>. Ещё можно было бы попробовать задать размерность и с помощью <code>const int NO_OF_HANDLES=42;</code>, правда такой способ возможен только внутри функций и поэтому не особо практичен в отличие от enum.</p>
+<h3>МАГИЧЕСКИЕ ЧИСЛА КАК ПЕРЕМЕННЫЕ</h3>
+<p>Что за 42 !? Опытные программисты избегают <a href="http://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%B5_%D1%87%D0%B8%D1%81%D0%BB%D0%BE_%28%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%29" rel="nofollow">магических чисел</a>, потому что они делают код трудным для понимания и могут запутать любого, кто будет его читать / сопровождать. Правда есть некоторые числа - 0, 1, 3.14 и 42, которые принято считать менее магическими, чем остальные. Когда мы видим переменную, инициализируемую по умолчанию 0, можно предположить, что она будет изменяться где-то дальше в коде. Число 1 может быть просто аналогом <code>true</code>. Число <a href="http://ru.wikipedia.org/wiki/%D0%9E%D1%82%D0%B2%D0%B5%D1%82_%D0%BD%D0%B0_%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D1%8B%D0%B9_%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81_%D0%B6%D0%B8%D0%B7%D0%BD%D0%B8,_%D0%B2%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D0%BE%D0%B9_%D0%B8_%D0%B2%D1%81%D0%B5%D0%B3%D0%BE_%D1%82%D0%B0%D0%BA%D0%BE%D0%B3%D0%BE" rel="nofollow">42</a> универсально по своей природе, оно отвечает на главный вопрос жизни, вселенной и всего такого.</p>
+<p>Как ни странно, с <em>не очень</em> магическими числами тоже могут быть проблемы. Например у структуры <code>struct tm</code>, которая cодержит компоненты календарного времени в <strong>С</strong>, поле <code>int tm_year;</code> хранит годы с 1900 (в Windows) или с 1970 (в Unix). Таким образом <em>нулевое значение</em> этого поля на самом деле ещё не означает <em>нулевой год</em>.</p>
+<p>Ну а с настоящими магическими числами всё ещё печальней:</p>
+<div class="highlight"><pre><span></span><span class="n">startTimer</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Несмотря на хорошее имя функции, сложно однозначно сказать, что тут происходит. Если предположить, что 10 - это временной интервал, то в чём он измеряется ? Секунды, миллисекунды или ёжики ? А может это вообще какой-то порядковый номер ? Со вторым параметром такая же история.</p>
+<p>Шагом навстречу к самодокументирующемуся коду будет идиома МАГИЧЕСКИЕ ЧИСЛА КАК ПЕРЕМЕННЫЕ. Согласитесь, данный код вызывает намного меньше вопросов:</p>
+<div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">size_t</span> <span class="n">timeoutInSeconds</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">size_t</span> <span class="n">doNotRescheduleTimer</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">startTimer</span><span class="p">(</span><span class="n">timeoutInSeconds</span><span class="p">,</span> <span class="n">doNotRescheduleTimer</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Следуя такому принципу где-то дальше в коде можно по аналогии написать:</p>
+<div class="highlight"><pre><span></span><span class="n">startTimer</span><span class="p">(</span><span class="n">tenSecondsTimeout</span><span class="p">,</span> <span class="n">doNotRescheduleTimer</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Код стал ещё более понятным, не так ли ? Или не совсем ? Подвох тут в том, что для компилятора <code>tenSecondsTimeout</code> это просто имя. Ничто не мешает какому-то слишком умному программисту присвоить переменной <code>tenSecondsTimeout</code> не совсем то число, которое вытекает из её имени:</p>
+<div class="highlight"><pre><span></span><span class="k">const</span> <span class="kt">size_t</span> <span class="n">tenSecondsTimeout</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span> <span class="cm">/* Original value was 10 */</span>
+</pre></div>
+
+
+<p>Такое иногда случается, и в процессе отладки можно долго думать, сколько же на самом деле длятся 10 секунд...</p>
+<p>Идеального решения тут нет. Пожалуй, не стоит применять эту идиому слепо и где попало - лучше, чтобы в имени переменной не было упоминаний о <strong>числах</strong> или <strong>типах данных</strong>, поскольку они очень часто меняются.</p>
+<h3>ИМЕНОВАННЫЕ АРГУМЕНТЫ</h3>
+<p>Как мы уже знаем, следуя принципу МАГИЧЕСКИЕ ЧИСЛА КАК ПЕРЕМЕННЫЕ можно сделать код более читабельным, но, как видно из предыдущего примера, бывают случаи, когда подобрать хорошее имя для переменной проблематично. Поэтому давайте немного переделаем предыдущий пример. Допустим, переменной, которая используется для запуска первого таймера, можно дать имя <code>timeoutInSeconds</code>, но какое имя тогда стоит давать аналогичной переменной для второго таймера ? Как вариант, можно попробовать повторно использовать <code>timeoutInSeconds</code>, предварительно убрав ключевое слово <code>const</code>:</p>
+<div class="highlight"><pre><span></span><span class="kt">size_t</span> <span class="n">timeoutInSeconds</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">size_t</span> <span class="n">doNotRescheduleTimer</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">notifyClosingDoor</span> <span class="o">=</span> <span class="n">startTimer</span><span class="p">(</span><span class="n">timeoutInSeconds</span><span class="p">,</span> <span class="n">doNotRescheduleTimer</span><span class="p">);</span>
+
+<span class="n">timeoutInSeconds</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="n">closeDoor</span> <span class="o">=</span> <span class="n">startTimer</span><span class="p">(</span><span class="n">timeoutInSeconds</span><span class="p">,</span> <span class="n">doNotRescheduleTimer</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Трудно назвать такой код читабельным и надёжным. Концепция ИМЕНОВАННЫХ АРГУМЕНТОВ могла бы решить данную проблему, позволяя явно указывать имя передаваемого в метод параметра, вместо идентификации его по положению. <strong>С</strong> напрямую не поддерживает такую возможность, однако всё же имеется один способ эмулировать похожее поведение:</p>
+<div class="highlight"><pre><span></span><span class="kt">size_t</span> <span class="n">timeoutInSeconds</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">size_t</span> <span class="n">doNotRescheduleTimer</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="n">notifyClosingDoor</span> <span class="o">=</span> <span class="n">startTimer</span><span class="p">(</span><span class="n">timeoutInSeconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">doNotRescheduleTimer</span><span class="p">);</span>
+
+<span class="n">closeDoor</span> <span class="o">=</span> <span class="n">startTimer</span><span class="p">(</span><span class="n">timeoutInSeconds</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">doNotRescheduleTimer</span><span class="p">);</span>
+</pre></div>
+
+
+<p>В данном случае переменной <code>timeoutInSeconds</code> по-прежнему присваивается заданное значение, после чего она передаётся как аргумент функции <code>startTimer</code>. Теперь код неплохо выглядит, однако при разработке встраиваемых приложений, когда каждый байт памяти на счету, такой подход может оказаться слишком расточительным. В подобных случаях ничто не мешает вместо использования <code>timeoutInSeconds</code> просто задействовать дополнительные комментарии:</p>
+<div class="highlight"><pre><span></span><span class="n">closeDoor</span> <span class="o">=</span> <span class="n">startTimer</span><span class="p">(</span><span class="cm">/*Timeout in seconds*/</span><span class="mi">12</span><span class="p">,</span><span class="cm">/*Don&#39;t reschedule*/</span><span class="mi">0</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Чем больше комментариев в коде тем веселей его читать.</p>
+<h3>ДИАГНОСТИКА С ОПИСАНИЕМ</h3>
+<p>В стандартной библиотеке <strong>C</strong> имеется механизм для диагностики программы на этапе выполнения - макрос <code>assert</code>, который позволяет контролировать поведение программы, обнаруживая потенциальные ошибки. Единственным аргументом для <code>assert</code> является выражение, которое в нормальных условиях должно быть истинно. В этом случае ничего не происходит и программа идёт дальше. В противном случае <code>assert</code> печатает сообщение в <a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D0%BD%D1%8B%D0%B5_%D0%BF%D0%BE%D1%82%D0%BE%D0%BA%D0%B8" rel="nofollow">стандартный поток</a> <code>stderr</code> и вызывает функцию <code>abort()</code> для завершения выполнения программы.</p>
+<p>Никому не хочется разбираться в длинных функциях, в этом случае мы стараемся максимально упростить код, преобразуя его фрагменты в отдельные, более маленькие функции и передавая им какие-то данные. Используя макрос <code>assert</code>, функция может проверить переданные ей аргументы перед выполнением своей основной логики и тем самым выявить проблему на самом раннем этапе:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">sayHelloTo</span><span class="p">(</span><span class="k">const</span> <span class="n">Address</span><span class="o">*</span> <span class="n">aGoodFriend</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">aGoodFriend</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Telegram</span> <span class="n">friendlyGreetings</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+        <span class="cm">/* Заполняем телеграмму telegram... */</span>
+
+        <span class="n">sendTelegram</span><span class="p">(</span><span class="o">&amp;</span><span class="n">friendlyGreetings</span><span class="p">,</span> <span class="n">aGoodFriend</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">&quot;Empty address not allowed&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">sendTelegram</span><span class="p">(</span><span class="k">const</span> <span class="n">Telegram</span><span class="o">*</span> <span class="n">telegram</span><span class="p">,</span> 
+    <span class="k">const</span> <span class="n">Address</span><span class="o">*</span> <span class="n">receiver</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="cm">/* Проверка. Телеграмма существует ? */</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">telegram</span><span class="p">);</span>
+    <span class="cm">/* Проверка. Получатель существует ? */</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">receiver</span><span class="p">);</span>
+
+    <span class="cm">/* Отсылаем телеграмму... */</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Формат диагностического сообщения может немного отличаться в зависимости от компилятора, но приблизительно должно быть что-то такое:</p>
+<div class="highlight"><pre><span></span>Assertion failed: expression, file filename, line line number
+</pre></div>
+
+
+<p>Суть идиомы ДИАГНОСТИКА С ОПИСАНИЕМ в том, что в <em>выражение</em> (expression) можно подмешать строку - комментарий. Это позволит не только диагностировать место, в котором возникла проблема, но и интуитивно понятно описать её:</p>
+<div class="highlight"><pre><span></span><span class="n">assert</span><span class="p">(</span><span class="n">receiver</span> <span class="o">&amp;&amp;</span> <span class="s">&quot;Is validated by the caller&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Главным недостатком такого подхода является дополнительный объём памяти, в котором будут храниться строки с комментариями. Для встраиваемых приложений это особенно актуально. Однако не стоит забывать, что макрос <code>assert</code> - это инструментарий для отладки, его в любое время можно отключить (<code>NDEBUG</code>).</p>
+<h3>СТАТИЧЕСКАЯ ДИАГНОСТИКА</h3>
+<p>Диагностировать ошибки в программе на этапе компиляции обычно выходит дешевле чем тестировать продукт на реальных пользователях. Например парочка макросов для битовых операций:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define BIT_SET(a,b) ((a) |= (1&lt;&lt;(b)))</span>
+<span class="cp">#define BIT_CLEAR(a,b) ((a) &amp;= ~(1&lt;&lt;(b)))</span>
+<span class="cp">#define BIT_FLIP(a,b) ((a) ^= (1&lt;&lt;(b)))</span>
+<span class="cp">#define BIT_CHECK(a,b) ((a) &amp; (1&lt;&lt;(b)))</span>
+
+<span class="kt">char</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// OK</span>
+<span class="n">BIT_SET</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// BAD: 10 &gt; 8 * sizeof(a)</span>
+<span class="n">BIT_SET</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Очевидно операция <code>BIT_SET(a, 10);</code> не имеет смысла для переменной 8 бит и такой класс ошибок можно и нужно обнаруживать ещё на этапе компиляции. Существуют много различных <a href="http://www.pixelbeat.org/programming/gcc/static_assert.html" rel="nofollow">способов</a> это сделать.</p>
+<div class="highlight"><pre><span></span><span class="cp">#define STATIC_ASSERT(cond) typedef int foo[(cond) ? 1 : -1]</span>
+
+<span class="cp">#define BIT_SET(a,b) STATIC_ASSERT(8*sizeof(a)&gt;b); ((a) |= (1&lt;&lt;(b)))</span>
+
+<span class="kt">char</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// OK</span>
+<span class="n">BIT_SET</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// compile error</span>
+<span class="n">BIT_SET</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Теперь логически неправильный код <code>BIT_SET(a, 10);</code> попросту не соберётся что и требовалось в постановке задачи.</p>
+<h3>КОНСТАНТЫ СЛЕВА</h3>
+<p>В стандарт <strong>С</strong> вошла одна загадочная конструкция, в которой легко запутаться / очепятаться (мы с ней отчасти уже пересекались при описании идиомы ИМЕНОВАННЫЕ АРГУМЕНТЫ):</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* Сюда никогда не попадём (Индусский код) ! */</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* А вот сюда попадём... */</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Иногда подобные выражения всё же имеют скрытый смысл:</p>
+<div class="highlight"><pre><span></span><span class="n">Friend</span><span class="o">*</span> <span class="n">aGoodFriend</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">...</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">aGoodFriend</span> <span class="o">=</span> <span class="n">findFriendLivingAt</span><span class="p">(</span><span class="n">address</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">sayHelloTo</span><span class="p">(</span><span class="n">aGoodFriend</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;I am not your friend&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>С помощью идиомы КОНСТАНТЫ СЛЕВА программист может более точно указать компилятору, что он имел ввиду операцию <em>сравнения</em>, а не <em>присваивания</em>. Следующая операция присваивания не имеет смысла и поэтому компилятор должен ругаться:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">=</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>А вот подобная операция сравнения не противоречит здравому смыслу:</p>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* Если х равен нулю, нам сюда */</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Несмотря на очевидную пользу этой идиомы, опытные программисты считают, что она делает код трудным для понимания, и, что ещё хуже, нет полной гарантии того, что компилятор сообщит об ошибке. Что ж, к мнению опытных программистов стоит прислушиваться.</p>
+<h3>ИНКАПСУЛЯЦИЯ ДАННЫХ</h3>
+<p>Взглянем на супер реализацию <a href="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/">кольцевого буфера</a>:</p>
+<p><em>circular_buffer.h</em></p>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">shift_circular</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_1</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_0</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_print</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</pre></div>
+
+
+<p><em>circular_buffer.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;circular_buffer.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span><span class="p">))];</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">shift_circular</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_0</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shift_circular</span><span class="p">();</span> 
+    <span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="mh">0xFE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shift_circular</span><span class="p">();</span> 
+    <span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_print</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">rxbuf</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%.2x&quot;</span><span class="p">,</span> <span class="n">rxbuf</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>usage.c</em></p>
+<div class="highlight"><pre><span></span><span class="n">circular_add_1</span><span class="p">();</span>
+<span class="n">circular_add_0</span><span class="p">();</span>
+<span class="n">circular_print</span><span class="p">();</span>
+</pre></div>
+
+
+<p>Что будет, когда в пределах одной программы нужно использовать более одного кольцевого буфера ? Поскольку собаководы <em>ANCI C</em> не <a href="http://stackoverflow.com/questions/4523497/typedef-fixed-length-array#answer-4523537" rel="nofollow">рекомендуют</a> задавать новый тип данных как массив с заданной величиной, данные буфера обёрнуты в структуру <code>CircularBuffer</code>:</p>
+<p><em>circular_buffer.h</em></p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">CircularBuffer</span> <span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">bytes</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span><span class="p">))];</span>
+<span class="p">}</span> <span class="n">CircularBuffer</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">shift_circular</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_1</span><span class="p">(</span><span class="n">CircularBuffer</span><span class="o">*</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_0</span><span class="p">(</span><span class="n">CircularBuffer</span><span class="o">*</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_print</span><span class="p">(</span><span class="n">CircularBuffer</span><span class="o">*</span><span class="p">);</span>
+</pre></div>
+
+
+<p><em>circular_buffer.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;circular_buffer.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">shift_circular</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">rxbuf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_0</span><span class="p">(</span><span class="n">CircularBuffer</span><span class="o">*</span> <span class="n">circular_buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shift_circular</span><span class="p">(</span><span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">);</span> 
+    <span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="mh">0xFE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_1</span><span class="p">(</span><span class="n">CircularBuffer</span><span class="o">*</span> <span class="n">circular_buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shift_circular</span><span class="p">(</span><span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">);</span> 
+    <span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_print</span><span class="p">(</span><span class="n">CircularBuffer</span><span class="o">*</span> <span class="n">circular_buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">circular_buffer</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%.2x&quot;</span><span class="p">,</span> <span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>usage.c</em></p>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">CircularBuffer</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">;</span>
+<span class="cm">/* a.bytes[0] = 42; компилятор проглотит, не по феншую :( */</span>
+<span class="n">circular_add_1</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+<span class="n">circular_add_0</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+<span class="n">circular_print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+</pre></div>
+
+
+<p>К сожалению структура <code>circular_buffer</code> описана в <em>circular_buffer.h</em>, а значит видна везде где подключается этот заголовочный файл. Побороть это можно с помощью т.н. <strong>незавершённого типа данных</strong> и фабрики:</p>
+<p><em>circular_buffer.h</em></p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">CircularBuffer</span><span class="o">*</span> <span class="n">CircularBufferPtr</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">shift_circular</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">);</span>
+
+<span class="n">CircularBufferPtr</span> <span class="nf">circular_create</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_1</span><span class="p">(</span><span class="n">CircularBufferPtr</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_0</span><span class="p">(</span><span class="n">CircularBufferPtr</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">circular_print</span><span class="p">(</span><span class="n">CircularBufferPtr</span><span class="p">);</span>
+</pre></div>
+
+
+<p><em>circular_buffer.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;circular_buffer.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+
+<span class="k">struct</span> <span class="n">CircularBuffer</span> <span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">bytes</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span><span class="p">))];</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">shift_circular</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span> <span class="n">rxbuf</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">12</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="n">rxbuf</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span> 
+    <span class="o">*</span><span class="p">((</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span> <span class="p">)</span><span class="o">&amp;</span><span class="n">rxbuf</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span> 
+<span class="p">}</span>
+
+<span class="n">CircularBufferPtr</span> <span class="nf">circular_create</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">CircularBufferPtr</span> <span class="n">p</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span> <span class="n">p</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_0</span><span class="p">(</span><span class="n">CircularBufferPtr</span> <span class="n">circular_buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shift_circular</span><span class="p">(</span><span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">);</span>
+    <span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&amp;=</span> <span class="mh">0xFE</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_add_1</span><span class="p">(</span><span class="n">CircularBufferPtr</span> <span class="n">circular_buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">shift_circular</span><span class="p">(</span><span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">);</span>
+    <span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">circular_print</span><span class="p">(</span><span class="n">CircularBufferPtr</span> <span class="n">circular_buffer</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">circular_buffer</span><span class="p">);</span> 
+    <span class="k">while</span><span class="p">(</span><span class="n">i</span><span class="o">--</span><span class="p">)</span> 
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%.2x&quot;</span><span class="p">,</span> <span class="n">circular_buffer</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>usage.c</em></p>
+<div class="highlight"><pre><span></span><span class="n">CircularBufferPtr</span> <span class="n">a</span> <span class="o">=</span> <span class="n">circular_create</span><span class="p">(),</span> <span class="n">b</span> <span class="o">=</span> <span class="n">circular_create</span><span class="p">();</span>
+<span class="cm">/* a-&gt;bytes[0] = 42; ошибка: доступ по указателю на неполный тип */</span>
+<span class="n">circular_add_1</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="n">circular_print</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="n">free</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="n">free</span><span class="p">(</span><span class="n">b</span><span class="p">);</span>
+</pre></div>
+
+
+<p>Незавершённый тип данных иногда называют <em>неполным</em>, а в оригинале на англ. <em>incomplete type</em>.</p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

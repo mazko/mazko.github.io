@@ -42,7 +42,7 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/konechnyi-avtomat">Конечный Автомат</a> <a href="http://proiot.ru/blog/tag/idioma">Идиома</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
 </footer><!-- /.post-info -->      <p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого <em>ANSI C</em>.</p>
 <p>Для экспериментов нам понадобиться какой-то тестовый макет, который можно запустить / эмулировать в виртуальной среде (выбор пал на <em>Proteus VSM</em>). Есть простенький микроконтроллер (PIC16F1823), который управляет лампочками (гирляндой) и может менять их яркость с помощью встроенного цифро-аналогового преобразователя ЦАП (в реальном устройстве для этого лучше использовать ШИМ, ЦАП лучше подходит для эмуляции в <em>Proteus VSM</em>). Быстро вникнуть в суть дела можно посмотрев следующее видео:</p>
 <video width="100%" controls>
@@ -362,7 +362,7 @@ Your browser does not support the video tag.
 
 
 <p>Несложно заметить, что код в суперцикле <code>for(;;)</code> остался без изменений, т.е. решение с использованием таблиц характеризуется лучшей <em>расширяемостью</em> кода.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">Далее</a> сопрограммы.</p>
+<p>Далее или <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">сопрограммы</a> или <a href="http://proiot.ru/blog/posts/2017/05/25/vizualnoe-modelirovanie-vstraivaemykh-sistem-qpc-uml/">Quantum Leaps QP и UML statecharts</a>.</p>
 <p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
