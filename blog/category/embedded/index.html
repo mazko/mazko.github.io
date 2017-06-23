@@ -27,7 +27,48 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">Реактивное программирование QP/C++ | UML</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">С++ для микроконтроллеров - управление памятью</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-06-22T00:00:00+03:00">
+                Published: Чт. 22 Июнь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> </p>
+</footer><!-- /.post-info --><p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a> механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение <code>std::bad_alloc</code>, оператор <code>new</code> вызывает специальную функцию-обработчик. Эту функцию можно переопределять <code>std::set_new_handler</code>, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».</p>
+<p><a href="http://mazko.github.io/MSP430.js/efadb63e855ca5799cc873ca38ebc2ad">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/snake-qv-msp430-js.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<ul>
+<li>
+<p>операторы <code>new</code> и <code>delete</code> в С++ можно перегружать, а в контексте микроконтроллеров может оказаться весьма полезным вообще сломать компиляцию при попытке динамического выделения памяти на куче <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/no-new.h">no-new.h</a>. Для того, чтобы проверка происходила во всех исходных файлах проекта автоматически в gcc подобных компиляторах достаточно просто указать в командной строке опцию <code>-include no-new.h</code>, в случае со «Змейкой» используется IDE <a href="http://www.ti.com/tool/ccstudio-msp" rel="nofollow">Code Composer Studio</a>, там есть настройка <em>--preinclude</em>. Что касается функции <code>malloc</code>, наследия Си, то красиво избавиться от неё увы не получится — можно конечно попробовать отключить стандартную библиотеку при компиляции ключом <code>-nostdlib</code>, но тогда нужно самому реализовывать код инициализации и запуска микроконтроллера</p>
+</li>
+<li>
+<p>«Змейка» кушает и растёт, т.е. представляет из себя динамический массив. Для STL контейнеров в С++ можно задавать альтернативные аллокаторы памяти. В большинстве случаев разработчик знает, сколько элементов контейнера может потребоваться для его алгоритма и тогда хорошей идеей выглядит аллокатор, использующий стек вместо кучи. Для древнего C++98 найти рабочий аллокатор затруднительно, поэтому для игры «Змейка» был взят этот <a href="https://github.com/esrlabs/estl-teaser" rel="nofollow">контейнер</a>, также использующий стек вместо кучи </p>
+</li>
+<li>
+<p>существует особая форма оператора <code>new</code>, называемая <em>Placement new</em>. Данный оператор не выделяет память, а получает своим аргументом адрес на уже выделенную каким-либо образом память. Например память под объект «Змейка» выделяется в стеке на этапе компиляции, а  размещение (инициализация) объекта в ней путём вызова конструктора происходит в процессе выполнения программы, таким образом можно пересоздавать «Змейку» при перезапуске игры</p>
+</li>
+</ul>
+<p>Под капотом «Змейки» <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>На картинке иерархический конечный автомат <em>Play</em> где отсчитываются временные интервалы для движения «Змейки» и обрабатывается нажатие от кнопок. Если метод <code>eat_or_move()</code> вернёт <code>false</code> переход в состояние <em>GameOver</em> где отображается количество набранных очков. При нажатии любой кнопки снова <em>Play</em>.</p>
+<p>«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/" rel="bookmark"
+                           title="Permalink to Реактивное программирование QP/C++ | UML">Реактивное программирование QP/C++ | UML</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-05-25T00:00:00+03:00">
                 Published: Чт. 25 Май 2017
@@ -38,111 +79,13 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info --><blockquote>
+</footer><!-- /.post-info -->                <blockquote>
 <p>Компьютер — это конечный автомат. Потоковое программирование нужно тем, кто не умеет программировать конечные автоматы. — Алан Кокс </p>
 </blockquote>
-<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что даёт возможность разрабатывать приложения для широкого спектра различных архитектур и целевых платформ. Во многих случаях QP может рассматриваться как альтернатива для <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">RT(OS)</a>, хотя также предусмотрена возможность запускаться и поверх уже имеющейся ОС.</p>
-<p>Приложение на QP состоит из активных объектов (Active Object) с приоритетами, которые по совместительству представляют из себя иерархические <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечные автоматы</a>. Ядро QP, в зависимости от конфигурации, позволяет активным объектам работать либо <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативно</a> QV (Vanilla), либо каждый в своей нити QK. Активный объект — «лентяй», он сам по себе ничего не делает кроме как ожидает <span style="text-decoration:line-through">пинка</span> интересующие его события и реагирует на них — например записывает чего-нибудь в порт, переходит в новое состояние или даже <em>асинхронно</em> отсылает конечное число сообщений (сигналов) другим активным объектам, после чего снова переходит в режим ожидания. Длительное выполнение обработчика события как правило является недопустимым, поскольку при этом сам активный объект (или вообще всё приложение в случае с кооперативного ядра) не может реагировать на другие события и очевидно, что такое поведение противоречит концепции реального времени. А никто и не говорил, что будет легко :)</p>
-<p>Код активных объектов можно набирать как ручками в виде обычных классов (да, в Си можно эмулировать классы), так и воспользоваться специальным инструментом для визуального моделирования UML диаграмм состояний QM (QP Modeler) c последующей автоматической генерацией кода. В данном материале будет делаться акцент на визуальном моделировании, в связи с чем будет немного кода и много красивых картинок. Начнём с самого простого — <a href="https://state-machine.com/qm/gs_tut.html" rel="nofollow">мигающих лампочек</a>.</p>
-<p><a href="http://mazko.github.io/MSP430.js/90df829b292e035384d37749bee1e0f7">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/blinky-qv-msp430-js.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/blink-statechart.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Для компиляции проекта нужна только IDE <a href="http://www.ti.com/tool/ccstudio-msp" rel="nofollow">Code Composer Studio</a> (CCS), C++ компилятор там уже встроен. Проше всего импортировать сразу весь архив с исходниками: File -&gt; Import -&gt; CCS Projects -&gt; Select archive file. На картинке изображена среда моделирования QM и диаграмма состояний UML мигающих лампочек (файл <em>blink.qm</em> в исходниках). Частота переключения лампочек определяется при активации таймера и при <code>BSP::TICKS_PER_SEC</code> это одна секунда. Для автоматической генерации диаграммы в исходный код требуется задать специальные файлы шаблоны, в которых для QM нужно явно прописать <code>$declare</code> и <code>$define</code>. В принципе можно было бы даже обойтись и без указателя <code>QP::QActive * const AO_BlinkyPtr</code>, он нужен только для лучшей инкапсуляции активного объекта <code>BlinkyAO</code> — это классическая <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиома</a>.</p>
-<p><em>blinky.h</em></p>
-<div class="highlight"><pre><span></span>#ifndef blinky_h
-#define blinky_h
-
-namespace blinky {
-    $declare(AOs::AO_BlinkyPtr)
-}
-// declare other elements...
-
-#endif // project_h
-</pre></div>
-
-
-<p><em>blinky.cpp</em></p>
-<div class="highlight"><pre><span></span>#include &quot;qpcpp.h&quot;
-#include &quot;blinky.h&quot;
-#include &quot;bsp.h&quot;
-
-namespace blinky {
-
-    enum {
-        TIMEOUT_SIG = QP::Q_USER_SIG,
-    };
-
-    $declare(AOs::BlinkyAO)
-
-    // Local objects -------------------------------------------------------------
-    static BlinkyAO __self_ao; // the single instance active object
-
-    // Global-scope objects ------------------------------------------------------
-    QP::QActive * const AO_BlinkyPtr = &amp;__self_ao; // &quot;opaque&quot; AO pointer
-
-    $define(AOs::BlinkyAO)
-
-}
-
-// define other elements...
-</pre></div>
-
-
-<p>Базовый класс события <code>QEvent</code> состоит из сигнала <code>QSignal sig</code> и поля служебной информации <code>uint8_t dynamic_</code>, этот класс можно наследовать и добавлять туда дополнительные поля с данными, характерными для конкретного события. Идентификаторы сигналов для активных объектов должны начинаться не с нуля а с <code>Q_USER_SIG</code>, так как в QP уже есть сигналы, зарезервированные системой, например <code>Q_EMPTY_SIG</code>, <code>Q_ENTRY_SIG</code>, <code>Q_INIT_SIG</code>, <code>Q_EXIT_SIG</code>. Вся низкоуровневая логика взаимодействия с конкретной железкой находится в файле <em>bsp.cpp</em> и там же реализован <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/">обработчик ошибок</a> (куда ж без них то) QP. Ну а собственно процесс инициализации самого QP и запуск активных объектов в данном простейшем случае выглядит так:</p>
-<p><em>main.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;qpcpp.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;bsp.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;blinky.h&quot;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">static</span> <span class="n">QP</span><span class="o">::</span><span class="n">QEvt</span> <span class="k">const</span> <span class="o">*</span><span class="n">blinky_queueSto</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>    <span class="c1">// Event queue storage</span>
-
-    <span class="n">BSP</span><span class="o">::</span><span class="n">init</span><span class="p">();</span> <span class="c1">// initialize the Board Support Package</span>
-    <span class="n">QP</span><span class="o">::</span><span class="n">QF</span><span class="o">::</span><span class="n">init</span><span class="p">();</span> <span class="c1">// initialize the framework and the underlying RT kernel</span>
-
-    <span class="c1">// publish-subscribe not used, no call to QF::psInit()</span>
-    <span class="c1">// dynamic event allocation not used, no call to QF::poolInit()</span>
-
-    <span class="n">blinky</span><span class="o">::</span><span class="n">AO_BlinkyPtr</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">(</span><span class="mi">1U</span><span class="p">,</span>                   <span class="c1">// priority</span>
-                     <span class="n">blinky_queueSto</span><span class="p">,</span> <span class="n">Q_DIM</span><span class="p">(</span><span class="n">blinky_queueSto</span><span class="p">),</span> <span class="c1">// event queue</span>
-                     <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0U</span><span class="p">);</span>                  <span class="c1">// stack (unused)</span>
-
-
-    <span class="k">return</span> <span class="n">QP</span><span class="o">::</span><span class="n">QF</span><span class="o">::</span><span class="n">run</span><span class="p">();</span> <span class="c1">// run the QF application</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>С мигающими лампочками всё понятно, но нужно что-то поинтересней — предлагаю построить аналог для ранее рассмотренного приложения под <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">FreeRTOS</a>. В системе три активных объекта — левые лампочки, правые лампочки и дисплей. Кооперативное ядро QP позволяет сразу же забыть о проблеме <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарного доступа</a> с портам. Теперь самое время чуть более подробно остановиться на событиях и какими они бывают. Итак в приложении добавляются глобальные события от кнопок <code>BTNS_LEFT_SIG</code> и <code>BTNS_RIGHT_SIG</code>. События в QP бывают двух видов:</p>
-<ul>
-<li>
-<p>статические — неизменяемые (immutable) события. За создание экземпляра статического события отвечает разработчик приложения. В нашем случае оба события содержат дополнительную информацию о нажатой кнопке, их значение изменяется и такие события не попадают в категорию статических</p>
-</li>
-<li>
-<p>динамические — создаются макросом <code>Q_NEW</code> в области динамической памяти и существуют до тех пор, пока не будут обработаны всеми активными объектами, которым они предназначены. Для динамических событий при инициализации приложения нужно создавать пул с помощью вызова <code>QP::QF::poolInit</code>. Так создаётся событие от кнопок <code>BtnEvt *btnEvt = Q_NEW(BtnEvt, BTNS_LEFT_SIG); btnEvt-&gt;value = 42;</code></p>
-</li>
-</ul>
-<p>В дополнение ко всему для более рационального использования ресурсов микроконтроллера QP поддерживает два способа доставки сообщений:</p>
-<ul>
-<li>
-<p>напрямую — отправитель явно вызывает метод у экземпляра активного объекта получателя. Например можно послать сообщение самому себе <code>me-&gt;POST(&amp;UPDATE_EVENT, me)</code></p>
-</li>
-<li>
-<p>мультикаст — отправитель ничего не знает о получателях, каждый получатель динамически подписывается / отписывается от интересующих его событий. Такой способ хорошо подходит для кнопок. Для мультикаста при инициализации приложения нужно создать пул с помощью вызова <code>QP::QF::psInit</code>. Так отсылается сообщение от кнопок <code>QP::QF::PUBLISH(btnEvt, (void *)0);</code></p>
-</li>
-</ul>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/r.png" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
-<p>На рисунке диаграмма состояний активного объекта с правыми лампочками. У него одно единственное состояние, единственное что он делает это слушает кнопку и в зависимости от её значения устанавливает цвет для правых лампочек. Событие не обязательно должно менять состояние активного объекта, реакция на событие может быть любой на усмотрение разработчика.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/d.png" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
-<p>Здесь активный объект занимается выводом данных на дисплей, отсылая сообщение самому себе. Для экономии памяти микроконтроллера событие DISPLAY_UPDATE может быть <strong>статическим</strong> <code>static QP::QEvt const UPDATE_EVENT = { DISPLAY_UPDATE_SIG, 0U, 0U };</code> т.к. никаких дополнительных полей с данными в нём нет. В текущей реализации у данного активного объекта должен быть наименьший приоритет в системе.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/l.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Активный объект для левых лампочек самый интересный. Тут <strong>иерархический</strong> конечный автомат. Иерархический автомат содержит в себе другие автоматы. В каком бы состоянии не находится активный объект для левых лампочек, он всегда слушает событие о нажатой кнопочке, реакция на событие одинаковая. Иерархический автомат позволяет избежать дублирования – проще реализовать требуемое поведение один раз в родительском состоянии, чем повторять одну и ту же логику в дочерних состояниях. Еще один полезный приём, позволяющий значительно упростить жизнь разработчику – использовать историю предыдущих состояний (Transition to History), лампочки помнят свой цвет в состоянии мигания.  </p>
-<p><a href="http://mazko.github.io/MSP430.js/bd5dbe0259a4c493e612fd8f3fa3fbd3">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/3ao-qv-msp430-js.zip">исходники</a></p>
-<p>К QP прилагается серьёзная книга «Practical UML Statecharts in C/C++, Second Edition: Event-Driven Programming for Embedded Systems» от основателя компании Quantum Leaps. В данной книге есть отдельная глава с описанием паттернов, которые часто применяются при проектировании конечных автоматов. На сайте Quantum Leaps также представлены дополнительные обучающие материалы и полезные инструменты для разработки QP приложений – <a href="http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/">юнит тесты</a> QUTest, QSpy.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -211,35 +154,9 @@ namespace blinky {
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/" rel="bookmark"
-                           title="Permalink to FreeRTOS - диагностика ошибок и хуки">FreeRTOS - диагностика ошибок и хуки</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-27T00:00:00+03:00">
-                Published: Чт. 27 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <blockquote>
-<p>Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz</p>
-</blockquote>
-<p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
-<p>Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 5
+    Page 1 / 6
         <a href="http://proiot.ru/blog/category/embedded/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->

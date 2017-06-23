@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - UML</title>
+        <title>С++ для микроконтроллеров - управление памятью</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -20,14 +20,19 @@
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/" rel="bookmark"
+           title="Permalink to С++ для микроконтроллеров - управление памятью">С++ для микроконтроллеров - управление памятью</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">С++ для микроконтроллеров - управление памятью</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-06-22T00:00:00+03:00">
                 Published: Чт. 22 Июнь 2017
@@ -38,7 +43,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> </p>
-</footer><!-- /.post-info --><p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a> механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение <code>std::bad_alloc</code>, оператор <code>new</code> вызывает специальную функцию-обработчик. Эту функцию можно переопределять <code>std::set_new_handler</code>, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».</p>
+</footer><!-- /.post-info -->      <p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a> механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение <code>std::bad_alloc</code>, оператор <code>new</code> вызывает специальную функцию-обработчик. Эту функцию можно переопределять <code>std::set_new_handler</code>, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».</p>
 <p><a href="http://mazko.github.io/MSP430.js/efadb63e855ca5799cc873ca38ebc2ad">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/snake-qv-msp430-js.zip">исходники</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
 <ul>
@@ -55,39 +60,26 @@
 <p>Под капотом «Змейки» <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>На картинке иерархический конечный автомат <em>Play</em> где отсчитываются временные интервалы для движения «Змейки» и обрабатывается нажатие от кнопок. Если метод <code>eat_or_move()</code> вернёт <code>false</code> переход в состояние <em>GameOver</em> где отображается количество набранных очков. При нажатии любой кнопки снова <em>Play</em>.</p>
-<p>«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/" rel="bookmark"
-                           title="Permalink to Реактивное программирование QP/C++ | UML">Реактивное программирование QP/C++ | UML</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-05-25T00:00:00+03:00">
-                Published: Чт. 25 Май 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info -->                <blockquote>
-<p>Компьютер — это конечный автомат. Потоковое программирование нужно тем, кто не умеет программировать конечные автоматы. — Алан Кокс </p>
-</blockquote>
-<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
