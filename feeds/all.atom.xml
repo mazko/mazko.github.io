@@ -7157,10 +7157,39 @@ Now print text to analyze!
 &lt;p&gt;Выводит приятное всплывающее окошко с переведённым содержимым, даже картинка присутствует под катом&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;Привожу две версии скрипта &lt;em&gt;xsel-tr-notify.sh&lt;/em&gt;, первая для перевода текста использует из командной строки готовое приложение &lt;em&gt;translate-shell&lt;/em&gt;, тогда как вторая работает напрямую c REST API.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/translate-ubuntu.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;xsel-tr-notify.sh&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
 
-&lt;span class="c1"&gt;# chmod +x xsel-tr-notify.sh &amp;amp;&amp;amp; sudo ln -s `pwd`/xsel-tr-notify.sh /usr/local/bin/xsel-translate-notify&lt;/span&gt;
+&lt;span class="c1"&gt;# chmod +x xsel-tr-notify.sh &amp;amp;&amp;amp; sudo ln -s `pwd`/$_ /usr/local/bin/xsel-translate-notify&lt;/span&gt;
+&lt;span class="c1"&gt;# apt-get install libnotify-bin xsel&lt;/span&gt;
+&lt;span class="c1"&gt;# git clone https://github.com/soimort/translate-shell &amp;amp;&amp;amp; cd translate-shell/ &amp;amp;&amp;amp; make&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Exit immediately if a command exits with a non-zero status.&lt;/span&gt;
+&lt;span class="nb"&gt;set&lt;/span&gt; -e
+
+&lt;span class="c1"&gt;# capture current OS selection into variable&lt;/span&gt;
+&lt;span class="nv"&gt;text&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;xsel -o&lt;span class="sb"&gt;`&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Absolute path to this script, e.g. /home/user/bin/foo.sh&lt;/span&gt;
+&lt;span class="nv"&gt;SCRIPT&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;readlink -f &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$0&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Absolute path this script is in, thus /home/user/bin&lt;/span&gt;
+&lt;span class="nv"&gt;SCRIPTPATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;dirname &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$SCRIPT&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="nv"&gt;translate&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;&lt;span class="nv"&gt;$SCRIPTPATH&lt;/span&gt;/translate-shell/build/trans -p -brief :&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;LANGUAGE&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="nv"&gt;2&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="nv"&gt;$text&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+
+&lt;span class="c1"&gt;# UI notify&lt;/span&gt;
+notify-send -u critical &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$text&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$translate&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Как это работает ? В качестве примера нижне показан скрипт, который используют REST API Яндекса. Аналогичное API есть и у других поисковиков — Google, Bing и т.д и приложение &lt;em&gt;translate-shell&lt;/em&gt; тоже его использует для перевода текста.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;xsel-tr-notify.sh&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;# chmod +x xsel-tr-notify.sh &amp;amp;&amp;amp; sudo ln -s `pwd`/$_ /usr/local/bin/xsel-translate-notify&lt;/span&gt;
 &lt;span class="c1"&gt;# apt-get install mpg123 libnotify-bin xsel curl&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Exit immediately if a command exits with a non-zero status.&lt;/span&gt;
@@ -7198,8 +7227,7 @@ notify-send -u critical &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span c
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Ключи &lt;strong&gt;Яндекс&lt;/strong&gt; даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить &lt;code&gt;xsel-translate-notify&lt;/code&gt;, но куда удобней выполнять это действие комбинацией клавиш.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/translate-ubuntu.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;</content><category term="yandex"></category><category term="api"></category></entry><entry><title>Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)</title><link href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/" rel="alternate"></link><published>2015-11-17T00:00:00+02:00</published><updated>2015-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-11-17:/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/</id><summary type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.&lt;/p&gt;
+&lt;p&gt;Ключи &lt;strong&gt;Яндекс&lt;/strong&gt; даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить &lt;code&gt;xsel-translate-notify&lt;/code&gt;, но куда удобней выполнять это действие комбинацией клавиш.&lt;/p&gt;</content><category term="REST"></category></entry><entry><title>Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)</title><link href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/" rel="alternate"></link><published>2015-11-17T00:00:00+02:00</published><updated>2015-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-11-17:/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/</id><summary type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://sed.js.org/"&gt;sed&lt;/a&gt; | &lt;a href="http://grep.js.org/"&gt;grep&lt;/a&gt;&lt;/p&gt;
 &lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;
 
