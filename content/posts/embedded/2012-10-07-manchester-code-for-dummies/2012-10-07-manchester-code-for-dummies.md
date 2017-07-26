@@ -32,7 +32,7 @@ tags: TDD, Манчестерский код, gtest, gmock
 
 ###Сначала пишем тест
 
-О пользе тестов можно почитать [тут](/embedded/2012/09/29/xp-in-microcontrollers-life). В контексте решения текущей задачи будет использоваться техника **Mock**-объектов, поэтому используемую ранее в примерах среду тестирования **CppUnit** проще заменить связкой **gtes**t([Google Test](http://code.google.com/p/googletest-translations/w/list){:rel="nofollow"}) + **gmock**([Google Mocking Framework](http://code.google.com/p/googletest-translations/w/list){:rel="nofollow"}). Они поставляются в исходниках, поэтому единственное требование к системе - совместимый **C** / **C++** компилятор, например **gcc g++** для **Linux** или **Visual Studio C++** для **Windows**.
+О пользе тестов можно почитать [тут](https://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D0%B4%D1%83%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5){:rel="nofollow"}. В контексте решения текущей задачи будет использоваться техника **Mock**-объектов, поэтому используемую ранее в примерах среду тестирования **CppUnit** проще заменить связкой **gtes**t([Google Test](http://code.google.com/p/googletest-translations/w/list){:rel="nofollow"}) + **gmock**([Google Mocking Framework](http://code.google.com/p/googletest-translations/w/list){:rel="nofollow"}). Они поставляются в исходниках, поэтому единственное требование к системе - совместимый **C** / **C++** компилятор, например **gcc g++** для **Linux** или **Visual Studio C++** для **Windows**.
 
 Так же как и в случае с **CppUnit**, прежде всего необходимо реализовать простое консольное приложение, которое будет собираться вместе с тестами и запускать их:
 

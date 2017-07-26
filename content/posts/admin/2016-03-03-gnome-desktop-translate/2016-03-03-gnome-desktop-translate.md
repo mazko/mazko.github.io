@@ -1,6 +1,6 @@
 title: Как соорудить удобный перевод текста всего за пару минут
 category: Admin
-tags: REST
+tags: REST, NLP
 
 Стандартная ситуация: читаем какую-нибудь *e-book* на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:
 
@@ -32,16 +32,18 @@ tags: REST
     # capture current OS selection into variable
     text=`xsel -o`
 
-    # Absolute path to this script, e.g. /home/user/bin/foo.sh
-    SCRIPT=$(readlink -f "$0")
+    if [[ ! -z $text ]]; then
+      # Absolute path to this script, e.g. /home/user/bin/foo.sh
+      SCRIPT=`readlink -f "$0"`
 
-    # Absolute path this script is in, thus /home/user/bin
-    SCRIPTPATH=$(dirname "$SCRIPT")
+      # Absolute path this script is in, thus /home/user/bin
+      SCRIPTPATH=`dirname "$SCRIPT"`
 
-    translate=`$SCRIPTPATH/translate-shell/build/trans -p -brief :${LANGUAGE:0:2} $text`
+      translate=`$SCRIPTPATH/translate-shell/build/trans -sp -brief :${LANGUAGE:0:2} "$text"`
 
-    # UI notify
-    notify-send -u critical "$text" "$translate"
+      # UI notify
+      notify-send -u critical "$text" "$translate"
+    fi
 
 Как это работает ? В качестве примера нижне показан скрипт, который используют REST API Яндекса. Аналогичное API есть и у других поисковиков — Google, Bing и т.д и приложение *translate-shell* тоже его использует для перевода текста.
 
