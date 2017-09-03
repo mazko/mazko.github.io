@@ -181,10 +181,13 @@ tags: picsim, RTOS
 Поскольку разрядность счётчика времени ```uint32_t``` больше разрядности микроконтроллера - операции над переменной ```_uptime``` не атомарны, поэтому в функцию ```get_uptime()``` вводится простейший механизм синхронизации через GIE. Теперь во всех задачах при формировании временных интервалов более целесообразно пользоваться функцией ```get_uptime()```:
 
     :::c
-    static uint32_t i;
+    static uint32_t start;
 
     // delay
-    for (i = get_uptime() + 10; i > get_uptime();) {
+    // https://arduino.stackexchange.com/a/12588
+    // while (millis() < start + ms) ;  // BUGGY version
+    // while (millis() - start < ms) ;  // CORRECT version
+    for (start = get_uptime(); get_uptime() - start < 10;) {
       YIELD; /* cooperate delay */ 
     }
 
