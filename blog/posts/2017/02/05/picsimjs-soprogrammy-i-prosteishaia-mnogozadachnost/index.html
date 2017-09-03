@@ -211,10 +211,13 @@
 
 
 <p>Поскольку разрядность счётчика времени <code>uint32_t</code> больше разрядности микроконтроллера - операции над переменной <code>_uptime</code> не атомарны, поэтому в функцию <code>get_uptime()</code> вводится простейший механизм синхронизации через GIE. Теперь во всех задачах при формировании временных интервалов более целесообразно пользоваться функцией <code>get_uptime()</code>:</p>
-<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">i</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">start</span><span class="p">;</span>
 
 <span class="c1">// delay</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">get_uptime</span><span class="p">()</span> <span class="o">+</span> <span class="mi">10</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">get_uptime</span><span class="p">();)</span> <span class="p">{</span>
+<span class="c1">// https://arduino.stackexchange.com/a/12588</span>
+<span class="c1">// while (millis() &lt; start + ms) ;  // BUGGY version</span>
+<span class="c1">// while (millis() - start &lt; ms) ;  // CORRECT version</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">start</span> <span class="o">=</span> <span class="n">get_uptime</span><span class="p">();</span> <span class="n">get_uptime</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;)</span> <span class="p">{</span>
   <span class="n">YIELD</span><span class="p">;</span> <span class="cm">/* cooperate delay */</span> 
 <span class="p">}</span>
 </pre></div>
