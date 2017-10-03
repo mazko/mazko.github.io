@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>&#9996; Все Буде Добре &#9825; - ENC28J60</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">&#9996; Все Буде Добре &#9825; </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Сетевое программирование - UDP | NTP часы</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-10-03T00:00:00+03:00">
+                Published: Вт. 03 Октябрь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/enc28j60">ENC28J60</a> </p>
+</footer><!-- /.post-info --><blockquote>
+<p>В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла</p>
+</blockquote>
+<p>Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей» вполне логичный этап эволюции  Homo sapiens. Зачем подходить к телевизору для переключения каналов, если можно придумать дистанционный пульт управления, зачем нажимать кнопочку на кофеварке, если можно сделать это в смартфоне или настроить правило, чтобы кофе наливался сам… Звучит заманчиво, но как это работает ? Как организовать надёжный и безопасный обмен данными ?</p>
+<p>Современная концепция «интернета вещей» подразумевает, что все современные устройства независимо от платформы должны иметь возможность взаимодействовать с другими устройствами и сервисами, образуя единую взаимосвязанную экосистему — сеть. Тут нет смысла изобретать заново велосипед, поскольку исторически Internet Protocol (IP, «межсетевой протокол») уже является тем протоколом, который объединил отдельные компьютерные сети во всемирную сеть Интернет. С учётом потенциально очень большого и постоянно растущего количества различных «интернет вещей» для создания сетей IoT как нельзя лучше подходит IPv6, ведь адресное пространство тут практически неисчерпаемое.</p>
+<h2>TL;DR</h2>
+<p>Часики берут данные времени из интернета по NTP (Network Time Protocol — протокол сетевого времени). Под капотом часов используется Contiki — компактная, свободная, переносимая, многозадачная операционная система для встраиваемых систем. Процессы Contiki используют облегчённую потоковую модель — протопотоки, в основе которых лежит <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативная</a> многозадачность. Где-то сбоку к Contiki можно прикрутить ещё и <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">вытесняющую</a> многозадачность через некую библиотеку
+<a href="https://github.com/contiki-os/contiki/wiki/Multithreading" rel="nofollow">mt library</a>, но нам это не понадобится. Всё же главная ценность Contiki это конечно же встроенный TCP/IP стек <strong>uIP (micro IP)</strong>, который оптимизирован с точки зрения ресурсов памяти и в частности не использует динамически выделяемую память (кучу).</p>
+<p>NTP работает поверх UDP (Datagram Protocol — протокол пользовательских датаграмм). В исходниках можно встретить и другие умные слова — например DNS (Domain Name System — система доменных имён). Пример интересен тем, что все протоколы в данных часиках используют только UDP. Кто такой UDP и зачем он нужен будет подробно расписано ниже, а для симуляции данных примеров можно использовать <a href="https://github.com/mazko/MSP430.js/raw/master/mspsim/mspsim.js.zip">mspsim.js.jar</a> ну и неплохо бы почитать <a href="https://github.com/mazko/MSP430.js/tree/master/mspsim">инструкцию</a>.</p>
+<p><a href="http://localhost:9148/f485071f8e042fa25252541e0e2d3724">IPv6</a> | <a href="http://localhost:9148/aed8a71df284252cb1c70e706dda5795">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/conticki-ntp-clock.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Адрес протокола IPv6 состоит из 128 бит и записывается обычно в шестнадцатеричном виде. Адрес разбиваются на блоки по 16 бит (хекстеты) и каждый блок представляется четырьмя шестнадцатеричными цифрами. Хекстеты разделяются знаком двоеточия. Таким образом, адрес получается достаточно длинным – он состоит из 32 шестнадцатеричных цифр и 7 знаков двоеточия.</p>
+<p>При инициализации сетевого интерфейса ему автоматически назначается локальный IPv6-адрес, состоящий из префикса <code>fe80::/10</code> и идентификатора интерфейса, размещённого в младшей части адреса. В качестве идентификатора интерфейса часто используется модифицированный MAC-адрес самого устройства. Локальный адрес позволяет обмениваться данными с другими устройствами под управлением IPv6 только в пределах своей подсети. IPv6 адреса можно записывать, а иногда даже и запоминать, в сокращенном виде – например если две и более групп подряд равны 0000, то они могут быть опущены и заменены на двойное двоеточие (::), т.е. <code>fe80:0:0:0:200:e2ff:fe58:b66b</code> может быть сокращён до <code>fe80::200:e2ff:fe58:b66b</code>.</p>
+<p>Для выхода за пределы своей подсети, например запросить данные через интернет, устройству нужно получить глобальный индивидуальный адрес. В данном случае этот адрес раздаётся демоном radvd ну и дальше <a href="https://github.com/mazko/MSP430.js/tree/master/mspsim">RTFM</a>.</p>
+<h2>ENC28J60</h2>
+<p>ENC28J60 — Ethernet-адаптер (проще говоря, «сетевая карточка») на одном чипе от компании Microchip. Микросхема очень дешевая, не требует для работы много обвязки из внешних компонентов, к микроконтроллеру (в нашем случае это <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">MSP430F1611</a>) подключается с помощью SPI. Полностью соответствует спецификации Ethernet IEEE 802.3. В ENC28J60 есть буфер размером 8 КБ – часть этого буфера обычно выделяется для приёма пакетов, остальное можно использовать как угодно, например для отправляемых данных. Управляющие регистры делятся на 4 банка (Microchip любит банки). Каждый банк имеет размер в 32 регистра, причём последние 5 ячеек (0x1b..0x1f) всегда мапятся на одни и те же регистры, вне зависимости от того, какой банк выбран.</p>
+<p>Обмен данными с ENC28J60 по SPI выполняется транзакциями. Начало транзакции – нога CS в ноль, затем отправки команды, затем идут опциональные данные (приём или передача). Завершается транзакция «поднятием» ножки CS. После инициализации микросхемы работа с ней сводится к двум функциям – отправка / приём пакетов. Эти пакеты обрабатывает TCP/IP стек в микроконтроллере.</p>
+<h2>UDP</h2>
+<p>Здесь мы набросаем простейший TCP/IP стек для обмена данными по UDP. Страшно ? На рисунке ниже отображена т.н. TCP/IP сетевая модель и как через неё проходят UDP пакеты. Данная модель разбивает коммуникационную систему на простые части, называемые уровнями или слоями. Уровни протоколов TCP/IP расположены по принципу стека — это означает, что протокол, располагающийся на уровне выше, работает «поверх» нижнего, используя механизмы инкапсуляции. Например, протокол UDP работает поверх протокола IP. Ethernet пакеты ENC28J60 попадают на канальный уровень. При прохождении пакета вниз по стеку, к нему прикрепляются заголовки протоколов.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/UDP_encapsulation.svg" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>В теории уровни сетевой модели должны быть изолированы друг от друга. Но у нас будет не совсем так, все протоколы будут работать с одним и тем же пакетом, но обращаться к своим заголовкам. Это позволит сэкономить память и такты микроконтроллера. Для такого простого стека это вполне нормально.</p>
+<p>Порядок байтов в TCP/IP от старшего к младшему (big-endian — большим концом), для перекодирования в нормальный формат и обратно используют <code>htons/ntohs</code> и <code>htonl/ntohl</code>:</p>
+<ul>
+<li>
+<p>htonl (host to network long) преобразует 32-битное целое из порядка байт хоста в сетевой порядок байт</p>
+</li>
+<li>
+<p>ntohl (network to host long) преобразует 32-битное целое из сетевого порядка байт в порядок байт хоста</p>
+</li>
+<li>
+<p>htons / ntohs то же самое, только для 16-бит</p>
+</li>
+</ul>
+<p>При проектировании стандарта Ethernet было предусмотрено, что каждая сетевая карта должна иметь уникальный шестибайтный номер (MAC-адрес), «прошитый» в ней при изготовлении. Этот номер используется для идентификации отправителя и получателя фрейма. Уникальность MAC-адресов достигается тем, что каждый производитель получает его в какой-то там специальной конторе. На практике обычно за это отвечает совсем копеечная микросхема ПЗУ, которую микроконтроллер считывает при старте. В нашем экспериментальном TCP/IP стеке мы сами придумаем MAC-адрес и он будет в прошивке самого микроконтроллера. Локальный адрес IPv6 формируется на основе мак адреса по определённому алгоритму:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">mac_addr</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0x42</span> <span class="p">};</span>
+
+<span class="c1">// https://stackoverflow.com/a/37316533</span>
+<span class="c1">// 02:00:00:00:00:42 =&gt; fe80::0:0ff:fe00:42</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="k">union</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span>   <span class="n">u6_addr8</span> <span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+    <span class="kt">uint16_t</span>  <span class="n">u6_addr16</span> <span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+    <span class="kt">uint32_t</span>  <span class="n">u6_addr32</span> <span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<span class="p">}</span> <span class="n">my_ip</span> <span class="o">=</span> <span class="p">{</span> <span class="p">.</span><span class="n">u6_addr16</span> <span class="o">=</span> <span class="p">{</span> <span class="n">htons</span><span class="p">(</span><span class="mh">0xfe80</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> 
+    <span class="n">htons</span><span class="p">(</span><span class="mh">0xff</span><span class="p">),</span> <span class="n">htons</span><span class="p">(</span><span class="mh">0xfe00</span><span class="p">),</span> <span class="n">htons</span><span class="p">(</span><span class="mh">0x42</span><span class="p">)</span> <span class="p">}</span> 
+<span class="p">};</span>
+</pre></div>
+
+
+<p>И собственно вот так выглядит Ethernet-фрейм на канальном уровене:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/Ethernet_Type_II_Frame_format.svg" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>Контрольная сумма рассчитывается и проверяется ENC28J60, так что для нас остаются видимы только 4 поля:</p>
+<ul>
+<li>
+<p>MAC-адрес получателя</p>
+</li>
+<li>
+<p>MAC-адрес отправителя</p>
+</li>
+<li>
+<p>здесь находится идентификатор протокола, например 0x86DD для IPv6</p>
+</li>
+<li>
+<p>поле данных — полезная нагрузка, например IP-пакет, обычно от 60 до 1500 байт</p>
+</li>
+</ul>
+<p>Пакеты, считываемые с ENC28J60, обрабатываются функцией <code>eth_filter</code>. При отправке ответа на Ethernet-фрейм обычно достаточно обменять местами MAC-адрес отправителя и получателя. В коде это выглядит следующим образом:</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">eth_frame</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">to_addr</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+    <span class="kt">uint8_t</span> <span class="n">from_addr</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+    <span class="kt">uint16_t</span> <span class="n">type</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">eth_frame_t</span><span class="p">;</span>
+
+<span class="cp">#define ETH_TYPE_IP6    htons(0x86DD)</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">eth_reply</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">to_addr</span><span class="p">,</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">from_addr</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">mac_addr</span><span class="p">);</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">from_addr</span><span class="p">,</span> <span class="n">mac_addr</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">mac_addr</span><span class="p">);</span>
+    <span class="n">enc28j60_send</span><span class="p">((</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">eth_frame_t</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">eth_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">len</span> <span class="o">&gt;=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">eth_frame_t</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">switch</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span>
+        <span class="p">{</span>
+        <span class="k">case</span> <span class="nl">ETH_TYPE_IP6</span><span class="p">:</span>
+            <span class="n">ip_filter</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">eth_frame_t</span><span class="p">));</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Сразу после включения устройство знает только свой MAC-адрес, как оно узнает MAC-адрес получателя ? В IPv6 для этого предусмотрен протокол обнаружения соседей (Neighbor Discovery Protocol, NDP). Он работает на сетевом уровне TCP/IP. Вот как это выглядит в Wireshark:</p>
+<div class="highlight"><pre><span></span># sudo ip neigh flush to fe80::0:ff:fe00:42
+~: nc -6 -u fe80::0:ff:fe00:42%mazko 12345 # print hello then enter
+</pre></div>
+
+
+<p>При отправке первых данных неизвестно, у какого устройства в подсети адрес <code>fe80::0:ff:fe00:42</code>. Узел, который хочет узнать MAC-адрес другого узла, посылает специальный ICMPv6-запрос Neighbor Solicitation (135) с IP-адресом искомого узла на специальный мультикаст-адрес. Узел, чей IP указан в пакете, отвечает обратно ICMPv6-пакетом — Neighbor Advertisement (136), в котором и указывает свой MAC-адрес.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-req.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-res.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>Пример кода:</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ip_packet</span> <span class="p">{</span>
+    <span class="cm">/** Version (4 bits), Traffic class (8 bits), Flow label (20 bits) */</span>
+    <span class="kt">uint32_t</span> <span class="n">ver_tc_label</span><span class="p">;</span>
+    <span class="cm">/** Payload length, including any extension headers */</span>
+    <span class="kt">uint16_t</span> <span class="n">payload_len</span><span class="p">;</span>
+    <span class="cm">/** Next header type */</span>
+    <span class="kt">uint8_t</span> <span class="n">next_header</span><span class="p">;</span>
+    <span class="cm">/** Hop limit */</span>
+    <span class="kt">uint8_t</span> <span class="n">hop_limit</span><span class="p">;</span>
+    <span class="cm">/** Source address, Destination address */</span> 
+    <span class="k">union</span> <span class="p">{</span>
+     <span class="kt">uint8_t</span>   <span class="n">u6_addr8</span> <span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+     <span class="kt">uint16_t</span>  <span class="n">u6_addr16</span> <span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+     <span class="kt">uint32_t</span>  <span class="n">u6_addr32</span> <span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+    <span class="p">}</span> <span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">ip_packet_t</span><span class="p">;</span>
+
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">icmp_packet</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">type</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">code</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">flags</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">icmp_packet_t</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">icmp_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">packet</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+    <span class="n">icmp_packet_t</span> <span class="o">*</span><span class="n">icmp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+
+    <span class="k">struct</span> <span class="p">{</span>
+        <span class="kt">uint8_t</span> <span class="n">target_address_u6_addr8</span><span class="p">[</span><span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">];</span>
+        <span class="kt">uint8_t</span> <span class="n">type</span><span class="p">;</span>
+        <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">;</span>
+        <span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">[</span><span class="k">sizeof</span> <span class="n">mac_addr</span><span class="p">];</span>
+    <span class="p">}</span> <span class="o">*</span><span class="n">option</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">icmp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+
+    <span class="k">if</span><span class="p">(</span> <span class="n">len</span> <span class="o">&gt;=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">icmp_packet_t</span><span class="p">)</span> <span class="o">+</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">option</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">icmp</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">==</span> <span class="n">ICMP_TYPE_NEIGHBOR_SOLICITATION</span> <span class="o">&amp;&amp;</span> <span class="n">icmp</span><span class="o">-&gt;</span><span class="n">code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">icmp</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="n">ICMP_TYPE_NEIGHBOR_ADVERTISEMENT</span><span class="p">;</span>
+            <span class="n">icmp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="mh">0x60000000</span><span class="p">);</span> <span class="c1">// Solicited: Set, Override: Set</span>
+            <span class="n">icmp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">option</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// Type: Target link-layer address (2) </span>
+            <span class="n">memcpy</span><span class="p">(</span><span class="n">option</span><span class="o">-&gt;</span><span class="n">addr</span><span class="p">,</span> <span class="n">mac_addr</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">mac_addr</span><span class="p">);</span>
+            <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">packet</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+            <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_ip</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">packet</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+            <span class="n">icmp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_ICMP6</span><span class="p">,</span> 
+                <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
+
+            <span class="n">eth_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ip_packet_t</span><span class="p">));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">char</span> <span class="nf">toMe</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="n">u6_addr32</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="p">{</span>
+    <span class="k">return</span>
+        <span class="p">(</span> <span class="o">!</span><span class="n">memcmp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_ip</span><span class="p">,</span> <span class="n">u6_addr32</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">)</span> <span class="p">)</span> <span class="o">||</span> 
+        <span class="c1">// multicast</span>
+        <span class="p">(</span> <span class="n">u6_addr32</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">htonl</span><span class="p">(</span><span class="mh">0xff020000</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+        <span class="n">u6_addr32</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">u6_addr32</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">htonl</span><span class="p">(</span><span class="mi">1l</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+        <span class="n">u6_addr32</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">my_ip</span><span class="p">.</span><span class="n">u6_addr32</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">|</span> <span class="n">htonl</span><span class="p">(</span><span class="mh">0xff000000</span><span class="p">))</span> <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">ip_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">packet</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">len</span> <span class="o">&gt;=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ip_packet_t</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span> <span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">ver_tc_label</span> <span class="o">&amp;</span> <span class="n">IPV6_MASK_VER</span><span class="p">)</span> <span class="o">==</span> <span class="n">IPV6_VER</span> 
+                <span class="o">&amp;&amp;</span> <span class="n">toMe</span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">.</span><span class="n">u6_addr32</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+
+            <span class="k">const</span> <span class="kt">uint16_t</span> <span class="n">p_len</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">payload_len</span><span class="p">);</span>
+
+            <span class="k">switch</span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">next_header</span><span class="p">)</span>
+            <span class="p">{</span>
+            <span class="k">case</span> <span class="nl">IP_PROTOCOL_ICMP6</span><span class="p">:</span>
+                <span class="n">icmp_filter</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">p_len</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="nl">IP_PROTOCOL_UDP</span><span class="p">:</span>
+                <span class="n">udp_filter</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">p_len</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Осталось совсем чуть чуть. UDP (User Datagram Protocol) — простейший протокол транспортного уровня. UDP позволяет узлам обмениваться небольшими сообщениями, называемыми датаграммами. Мы реализуем UDP-сервер на микроконтроллере. Для простоты опускаем тему фрагментации IP-пакета, это допустимо для небольших данных. Например для IPv4 чтобы датаграмма точно пролезла в без фрагментации IP-пакета, количество полезных данных в ней не должно превышать 512 байт, для IPv6 нужно пересчитать, но что-то близкое к этому.</p>
+<p>UDP считается ненадёжным протоколом — при потере IP-пакета, датаграмма теряется. Впрочем, современные сети вполне себе надёжны — в хорошо работающей локальной сети пакеты не теряются почти никогда. Но, естественно, приложение должно адекватно реагировать, если датаграмма всё же потеряется. Порядок доставки датаграмма также не гарантируется — теоретически вы можно отправить два пакета hello затем world, а получить world затем hello.</p>
+<p>UDP отлично подходит для передачи данных в реальном времени, нечувствительных к потерям. Скажем, с помощью UDP удобно забирать показания каких-нибудь датчиков или отправлять информацию на дисплей или даже голосовой или видео поток в реальном времени.</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">udp_packet</span> <span class="p">{</span>
+    <span class="kt">uint16_t</span> <span class="n">from_port</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">to_port</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">udp_packet_t</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">udp_reply</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">udp_packet_t</span> <span class="o">*</span><span class="n">udp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="kt">uint16_t</span> <span class="n">temp</span><span class="p">;</span>
+
+    <span class="n">len</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">udp_packet_t</span><span class="p">);</span>
+
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">udp</span><span class="o">-&gt;</span><span class="n">from_port</span><span class="p">;</span>
+    <span class="n">udp</span><span class="o">-&gt;</span><span class="n">from_port</span> <span class="o">=</span> <span class="n">udp</span><span class="o">-&gt;</span><span class="n">to_port</span><span class="p">;</span>
+    <span class="n">udp</span><span class="o">-&gt;</span><span class="n">to_port</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+
+    <span class="n">udp</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>
+    <span class="n">ip</span><span class="o">-&gt;</span><span class="n">payload_len</span> <span class="o">=</span> <span class="n">udp</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span>
+
+    <span class="n">udp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">udp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_UDP</span><span class="p">,</span> 
+        <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
+
+    <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+    <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_ip</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+    <span class="n">eth_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ip_packet_t</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">udp_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="k">const</span> <span class="n">udp_packet_t</span> <span class="o">*</span><span class="n">udp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">len</span> <span class="o">&gt;=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">udp_packet_t</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">const</span> <span class="kt">uint16_t</span> <span class="n">udp_len</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">udp</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">udp_packet_t</span><span class="p">);</span>
+        <span class="n">udp_packet</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">udp_len</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Чтобы придать всему этому смысл, напишем простенькое приложение, работающее по UDP. Например, печатаем текст на дисплее устройства с микроконтроллером.</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">udp_packet</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">udp_packet_t</span> <span class="o">*</span><span class="n">udp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="n">udp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">i</span><span class="p">;</span>
+
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">putchar</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+
+    <span class="n">draw_clr</span><span class="p">();</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">);</span>
+
+    <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">response</span> <span class="o">=</span> <span class="s">&quot;!!! OK !!!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+    <span class="n">strcpy</span><span class="p">((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+    <span class="n">udp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">response</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">lan_poll</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">;</span>
+    <span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">net_buf</span><span class="p">;</span>
+
+    <span class="k">while</span><span class="p">((</span><span class="n">len</span> <span class="o">=</span> <span class="n">enc28j60_read</span><span class="p">(</span><span class="n">net_buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">net_buf</span><span class="p">))))</span> <span class="p">{</span>
+        <span class="n">eth_filter</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">bsp_init</span><span class="p">();</span>
+    <span class="n">uart0_init</span><span class="p">();</span>
+    <span class="n">lan_init</span><span class="p">();</span>
+    <span class="n">draw_init</span><span class="p">();</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Start polling...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lan_poll</span><span class="p">();</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><a href="http://localhost:9148/a491c24964bb014608f8180d354c4198">IPv6</a> | <a href="http://localhost:9148/a72c1a945faa90413fb72520f60006f8">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/eth_udp.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/welome.png" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Чтобы вывести данные в дисплей, отправляем девайсу UDP-пакет на любой порт, netcat — удобная утилитка, которая поможет отправлять и принимать данные по сети:</p>
+<div class="highlight"><pre><span></span>~: nc -6 -u fe80::0:ff:fe00:42%mazko 12345
+</pre></div>
+
+
+<p>В реальном мире на одном адресе может быть много UDP портов, где каждый сервис отвечает за свою логику. Количество портов ограничено с учётом 16-битной адресации т.е. 65536. Все порты разделены на три диапазона — общеизвестные (или системные, 0..1023), зарегистрированные (или пользовательские, 1024..49151) и динамические (или частные, 49152..65535). Например ранее упомянутый NTP протокол использует порт 123 (UDP), DNS порт 53 и т.д.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
