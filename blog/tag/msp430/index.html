@@ -28,7 +28,225 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">С++ для микроконтроллеров - управление памятью</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">Сетевое программирование - TCP | HTTP сервер</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-10-09T00:00:00+03:00">
+                Published: Пн. 09 Октябрь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
+<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее по этому соединению туда и обратно посылаются пакеты (идет беседа), причем с проверкой, дошел ли пакет до получателя. Если пакет потерялся, или дошел, но с битой контрольной суммой, то он посылается повторно («повтори, не расслышал»). Таким образом TCP более надёжен, но он сложнее с точки зрения реализации и соответственно требует больше тактов / памяти, что имеет не самое последнее значение для микроконтроллеров. В качестве примеров прикладных протоколов, использующих TCP, можно назвать FTP, HTTP, SMTP и многие другие.</p>
+<h2>TL;DR</h2>
+<p>HTTP (Hypertext Transfer Protocol) — прикладной протокол, с помощью которого сервер отдаёт странички нашему браузеру. HTTP в настоящее время повсеместно используется во Всемирной паутине для получения информации с веб-сайтов. На картинке светильник на микроконтроллере с ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту, в котором цвета задаются через браузер.</p>
+<p><a href="http://localhost:9148/54734ef58963a68a9d79d74d53e115f7">IPv6</a> | <a href="http://localhost:9148/f681567307f7470e3bcb0e17de6c1710">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/conticki-http-leds.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>HTTP протокол текстовый и достаточно простой. Собственно вот так выглядит метод GET, посылаемый утилитой netcat на локальный IPv6 адрес сервера с лампочками:</p>
+<div class="highlight"><pre><span></span>~$ nc fe80::200:e2ff:fe58:b66b%mazko 80 &lt;&lt;EOF
+GET /b HTTP/1.0
+
+EOF
+</pre></div>
+
+
+<p>Ответ:</p>
+<div class="highlight"><pre><span></span>HTTP/1.0 200 OK
+Server: Contiki/2.4 http://www.sics.se/contiki/
+Connection: close
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Content-type: text/html
+
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Contiki RGB&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+&lt;p style=&#39;color:red;&#39;&gt;Red is &lt;a href=&#39;/r&#39;&gt;OFF&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&#39;color:green;&#39;&gt;Green is &lt;a href=&#39;/g&#39;&gt;OFF&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&#39;color:blue;&#39;&gt;Blue is &lt;a href=&#39;/b&#39;&gt;ON&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre></div>
+
+
+<p>Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.</p>
+<p>Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут <code>GET /b HTTP/1.0</code> где путь /b отвечает за цвет (синий).</p>
+<p>Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес, который также нужно назначить виртуальной сети симулятора:</p>
+<div class="highlight"><pre><span></span>~$ sudo ip addr add abcd::1/64 dev mazko
+~$ curl http://[abcd::200:e2ff:fe58:b66b]
+</pre></div>
+
+
+<p>Если curl отработал без ошибок, то ссылку можно спокойно открывать в браузере.</p>
+<h2>TCP</h2>
+<p>Здесь мы научим наш <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">игрушечный</a> TCP/IP стек понимать TCP протокол. Итак организация соединения по протоколу TCP начинается с т.н. трехстороннего квитирования (рукопожатия). Как всегда разобраться с сетью поможет Wireshark.</p>
+<p>Когда требуется установить соединение с удалённым сервером, ему отправляется пакет с установленным флагом SYN, что означает инициализацию сессии. Тут есть поле Sequence Number (на картинке 1039510418), начальное значение этого поля выбирается случайным образом инициатором соединения.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>Сервер, в ответ на этот пакет, отвечает пакетом с битами SYN, ACK. Своё значение Sequence Number (на картинке 16770109) он тоже генерирует случайным образом. Также он должен заполнить поле Acknowledgment Number, которые будет равно сумме принятого Sequence Number плюс 1 т.е. 1039510419.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>Теперь инициатору подключения не остается ничего другого, как ответить ACK. Здесь Acknowledgment Number аналогично будет равно сумме принятого Sequence Number плюс 1 т.е. 16770110.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>С этого момента соединение считается установленным. Дальнейшие пакеты будут передавать уже полезную нагрузку – данные протоколов вышестоящих уровней. В отличие от UDP, тут на каждый пакет нужно отправлять подтверждение (флаг ACK), дабы удалённый узел знал, что отправленные им данные были успешно приняты. При этом так же происходит взаимное увеличение Sequence Number у сервера и у клиента, но только уже не на 1, а на размер отправляемых данных.</p>
+<p>Для закрытия соединение удалённому узлу посылается пакет с установленным флагом FIN.</p>
+<p>С точки зрения реализации TCP это классический <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечный автомат</a>. Приведенный ниже пример сильно упрощён, тут реализована только минианимальная логика, достаточная для обмена данными утилитой netcat. </p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ip_packet</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">ver_head_len</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">tos</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">total_len</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">fragment_id</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">flags_framgent_offset</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">ttl</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">protocol</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">from_addr</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">to_addr</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">ip_packet_t</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_reply</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">temp</span><span class="p">;</span>
+
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+  <span class="c1">// swap src/dst, fill tcp hdr?</span>
+  <span class="n">temp</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">from_port</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">from_port</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">to_port</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">to_port</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">window</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">TCP_WINDOW_SIZE</span><span class="p">);</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">urgent_ptr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// SYN packet?</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">TCP_FLAG_SYN</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// add MSS option</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data_offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// MSS option</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// MSS option length = 4 bytes</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCP_SYN_MSS</span><span class="o">&gt;&gt;</span><span class="mi">8</span><span class="p">;</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCP_SYN_MSS</span><span class="o">&amp;</span><span class="mh">0xff</span><span class="p">;</span>
+    <span class="n">len</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// not syn packet - no options</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data_offset</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// calculate chksum</span>
+  <span class="n">len</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_TCP</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
+
+  <span class="n">ip</span><span class="o">-&gt;</span><span class="n">payload_len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_ip</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+  <span class="n">eth_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ip_packet_t</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_step</span><span class="p">(</span><span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">num</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_num</span><span class="p">;</span>
+  <span class="n">ack_num</span> <span class="o">=</span> <span class="n">ntohl</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span><span class="p">)</span> <span class="o">+</span> <span class="n">num</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">ack_num</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">ack_num</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">ack_num</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+  <span class="k">switch</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nl">TCP_FLAG_SYN</span><span class="p">:</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">TCP_FLAG_SYN</span> <span class="o">|</span> <span class="n">TCP_FLAG_ACK</span><span class="p">;</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">gettc</span><span class="p">());</span> <span class="c1">// random number</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">TCP_FLAG_PSH</span> <span class="o">|</span> <span class="nl">TCP_FLAG_ACK</span><span class="p">:</span>
+      <span class="n">len</span> <span class="o">-=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">TCP_FLAG_ACK</span><span class="p">;</span>
+      <span class="c1">// feed/read data to/from app</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tcp_data</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span><span class="p">));</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">TCP_FLAG_FIN</span> <span class="o">|</span> <span class="nl">TCP_FLAG_ACK</span><span class="p">:</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Обработка полезных данных — выводим на экран, печатаем в UART: </p>
+<div class="highlight"><pre><span></span><span class="kt">uint16_t</span> <span class="nf">tcp_data</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+
+  <span class="n">draw_clr</span><span class="p">();</span>
+  <span class="n">data</span><span class="p">[</span><span class="n">len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;&gt;&gt; %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+
+  <span class="c1">// piggyback</span>
+  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">response</span> <span class="o">=</span> <span class="s">&quot;!!! OK !!!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">strlen</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><a href="http://localhost:9148/f0925cc954111f5cb6f47c6b1dffc0ac">IPv6</a> | <a href="http://localhost:9148/ce2f76817817a8bea5d539aa0df45f8f">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/eth_tcp.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/tcp.png" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Чтобы вывести данные в дисплей, отправляем девайсу TCP-пакет на любой порт помощью netcat:</p>
+<div class="highlight"><pre><span></span>~$ cat &lt;(echo &#39;hello TCP !&#39;) - | nc -6 fe80::0:ff:fe00:42%mazko 12345
+</pre></div>
+
+
+<p>Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="bookmark"
+                           title="Permalink to Сетевое программирование - UDP | NTP часы">Сетевое программирование - UDP | NTP часы</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-10-03T00:00:00+03:00">
+                Published: Вт. 03 Октябрь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
+</footer><!-- /.post-info -->                <blockquote>
+<p>В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла</p>
+</blockquote>
+<p>Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/" rel="bookmark"
+                           title="Permalink to С++ для микроконтроллеров - управление памятью">С++ для микроконтроллеров - управление памятью</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-06-22T00:00:00+03:00">
                 Published: Чт. 22 Июнь 2017
@@ -39,29 +257,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> </p>
-</footer><!-- /.post-info --><p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a> механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение <code>std::bad_alloc</code>, оператор <code>new</code> вызывает специальную функцию-обработчик. Эту функцию можно переопределять <code>std::set_new_handler</code>, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».</p>
-<p><a href="http://mazko.github.io/MSP430.js/efadb63e855ca5799cc873ca38ebc2ad">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/snake-qv-msp430-js.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
-<ul>
-<li>
-<p>операторы <code>new</code> и <code>delete</code> в С++ можно перегружать, а в контексте микроконтроллеров может оказаться весьма полезным вообще сломать компиляцию при попытке динамического выделения памяти на куче <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/no-new.h">no-new.h</a>. Для того, чтобы проверка происходила во всех исходных файлах проекта автоматически в gcc подобных компиляторах достаточно просто указать в командной строке опцию <code>-include no-new.h</code>, в случае со «Змейкой» используется IDE <a href="http://www.ti.com/tool/ccstudio-msp" rel="nofollow">Code Composer Studio</a>, там есть настройка <em>--preinclude</em>. Что касается функции <code>malloc</code>, наследия Си, то красиво избавиться от неё увы не получится — можно конечно попробовать отключить стандартную библиотеку при компиляции ключом <code>-nostdlib</code>, но тогда нужно самому реализовывать код инициализации и запуска микроконтроллера</p>
-</li>
-<li>
-<p>«Змейка» кушает и растёт, т.е. представляет из себя динамический массив. Для STL контейнеров в С++ можно задавать альтернативные аллокаторы памяти. В большинстве случаев разработчик знает, сколько элементов контейнера может потребоваться для его алгоритма и тогда хорошей идеей выглядит аллокатор, использующий стек вместо кучи. Для древнего C++98 найти рабочий аллокатор затруднительно, поэтому для игры «Змейка» был взят этот <a href="https://github.com/esrlabs/estl-teaser" rel="nofollow">контейнер</a>, также использующий стек вместо кучи </p>
-</li>
-<li>
-<p>существует особая форма оператора <code>new</code>, называемая <em>Placement new</em>. Данный оператор не выделяет память, а получает своим аргументом адрес на уже выделенную каким-либо образом память. Например память под объект «Змейка» выделяется в стеке на этапе компиляции, а  размещение (инициализация) объекта в ней путём вызова конструктора происходит в процессе выполнения программы, таким образом можно пересоздавать «Змейку» при перезапуске игры</p>
-</li>
-</ul>
-<p>Под капотом «Змейки» <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>На картинке иерархический конечный автомат <em>Play</em> где отсчитываются временные интервалы для движения «Змейки» и обрабатывается нажатие от кнопок. Если метод <code>eat_or_move()</code> вернёт <code>false</code> переход в состояние <em>GameOver</em> где отображается количество набранных очков. При нажатии любой кнопки снова <em>Play</em>.</p>
-<p>«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C …</a></p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -109,55 +308,9 @@
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/" rel="bookmark"
-                           title="Permalink to FreeRTOS - обмен данными между задачами">FreeRTOS - обмен данными между задачами</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-29T00:00:00+03:00">
-                Published: Сб. 29 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
-<p>Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативной</a> многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарности</a> и поэтому во FreeRTOS для передачи информации …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/" rel="bookmark"
-                           title="Permalink to FreeRTOS - совместный доступ к общим ресурсам">FreeRTOS - совместный доступ к общим ресурсам</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-04-28T00:00:00+03:00">
-                Published: Пт. 28 Апрель 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
-</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
-<p>Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
-    Page 1 / 2
+    Page 1 / 3
         <a href="http://proiot.ru/blog/tag/msp430/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - IoT</title>
+        <title>Сетевое программирование - TCP | HTTP сервер</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -25,10 +25,15 @@
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
+           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">Сетевое программирование - TCP | HTTP сервер</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-10-09T00:00:00+03:00">
                 Published: Пн. 09 Октябрь 2017
@@ -39,7 +44,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
 <p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее по этому соединению туда и обратно посылаются пакеты (идет беседа), причем с проверкой, дошел ли пакет до получателя. Если пакет потерялся, или дошел, но с битой контрольной суммой, то он посылается повторно («повтори, не расслышал»). Таким образом TCP более надёжен, но он сложнее с точки зрения реализации и соответственно требует больше тактов / памяти, что имеет не самое последнее значение для микроконтроллеров. В качестве примеров прикладных протоколов, использующих TCP, можно назвать FTP, HTTP, SMTP и многие другие.</p>
 <h2>TL;DR</h2>
 <p>HTTP (Hypertext Transfer Protocol) — прикладной протокол, с помощью которого сервер отдаёт странички нашему браузеру. HTTP в настоящее время повсеместно используется во Всемирной паутине для получения информации с веб-сайтов. На картинке светильник на микроконтроллере с ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту, в котором цвета задаются через браузер.</p>
@@ -208,39 +213,26 @@ Content-type: text/html
 </pre></div>
 
 
-<p>Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - UDP | NTP часы">Сетевое программирование - UDP | NTP часы</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-03T00:00:00+03:00">
-                Published: Вт. 03 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
-</footer><!-- /.post-info -->                <blockquote>
-<p>В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла</p>
-</blockquote>
-<p>Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

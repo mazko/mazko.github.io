@@ -43,7 +43,7 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/enc28j60">ENC28J60</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
 </footer><!-- /.post-info -->      <blockquote>
 <p>В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла</p>
 </blockquote>
@@ -52,7 +52,7 @@
 <h2>TL;DR</h2>
 <p>Часики берут данные времени из интернета по NTP (Network Time Protocol — протокол сетевого времени). Под капотом часов используется Contiki — компактная, свободная, переносимая, многозадачная операционная система для встраиваемых систем. Процессы Contiki используют облегчённую потоковую модель — протопотоки, в основе которых лежит <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативная</a> многозадачность. Где-то сбоку к Contiki можно прикрутить ещё и <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">вытесняющую</a> многозадачность через некую библиотеку
 <a href="https://github.com/contiki-os/contiki/wiki/Multithreading" rel="nofollow">mt library</a>, но нам это не понадобится. Всё же главная ценность Contiki это конечно же встроенный TCP/IP стек <strong>uIP (micro IP)</strong>, который оптимизирован с точки зрения ресурсов памяти и в частности не использует динамически выделяемую память (кучу).</p>
-<p>NTP работает поверх UDP (Datagram Protocol — протокол пользовательских датаграмм). В исходниках можно встретить и другие умные слова — например DNS (Domain Name System — система доменных имён). Пример интересен тем, что все протоколы в данных часиках используют только UDP. Кто такой UDP и зачем он нужен будет подробно расписано ниже, а для симуляции данных примеров можно использовать <a href="https://github.com/mazko/MSP430.js/raw/master/mspsim/mspsim.js.zip">mspsim.js.jar</a> ну и неплохо бы почитать <a href="https://github.com/mazko/MSP430.js/tree/master/mspsim">инструкцию</a>.</p>
+<p>NTP работает поверх UDP (User Datagram Protocol — протокол пользовательских датаграмм). В исходниках можно встретить и другие умные слова — например DNS (Domain Name System — система доменных имён). Пример интересен тем, что все протоколы в данных часиках используют только UDP. Кто такой UDP и зачем он нужен будет подробно расписано ниже, а для симуляции данных примеров можно использовать <a href="https://github.com/mazko/MSP430.js/raw/master/mspsim/mspsim.js.zip">mspsim.js.jar</a> ну и неплохо бы почитать <a href="https://github.com/mazko/MSP430.js/tree/master/mspsim">инструкцию</a>.</p>
 <p><a href="http://localhost:9148/f485071f8e042fa25252541e0e2d3724">IPv6</a> | <a href="http://localhost:9148/aed8a71df284252cb1c70e706dda5795">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/conticki-ntp-clock.zip">исходники</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
 <p>Адрес протокола IPv6 состоит из 128 бит и записывается обычно в шестнадцатеричном виде. Адрес разбиваются на блоки по 16 бит (хекстеты) и каждый блок представляется четырьмя шестнадцатеричными цифрами. Хекстеты разделяются знаком двоеточия. Таким образом, адрес получается достаточно длинным – он состоит из 32 шестнадцатеричных цифр и 7 знаков двоеточия.</p>
@@ -144,7 +144,7 @@
 
 <p>Сразу после включения устройство знает только свой MAC-адрес, как оно узнает MAC-адрес получателя ? В IPv6 для этого предусмотрен протокол обнаружения соседей (Neighbor Discovery Protocol, NDP). Он работает на сетевом уровне TCP/IP. Вот как это выглядит в Wireshark:</p>
 <div class="highlight"><pre><span></span># sudo ip neigh flush to fe80::0:ff:fe00:42
-~: nc -6 -u fe80::0:ff:fe00:42%mazko 12345 # print hello then enter
+~$ echo hello | nc -6 -u fe80::0:ff:fe00:42%mazko 12345
 </pre></div>
 
 
@@ -343,11 +343,12 @@
 <p><a href="http://localhost:9148/a491c24964bb014608f8180d354c4198">IPv6</a> | <a href="http://localhost:9148/a72c1a945faa90413fb72520f60006f8">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/eth_udp.zip">исходники</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/welome.png" style="width:50%; margin: 0 auto; display:block;"></p>
 <p>Чтобы вывести данные в дисплей, отправляем девайсу UDP-пакет на любой порт, netcat — удобная утилитка, которая поможет отправлять и принимать данные по сети:</p>
-<div class="highlight"><pre><span></span>~: nc -6 -u fe80::0:ff:fe00:42%mazko 12345
+<div class="highlight"><pre><span></span>~$ nc -6 -u fe80::0:ff:fe00:42%mazko 12345
 </pre></div>
 
 
 <p>В реальном мире на одном адресе может быть много UDP портов, где каждый сервис отвечает за свою логику. Количество портов ограничено с учётом 16-битной адресации т.е. 65536. Все порты разделены на три диапазона — общеизвестные (или системные, 0..1023), зарегистрированные (или пользовательские, 1024..49151) и динамические (или частные, 49152..65535). Например ранее упомянутый NTP протокол использует порт 123 (UDP), DNS порт 53 и т.д.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">Далее</a> TCP.</p>
     </div><!-- /.entry-content -->
     <div class="comments">
       <h2>Comments !</h2>
