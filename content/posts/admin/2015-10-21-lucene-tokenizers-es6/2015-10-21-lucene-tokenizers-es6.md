@@ -5,7 +5,7 @@ tags: NLP, Lucene, ES6
 
 Пример портирования **Java** => **JavaScript** на примере токенизаторов из [Lucene]({filename}../../java/lucene/2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md). 
 
-[lucene-tokenizers.es6]({attach}src/out/lucene-tokenizers.es6) | [lucene-tokenizers.babel.js]({attach}src/out/lucene-tokenizers.babel.js) | [Тесты]({attach}src/out/tests/Coverage.html) | [Исходники](https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src)
+[lucene-tokenizers.es6]({attach}src/out/lucene-tokenizers.es6) | [lucene-tokenizers.babel.js]({attach}src/out/lucene-tokenizers.babel.js) | [Тесты]({attach}src/out/tests/Coverage.html) | [Исходники](https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src)
 
 ##TL;DR
 
@@ -147,12 +147,12 @@ tags: NLP, Lucene, ES6
 
     :::java
     public final class System {
-      public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length) {
+      public static void arraycopy(Object s, int sp, Object d, int dp, int l) {
         // :es6:
-        // int[] elements_to_add = src.slice(srcPos, srcPos + length);
-        // Array.prototype.splice.apply(dest, new int[] {destPos,
+        // int[] elements_to_add = s.slice(sp, sp + l);
+        // Array.prototype.splice.apply(d, new int[] {dp,
         // elements_to_add.length}.concat(elements_to_add));
-        java.lang.System.arraycopy(src, srcPos, dest, destPos, length);
+        java.lang.System.arraycopy(s, sp, d, dp, l);
         // :end:
       }
     }
@@ -191,7 +191,8 @@ tags: NLP, Lucene, ES6
 
     :::bash
     ~$ npm install -g esjava
-    ~$ node --stack-size=10000 `which esjava` lucene-tokenizers.java > out/lucene-tokenizers.es6
+    ~$ alias esjava10000="node --stack-size=10000 `which esjava`"
+    ~$ esjava10000 lucene-tokenizers.java > out/lucene-tokenizers.es6
 
 Осталось указать на *export* классы *StringReader*, *StandardTokenizer*, *UAX29URLEmailTokenizer* и добавить поддержку старых JavaScript движков:
 
