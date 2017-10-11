@@ -200,8 +200,9 @@
   <span class="n">P3OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">P3DIR</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
 
   <span class="c1">// create tasks</span>
-  <span class="c1">// Passing a uxPriority value above (configMAX_PRIORITIES – 1) will result in the</span>
-  <span class="c1">// priority assigned to the task being capped silently to the maximum legitimate value.</span>
+  <span class="c1">// Passing a uxPriority value above (configMAX_PRIORITIES – 1) </span>
+  <span class="c1">// will result in the priority assigned to the task</span>
+  <span class="c1">// being capped silently to the maximum legitimate value.</span>
 
   <span class="cm">/* Task: left side LEDS animation */</span>
   <span class="n">xTaskCreate</span><span class="p">(</span><span class="n">vTaskLedsL</span><span class="p">,</span> 

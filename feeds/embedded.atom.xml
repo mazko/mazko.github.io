@@ -518,7 +518,8 @@ namespace blinky {
 &lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vAssertCalled&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="cp"&gt;#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __LINE__, __FILE__ )&lt;/span&gt;
 
-&lt;span class="c1"&gt;// Method 2 is a bit slower than method 1 but it will most likely catch all stack overflows.&lt;/span&gt;
+&lt;span class="c1"&gt;// Method 2 is a bit slower than method 1 &lt;/span&gt;
+&lt;span class="c1"&gt;// but it will most likely catch all stack overflows.&lt;/span&gt;
 &lt;span class="cp"&gt;#define configCHECK_FOR_STACK_OVERFLOW     2&lt;/span&gt;
 &lt;span class="cp"&gt;#define configUSE_MALLOC_FAILED_HOOK       1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -530,14 +531,14 @@ namespace blinky {
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;draw.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTsk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTskNm&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTsk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTskNm&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="n"&gt;taskDISABLE_INTERRUPTS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// game over&lt;/span&gt;
 
   &lt;span class="n"&gt;draw_clr&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
   &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Error: StackOverflow&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pcTskNm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
@@ -791,8 +792,9 @@ namespace blinky {
   &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P3DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
   &lt;span class="c1"&gt;// create tasks&lt;/span&gt;
-  &lt;span class="c1"&gt;// Passing a uxPriority value above (configMAX_PRIORITIES – 1) will result in the&lt;/span&gt;
-  &lt;span class="c1"&gt;// priority assigned to the task being capped silently to the maximum legitimate value.&lt;/span&gt;
+  &lt;span class="c1"&gt;// Passing a uxPriority value above (configMAX_PRIORITIES – 1) &lt;/span&gt;
+  &lt;span class="c1"&gt;// will result in the priority assigned to the task&lt;/span&gt;
+  &lt;span class="c1"&gt;// being capped silently to the maximum legitimate value.&lt;/span&gt;
 
   &lt;span class="cm"&gt;/* Task: left side LEDS animation */&lt;/span&gt;
   &lt;span class="n"&gt;xTaskCreate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
@@ -940,7 +942,8 @@ namespace blinky {
 
 &lt;p&gt;Любая картинка или текст это всего-лишь набор пикселей. В случае SSD1306 цвета всего два один из них чёрный. Для преобразования любого файла изображения в Си массив послужит следующий скрипт на питоне + ImageMagick:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# http://grep.js.org/?gist=96caa480d220062b18a693f1b2e9f275&lt;/span&gt;
-~$ convert -resize 128x64&lt;span class="se"&gt;\!&lt;/span&gt; eyes.eps xbm:- &lt;span class="p"&gt;|&lt;/span&gt; grep -o &lt;span class="s1"&gt;&amp;#39;0[xX][0-9a-fA-F]\+&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+~$ &lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;c128x64&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;convert -resize 128x64!&amp;#39;&lt;/span&gt;
+~$ c128x64 eyes.eps xbm:- &lt;span class="p"&gt;|&lt;/span&gt; grep -o &lt;span class="s1"&gt;&amp;#39;0[xX][0-9a-fA-F]\+&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
 
 &lt;span class="s1"&gt;import sys&lt;/span&gt;
 

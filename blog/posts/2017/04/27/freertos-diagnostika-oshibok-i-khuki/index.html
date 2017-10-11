@@ -66,7 +66,8 @@
 <span class="k">extern</span> <span class="kt">void</span> <span class="nf">vAssertCalled</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="p">);</span>
 <span class="cp">#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __LINE__, __FILE__ )</span>
 
-<span class="c1">// Method 2 is a bit slower than method 1 but it will most likely catch all stack overflows.</span>
+<span class="c1">// Method 2 is a bit slower than method 1 </span>
+<span class="c1">// but it will most likely catch all stack overflows.</span>
 <span class="cp">#define configCHECK_FOR_STACK_OVERFLOW     2</span>
 <span class="cp">#define configUSE_MALLOC_FAILED_HOOK       1</span>
 </pre></div>
@@ -78,14 +79,14 @@
 
 <span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
 
-<span class="kt">void</span> <span class="nf">vApplicationStackOverflowHook</span><span class="p">(</span> <span class="n">xTaskHandle</span> <span class="o">*</span><span class="n">pxTask</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">portCHAR</span> <span class="o">*</span><span class="n">pcTaskName</span> <span class="p">);</span>
-<span class="kt">void</span> <span class="nf">vApplicationStackOverflowHook</span><span class="p">(</span> <span class="n">xTaskHandle</span> <span class="o">*</span><span class="n">pxTask</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">portCHAR</span> <span class="o">*</span><span class="n">pcTaskName</span> <span class="p">)</span> <span class="p">{</span>
+<span class="kt">void</span> <span class="nf">vApplicationStackOverflowHook</span><span class="p">(</span> <span class="n">xTaskHandle</span> <span class="o">*</span><span class="n">pxTsk</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">portCHAR</span> <span class="o">*</span><span class="n">pcTskNm</span> <span class="p">);</span>
+<span class="kt">void</span> <span class="nf">vApplicationStackOverflowHook</span><span class="p">(</span> <span class="n">xTaskHandle</span> <span class="o">*</span><span class="n">pxTsk</span><span class="p">,</span> <span class="kt">signed</span> <span class="n">portCHAR</span> <span class="o">*</span><span class="n">pcTskNm</span> <span class="p">)</span> <span class="p">{</span>
   <span class="n">taskDISABLE_INTERRUPTS</span><span class="p">();</span> <span class="c1">// game over</span>
 
   <span class="n">draw_clr</span><span class="p">();</span>
   <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="s">&quot;Error: StackOverflow&quot;</span><span class="p">);</span>
   <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="s">&quot;Task Name:&quot;</span><span class="p">);</span>
-  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="s">&quot;Task Name:&quot;</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span>  <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">pcTaskName</span><span class="p">);</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">6</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="s">&quot;Task Name:&quot;</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span>  <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">pcTskNm</span><span class="p">);</span>
 
   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">);</span>
 <span class="p">}</span>

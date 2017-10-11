@@ -92,7 +92,8 @@
 
 <p>Любая картинка или текст это всего-лишь набор пикселей. В случае SSD1306 цвета всего два один из них чёрный. Для преобразования любого файла изображения в Си массив послужит следующий скрипт на питоне + ImageMagick:</p>
 <div class="highlight"><pre><span></span><span class="c1"># http://grep.js.org/?gist=96caa480d220062b18a693f1b2e9f275</span>
-~$ convert -resize 128x64<span class="se">\!</span> eyes.eps xbm:- <span class="p">|</span> grep -o <span class="s1">&#39;0[xX][0-9a-fA-F]\+&#39;</span> <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
+~$ <span class="nb">alias</span> <span class="nv">c128x64</span><span class="o">=</span><span class="s1">&#39;convert -resize 128x64!&#39;</span>
+~$ c128x64 eyes.eps xbm:- <span class="p">|</span> grep -o <span class="s1">&#39;0[xX][0-9a-fA-F]\+&#39;</span> <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
 
 <span class="s1">import sys</span>
 

@@ -14,7 +14,7 @@ EOF
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Ответ:&lt;/p&gt;
+&lt;p&gt;Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут &lt;code&gt;GET /b HTTP/1.0&lt;/code&gt; где путь /b отвечает за цвет (синий). Ответ сервера:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;HTTP/1.0 200 OK
 Server: Contiki/2.4 http://www.sics.se/contiki/
 Connection: close
@@ -31,8 +31,8 @@ Content-type: text/html
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Код состояния (у нас 200) является частью первой строки ответа сервера. Он представляет собой целое число из трёх цифр. Первая цифра указывает на класс состояния. За кодом ответа обычно следует отделённая пробелом поясняющая фраза на английском языке, которая разъясняет человеку причину именно такого ответа. В нашем случае сервер отработал без ошибок, всё пучком (ОК).&lt;/p&gt;
 &lt;p&gt;Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.&lt;/p&gt;
-&lt;p&gt;Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут &lt;code&gt;GET /b HTTP/1.0&lt;/code&gt; где путь /b отвечает за цвет (синий).&lt;/p&gt;
 &lt;p&gt;Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес, который также нужно назначить виртуальной сети симулятора:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sudo ip addr add abcd::1/64 dev mazko
 ~$ curl http://[abcd::200:e2ff:fe58:b66b]
@@ -97,7 +97,8 @@ Content-type: text/html
   &lt;span class="c1"&gt;// calculate chksum&lt;/span&gt;
   &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tcp_packet_t&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="n"&gt;tcp&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cksum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="n"&gt;tcp&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cksum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ip_cksum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;IP_PROTOCOL_TCP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;my_ip&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;tcp&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cksum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ip_cksum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;IP_PROTOCOL_TCP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;my_ip&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
 
   &lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;payload_len&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;htons&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="n"&gt;memcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -372,7 +373,7 @@ Content-type: text/html
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Осталось совсем чуть чуть. UDP (User Datagram Protocol) — простейший протокол транспортного уровня. UDP позволяет узлам обмениваться небольшими сообщениями, называемыми датаграммами. Мы реализуем UDP-сервер на микроконтроллере. Для простоты опускаем тему фрагментации IP-пакета, это допустимо для небольших данных. Например для IPv4 чтобы датаграмма точно пролезла в без фрагментации IP-пакета, количество полезных данных в ней не должно превышать 512 байт, для IPv6 нужно пересчитать, но что-то близкое к этому.&lt;/p&gt;
+&lt;p&gt;Осталось совсем чуть чуть. UDP (User Datagram Protocol) — простейший протокол транспортного уровня. UDP позволяет узлам обмениваться небольшими сообщениями, называемыми датаграммами. Мы реализуем UDP-сервер на микроконтроллере. Для простоты опускаем тему фрагментации IP-пакета, это допустимо для небольших данных. Например для IPv4 чтобы датаграмма точно пролезла без фрагментации IP-пакета, количество полезных данных в ней не должно превышать 512 байт, для IPv6 нужно пересчитать, но что-то близкое к этому.&lt;/p&gt;
 &lt;p&gt;UDP считается ненадёжным протоколом — при потере IP-пакета, датаграмма теряется. Впрочем, современные сети вполне себе надёжны — в хорошо работающей локальной сети пакеты не теряются почти никогда. Но, естественно, приложение должно адекватно реагировать, если датаграмма всё же потеряется. Порядок доставки датаграмма также не гарантируется — теоретически вы можно отправить два пакета hello затем world, а получить world затем hello.&lt;/p&gt;
 &lt;p&gt;UDP отлично подходит для передачи данных в реальном времени, нечувствительных к потерям. Скажем, с помощью UDP удобно забирать показания каких-нибудь датчиков или отправлять информацию на дисплей или даже голосовой или видео поток в реальном времени.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;udp_packet&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -471,7 +472,7 @@ Content-type: text/html
 &lt;p&gt;&lt;a href="http://localhost:9148/a491c24964bb014608f8180d354c4198"&gt;IPv6&lt;/a&gt; | &lt;a href="http://localhost:9148/a72c1a945faa90413fb72520f60006f8"&gt;IPv4&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/eth_udp.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/welome.png" style="width:50%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
 &lt;p&gt;Чтобы вывести данные в дисплей, отправляем девайсу UDP-пакет на любой порт, netcat — удобная утилитка, которая поможет отправлять и принимать данные по сети:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ nc -6 -u fe80::0:ff:fe00:42%mazko 12345
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ cat &amp;lt;(echo IoT) - | nc -6 -u fe80::0:ff:fe00:42%mazko 12345
 &lt;/pre&gt;&lt;/div&gt;
 
 

@@ -45,7 +45,7 @@
 <p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/es6">ES6</a> </p>
 </footer><!-- /.post-info -->      <p>Пример портирования <strong>Java</strong> =&gt; <strong>JavaScript</strong> на примере токенизаторов из <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. </p>
-<p><a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6">lucene-tokenizers.es6</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js">lucene-tokenizers.babel.js</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html">Тесты</a> | <a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src">Исходники</a></p>
+<p><a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6">lucene-tokenizers.es6</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js">lucene-tokenizers.babel.js</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html">Тесты</a> | <a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src">Исходники</a></p>
 <h2>TL;DR</h2>
 <p>Процесс можно условно разделить на несколько этапов:</p>
 <ul>
@@ -182,12 +182,12 @@
 <p>И так выглядит один из переопределённых в проекте системных файлов:</p>
 <p><em>src/org/apache/lucene/analysis/standardSystem.java</em></p>
 <div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">System</span> <span class="o">{</span>
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">arraycopy</span><span class="o">(</span><span class="n">Object</span> <span class="n">src</span><span class="o">,</span> <span class="kt">int</span> <span class="n">srcPos</span><span class="o">,</span> <span class="n">Object</span> <span class="n">dest</span><span class="o">,</span> <span class="kt">int</span> <span class="n">destPos</span><span class="o">,</span> <span class="kt">int</span> <span class="n">length</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">arraycopy</span><span class="o">(</span><span class="n">Object</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span> <span class="n">sp</span><span class="o">,</span> <span class="n">Object</span> <span class="n">d</span><span class="o">,</span> <span class="kt">int</span> <span class="n">dp</span><span class="o">,</span> <span class="kt">int</span> <span class="n">l</span><span class="o">)</span> <span class="o">{</span>
     <span class="c1">// :es6:</span>
-    <span class="c1">// int[] elements_to_add = src.slice(srcPos, srcPos + length);</span>
-    <span class="c1">// Array.prototype.splice.apply(dest, new int[] {destPos,</span>
+    <span class="c1">// int[] elements_to_add = s.slice(sp, sp + l);</span>
+    <span class="c1">// Array.prototype.splice.apply(d, new int[] {dp,</span>
     <span class="c1">// elements_to_add.length}.concat(elements_to_add));</span>
-    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">src</span><span class="o">,</span> <span class="n">srcPos</span><span class="o">,</span> <span class="n">dest</span><span class="o">,</span> <span class="n">destPos</span><span class="o">,</span> <span class="n">length</span><span class="o">);</span>
+    <span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">System</span><span class="o">.</span><span class="na">arraycopy</span><span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="n">sp</span><span class="o">,</span> <span class="n">d</span><span class="o">,</span> <span class="n">dp</span><span class="o">,</span> <span class="n">l</span><span class="o">);</span>
     <span class="c1">// :end:</span>
   <span class="o">}</span>
 <span class="o">}</span>
@@ -225,7 +225,8 @@ cat <span class="se">\</span>
 
 <p>Трансляция:</p>
 <div class="highlight"><pre><span></span>~$ npm install -g esjava
-~$ node --stack-size<span class="o">=</span><span class="m">10000</span> <span class="sb">`</span>which esjava<span class="sb">`</span> lucene-tokenizers.java &gt; out/lucene-tokenizers.es6
+~$ <span class="nb">alias</span> <span class="nv">esjava10000</span><span class="o">=</span><span class="s2">&quot;node --stack-size=10000 `which esjava`&quot;</span>
+~$ esjava10000 lucene-tokenizers.java &gt; out/lucene-tokenizers.es6
 </pre></div>
 
 

@@ -14,7 +14,7 @@ EOF
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Ответ:&lt;/p&gt;
+&lt;p&gt;Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут &lt;code&gt;GET /b HTTP/1.0&lt;/code&gt; где путь /b отвечает за цвет (синий). Ответ сервера:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;HTTP/1.0 200 OK
 Server: Contiki/2.4 http://www.sics.se/contiki/
 Connection: close
@@ -31,8 +31,8 @@ Content-type: text/html
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;p&gt;Код состояния (у нас 200) является частью первой строки ответа сервера. Он представляет собой целое число из трёх цифр. Первая цифра указывает на класс состояния. За кодом ответа обычно следует отделённая пробелом поясняющая фраза на английском языке, которая разъясняет человеку причину именно такого ответа. В нашем случае сервер отработал без ошибок, всё пучком (ОК).&lt;/p&gt;
 &lt;p&gt;Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.&lt;/p&gt;
-&lt;p&gt;Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут &lt;code&gt;GET /b HTTP/1.0&lt;/code&gt; где путь /b отвечает за цвет (синий).&lt;/p&gt;
 &lt;p&gt;Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес, который также нужно назначить виртуальной сети симулятора:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sudo ip addr add abcd::1/64 dev mazko
 ~$ curl http://[abcd::200:e2ff:fe58:b66b]
@@ -97,7 +97,8 @@ Content-type: text/html
   &lt;span class="c1"&gt;// calculate chksum&lt;/span&gt;
   &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tcp_packet_t&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="n"&gt;tcp&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cksum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="n"&gt;tcp&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cksum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ip_cksum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;IP_PROTOCOL_TCP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;my_ip&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
+  &lt;span class="n"&gt;tcp&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;cksum&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;ip_cksum&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;IP_PROTOCOL_TCP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;len&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;my_ip&lt;/span&gt;&lt;span class="p"&gt;));&lt;/span&gt;
 
   &lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;payload_len&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;htons&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="n"&gt;memcpy&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="o"&gt;-&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
@@ -372,7 +373,7 @@ Content-type: text/html
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Осталось совсем чуть чуть. UDP (User Datagram Protocol) — простейший протокол транспортного уровня. UDP позволяет узлам обмениваться небольшими сообщениями, называемыми датаграммами. Мы реализуем UDP-сервер на микроконтроллере. Для простоты опускаем тему фрагментации IP-пакета, это допустимо для небольших данных. Например для IPv4 чтобы датаграмма точно пролезла в без фрагментации IP-пакета, количество полезных данных в ней не должно превышать 512 байт, для IPv6 нужно пересчитать, но что-то близкое к этому.&lt;/p&gt;
+&lt;p&gt;Осталось совсем чуть чуть. UDP (User Datagram Protocol) — простейший протокол транспортного уровня. UDP позволяет узлам обмениваться небольшими сообщениями, называемыми датаграммами. Мы реализуем UDP-сервер на микроконтроллере. Для простоты опускаем тему фрагментации IP-пакета, это допустимо для небольших данных. Например для IPv4 чтобы датаграмма точно пролезла без фрагментации IP-пакета, количество полезных данных в ней не должно превышать 512 байт, для IPv6 нужно пересчитать, но что-то близкое к этому.&lt;/p&gt;
 &lt;p&gt;UDP считается ненадёжным протоколом — при потере IP-пакета, датаграмма теряется. Впрочем, современные сети вполне себе надёжны — в хорошо работающей локальной сети пакеты не теряются почти никогда. Но, естественно, приложение должно адекватно реагировать, если датаграмма всё же потеряется. Порядок доставки датаграмма также не гарантируется — теоретически вы можно отправить два пакета hello затем world, а получить world затем hello.&lt;/p&gt;
 &lt;p&gt;UDP отлично подходит для передачи данных в реальном времени, нечувствительных к потерям. Скажем, с помощью UDP удобно забирать показания каких-нибудь датчиков или отправлять информацию на дисплей или даже голосовой или видео поток в реальном времени.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;udp_packet&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
@@ -471,7 +472,7 @@ Content-type: text/html
 &lt;p&gt;&lt;a href="http://localhost:9148/a491c24964bb014608f8180d354c4198"&gt;IPv6&lt;/a&gt; | &lt;a href="http://localhost:9148/a72c1a945faa90413fb72520f60006f8"&gt;IPv4&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/eth_udp.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/welome.png" style="width:50%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
 &lt;p&gt;Чтобы вывести данные в дисплей, отправляем девайсу UDP-пакет на любой порт, netcat — удобная утилитка, которая поможет отправлять и принимать данные по сети:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ nc -6 -u fe80::0:ff:fe00:42%mazko 12345
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ cat &amp;lt;(echo IoT) - | nc -6 -u fe80::0:ff:fe00:42%mazko 12345
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -995,7 +996,8 @@ namespace blinky {
 &lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vAssertCalled&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="kt"&gt;unsigned&lt;/span&gt; &lt;span class="kt"&gt;long&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="cp"&gt;#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __LINE__, __FILE__ )&lt;/span&gt;
 
-&lt;span class="c1"&gt;// Method 2 is a bit slower than method 1 but it will most likely catch all stack overflows.&lt;/span&gt;
+&lt;span class="c1"&gt;// Method 2 is a bit slower than method 1 &lt;/span&gt;
+&lt;span class="c1"&gt;// but it will most likely catch all stack overflows.&lt;/span&gt;
 &lt;span class="cp"&gt;#define configCHECK_FOR_STACK_OVERFLOW     2&lt;/span&gt;
 &lt;span class="cp"&gt;#define configUSE_MALLOC_FAILED_HOOK       1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -1007,14 +1009,14 @@ namespace blinky {
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;draw.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
-&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTask&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTsk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTskNm&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;vApplicationStackOverflowHook&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="n"&gt;xTaskHandle&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pxTsk&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;signed&lt;/span&gt; &lt;span class="n"&gt;portCHAR&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;pcTskNm&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
   &lt;span class="n"&gt;taskDISABLE_INTERRUPTS&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt; &lt;span class="c1"&gt;// game over&lt;/span&gt;
 
   &lt;span class="n"&gt;draw_clr&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
   &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Error: StackOverflow&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
   &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pcTaskName&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+  &lt;span class="n"&gt;draw_str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="k"&gt;sizeof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Task Name:&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="n"&gt;pcTskNm&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
 
   &lt;span class="k"&gt;for&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt; &lt;span class="p"&gt;;;&lt;/span&gt; &lt;span class="p"&gt;);&lt;/span&gt;
 &lt;span class="p"&gt;}&lt;/span&gt;
@@ -1268,8 +1270,9 @@ namespace blinky {
   &lt;span class="n"&gt;P3OUT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="n"&gt;P3DIR&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
   &lt;span class="c1"&gt;// create tasks&lt;/span&gt;
-  &lt;span class="c1"&gt;// Passing a uxPriority value above (configMAX_PRIORITIES – 1) will result in the&lt;/span&gt;
-  &lt;span class="c1"&gt;// priority assigned to the task being capped silently to the maximum legitimate value.&lt;/span&gt;
+  &lt;span class="c1"&gt;// Passing a uxPriority value above (configMAX_PRIORITIES – 1) &lt;/span&gt;
+  &lt;span class="c1"&gt;// will result in the priority assigned to the task&lt;/span&gt;
+  &lt;span class="c1"&gt;// being capped silently to the maximum legitimate value.&lt;/span&gt;
 
   &lt;span class="cm"&gt;/* Task: left side LEDS animation */&lt;/span&gt;
   &lt;span class="n"&gt;xTaskCreate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;vTaskLedsL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
@@ -1417,7 +1420,8 @@ namespace blinky {
 
 &lt;p&gt;Любая картинка или текст это всего-лишь набор пикселей. В случае SSD1306 цвета всего два один из них чёрный. Для преобразования любого файла изображения в Си массив послужит следующий скрипт на питоне + ImageMagick:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# http://grep.js.org/?gist=96caa480d220062b18a693f1b2e9f275&lt;/span&gt;
-~$ convert -resize 128x64&lt;span class="se"&gt;\!&lt;/span&gt; eyes.eps xbm:- &lt;span class="p"&gt;|&lt;/span&gt; grep -o &lt;span class="s1"&gt;&amp;#39;0[xX][0-9a-fA-F]\+&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+~$ &lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;c128x64&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;convert -resize 128x64!&amp;#39;&lt;/span&gt;
+~$ c128x64 eyes.eps xbm:- &lt;span class="p"&gt;|&lt;/span&gt; grep -o &lt;span class="s1"&gt;&amp;#39;0[xX][0-9a-fA-F]\+&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
 
 &lt;span class="s1"&gt;import sys&lt;/span&gt;
 
@@ -7964,13 +7968,13 @@ The quick brown fox!
 
 
 &lt;p&gt;Процедура с портирования &lt;a href="http://ftp.gnu.org/gnu/grep/grep-2.22.tar.xz" rel="nofollow"&gt;grep&lt;/a&gt; мало чем отличается за исключением флага &lt;em&gt;--disable-threads&lt;/em&gt; на этапе &lt;code&gt;./configure&lt;/code&gt;.&lt;/p&gt;</content><category term="Emscripten"></category><category term="Docker"></category></entry><entry><title>Как перестать беспокоиться и начать портировать</title><link href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="alternate"></link><published>2015-10-21T00:00:00+03:00</published><updated>2015-10-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-10-21:/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/</id><summary type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;Процесс можно условно разделить на несколько этапов:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/javascript/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;Процесс можно условно разделить на несколько этапов:&lt;/p&gt;
 &lt;ul&gt;
@@ -8107,12 +8111,12 @@ The quick brown fox!
 &lt;p&gt;И так выглядит один из переопределённых в проекте системных файлов:&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;src/org/apache/lucene/analysis/standardSystem.java&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;final&lt;/span&gt; &lt;span class="kd"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;System&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;arraycopy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;srcPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;destPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+  &lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;arraycopy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Object&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;dp&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
     &lt;span class="c1"&gt;// :es6:&lt;/span&gt;
-    &lt;span class="c1"&gt;// int[] elements_to_add = src.slice(srcPos, srcPos + length);&lt;/span&gt;
-    &lt;span class="c1"&gt;// Array.prototype.splice.apply(dest, new int[] {destPos,&lt;/span&gt;
+    &lt;span class="c1"&gt;// int[] elements_to_add = s.slice(sp, sp + l);&lt;/span&gt;
+    &lt;span class="c1"&gt;// Array.prototype.splice.apply(d, new int[] {dp,&lt;/span&gt;
     &lt;span class="c1"&gt;// elements_to_add.length}.concat(elements_to_add));&lt;/span&gt;
-    &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;arraycopy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;srcPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dest&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;destPos&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="n"&gt;java&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;arraycopy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;s&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sp&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dp&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
     &lt;span class="c1"&gt;// :end:&lt;/span&gt;
   &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
@@ -8150,7 +8154,8 @@ cat &lt;span class="se"&gt;\&lt;/span&gt;
 
 &lt;p&gt;Трансляция:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ npm install -g esjava
-~$ node --stack-size&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;10000&lt;/span&gt; &lt;span class="sb"&gt;`&lt;/span&gt;which esjava&lt;span class="sb"&gt;`&lt;/span&gt; lucene-tokenizers.java &amp;gt; out/lucene-tokenizers.es6
+~$ &lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;esjava10000&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;node --stack-size=10000 `which esjava`&amp;quot;&lt;/span&gt;
+~$ esjava10000 lucene-tokenizers.java &amp;gt; out/lucene-tokenizers.es6
 &lt;/pre&gt;&lt;/div&gt;
 
 

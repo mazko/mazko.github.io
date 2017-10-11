@@ -53,7 +53,7 @@ EOF
 </pre></div>
 
 
-<p>Ответ:</p>
+<p>Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут <code>GET /b HTTP/1.0</code> где путь /b отвечает за цвет (синий). Ответ сервера:</p>
 <div class="highlight"><pre><span></span>HTTP/1.0 200 OK
 Server: Contiki/2.4 http://www.sics.se/contiki/
 Connection: close
@@ -70,8 +70,8 @@ Content-type: text/html
 </pre></div>
 
 
+<p>Код состояния (у нас 200) является частью первой строки ответа сервера. Он представляет собой целое число из трёх цифр. Первая цифра указывает на класс состояния. За кодом ответа обычно следует отделённая пробелом поясняющая фраза на английском языке, которая разъясняет человеку причину именно такого ответа. В нашем случае сервер отработал без ошибок, всё пучком (ОК).</p>
 <p>Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.</p>
-<p>Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут <code>GET /b HTTP/1.0</code> где путь /b отвечает за цвет (синий).</p>
 <p>Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес, который также нужно назначить виртуальной сети симулятора:</p>
 <div class="highlight"><pre><span></span>~$ sudo ip addr add abcd::1/64 dev mazko
 ~$ curl http://[abcd::200:e2ff:fe58:b66b]
@@ -136,7 +136,8 @@ Content-type: text/html
   <span class="c1">// calculate chksum</span>
   <span class="n">len</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
   <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_TCP</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_TCP</span><span class="p">,</span>
+      <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
 
   <span class="n">ip</span><span class="o">-&gt;</span><span class="n">payload_len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>
   <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
