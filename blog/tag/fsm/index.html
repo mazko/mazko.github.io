@@ -25,10 +25,214 @@
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-6247427373315098",
+    enable_page_level_ads: true
+  });
+</script>
+
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">Реактивное программирование QP/C++ | UML</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">Сетевое программирование - TCP | HTTP сервер</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-10-09T00:00:00+03:00">
+                Published: Пн. 09 Октябрь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
+<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее по этому соединению туда и обратно посылаются пакеты (идет беседа), причем с проверкой, дошел ли пакет до получателя. Если пакет потерялся, или дошел, но с битой контрольной суммой, то он посылается повторно («повтори, не расслышал»). Таким образом TCP более надёжен, но он сложнее с точки зрения реализации и соответственно требует больше тактов / памяти, что имеет не самое последнее значение для микроконтроллеров. В качестве примеров прикладных протоколов, использующих TCP, можно назвать FTP, HTTP, SMTP и многие другие.</p>
+<h2>TL;DR</h2>
+<p>HTTP (Hypertext Transfer Protocol) — прикладной протокол, с помощью которого сервер отдаёт странички нашему браузеру. HTTP в настоящее время повсеместно используется во Всемирной паутине для получения информации с веб-сайтов. На картинке светильник на микроконтроллере с ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту, в котором цвета задаются через браузер.</p>
+<p><a href="http://localhost:9148/54734ef58963a68a9d79d74d53e115f7">IPv6</a> | <a href="http://localhost:9148/f681567307f7470e3bcb0e17de6c1710">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/conticki-http-leds.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%;"></p>
+<p>HTTP протокол текстовый и достаточно простой. Собственно вот так выглядит метод GET, посылаемый утилитой netcat на локальный IPv6 адрес сервера с лампочками:</p>
+<div class="highlight"><pre><span></span>~$ nc fe80::200:e2ff:fe58:b66b%mazko 80 &lt;&lt;EOF
+GET /b HTTP/1.0
+
+EOF
+</pre></div>
+
+
+<p>Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут <code>GET /b HTTP/1.0</code> где путь /b отвечает за цвет (синий). Ответ сервера:</p>
+<div class="highlight"><pre><span></span>HTTP/1.0 200 OK
+Server: Contiki/2.4 http://www.sics.se/contiki/
+Connection: close
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Content-type: text/html
+
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Contiki RGB&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+&lt;p style=&#39;color:red;&#39;&gt;Red is &lt;a href=&#39;/r&#39;&gt;OFF&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&#39;color:green;&#39;&gt;Green is &lt;a href=&#39;/g&#39;&gt;OFF&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&#39;color:blue;&#39;&gt;Blue is &lt;a href=&#39;/b&#39;&gt;ON&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre></div>
+
+
+<p>Код состояния (у нас 200) является частью первой строки ответа сервера. Он представляет собой целое число из трёх цифр. Первая цифра указывает на класс состояния. За кодом ответа обычно следует отделённая пробелом поясняющая фраза на английском языке, которая разъясняет человеку причину именно такого ответа. В нашем случае сервер отработал без ошибок, всё пучком (ОК).</p>
+<p>Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.</p>
+<p>Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес, который также нужно назначить виртуальной сети симулятора:</p>
+<div class="highlight"><pre><span></span>~$ sudo ip addr add abcd::1/64 dev mazko
+~$ curl http://[abcd::200:e2ff:fe58:b66b]
+</pre></div>
+
+
+<p>Если curl отработал без ошибок, то ссылку можно спокойно открывать в браузере.</p>
+<h2>TCP</h2>
+<p>Здесь мы научим наш <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">игрушечный</a> TCP/IP стек понимать TCP протокол. Итак организация соединения по протоколу TCP начинается с т.н. трехстороннего квитирования (рукопожатия). Как всегда разобраться с сетью поможет Wireshark.</p>
+<p>Когда требуется установить соединение с удалённым сервером, ему отправляется пакет с установленным флагом SYN, что означает инициализацию сессии. Тут есть поле Sequence Number (на картинке 1039510418), начальное значение этого поля выбирается случайным образом инициатором соединения.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%;"></p>
+<p>Сервер, в ответ на этот пакет, отвечает пакетом с битами SYN, ACK. Своё значение Sequence Number (на картинке 16770109) он тоже генерирует случайным образом. Также он должен заполнить поле Acknowledgment Number, которые будет равно сумме принятого Sequence Number плюс 1 т.е. 1039510419.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%;"></p>
+<p>Теперь инициатору подключения не остается ничего другого, как ответить ACK. Здесь Acknowledgment Number аналогично будет равно сумме принятого Sequence Number плюс 1 т.е. 16770110.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%;"></p>
+<p>С этого момента соединение считается установленным. Дальнейшие пакеты будут передавать уже полезную нагрузку – данные протоколов вышестоящих уровней. В отличие от UDP, тут на каждый пакет нужно отправлять подтверждение (флаг ACK), дабы удалённый узел знал, что отправленные им данные были успешно приняты. При этом так же происходит взаимное увеличение Sequence Number у сервера и у клиента, но только уже не на 1, а на размер отправляемых данных.</p>
+<p>Для закрытия соединение удалённому узлу посылается пакет с установленным флагом FIN.</p>
+<p>С точки зрения реализации TCP это классический <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечный автомат</a>. На картинке показаны как состояния сервера, так и клиента (разные цвета стрелок), на стрелках отображено <strong>событие/действие</strong> – например переход сервера (синяя стрелка) из состояния LISTEN в состояние SYN RECEIVED происходит по событию SYN, реакция на это событие отправить клиенту SYN+ACK в ответ:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/Tcp_state_diagram_fixed.svg" style="width:100%; border:1px solid #ddd;"></p>
+<p>Теперь немного кода. Приведенный ниже пример очень сильно упрощён, тут нет состояний и реализована только минианимальная логика, достаточная для обмена данными утилитой netcat.</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ip_packet</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">ver_head_len</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">tos</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">total_len</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">fragment_id</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">flags_framgent_offset</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">ttl</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">protocol</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">from_addr</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">to_addr</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">ip_packet_t</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_reply</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">temp</span><span class="p">;</span>
+
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+  <span class="c1">// swap src/dst, fill tcp hdr?</span>
+  <span class="n">temp</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">from_port</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">from_port</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">to_port</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">to_port</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">window</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">TCP_WINDOW_SIZE</span><span class="p">);</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">urgent_ptr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// SYN packet?</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">TCP_FLAG_SYN</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// add MSS option</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data_offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// MSS option</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// MSS option length = 4 bytes</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCP_SYN_MSS</span><span class="o">&gt;&gt;</span><span class="mi">8</span><span class="p">;</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCP_SYN_MSS</span><span class="o">&amp;</span><span class="mh">0xff</span><span class="p">;</span>
+    <span class="n">len</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// not syn packet - no options</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data_offset</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// calculate chksum</span>
+  <span class="n">len</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_TCP</span><span class="p">,</span>
+      <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
+
+  <span class="n">ip</span><span class="o">-&gt;</span><span class="n">payload_len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_ip</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+  <span class="n">eth_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ip_packet_t</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_step</span><span class="p">(</span><span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">num</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_num</span><span class="p">;</span>
+  <span class="n">ack_num</span> <span class="o">=</span> <span class="n">ntohl</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span><span class="p">)</span> <span class="o">+</span> <span class="n">num</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">ack_num</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">ack_num</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">ack_num</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+  <span class="k">switch</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nl">TCP_FLAG_SYN</span><span class="p">:</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">TCP_FLAG_SYN</span> <span class="o">|</span> <span class="n">TCP_FLAG_ACK</span><span class="p">;</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">gettc</span><span class="p">());</span> <span class="c1">// random number</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">TCP_FLAG_PSH</span> <span class="o">|</span> <span class="nl">TCP_FLAG_ACK</span><span class="p">:</span>
+      <span class="n">len</span> <span class="o">-=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">TCP_FLAG_ACK</span><span class="p">;</span>
+      <span class="c1">// feed/read data to/from app</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tcp_data</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span><span class="p">));</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">TCP_FLAG_FIN</span> <span class="o">|</span> <span class="nl">TCP_FLAG_ACK</span><span class="p">:</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Обработка полезных данных — выводим на экран, печатаем в UART: </p>
+<div class="highlight"><pre><span></span><span class="kt">uint16_t</span> <span class="nf">tcp_data</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+
+  <span class="n">draw_clr</span><span class="p">();</span>
+  <span class="n">data</span><span class="p">[</span><span class="n">len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;&gt;&gt; %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+
+  <span class="c1">// piggyback</span>
+  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">response</span> <span class="o">=</span> <span class="s">&quot;!!! OK !!!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">strlen</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><a href="http://localhost:9148/f0925cc954111f5cb6f47c6b1dffc0ac">IPv6</a> | <a href="http://localhost:9148/ce2f76817817a8bea5d539aa0df45f8f">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/eth_tcp.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/tcp.png" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Чтобы вывести данные в дисплей, отправляем девайсу TCP-пакет на любой порт помощью netcat:</p>
+<div class="highlight"><pre><span></span>~$ cat &lt;(echo &#39;hello TCP !&#39;) - | nc -6 fe80::0:ff:fe00:42%mazko 12345
+</pre></div>
+
+
+<p>Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/" rel="bookmark"
+                           title="Permalink to Реактивное программирование QP/C++ | UML">Реактивное программирование QP/C++ | UML</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-05-25T00:00:00+03:00">
                 Published: Чт. 25 Май 2017
@@ -39,112 +243,35 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info --><blockquote>
+</footer><!-- /.post-info -->                <blockquote>
 <p>Компьютер — это конечный автомат. Потоковое программирование нужно тем, кто не умеет программировать конечные автоматы. — Алан Кокс </p>
 </blockquote>
-<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что даёт возможность разрабатывать приложения для широкого спектра различных архитектур и целевых платформ. Во многих случаях QP может рассматриваться как альтернатива для <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">RT(OS)</a>, хотя также предусмотрена возможность запускаться и поверх уже имеющейся ОС.</p>
-<p>Приложение на QP состоит из активных объектов (Active Object) с приоритетами, которые по совместительству представляют из себя иерархические <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечные автоматы</a>. Ядро QP, в зависимости от конфигурации, позволяет активным объектам работать либо <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативно</a> QV (Vanilla), либо каждый в своей нити QK. Активный объект — «лентяй», он сам по себе ничего не делает кроме как ожидает <span style="text-decoration:line-through">пинка</span> интересующие его события и реагирует на них — например записывает чего-нибудь в порт, переходит в новое состояние или даже <em>асинхронно</em> отсылает конечное число сообщений (сигналов) другим активным объектам, после чего снова переходит в режим ожидания. Длительное выполнение обработчика события как правило является недопустимым, поскольку при этом сам активный объект (или вообще всё приложение в случае с кооперативного ядра) не может реагировать на другие события и очевидно, что такое поведение противоречит концепции реального времени. А никто и не говорил, что будет легко :)</p>
-<p>Код активных объектов можно набирать как ручками в виде обычных классов (да, в Си можно эмулировать классы), так и воспользоваться специальным инструментом для визуального моделирования UML диаграмм состояний QM (QP Modeler) c последующей автоматической генерацией кода. В данном материале будет делаться акцент на визуальном моделировании, в связи с чем будет немного кода и много красивых картинок. Начнём с самого простого — <a href="https://state-machine.com/qm/gs_tut.html" rel="nofollow">мигающих лампочек</a>.</p>
-<p><a href="http://mazko.github.io/MSP430.js/90df829b292e035384d37749bee1e0f7">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/blinky-qv-msp430-js.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/blink-statechart.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Для компиляции проекта нужна только IDE <a href="http://www.ti.com/tool/ccstudio-msp" rel="nofollow">Code Composer Studio</a> (CCS), C++ компилятор там уже встроен. Проше всего импортировать сразу весь архив с исходниками: File -&gt; Import -&gt; CCS Projects -&gt; Select archive file. На картинке изображена среда моделирования QM и диаграмма состояний UML мигающих лампочек (файл <em>blink.qm</em> в исходниках). Частота переключения лампочек определяется при активации таймера и при <code>BSP::TICKS_PER_SEC</code> это одна секунда. Для автоматической генерации диаграммы в исходный код требуется задать специальные файлы шаблоны, в которых для QM нужно явно прописать <code>$declare</code> и <code>$define</code>. В принципе можно было бы даже обойтись и без указателя <code>QP::QActive * const AO_BlinkyPtr</code>, он нужен только для лучшей инкапсуляции активного объекта <code>BlinkyAO</code> — это классическая <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиома</a>.</p>
-<p><em>blinky.h</em></p>
-<div class="highlight"><pre><span></span>#ifndef blinky_h
-#define blinky_h
+<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
-namespace blinky {
-    $declare(AOs::AO_BlinkyPtr)
-}
-// declare other elements...
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="bookmark"
+                           title="Permalink to PICSim.js - сопрограммы и простейшая многозадачность">PICSim.js - сопрограммы и простейшая многозадачность</a></h1>
+                </header>
 
-#endif // project_h
-</pre></div>
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-02-05T00:00:00+02:00">
+                Published: Вс. 05 Февраль 2017
+        </abbr>
 
-
-<p><em>blinky.cpp</em></p>
-<div class="highlight"><pre><span></span>#include &quot;qpcpp.h&quot;
-#include &quot;blinky.h&quot;
-#include &quot;bsp.h&quot;
-
-namespace blinky {
-
-    enum {
-        TIMEOUT_SIG = QP::Q_USER_SIG,
-    };
-
-    $declare(AOs::BlinkyAO)
-
-    // Local objects -------------------------------------------------------------
-    static BlinkyAO __self_ao; // the single instance active object
-
-    // Global-scope objects ------------------------------------------------------
-    QP::QActive * const AO_BlinkyPtr = &amp;__self_ao; // &quot;opaque&quot; AO pointer
-
-    $define(AOs::BlinkyAO)
-
-}
-
-// define other elements...
-</pre></div>
-
-
-<p>Базовый класс события <code>QEvent</code> состоит из сигнала <code>QSignal sig</code> и поля служебной информации <code>uint8_t dynamic_</code>, этот класс можно наследовать и добавлять туда дополнительные поля с данными, характерными для конкретного события. Идентификаторы сигналов для активных объектов должны начинаться не с нуля а с <code>Q_USER_SIG</code>, так как в QP уже есть сигналы, зарезервированные системой, например <code>Q_EMPTY_SIG</code>, <code>Q_ENTRY_SIG</code>, <code>Q_INIT_SIG</code>, <code>Q_EXIT_SIG</code>. Вся низкоуровневая логика взаимодействия с конкретной железкой находится в файле <em>bsp.cpp</em> и там же реализован <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/">обработчик ошибок</a> (куда ж без них то) QP. Ну а собственно процесс инициализации самого QP и запуск активных объектов в данном простейшем случае выглядит так:</p>
-<p><em>main.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;qpcpp.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;bsp.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;blinky.h&quot;</span><span class="cp"></span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">static</span> <span class="n">QP</span><span class="o">::</span><span class="n">QEvt</span> <span class="k">const</span> <span class="o">*</span><span class="n">blinky_queueSto</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>    <span class="c1">// Event queue storage</span>
-
-    <span class="n">BSP</span><span class="o">::</span><span class="n">init</span><span class="p">();</span> <span class="c1">// initialize the Board Support Package</span>
-    <span class="n">QP</span><span class="o">::</span><span class="n">QF</span><span class="o">::</span><span class="n">init</span><span class="p">();</span> <span class="c1">// initialize the framework and the underlying RT kernel</span>
-
-    <span class="c1">// publish-subscribe not used, no call to QF::psInit()</span>
-    <span class="c1">// dynamic event allocation not used, no call to QF::poolInit()</span>
-
-    <span class="n">blinky</span><span class="o">::</span><span class="n">AO_BlinkyPtr</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">(</span><span class="mi">1U</span><span class="p">,</span>                   <span class="c1">// priority</span>
-                     <span class="n">blinky_queueSto</span><span class="p">,</span> <span class="n">Q_DIM</span><span class="p">(</span><span class="n">blinky_queueSto</span><span class="p">),</span> <span class="c1">// event queue</span>
-                     <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0U</span><span class="p">);</span>                  <span class="c1">// stack (unused)</span>
-
-
-    <span class="k">return</span> <span class="n">QP</span><span class="o">::</span><span class="n">QF</span><span class="o">::</span><span class="n">run</span><span class="p">();</span> <span class="c1">// run the QF application</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>С мигающими лампочками всё понятно, но нужно что-то поинтересней — предлагаю построить аналог для ранее рассмотренного приложения под <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">FreeRTOS</a>. В системе три активных объекта — левые лампочки, правые лампочки и дисплей. Кооперативное ядро QP позволяет сразу же забыть о проблеме <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарного доступа</a> с портам. Теперь самое время чуть более подробно остановиться на событиях и какими они бывают. Итак в приложении добавляются глобальные события от кнопок <code>BTNS_LEFT_SIG</code> и <code>BTNS_RIGHT_SIG</code>. События в QP бывают двух видов:</p>
-<ul>
-<li>
-<p>статические — неизменяемые (immutable) события. За создание экземпляра статического события отвечает разработчик приложения. В нашем случае оба события содержат дополнительную информацию о нажатой кнопке, их значение изменяется и такие события не попадают в категорию статических</p>
-</li>
-<li>
-<p>динамические — создаются макросом <code>Q_NEW</code> в области динамической памяти и существуют до тех пор, пока не будут обработаны всеми активными объектами, которым они предназначены. Для динамических событий при инициализации приложения нужно создавать пул с помощью вызова <code>QP::QF::poolInit</code>. Так создаётся событие от кнопок <code>BtnEvt *btnEvt = Q_NEW(BtnEvt, BTNS_LEFT_SIG); btnEvt-&gt;value = 42;</code></p>
-</li>
-</ul>
-<p>В дополнение ко всему для более рационального использования ресурсов микроконтроллера QP поддерживает два способа доставки сообщений:</p>
-<ul>
-<li>
-<p>напрямую — отправитель явно вызывает метод у экземпляра активного объекта получателя. Например можно послать сообщение самому себе <code>me-&gt;POST(&amp;UPDATE_EVENT, me)</code></p>
-</li>
-<li>
-<p>мультикаст — отправитель ничего не знает о получателях, каждый получатель динамически подписывается / отписывается от интересующих его событий. Такой способ хорошо подходит для кнопок. Для мультикаста при инициализации приложения нужно создать пул с помощью вызова <code>QP::QF::psInit</code>. Так отсылается сообщение от кнопок <code>QP::QF::PUBLISH(btnEvt, (void *)0);</code></p>
-</li>
-</ul>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/r.png" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
-<p>На рисунке диаграмма состояний активного объекта с правыми лампочками. У него одно единственное состояние, единственное что он делает это слушает кнопку и в зависимости от её значения устанавливает цвет для правых лампочек. Событие не обязательно должно менять состояние активного объекта, реакция на событие может быть любой на усмотрение разработчика.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/d.png" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
-<p>Здесь активный объект занимается выводом данных на дисплей, отсылая сообщение самому себе. Для экономии памяти микроконтроллера событие DISPLAY_UPDATE может быть <strong>статическим</strong> <code>static QP::QEvt const UPDATE_EVENT = { DISPLAY_UPDATE_SIG, 0U, 0U };</code> т.к. никаких дополнительных полей с данными в нём нет. В текущей реализации у данного активного объекта должен быть наименьший приоритет в системе.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/l.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Активный объект для левых лампочек самый интересный. Тут <strong>иерархический</strong> конечный автомат. Иерархический автомат содержит в себе другие автоматы. В каком бы состоянии не находится активный объект для левых лампочек, он всегда слушает событие о нажатой кнопочке, реакция на событие одинаковая. Иерархический автомат позволяет избежать дублирования – проще реализовать требуемое поведение один раз в родительском состоянии, чем повторять одну и ту же логику в дочерних состояниях. Еще один полезный приём, позволяющий значительно упростить жизнь разработчику – использовать историю предыдущих состояний (Transition to History), лампочки помнят свой цвет в состоянии мигания.  </p>
-<p><a href="http://mazko.github.io/MSP430.js/bd5dbe0259a4c493e612fd8f3fa3fbd3">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/3ao-qv-msp430-js.zip">исходники</a></p>
-<p>К QP прилагается серьёзная книга «Practical UML Statecharts in C/C++, Second Edition: Event-Driven Programming for Embedded Systems» от основателя компании Quantum Leaps. В данной книге есть отдельная глава с описанием паттернов, которые часто применяются при проектировании конечных автоматов. На сайте Quantum Leaps также представлены дополнительные обучающие материалы и полезные инструменты для разработки QP приложений – <a href="http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/">юнит тесты</a> QUTest, QSpy.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">Далее</a> игра «Змейка» на QP/C++.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
+</footer><!-- /.post-info -->                <p>Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">программа</a> для микроконтроллера это <em>суперцикл</em> - одна точка входа <code>main</code> с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">прерываний</a> - немедленную обработку событий, что позволяет решать более сложные задачи …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

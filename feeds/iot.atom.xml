@@ -5,7 +5,7 @@
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;HTTP (Hypertext Transfer Protocol) — прикладной протокол, с помощью которого сервер отдаёт странички нашему браузеру. HTTP в настоящее время повсеместно используется во Всемирной паутине для получения информации с веб-сайтов. На картинке светильник на микроконтроллере с ОС &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Contiki&lt;/a&gt; на борту, в котором цвета задаются через браузер.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://localhost:9148/54734ef58963a68a9d79d74d53e115f7"&gt;IPv6&lt;/a&gt; | &lt;a href="http://localhost:9148/f681567307f7470e3bcb0e17de6c1710"&gt;IPv4&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/conticki-http-leds.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;HTTP протокол текстовый и достаточно простой. Собственно вот так выглядит метод GET, посылаемый утилитой netcat на локальный IPv6 адрес сервера с лампочками:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ nc fe80::200:e2ff:fe58:b66b%mazko 80 &amp;lt;&amp;lt;EOF
 GET /b HTTP/1.0
@@ -43,14 +43,16 @@ Content-type: text/html
 &lt;h2&gt;TCP&lt;/h2&gt;
 &lt;p&gt;Здесь мы научим наш &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;игрушечный&lt;/a&gt; TCP/IP стек понимать TCP протокол. Итак организация соединения по протоколу TCP начинается с т.н. трехстороннего квитирования (рукопожатия). Как всегда разобраться с сетью поможет Wireshark.&lt;/p&gt;
 &lt;p&gt;Когда требуется установить соединение с удалённым сервером, ему отправляется пакет с установленным флагом SYN, что означает инициализацию сессии. Тут есть поле Sequence Number (на картинке 1039510418), начальное значение этого поля выбирается случайным образом инициатором соединения.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;Сервер, в ответ на этот пакет, отвечает пакетом с битами SYN, ACK. Своё значение Sequence Number (на картинке 16770109) он тоже генерирует случайным образом. Также он должен заполнить поле Acknowledgment Number, которые будет равно сумме принятого Sequence Number плюс 1 т.е. 1039510419.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;Теперь инициатору подключения не остается ничего другого, как ответить ACK. Здесь Acknowledgment Number аналогично будет равно сумме принятого Sequence Number плюс 1 т.е. 16770110.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;С этого момента соединение считается установленным. Дальнейшие пакеты будут передавать уже полезную нагрузку – данные протоколов вышестоящих уровней. В отличие от UDP, тут на каждый пакет нужно отправлять подтверждение (флаг ACK), дабы удалённый узел знал, что отправленные им данные были успешно приняты. При этом так же происходит взаимное увеличение Sequence Number у сервера и у клиента, но только уже не на 1, а на размер отправляемых данных.&lt;/p&gt;
 &lt;p&gt;Для закрытия соединение удалённому узлу посылается пакет с установленным флагом FIN.&lt;/p&gt;
-&lt;p&gt;С точки зрения реализации TCP это классический &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;конечный автомат&lt;/a&gt;. Приведенный ниже пример сильно упрощён, тут реализована только минианимальная логика, достаточная для обмена данными утилитой netcat. &lt;/p&gt;
+&lt;p&gt;С точки зрения реализации TCP это классический &lt;a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/"&gt;конечный автомат&lt;/a&gt;. На картинке показаны как состояния сервера, так и клиента (разные цвета стрелок), на стрелках отображено &lt;strong&gt;событие/действие&lt;/strong&gt; – например переход сервера (синяя стрелка) из состояния LISTEN в состояние SYN RECEIVED происходит по событию SYN, реакция на это событие отправить клиенту SYN+ACK в ответ:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/Tcp_state_diagram_fixed.svg" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Теперь немного кода. Приведенный ниже пример очень сильно упрощён, тут нет состояний и реализована только минианимальная логика, достаточная для обмена данными утилитой netcat.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ip_packet&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;ver_head_len&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
     &lt;span class="kt"&gt;uint8_t&lt;/span&gt; &lt;span class="n"&gt;tos&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
@@ -170,7 +172,7 @@ Content-type: text/html
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.&lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category></entry><entry><title>Сетевое программирование - UDP | NTP часы</title><link href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="alternate"></link><published>2017-10-03T00:00:00+03:00</published><updated>2017-10-03T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-03:/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.&lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category><category term="FSM"></category></entry><entry><title>Сетевое программирование - UDP | NTP часы</title><link href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="alternate"></link><published>2017-10-03T00:00:00+03:00</published><updated>2017-10-03T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-03:/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
@@ -223,7 +225,7 @@ Content-type: text/html
 
 
 &lt;p&gt;И собственно вот так выглядит Ethernet-фрейм на канальном уровене:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/Ethernet_Type_II_Frame_format.svg" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/Ethernet_Type_II_Frame_format.svg" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;Контрольная сумма рассчитывается и проверяется ENC28J60, так что для нас остаются видимы только 4 поля:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -278,8 +280,8 @@ Content-type: text/html
 
 
 &lt;p&gt;При отправке первых данных неизвестно, у какого устройства в подсети адрес &lt;code&gt;fe80::0:ff:fe00:42&lt;/code&gt;. Узел, который хочет узнать MAC-адрес другого узла, посылает специальный ICMPv6-запрос Neighbor Solicitation (135) с IP-адресом искомого узла на специальный мультикаст-адрес. Узел, чей IP указан в пакете, отвечает обратно ICMPv6-пакетом — Neighbor Advertisement (136), в котором и указывает свой MAC-адрес.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-req.png" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-res.png" style="width:100%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-req.png" style="width:100%;"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-res.png" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;Пример кода:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="n"&gt;ip_packet&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
     &lt;span class="cm"&gt;/** Version (4 bits), Traffic class (8 bits), Flow label (20 bits) */&lt;/span&gt;

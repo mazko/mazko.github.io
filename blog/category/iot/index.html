@@ -25,6 +25,14 @@
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-6247427373315098",
+    enable_page_level_ads: true
+  });
+</script>
+
 
             <aside id="featured" class="body">
                 <article>
@@ -38,13 +46,13 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
 </footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
 <p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее по этому соединению туда и обратно посылаются пакеты (идет беседа), причем с проверкой, дошел ли пакет до получателя. Если пакет потерялся, или дошел, но с битой контрольной суммой, то он посылается повторно («повтори, не расслышал»). Таким образом TCP более надёжен, но он сложнее с точки зрения реализации и соответственно требует больше тактов / памяти, что имеет не самое последнее значение для микроконтроллеров. В качестве примеров прикладных протоколов, использующих TCP, можно назвать FTP, HTTP, SMTP и многие другие.</p>
 <h2>TL;DR</h2>
 <p>HTTP (Hypertext Transfer Protocol) — прикладной протокол, с помощью которого сервер отдаёт странички нашему браузеру. HTTP в настоящее время повсеместно используется во Всемирной паутине для получения информации с веб-сайтов. На картинке светильник на микроконтроллере с ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту, в котором цвета задаются через браузер.</p>
 <p><a href="http://localhost:9148/54734ef58963a68a9d79d74d53e115f7">IPv6</a> | <a href="http://localhost:9148/f681567307f7470e3bcb0e17de6c1710">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/conticki-http-leds.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%;"></p>
 <p>HTTP протокол текстовый и достаточно простой. Собственно вот так выглядит метод GET, посылаемый утилитой netcat на локальный IPv6 адрес сервера с лампочками:</p>
 <div class="highlight"><pre><span></span>~$ nc fe80::200:e2ff:fe58:b66b%mazko 80 &lt;&lt;EOF
 GET /b HTTP/1.0
@@ -82,14 +90,16 @@ Content-type: text/html
 <h2>TCP</h2>
 <p>Здесь мы научим наш <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">игрушечный</a> TCP/IP стек понимать TCP протокол. Итак организация соединения по протоколу TCP начинается с т.н. трехстороннего квитирования (рукопожатия). Как всегда разобраться с сетью поможет Wireshark.</p>
 <p>Когда требуется установить соединение с удалённым сервером, ему отправляется пакет с установленным флагом SYN, что означает инициализацию сессии. Тут есть поле Sequence Number (на картинке 1039510418), начальное значение этого поля выбирается случайным образом инициатором соединения.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%;"></p>
 <p>Сервер, в ответ на этот пакет, отвечает пакетом с битами SYN, ACK. Своё значение Sequence Number (на картинке 16770109) он тоже генерирует случайным образом. Также он должен заполнить поле Acknowledgment Number, которые будет равно сумме принятого Sequence Number плюс 1 т.е. 1039510419.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%;"></p>
 <p>Теперь инициатору подключения не остается ничего другого, как ответить ACK. Здесь Acknowledgment Number аналогично будет равно сумме принятого Sequence Number плюс 1 т.е. 16770110.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%;"></p>
 <p>С этого момента соединение считается установленным. Дальнейшие пакеты будут передавать уже полезную нагрузку – данные протоколов вышестоящих уровней. В отличие от UDP, тут на каждый пакет нужно отправлять подтверждение (флаг ACK), дабы удалённый узел знал, что отправленные им данные были успешно приняты. При этом так же происходит взаимное увеличение Sequence Number у сервера и у клиента, но только уже не на 1, а на размер отправляемых данных.</p>
 <p>Для закрытия соединение удалённому узлу посылается пакет с установленным флагом FIN.</p>
-<p>С точки зрения реализации TCP это классический <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечный автомат</a>. Приведенный ниже пример сильно упрощён, тут реализована только минианимальная логика, достаточная для обмена данными утилитой netcat. </p>
+<p>С точки зрения реализации TCP это классический <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечный автомат</a>. На картинке показаны как состояния сервера, так и клиента (разные цвета стрелок), на стрелках отображено <strong>событие/действие</strong> – например переход сервера (синяя стрелка) из состояния LISTEN в состояние SYN RECEIVED происходит по событию SYN, реакция на это событие отправить клиенту SYN+ACK в ответ:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/Tcp_state_diagram_fixed.svg" style="width:100%; border:1px solid #ddd;"></p>
+<p>Теперь немного кода. Приведенный ниже пример очень сильно упрощён, тут нет состояний и реализована только минианимальная логика, достаточная для обмена данными утилитой netcat.</p>
 <div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ip_packet</span> <span class="p">{</span>
     <span class="kt">uint8_t</span> <span class="n">ver_head_len</span><span class="p">;</span>
     <span class="kt">uint8_t</span> <span class="n">tos</span><span class="p">;</span>

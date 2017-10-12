@@ -25,6 +25,14 @@
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-6247427373315098",
+    enable_page_level_ads: true
+  });
+</script>
+
 
             <aside id="featured" class="body">
                 <article>
@@ -89,7 +97,7 @@
 
 
 <p>И собственно вот так выглядит Ethernet-фрейм на канальном уровене:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/Ethernet_Type_II_Frame_format.svg" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/Ethernet_Type_II_Frame_format.svg" style="width:100%;"></p>
 <p>Контрольная сумма рассчитывается и проверяется ENC28J60, так что для нас остаются видимы только 4 поля:</p>
 <ul>
 <li>
@@ -144,8 +152,8 @@
 
 
 <p>При отправке первых данных неизвестно, у какого устройства в подсети адрес <code>fe80::0:ff:fe00:42</code>. Узел, который хочет узнать MAC-адрес другого узла, посылает специальный ICMPv6-запрос Neighbor Solicitation (135) с IP-адресом искомого узла на специальный мультикаст-адрес. Узел, чей IP указан в пакете, отвечает обратно ICMPv6-пакетом — Neighbor Advertisement (136), в котором и указывает свой MAC-адрес.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-req.png" style="width:100%; margin: 0 auto; display:block;"></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-res.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-req.png" style="width:100%;"></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/ndp-res.png" style="width:100%;"></p>
 <p>Пример кода:</p>
 <div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ip_packet</span> <span class="p">{</span>
     <span class="cm">/** Version (4 bits), Traffic class (8 bits), Flow label (20 bits) */</span>
