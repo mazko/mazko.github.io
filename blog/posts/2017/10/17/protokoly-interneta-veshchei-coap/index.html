@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - contiki</title>
+        <title>Протоколы «Интернета вещей» - CoAP</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -21,7 +21,7 @@
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
@@ -33,10 +33,15 @@
   });
 </script>
 
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/" rel="bookmark"
+           title="Permalink to Протоколы «Интернета вещей» - CoAP">Протоколы «Интернета вещей» - CoAP</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">Протоколы «Интернета вещей» - CoAP</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-10-17T00:00:00+03:00">
                 Published: Вт. 17 Октябрь 2017
@@ -47,7 +52,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> развлекаться с сетевыми протоколам.</p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> развлекаться с сетевыми протоколам.</p>
 <p>CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">HTTP</a>, но с дополнительными фичами и улучшениями. В отличие от протокола HTTP, который является текстовым и использует <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">ТСР</a>, CoAP – это бинарный протокол, который работает поверх <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a>, что значительно уменьшает общий размер передаваемых данных и повышает гибкость взаимодействия.</p>
 <p>С точки зрения разработчика CoAP выглядит почти так же, как HTTP. В обоих случаях серверы предоставляют свои ресурсы по адресам URL, и клиенты обращаются к ним посредством стандартных методов, таких как GET, PUT, POST и DELETE. Архитектура REST (Representational State Transfer — «передача состояния представления»), получившая столь широкое распространение при разработке HTTP сервисов, также хорошо ложится и на CoAP сервисы. </p>
 <p>Коды состояний (ответ сервера) CoAP в большинстве случаев аналогичны с HTTP и представляют собой целое число из трёх десятичных цифр — 2.xx успешно, 4.xx ошибка клиента, 5.xx ошибка сервера.</p>
@@ -65,62 +70,26 @@
 <p>Для данных, которые не требуют подтверждения, достаточно классического UDP. Тогда в качестве более легкой альтернативы сообщение может быть передано с меньшей надежностью, помеченное как «Non-confirmable». Данное сообщение всегда несет либо запрос, либо ответ и не должно быть пустым.</p>
 <p>Пожалуй отдельно стоит упомянуть симпатичное дополнение Copper для браузера Firefox, которое будет полезно при разработке CoAP приложений. С его помощью можно протестировать работу сервера отдельно от клиента.</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/copper.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Тема безопасности для «Интернета вещей» является особенно актуальной. В CoAP поддерживается шифрование, но без TCP стандартный TLS (Transport Layer Security) не может быть использован для обеспечения безопасности связи. Поэтому в CoAP используется DTLS (Datagram Transport Layer Security), который позволяет приложениям, основанным на коммуникациях посредством датаграмм, сообщаться безопасным способом, предотвращающим перехват, прослушивание, вмешательство, не нарушая защиты целостности данных или подделку содержимого сообщения. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Тема безопасности для «Интернета вещей» является особенно актуальной. В CoAP поддерживается шифрование, но без TCP стандартный TLS (Transport Layer Security) не может быть использован для обеспечения безопасности связи. Поэтому в CoAP используется DTLS (Datagram Transport Layer Security), который позволяет приложениям, основанным на коммуникациях посредством датаграмм, сообщаться безопасным способом, предотвращающим перехват, прослушивание, вмешательство, не нарушая защиты целостности данных или подделку содержимого сообщения. </p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-09T00:00:00+03:00">
-                Published: Пн. 09 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
-<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - UDP | NTP часы">Сетевое программирование - UDP | NTP часы</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-03T00:00:00+03:00">
-                Published: Вт. 03 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
-</footer><!-- /.post-info -->                <blockquote>
-<p>В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла</p>
-</blockquote>
-<p>Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - IoT</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/iot.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-10-09T00:00:00+03:00</updated><entry><title>Сетевое программирование - TCP | HTTP сервер</title><link href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="alternate"></link><published>2017-10-09T00:00:00+03:00</published><updated>2017-10-09T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-09:/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; путешествие по сетевым протоколам.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>✌ Все Буде Добре ♡ - IoT</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/iot.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-10-17T00:00:00+03:00</updated><entry><title>Протоколы «Интернета вещей» - CoAP</title><link href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/" rel="alternate"></link><published>2017-10-17T00:00:00+03:00</published><updated>2017-10-17T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-17:/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; развлекаться с сетевыми протоколам.&lt;/p&gt;
+&lt;p&gt;CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;HTTP&lt;/a&gt;, но с дополнительными фичами и улучшениями. В отличие …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; развлекаться с сетевыми протоколам.&lt;/p&gt;
+&lt;p&gt;CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;HTTP&lt;/a&gt;, но с дополнительными фичами и улучшениями. В отличие от протокола HTTP, который является текстовым и использует &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;ТСР&lt;/a&gt;, CoAP – это бинарный протокол, который работает поверх &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;UDP&lt;/a&gt;, что значительно уменьшает общий размер передаваемых данных и повышает гибкость взаимодействия.&lt;/p&gt;
+&lt;p&gt;С точки зрения разработчика CoAP выглядит почти так же, как HTTP. В обоих случаях серверы предоставляют свои ресурсы по адресам URL, и клиенты обращаются к ним посредством стандартных методов, таких как GET, PUT, POST и DELETE. Архитектура REST (Representational State Transfer — «передача состояния представления»), получившая столь широкое распространение при разработке HTTP сервисов, также хорошо ложится и на CoAP сервисы. &lt;/p&gt;
+&lt;p&gt;Коды состояний (ответ сервера) CoAP в большинстве случаев аналогичны с HTTP и представляют собой целое число из трёх десятичных цифр — 2.xx успешно, 4.xx ошибка клиента, 5.xx ошибка сервера.&lt;/p&gt;
+&lt;h2&gt;ДЕМО&lt;/h2&gt;
+&lt;p&gt;На картинке светильник (сервер) и выключатель (клиент), оба представляют из себя независимые устройства на микроконтроллерах c ОС &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Contiki&lt;/a&gt; на борту, оба подключённы к сети. Передача данных между данными устройствами осуществляется посредством CoAP протокола. В текущей версии Contiki 3.0 по умолчанию используется Erbium (Er) REST Engine в качестве реализации CoAP.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://localhost:9148/b793a136c4b05c9a9c29195f045b8482"&gt;coap.server.ipv6&lt;/a&gt; | &lt;a href="http://localhost:9148/e2e2bcf4782229c27ee28ce07c9698cf"&gt;coap.client.ipv6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/conticki-coap.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/ui.gif" style="width:100%;"&gt;&lt;/p&gt;
+&lt;p&gt;В примере с лампочками цвет задаётся / снимается методом PUT. В терминологии REST данный метод является &lt;strong&gt;идемпотентным&lt;/strong&gt;, ага. Это умное слово пришло к нам из математики. Идемпотентность — свойство объекта или операции при повторном применении операции к объекту давать тот же результат, что и при первом. Операции сложения с нулём, умножения на единицу, возведения в степень ноль и пр. являются идемпотентными.&lt;/p&gt;
+&lt;p&gt;С точки зрения REST сервиса метод является идемпотентным, если повторный идентичный запрос, сделанный один или несколько раз подряд, имеет один и тот же эффект, не изменяющий состояние сервера. Создание большого количества идемпотентных запросов имеет такой же эффект, как и один запрос. В нашем случае сколько бы раз мы ни задавали например красный цвет для лампочки, она изменит свой цвет (покраснеет) только один раз при первом запросе. Корректно реализованные методы GET, PUT и DELETE идемпотентны, но не метод POST. Вот если бы мы захотели, чтобы при каждом обращении к серверу состояние лампочек менялось на противоположное (XOR), то про правилам REST такой запрос стоит реализовать через метод POST.&lt;/p&gt;
+&lt;p&gt;Если мы хотим просмотреть состояние лампочек на текущий момент, но при этом не хотим изменять из состояние, то стоит использовать запрос GET. С точки зрения REST подобные методы определены как &lt;strong&gt;безопасные&lt;/strong&gt;, это означает, что они предназначены только для получения информации и не должны изменять состояние сервера. Другими словами, они не должны иметь побочных эффектов, за исключением безобидных эффектов, таких как логирование, кеширование и т.д.&lt;/p&gt;
+&lt;h2&gt;COAP&lt;/h2&gt;
+&lt;p&gt;Самое время запустить наш любимый Wireshark и посмотреть что там внутри CoAP пакета. На рисунке метод PUT, который включает красные лампочки. В данном конкретном примере если мы хотим выполнить какое-то действие с лампочки, то надо использовать относительный URL сервера &lt;code&gt;/actuators/leds&lt;/code&gt;, а собственно цвет предполагается задавать параметром &lt;code&gt;color&lt;/code&gt;. В теле запроса &lt;code&gt;mode=on&lt;/code&gt; включает лампочку, а &lt;code&gt;mode=off&lt;/code&gt; выключает. Такой пример идёт в исходниках Contiki, а насколько он следует принципам REST это уже другой вопрос.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/coap.png" style="width:100%;"&gt;&lt;/p&gt;
+&lt;p&gt;Как видно, CoAP очень компактный протокол. Здесь наиболее интересно поле &lt;code&gt;Type: Confirmable&lt;/code&gt;, с помощью которого разработчик приложения может контролировать надёжность доставки пакетов. Как мы знаем такая возможность изначально отсутствует у UDP протокола, но она реализована в CoAP как надстройка над UDP. Когда получателю приходит «Сonfirmable» сообщение, он всегда возвращает подтверждение. Передающая сторона, в свою очередь, повторно отправляет сообщение если подтверждение не возвращается в течение определенного периода времени, заданного по умолчанию и с каждым разом возрастающего экспоненциально, пока получатель не посылает сообщение подтверждения приема.&lt;/p&gt;
+&lt;p&gt;Для данных, которые не требуют подтверждения, достаточно классического UDP. Тогда в качестве более легкой альтернативы сообщение может быть передано с меньшей надежностью, помеченное как «Non-confirmable». Данное сообщение всегда несет либо запрос, либо ответ и не должно быть пустым.&lt;/p&gt;
+&lt;p&gt;Пожалуй отдельно стоит упомянуть симпатичное дополнение Copper для браузера Firefox, которое будет полезно при разработке CoAP приложений. С его помощью можно протестировать работу сервера отдельно от клиента.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/copper.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Тема безопасности для «Интернета вещей» является особенно актуальной. В CoAP поддерживается шифрование, но без TCP стандартный TLS (Transport Layer Security) не может быть использован для обеспечения безопасности связи. Поэтому в CoAP используется DTLS (Datagram Transport Layer Security), который позволяет приложениям, основанным на коммуникациях посредством датаграмм, сообщаться безопасным способом, предотвращающим перехват, прослушивание, вмешательство, не нарушая защиты целостности данных или подделку содержимого сообщения. &lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category><category term="m2m"></category><category term="REST"></category></entry><entry><title>Сетевое программирование - TCP | HTTP сервер</title><link href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="alternate"></link><published>2017-10-09T00:00:00+03:00</published><updated>2017-10-09T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-09:/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; путешествие по сетевым протоколам.&lt;/p&gt;
 &lt;p&gt;TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; путешествие по сетевым протоколам.&lt;/p&gt;
 &lt;p&gt;TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее по этому соединению туда и обратно посылаются пакеты (идет беседа), причем с проверкой, дошел ли пакет до получателя. Если пакет потерялся, или дошел, но с битой контрольной суммой, то он посылается повторно («повтори, не расслышал»). Таким образом TCP более надёжен, но он сложнее с точки зрения реализации и соответственно требует больше тактов / памяти, что имеет не самое последнее значение для микроконтроллеров. В качестве примеров прикладных протоколов, использующих TCP, можно назвать FTP, HTTP, SMTP и многие другие.&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
@@ -33,8 +52,9 @@ Content-type: text/html
 
 &lt;p&gt;Код состояния (у нас 200) является частью первой строки ответа сервера. Он представляет собой целое число из трёх цифр. Первая цифра указывает на класс состояния. За кодом ответа обычно следует отделённая пробелом поясняющая фраза на английском языке, которая разъясняет человеку причину именно такого ответа. В нашем случае сервер отработал без ошибок, всё пучком (ОК).&lt;/p&gt;
 &lt;p&gt;Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.&lt;/p&gt;
-&lt;p&gt;Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес, который также нужно назначить виртуальной сети симулятора:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sudo ip addr add abcd::1/64 dev mazko
+&lt;p&gt;Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес и такой же префикс также нужно назначить виртуальной сети симулятора:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sudo ip addr add abcd::1/64 dev mazko          # linux
+~$ netsh interface ipv6 set address mazko abcd::1 # windows
 ~$ curl http://[abcd::200:e2ff:fe58:b66b]
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -172,7 +192,8 @@ Content-type: text/html
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.&lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category><category term="FSM"></category></entry><entry><title>Сетевое программирование - UDP | NTP часы</title><link href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="alternate"></link><published>2017-10-03T00:00:00+03:00</published><updated>2017-10-03T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-03:/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/"&gt;Далее&lt;/a&gt; CoAP.&lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category><category term="FSM"></category></entry><entry><title>Сетевое программирование - UDP | NTP часы</title><link href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="alternate"></link><published>2017-10-03T00:00:00+03:00</published><updated>2017-10-03T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-03:/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
@@ -479,4 +500,223 @@ Content-type: text/html
 
 
 &lt;p&gt;В реальном мире на одном адресе может быть много UDP портов, где каждый сервис отвечает за свою логику. Количество портов ограничено с учётом 16-битной адресации т.е. 65536. Все порты разделены на три диапазона — общеизвестные (или системные, 0..1023), зарегистрированные (или пользовательские, 1024..49151) и динамические (или частные, 49152..65535). Например ранее упомянутый NTP протокол использует порт 123 (UDP), DNS порт 53 и т.д.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;Далее&lt;/a&gt; TCP.&lt;/p&gt;</content><category term="contiki"></category><category term="IPv6"></category><category term="msp430"></category></entry></feed>
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;Далее&lt;/a&gt; TCP.&lt;/p&gt;</content><category term="contiki"></category><category term="IPv6"></category><category term="msp430"></category></entry><entry><title>Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</title><link href="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/" rel="alternate"></link><published>2016-08-12T00:00:00+03:00</published><updated>2016-08-12T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-08-12:/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/</id><summary type="html">&lt;p&gt;Universal Plug and Play (&lt;a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow"&gt;UPnP&lt;/a&gt;) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.&lt;/p&gt;
+&lt;p&gt;Тут пожалуй стоит сделать риторическое отступление. Зачем нам &lt;a href="http://2gusia.livejournal.com/37929.html" rel="nofollow"&gt;две …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Universal Plug and Play (&lt;a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow"&gt;UPnP&lt;/a&gt;) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.&lt;/p&gt;
+&lt;p&gt;Тут пожалуй стоит сделать риторическое отступление. Зачем нам &lt;a href="http://2gusia.livejournal.com/37929.html" rel="nofollow"&gt;две&lt;/a&gt; технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
+UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить &lt;a href="http://www.dlna.org/certification/certification" rel="nofollow"&gt;денюшку&lt;/a&gt;. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.&lt;/p&gt;
+&lt;p&gt;На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно включать/выключать музыку в комнате комбинацией клавиш на &lt;a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/"&gt;ноуте&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Начнём с &lt;a href="http://www.upnp-hacks.org/upnp.html" rel="nofollow"&gt;обнаружения&lt;/a&gt; доступных UPnP устройств. Для этого нужно отправить M-SEARCH запрос на multicast-адрес 239.255.255.250 порт 1900 по UDP протоколу. Все устройства и программы, поддерживающие спецификацию UPnP обязаны ответить по UDP unicast:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ upnp-scan&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+  python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;import socket, sys&lt;/span&gt;
+
+&lt;span class="s1"&gt;SSDP_ADDR = &amp;quot;239.255.255.250&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_PORT = 1900&lt;/span&gt;
+&lt;span class="s1"&gt;# seconds to delay response&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_MX = 3&lt;/span&gt;
+&lt;span class="s1"&gt;# search target&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_ST = sys.argv[1] # upnp-scan &amp;quot;ssdp:all&amp;quot;&lt;/span&gt;
+
+&lt;span class="s1"&gt;ssdpRequest = &amp;quot;M-SEARCH * HTTP/1.1\r\n&amp;quot; + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;HOST: %s:%d\r\n&amp;quot; % (SSDP_ADDR, SSDP_PORT) + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;MAN: \&amp;quot;ssdp:discover\&amp;quot;\r\n&amp;quot; + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;MX: %d\r\n&amp;quot; % (SSDP_MX, ) + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;ST: %s\r\n&amp;quot; % (SSDP_ST, ) + &amp;quot;\r\n&amp;quot;&lt;/span&gt;
+
+&lt;span class="s1"&gt;with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.settimeout(SSDP_MX + 1)&lt;/span&gt;
+&lt;span class="s1"&gt;  while True:&lt;/span&gt;
+&lt;span class="s1"&gt;    try:&lt;/span&gt;
+&lt;span class="s1"&gt;      data = sock.recv(1024)&lt;/span&gt;
+&lt;span class="s1"&gt;      print(data.decode()) &lt;/span&gt;
+&lt;span class="s1"&gt;    except socket.timeout:&lt;/span&gt;
+&lt;span class="s1"&gt;      break&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  tr -d &lt;span class="s1"&gt;&amp;#39;\r&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# normalize new lines \r\n =&amp;gt; \n&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+~$ upnp-scan &lt;span class="s2"&gt;&amp;quot;ssdp:all&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    tee upnp.scan.dump &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    awk -v &lt;span class="nv"&gt;RS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;\n\n\n&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;/BubbleUPnP/ &amp;amp;&amp;amp; /[Ss][Tt]: uuid:/ {print $0 &amp;quot;\n&amp;quot;}&amp;#39;&lt;/span&gt;
+&lt;span class="c1"&gt;# response&lt;/span&gt;
+HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Cache-control: max-age&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1800&lt;/span&gt;
+Usn: uuid:3ef89534-fb8e-c38f-0000-00007940d6d3
+Location: http://192.168.0.100:57916/dev/3ef89534-fb8e-c38f-0000-00007940d6d3/desc.xml
+Server: Linux/2.6.29 UPnP/1.0 BubbleUPnP/1.6.11.1
+Ext: 
+St: uuid:3ef89534-fb8e-c38f-0000-00007940d6d3
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Мы просканировали сеть и &lt;a href="http://awk.js.org/?gist=ebfc98b50d9b72b1f77df05a4db264a9"&gt;отфильтровали&lt;/a&gt; устройства BubbleUPnP, которыми хотим управлять. Таковых может быть несколько, поэтому для автоматизации удобно работать с конкретным девайсом через uuid: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ upnp-scan &lt;span class="s1"&gt;&amp;#39;uuid:3ef89534-fb8e-c38f-0000-00007940d6d3&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;/Location:/ {print $2}&amp;#39;&lt;/span&gt;
+&lt;span class="c1"&gt;# response&lt;/span&gt;
+http://192.168.0.100:57916/dev/3ef89534-fb8e-c38f-0000-00007940d6d3/desc.xml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В спецификации &lt;a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow"&gt;UPnP&lt;/a&gt; много букв. Можно упростить себе жизнь и перехватить SOAP запросы на 192.168.0.100, которые отправляет программа на картинке &lt;code&gt;sudo tcpdump -A dst 192.168.0.100&lt;/code&gt; и сделать то же посредством curl:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ &lt;span class="nv"&gt;BASE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;http://192.168.0.100:57916/ &lt;span class="se"&gt;\&lt;/span&gt;
+   &lt;span class="nv"&gt;AV&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;dev/3ef89534-fb8e-c38f-0000-00007940d6d3/svc/upnp-org/AVTransport/action
+~$ curl &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$BASE$AV&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-XPOST &lt;span class="se"&gt;\&lt;/span&gt;
+-H &lt;span class="s1"&gt;&amp;#39;SOAPAction: &amp;quot;urn:schemas-upnp-org:service:AVTransport:1#Stop&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-H &lt;span class="s1"&gt;&amp;#39;Content-Type: text/xml; charset=&amp;quot;utf-8&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-d &lt;span class="s1"&gt;&amp;#39;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;s:Envelope xmlns:s=&amp;quot;http://schemas.xmlsoap.org/soap/envelope/&amp;quot; &lt;/span&gt;
+&lt;span class="s1"&gt;s:encodingStyle=&amp;quot;http://schemas.xmlsoap.org/soap/encoding/&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;u:Stop xmlns:u=&amp;quot;urn:schemas-upnp-org:service:AVTransport:1&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;InstanceID&amp;gt;0&amp;lt;/InstanceID&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;/u:Stop&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;/s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;/s:Envelope&amp;gt;&amp;#39;&lt;/span&gt;
+
+~$ curl &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$BASE$AV&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-XPOST &lt;span class="se"&gt;\&lt;/span&gt;
+-H &lt;span class="s1"&gt;&amp;#39;SOAPAction: &amp;quot;urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-H &lt;span class="s1"&gt;&amp;#39;Content-Type: text/xml; charset=&amp;quot;utf-8&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-d &lt;span class="s1"&gt;&amp;#39;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;s:Envelope xmlns:s=&amp;quot;http://schemas.xmlsoap.org/soap/envelope/&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;s:encodingStyle=&amp;quot;http://schemas.xmlsoap.org/soap/encoding/&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;u:SetAVTransportURI xmlns:u=&amp;quot;urn:schemas-upnp-org:service:AVTransport:1&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;CurrentURIMetaData&amp;gt;NOT_IMPLEMENTED&amp;lt;/CurrentURIMetaData&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;CurrentURI&amp;gt;http://online.radioroks.com.ua:8000/RadioROKS&amp;lt;/CurrentURI&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;InstanceID&amp;gt;0&amp;lt;/InstanceID&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;/u:SetAVTransportURI&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;/s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;/s:Envelope&amp;gt;&amp;#39;&lt;/span&gt;
+
+~$ curl &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$BASE$AV&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-XPOST &lt;span class="se"&gt;\&lt;/span&gt;
+-H &lt;span class="s1"&gt;&amp;#39;SOAPAction: &amp;quot;urn:schemas-upnp-org:service:AVTransport:1#Play&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-H &lt;span class="s1"&gt;&amp;#39;Content-Type: text/xml; charset=&amp;quot;utf-8&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+-d &lt;span class="s1"&gt;&amp;#39;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;s:Envelope xmlns:s=&amp;quot;http://schemas.xmlsoap.org/soap/envelope/&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;s:encodingStyle=&amp;quot;http://schemas.xmlsoap.org/soap/encoding/&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;u:Play xmlns:u=&amp;quot;urn:schemas-upnp-org:service:AVTransport:1&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;Speed&amp;gt;1&amp;lt;/Speed&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;InstanceID&amp;gt;0&amp;lt;/InstanceID&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;/u:Play&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;/s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;lt;/s:Envelope&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Конечный результат:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;upnp-cp.sh&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="c1"&gt;# chmod +x upnp-cp.sh &amp;amp;&amp;amp; sudo ln -s &amp;quot;`pwd`/upnp-cp.sh&amp;quot; /usr/local/bin/play-to-upnp&lt;/span&gt;
+
+&lt;span class="c1"&gt;# usage stop/play:&lt;/span&gt;
+&lt;span class="c1"&gt;# play-to-upnp&lt;/span&gt;
+&lt;span class="c1"&gt;# play-to-upnp http://online.radioroks.com.ua:8000/RadioROKS&lt;/span&gt;
+
+&lt;span class="nb"&gt;set&lt;/span&gt; -e
+
+upnp-scan&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+  python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;import socket, sys&lt;/span&gt;
+
+&lt;span class="s1"&gt;SSDP_ADDR = &amp;quot;239.255.255.250&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_PORT = 1900&lt;/span&gt;
+&lt;span class="s1"&gt;# seconds to delay response&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_MX = 3&lt;/span&gt;
+&lt;span class="s1"&gt;# search target&lt;/span&gt;
+&lt;span class="s1"&gt;SSDP_ST = sys.argv[1] # upnp-scan &amp;quot;ssdp:all&amp;quot;&lt;/span&gt;
+
+&lt;span class="s1"&gt;ssdpRequest = &amp;quot;M-SEARCH * HTTP/1.1\r\n&amp;quot; + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;HOST: %s:%d\r\n&amp;quot; % (SSDP_ADDR, SSDP_PORT) + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;MAN: \&amp;quot;ssdp:discover\&amp;quot;\r\n&amp;quot; + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;MX: %d\r\n&amp;quot; % (SSDP_MX, ) + \&lt;/span&gt;
+&lt;span class="s1"&gt;              &amp;quot;ST: %s\r\n&amp;quot; % (SSDP_ST, ) + &amp;quot;\r\n&amp;quot;&lt;/span&gt;
+
+&lt;span class="s1"&gt;with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))&lt;/span&gt;
+&lt;span class="s1"&gt;  sock.settimeout(SSDP_MX + 1)&lt;/span&gt;
+&lt;span class="s1"&gt;  while True:&lt;/span&gt;
+&lt;span class="s1"&gt;    try:&lt;/span&gt;
+&lt;span class="s1"&gt;      data = sock.recv(1024)&lt;/span&gt;
+&lt;span class="s1"&gt;      print(data.decode()) &lt;/span&gt;
+&lt;span class="s1"&gt;    except socket.timeout:&lt;/span&gt;
+&lt;span class="s1"&gt;      break&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;#39;&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  tr -d &lt;span class="s1"&gt;&amp;#39;\r&amp;#39;&lt;/span&gt; &lt;span class="c1"&gt;# normalize new lines \r\n =&amp;gt; \n&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="nv"&gt;URL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;upnp-scan &lt;span class="s2"&gt;&amp;quot;uuid:3ef89534-fb8e-c38f-0000-00007940d6d3&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+awk &lt;span class="s1"&gt;&amp;#39;/Location:/ {print $2}&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; Divice found: &lt;span class="nv"&gt;$URL&lt;/span&gt;
+
+&lt;span class="nv"&gt;URL_AV&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;curl -s &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$URL&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+python3 -c &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="s1"&gt;import sys, xml.dom.minidom&lt;/span&gt;
+&lt;span class="s1"&gt;dom = xml.dom.minidom.parse(sys.stdin)&lt;/span&gt;
+&lt;span class="s1"&gt;for srv in dom.getElementsByTagName(&amp;quot;service&amp;quot;):&lt;/span&gt;
+&lt;span class="s1"&gt;  ids = [e.firstChild.nodeValue for e in srv.getElementsByTagName(&amp;quot;serviceId&amp;quot;)]&lt;/span&gt;
+&lt;span class="s1"&gt;  if (&amp;quot;urn:upnp-org:serviceId:AVTransport&amp;quot; in ids):&lt;/span&gt;
+&lt;span class="s1"&gt;    for url in srv.getElementsByTagName(&amp;quot;controlURL&amp;quot;):&lt;/span&gt;
+&lt;span class="s1"&gt;      print(url.firstChild.nodeValue)&lt;/span&gt;
+&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt;
+
+&lt;span class="nv"&gt;URL_AV&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;`echo &lt;/span&gt;&lt;span class="nv"&gt;$URL&lt;/span&gt;&lt;span class="s2"&gt; | cut -d &amp;#39;/&amp;#39; -f1`//`echo &lt;/span&gt;&lt;span class="nv"&gt;$URL&lt;/span&gt;&lt;span class="s2"&gt; | cut -d &amp;#39;/&amp;#39; -f3`&lt;/span&gt;&lt;span class="nv"&gt;$URL_AV&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; AVTransport found: &lt;span class="nv"&gt;$URL_AV&lt;/span&gt;
+
+curl -vsf &lt;span class="nv"&gt;$URL_AV&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  -XPOST &lt;span class="se"&gt;\&lt;/span&gt;
+  -H &lt;span class="s1"&gt;&amp;#39;SOAPAction: &amp;quot;urn:schemas-upnp-org:service:AVTransport:1#Stop&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  -H &lt;span class="s1"&gt;&amp;#39;Content-Type: text/xml; charset=&amp;quot;utf-8&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+  -d &lt;span class="s1"&gt;&amp;#39;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;s:Envelope xmlns:s=&amp;quot;http://schemas.xmlsoap.org/soap/envelope/&amp;quot; &lt;/span&gt;
+&lt;span class="s1"&gt;  s:encodingStyle=&amp;quot;http://schemas.xmlsoap.org/soap/encoding/&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;u:Stop xmlns:u=&amp;quot;urn:schemas-upnp-org:service:AVTransport:1&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;lt;InstanceID&amp;gt;0&amp;lt;/InstanceID&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;/u:Stop&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;/s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;  &amp;lt;/s:Envelope&amp;gt;&amp;#39;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# $# variable will tell you the number of input arguments the script was passed&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="nv"&gt;$#&lt;/span&gt; -ne &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+  &lt;span class="c1"&gt;# play url $@&lt;/span&gt;
+  curl -vsf &lt;span class="nv"&gt;$URL_AV&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -XPOST &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s1"&gt;&amp;#39;SOAPAction: &amp;quot;urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s1"&gt;&amp;#39;Content-Type: text/xml; charset=&amp;quot;utf-8&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s2"&gt;&amp;quot;&amp;lt;?xml version=&amp;#39;1.0&amp;#39;?&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;    &amp;lt;s:Envelope xmlns:s=&amp;#39;http://schemas.xmlsoap.org/soap/envelope/&amp;#39;&lt;/span&gt;
+&lt;span class="s2"&gt;    s:encodingStyle=&amp;#39;http://schemas.xmlsoap.org/soap/encoding/&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;      &amp;lt;s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;        &amp;lt;u:SetAVTransportURI xmlns:u=&amp;#39;urn:schemas-upnp-org:service:AVTransport:1&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;          &amp;lt;CurrentURIMetaData&amp;gt;NOT_IMPLEMENTED&amp;lt;/CurrentURIMetaData&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;          &amp;lt;CurrentURI&amp;gt;&lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;lt;/CurrentURI&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;          &amp;lt;InstanceID&amp;gt;0&amp;lt;/InstanceID&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;        &amp;lt;/u:SetAVTransportURI&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;      &amp;lt;/s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s2"&gt;    &amp;lt;/s:Envelope&amp;gt;&amp;quot;&lt;/span&gt;
+
+  curl -vsf &lt;span class="nv"&gt;$URL_AV&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -XPOST &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s1"&gt;&amp;#39;SOAPAction: &amp;quot;urn:schemas-upnp-org:service:AVTransport:1#Play&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -H &lt;span class="s1"&gt;&amp;#39;Content-Type: text/xml; charset=&amp;quot;utf-8&amp;quot;&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+    -d &lt;span class="s1"&gt;&amp;#39;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;s:Envelope xmlns:s=&amp;quot;http://schemas.xmlsoap.org/soap/envelope/&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;    s:encodingStyle=&amp;quot;http://schemas.xmlsoap.org/soap/encoding/&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;lt;u:Play xmlns:u=&amp;quot;urn:schemas-upnp-org:service:AVTransport:1&amp;quot;&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;          &amp;lt;Speed&amp;gt;1&amp;lt;/Speed&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;          &amp;lt;InstanceID&amp;gt;0&amp;lt;/InstanceID&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;        &amp;lt;/u:Play&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;      &amp;lt;/s:Body&amp;gt;&lt;/span&gt;
+&lt;span class="s1"&gt;    &amp;lt;/s:Envelope&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="m2m"></category><category term="SOAP"></category></entry></feed>
