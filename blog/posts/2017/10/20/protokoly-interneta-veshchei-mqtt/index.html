@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>&#9996; Все Буде Добре &#9825; - Oleg Mazko</title>
+        <title>Протоколы «Интернета вещей» - MQTT</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="&#9996; Все Буде Добре &#9825; Atom Feed" />
 
@@ -21,7 +21,7 @@
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
@@ -33,10 +33,15 @@
   });
 </script>
 
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/" rel="bookmark"
+           title="Permalink to Протоколы «Интернета вещей» - MQTT">Протоколы «Интернета вещей» - MQTT</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/">Протоколы «Интернета вещей» - MQTT</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-10-20T00:00:00+03:00">
                 Published: Пт. 20 Октябрь 2017
@@ -47,7 +52,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
 <p>MQTT (Message Queue Telemetry Transport) – протокол прикладного уровня для организации межмашинной коммуникации (M2M, Machine to Machine), который работает по принципу «издатель-подписчик». Два главных компонента MQTT – клиент и брокер. MQTT-клиенты публикуют сообщения на определённую тему (topic), или подписываются на сообщения и прослушивают их. Тема – это произвольная строка, в которую входят любые символы за исключением специальных символов «/», «+» и «#», суть которых будет раскрыта ниже. MQTT-брокер получает все опубликованные издателями сообщения и перенаправляет релевантные сообщения подписчикам. Подписчики и издатели не должны знать друг о друге, роль играют лишь темы сообщений и сами сообщения. Для организации нормального взаимодействия издатели и подписчики должны использовать общие названия тем и формат сообщений.</p>
 <p>MQTT работает поверх <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">ТСР</a> и разработан в расчёте на маломощные встроенные устройства, поэтому вычислительные требования для его реализации минимальны. В дополнение к очень низкой нагрузке на систему, MQTT отличается высокой эффективностью и надёжностью связи даже в сетях с низкой пропускной способностью.</p>
 <h2>ДЕМО</h2>
@@ -93,111 +98,26 @@
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/sub.png" style="width:100%;"></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/pub.png" style="width:100%;"></p>
 <p>Брокер является наиболее критичным элементом системы «издатель-подписчик», от его надёжности и скорости многое зависит. Брокер отвечает за прием всех сообщений, их фильтрацию, принятие решения о том, кому интересны эти сообщения, и, в конечном итоге, за пересылку сообщений всем клиентам-подписчикам. Среди серверных реализаций брокера помимо уже упомянутого открытого ПО Mosquitto можно выделить IBM WebSphere MQ; легко масштабируемый и высокопроизводительный открытый сервер emqttd на Erlang; брокер HiveMQ и др.</p>
-<p>Как уже упоминалось, MQTT работает поверх TCP, где как известно по умолчанию данных ходят без шифрования. Для защиты от бородатых хаккеров и безопасного обмена данными по MQTT протоколу предлагается использовать TLS (Transport Layer Security) вместо TCP. Протокол TLS работает поверх TCP и предназначен для предоставления трёх услуг всем приложениям, работающим над ним – шифрование, аутентификацию и целостность. TLS даёт возможность клиент-серверным приложениям осуществлять связь в сети таким образом, что нельзя производить прослушивание пакетов и осуществить несанкционированный доступ.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>Как уже упоминалось, MQTT работает поверх TCP, где как известно по умолчанию данных ходят без шифрования. Для защиты от бородатых хаккеров и безопасного обмена данными по MQTT протоколу предлагается использовать TLS (Transport Layer Security) вместо TCP. Протокол TLS работает поверх TCP и предназначен для предоставления трёх услуг всем приложениям, работающим над ним – шифрование, аутентификацию и целостность. TLS даёт возможность клиент-серверным приложениям осуществлять связь в сети таким образом, что нельзя производить прослушивание пакетов и осуществить несанкционированный доступ.</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/" rel="bookmark"
-                           title="Permalink to Протоколы «Интернета вещей» - CoAP">Протоколы «Интернета вещей» - CoAP</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-17T00:00:00+03:00">
-                Published: Вт. 17 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> развлекаться с сетевыми протоколам.</p>
-<p>CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">HTTP</a>, но с дополнительными фичами и улучшениями. В отличие …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-09T00:00:00+03:00">
-                Published: Пн. 09 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
-<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - UDP | NTP часы">Сетевое программирование - UDP | NTP часы</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-03T00:00:00+03:00">
-                Published: Вт. 03 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/ipv6">IPv6</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> </p>
-</footer><!-- /.post-info -->                <blockquote>
-<p>В будущем радио будет преобразовано в «большой мозг», все вещи станут частью единого целого, а инструменты, благодаря которым это станет возможным, будут легко помещаться в кармане. — Никола Тесла</p>
-</blockquote>
-<p>Тренд «интернета вещей» (Internet of Things, IoT) сейчас набирает всё большую популярность. Лень — двигатель прогресса, и исходя из этого появление «интернета вещей …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/" rel="bookmark"
-                           title="Permalink to С++ для микроконтроллеров - управление памятью">С++ для микроконтроллеров - управление памятью</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-06-22T00:00:00+03:00">
-                Published: Чт. 22 Июнь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> </p>
-</footer><!-- /.post-info -->                <p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C …</a></p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 16
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
