@@ -106,19 +106,18 @@ Content-type: text/html
 <p>С точки зрения реализации TCP это классический <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечный автомат</a>. На картинке показаны как состояния сервера, так и клиента (разные цвета стрелок), на стрелках отображено <strong>событие/действие</strong> – например переход сервера (синяя стрелка) из состояния LISTEN в состояние SYN RECEIVED происходит по событию SYN, реакция на это событие отправить клиенту SYN+ACK в ответ:</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/Tcp_state_diagram_fixed.svg" style="width:100%; border:1px solid #ddd;"></p>
 <p>Теперь немного кода. Приведенный ниже пример очень сильно упрощён, тут нет состояний и реализована только минианимальная логика, достаточная для обмена данными утилитой netcat.</p>
-<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">ip_packet</span> <span class="p">{</span>
-    <span class="kt">uint8_t</span> <span class="n">ver_head_len</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">tos</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">total_len</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">fragment_id</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">flags_framgent_offset</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">ttl</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">protocol</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">from_addr</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">to_addr</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
-<span class="p">}</span> <span class="n">ip_packet_t</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tcp_packet</span> <span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">from_port</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">to_port</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">seq_num</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_num</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">data_offset</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">flags</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">window</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">urgent_ptr</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">tcp_packet_t</span><span class="p">;</span>
 
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_reply</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
 <span class="p">{</span>
