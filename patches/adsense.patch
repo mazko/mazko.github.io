@@ -1,17 +1,9 @@
 diff --git a/templates/adsense.html b/templates/adsense.html
 new file mode 100644
-index 0000000..d221bf5
+index 0000000..efeaa86
 --- /dev/null
 +++ b/templates/adsense.html
-@@ -0,0 +1,50 @@
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-+<script>
-+  (adsbygoogle = window.adsbygoogle || []).push({
-+    google_ad_client: "ca-pub-6247427373315098",
-+    enable_page_level_ads: true
-+  });
-+</script>
-+
+@@ -0,0 +1,42 @@
 +{% if GOOGLE_ADSENSE %}
 +
 +<style>
