@@ -1,6 +1,6 @@
 title: Анализ тональности текста с помощью Weka
 category: Java
-tags: NLP, Weka, REPL
+tags: NLP, Weka, REPL, Lucene
 
 
 Имеется [заданный]({attach}kino1k.tar.gz) набор документов для которых уже заранее известна тональность: **good**, **neutral**, **bad**. Для нового документа необходимо определить какая у него тональность из трёх указанных.
@@ -202,4 +202,13 @@ REPL:
     > всё плохо
     [neutral -> 0.31243645980279694, bad -> 0.4502602266214787, good -> 0.2373033135757244]
 
-В продолжение темы добавление функциональности Weka на примере [Lucene токенизаторов]({filename}../2016-04-30-weka-lucene-tokenizers/2016-04-30-weka-lucene-tokenizers.md).
+В случае классификации текстовой информации качество может зависеть не только от выбора алгоритма но и от способа преобразования текстовых данных к математический виду - в случае Weka этим занимается [StringToWordVector](http://weka.sourceforge.net/doc.dev/weka/filters/unsupervised/attribute/StringToWordVector.html){:rel="nofollow"} и одним из параметров у него задаётся тип [токенайзера](http://weka.sourceforge.net/doc.dev/weka/core/tokenizers/package-summary.html){:rel="nofollow"}. Задача токенайзера вроде как несложная - преобразовать строку текста в массив слов, но как нетрудно убедиться на картинке ниже если не полениться и задействовать более качественный [токенизатор]({filename}../../../admin/2015-10-21-lucene-tokenizers-es6/2015-10-21-lucene-tokenizers-es6.md), взятый например из [Lucene]({filename}../../lucene/2012-10-15-lucene-real-world/2012-10-15-lucene-real-world.md), итоговая точность определения категорий в Weka-классификаторе повышается:
+
+![screenshot]({attach}weka-ui2.gif){:style="width:100%; border:1px solid #ddd;"}
+
+Проверка, [исходники]({attach}weka-lucene.zip):
+
+    :::bash
+    ~$ mvn clean test
+       Tests run: 4, Failures: 0, Errors: 0, Skipped: 0
+    ~$ mvn clean install exec:java -Dexec.mainClass="weka.gui.GUIChooser"
