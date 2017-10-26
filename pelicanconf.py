@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 AUTHOR = u'Oleg Mazko'
-SITENAME = u'Интернет Вещей для Чайников'
+SITENAME = u'🏠 Интернет Всего 🚗'
 
 PATH = 'content'
 READERS = {'html': None}
