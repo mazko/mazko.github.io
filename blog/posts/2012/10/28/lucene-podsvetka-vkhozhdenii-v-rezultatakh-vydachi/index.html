@@ -43,7 +43,7 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">JSP</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">JSP</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
 </footer><!-- /.post-info -->      <p>Наш <a href="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/">поиск</a> работает вроде бы неплохо, но выглядит как-то не очень аппетитно. Для улучшения визуального восприятия слово или фразу, по которой документ был найден, желательно выделить - например покрасить в другой цвет. Кроме того, текущий способ отображения результатов очень примитивен - не факт, что в начале текста вообще встречается искомая фраза - необходимо показать пользователю именно тот фрагмент текста, в котором <em>Lucene</em> её нашёл, тогда точно будет что подсвечивать. Подобный функционал в <em>Lucene</em> уже реализован в виде отдельного модуля <code>Highlighter</code>, причём скорость его работы зависит от наличия в индексе Term Vectors (задаётся на этапе создания индекса):</p>
 <p><em>pom.xml</em></p>
 <div class="highlight"><pre><span></span><span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> 

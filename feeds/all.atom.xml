@@ -1,5 +1,452 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-10-25T00:00:00+03:00</updated><entry><title>Node-RED - графический конструктор «Умного Дома»</title><link href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="alternate"></link><published>2017-10-25T00:00:00+03:00</published><updated>2017-10-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-25:/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/</id><summary type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии связи, по которым пересылаются данные между узлами. Связывать различные блоки можно просто мышкой и при этом не иметь каких-либо особых навыков в программировании. Когда есть идея, но лень писать код, то в первую очередь стоит вспомнить о Node-RED и подобных инструментах. Ну а если идея взлетит, то при желании код всегда можно дописать потом.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-11-03T00:00:00+02:00</updated><entry><title>Ликбез по «grep» и регулярным выражениям</title><link href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="alternate"></link><published>2017-11-03T00:00:00+02:00</published><updated>2017-11-03T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-03:/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/</id><summary type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений и выводит (отфильтровывает) только те строки, которые содержат текст, совпадающий с заданным шаблоном – &lt;em&gt;регулярным выражением&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Регулярные выражения — специальный формальный язык поиска и осуществления манипуляций с подстроками в тексте, основанный на использовании метасимволов. Сейчас уже практически все современные языки программирования имеют встроенную поддержку регулярных выражений для обработки текстов, однако исторически популяризации данного подхода во многом способствовал именно мир UNIX и в частности идеи, заложенные в команды «grep», «sed» и др. Философия «все есть файл» полностью пронизывает UNIX и владение инструментами для работы с текстовыми файлами является одним из обязательных навыков каждого пользователя Linux.&lt;/p&gt;
+&lt;h2&gt;ПРИМЕР&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=957620b1864a0951915cfdf826f48444"&gt;GIST&lt;/a&gt; | Простейший поиск всех строк, в которых есть текст «Adams». При оформлении этого и последующих примеров будем придерживаться следующего порядка: параметры командной строки &lt;code&gt;args&lt;/code&gt;, затем стандартные потоки ввода-вывода &lt;code&gt;stdin&lt;/code&gt; (ввод) и &lt;code&gt;stdout&lt;/code&gt; (вывод).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Adams
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Команда «grep» имеет внушительное количество опций, которые можно указать при запуске. С помощью этих опций можно делать много полезных вещей и при этом в принципе даже не обязательно хорошо разбираться в синтаксисе регулярных выражений.&lt;/p&gt;
+&lt;h2&gt;ОПЦИИ&lt;/h2&gt;
+&lt;p&gt;Начнём с того, что «grep» умеет не только фильтровать стандартный ввод &lt;code&gt;stdin&lt;/code&gt;, но и осуществлять поиск по файлам. По умолчанию «grep» будет искать только в файлах, находящихся в текущем каталоге, однако при помощи очень полезной опции &lt;code&gt;--recursive&lt;/code&gt; можно сказать команде «grep» искать рекурсивно начиная с заданной директории.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=ff5db1fc8091ba2e1b203a942ee9eceb"&gt;GIST&lt;/a&gt; | По умолчанию команда «grep» чувствительна к регистру. Следующий пример показывает как можно искать и при этом не учитывать регистр, например «Adams» и «adams» одно и то же:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--ignore-case &amp;#39;adams&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=52e9acf3762c6ec1f13000d4dc8b3061"&gt;GIST&lt;/a&gt; | Поиск наоборот (иногда говорят инвертный поиск), то есть будут выведены все строки, кроме имеющих вхождение указанного шаблона:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--invert-match &amp;#39;Adams&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=0bcb3ff471727128123251ef1bec4986"&gt;GIST&lt;/a&gt; | Опции конечно же можно и нужно комбинировать друг с другом. Например поиск наоборот с выводом порядковых номеров строк с вхождениями:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--line-number --invert-match &amp;#39;Adams&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;George&lt;/span&gt; &lt;span class="n"&gt;Washington&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1789&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1797&lt;/span&gt;
+&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Thomas&lt;/span&gt; &lt;span class="n"&gt;Jefferson&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1801&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1809&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=1f53cf2e211e53e7e08bbf377ed0ddaf"&gt;GIST&lt;/a&gt; | Раскраска. Иногда удобно, когда искомое нами слово подсвечивается цветом. Все это уже есть в «grep», остается только включить:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--line-number --color=always &amp;#39;Adams&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;John&lt;/span&gt; &lt;span class="n"&gt;Adams&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1797&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1801&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=21424ef462f6268cd04119a8c0afe803"&gt;GIST&lt;/a&gt; | Мы хотим выбрать все ошибки из лог файла, но знаем что в следующей сточке после ошибки может содержаться полезная информация, тогда удобно вывести несколько строк из контекста. По умолчанию «grep» выводит лишь строку, в которой было найдено совпадение, но есть несколько опций, позволяющих заставить «grep» выводить больше. Для вывода нескольких строк (в нашем случае двух) после вхождения:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always -A2 &amp;#39;Adams&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5c4de2225af0eaba73f6ffcc75791662"&gt;GIST&lt;/a&gt; | Аналогично для дополнительного вывода нескольких строк перед вхождением:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always -B2 &amp;#39;James&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=a59f8dc38b7d892d51a3b62d6c185742"&gt;GIST&lt;/a&gt; | Однако чаще всего требуется выводить симметричный контекст, для этого есть ещё более сокращённая запись. Выведем по две строки как сверху так и снизу от вхождения:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always -C2 &amp;#39;James&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=b6d190d171ad140c7d02c2ff26815845"&gt;GIST&lt;/a&gt; | Когда Вы ищете &lt;code&gt;qwe&lt;/code&gt;, то по умолчанию «grep» будет выводить также, &lt;code&gt;qwe123&lt;/code&gt;, &lt;code&gt;345qwerty&lt;/code&gt; и тому подобные комбинации. Найдём только те строки, которые выключают именно всё слово целиком:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--word-regexp --color=always &amp;#39;John&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Fitzgerald Kennedy, 1961-1963
+Lyndon Baines Johnson, 1963-1969
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Fitzgerald Kennedy, 1961-1963
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5158adc77782fde28dc4c2c9dd708bcd"&gt;GIST&lt;/a&gt; | Ну и напоследок если Вы просто хотите знать количество строк с совпадениями одним единственным числом, но при этом не выводить больше ничего:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--count --color=always &amp;#39;John&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Fitzgerald Kennedy, 1961-1963
+Lyndon Baines Johnson, 1963-1969
+Richard Milhous Nixon, 1969-1974
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Стоит отметить, что у большинства опций есть двойник, например &lt;code&gt;--ignore-case&lt;/code&gt; можно привести к более короткому виду &lt;code&gt;-i&lt;/code&gt; и т.д.&lt;/p&gt;
+&lt;h2&gt;БАЗОВЫЕ РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ&lt;/h2&gt;
+&lt;p&gt;Все регулярные выражения состоят из двух типов символов: стандартных текстовых символов, называемых &lt;em&gt;литералами&lt;/em&gt;, и специальных символов, называемых &lt;em&gt;метасимволами&lt;/em&gt;. В предыдущих примерах поиск осуществлялся по литералам (точное совпадение по буквам), но дальше будет куда интересней. Добро пожаловать в мир регулярных выражений !&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=9132fe6af8e861cec1327b57e2aeac4e"&gt;GIST&lt;/a&gt; | Знак каретки &lt;code&gt;^&lt;/code&gt; и доллара &lt;code&gt;$&lt;/code&gt; имеют в регулярном выражении особый смысл. Их называют «якорями» (anchor). Якоря – это специальные символы, которые указывают местонахождение в строке необходимого совпадения. Когда поиск доходит до якоря, он проверяет, есть ли соответствие, и если есть – продолжает идти по шаблону, &lt;strong&gt;не прибавляя ничего к результату&lt;/strong&gt;. Каретку &lt;code&gt;^&lt;/code&gt; обычно используют, чтобы указать, что регулярное выражение необходимо проверить именно с начала строки:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;^J&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=d8ed4ca61d89a88f0f8fe429f6e5bd35"&gt;GIST&lt;/a&gt; | Аналогично якорь &lt;code&gt;$&lt;/code&gt; стоит использовать в конце шаблона, чтобы указать, что совпадение действительно только если искомая строка символов находится в конце текстовой строки и никак иначе:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;9$&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=e60f8303cd66566ea76f24283c49ae37"&gt;GIST&lt;/a&gt; | Любой символ. Символ точка используется в регулярных выражениях для того, чтобы обозначить, что в указанном месте может находиться абсолютно любой символ:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;0.$&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=ee26eb8964f6337bc55c03a2835faf99"&gt;GIST&lt;/a&gt; | Экранирование. Если нужно найти именно символ точка, тогда экранирование в помощь. Знак экранирования (как правило это обратный слеш), предшествующий символу вроде точки, превращает метасимвол в литерал:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;\.&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington. 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington. 1789-1797
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=74f3c2d2e1344b4ccc7641686adafcca"&gt;GIST&lt;/a&gt; | Классы символов. В регулярных выражениях можно использовать диапазоны и классы символов. Для этого при составлении шаблона используются квадратные скобки. Поместив группу символов (включая символы, которые в противном случае были бы истолкованы как метасимволы) в квадратные скобки, можно указать, что в данной позиции может находиться любой из взятых в скобки символов:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;0[19]&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=e53854a41514c4ea3b70e862ef2099b4"&gt;GIST&lt;/a&gt; | Диапазон. Это два символа, разделенные дефисом, например, 0-9 (десятичные цифры) или 0-9a-fA-F (шестнадцатеричные цифры):&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;[0-9]&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, ???
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5f82ae62fd2ce1ed7a2ffb64691feb64"&gt;GIST&lt;/a&gt; | Отрицание. Если первым символом выражения в квадратных скобках является каретка, то остальные символы принимаются как набор символов, которые не должны присутствовать в заданной позиции регулярного выражения:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;[^7]$&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=047156aa42a82eb3b10426b58160ea1c"&gt;GIST&lt;/a&gt; | Классы символов POSIX. Существует некий набор уже заранее заготовленных классов символов, которые Вы можете использовать в регулярных выражениях. Их там с десяток, достаточно быстро просмотреть мануал чтобы понять назначение каждого. Например отфильтруем только шестнадцатеричные цифры:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;^[[:xdigit:]]*$&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.2
+42
+42abc
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;42
+42abc
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=746098bb08ea4d10b960e0556a975d1d"&gt;GIST&lt;/a&gt; | Повторение (0 или больше раз). Одним из наиболее часто используемых метасимволов является символ звёздочка, что означает «повторить предыдущий символ или выражение ноль или больше раз»:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;^[A-Za-z ,?]*$&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, ???
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, ???
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Существует два вида регулярных выражений: базовые регулярные выражения BRE (basic regular expressions) и расширенные регулярные выражения ERE (extended regular expressions. В чём различия BRE и ERE ? Всё дело в метасимволах. В BRE распознаются следующие метасимволы &lt;code&gt;^ $ . [ ] *&lt;/code&gt; и все другие символы расцениваются как литералы. В ERE добавлены ещё такие метасимволы &lt;code&gt;( ) { } ? + |&lt;/code&gt; и связанные с ними функции. Ну а чтобы всех окончательно запутать в «grep» придумали такую штуку — символы &lt;code&gt;( ) { }&lt;/code&gt; в BRE обрабатываются как метасимволы, если они экранированы обратным слешем, в то время как в ERE постановка перед любыми метасимволами обратного слеша приводит к тому, что они трактуются как литералы.&lt;/p&gt;
+&lt;h2&gt;РАСШИРЕННЫЕ РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=ef2f47f7ad7a8581cd755ca4f316ebeb"&gt;GIST&lt;/a&gt; | Дизъюнкция. Подобно тому, как квадратные скобки задают различные возможные варианты совпадения одного символа, дизъюнкция позволяет указать альтернативные совпадения для строк символов или выражений. Для обозначения дизъюнкции используется символ вертикальной черты:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always &amp;#39;George|John&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+John Adams, 1797-1801
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5f85410b230e1d7092215cac7ea452c6"&gt;GIST&lt;/a&gt; | Совпадение ноль или один раз. В расширенных регулярных выражениях существуют несколько дополнительных метасимволов, указывающих частоту повторения символа или выражения (подобно тому, как метасимвол звездочка указывает на совпадения 0 или более раз). Один из таких метасимволов это вопросительный знак, который делает предыдущий символ или выражение, по сути, необязательными:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always &amp;#39;^(Andrew )?John&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Andrew Johnson, 1865-1869
+Lyndon Baines Johnson, 1963-1969
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+Andrew Johnson, 1865-1869
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=4274af34f6ce8090ddab665886d1bfe6"&gt;GIST&lt;/a&gt; | Совпадение один или более раз. Для этого предусмотрен метасимвол в виде знака плюс. Он работает почти как символ звездочка, за исключением того, что выражение должно совпасть хотя бы один раз:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always &amp;#39;^[[:alpha:] ]+$&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams
+Andrew Johnson, 1865-1869
+Lyndon Baines Johnson, 1963-1969
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=882fe7c7fab0a2186c9c7cfc7965a4cd"&gt;GIST&lt;/a&gt; | Совпадение указанное количество раз. Для этого можно использовать фигурные скобки. Эти метасимволы используются для указания точного количества, диапазона, а также верхнего и нижнего предела количества совпадений выражения:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always
+    &amp;#39;[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;42
+127.0.0.1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;127.0.0.1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Команда grep настолько полезна, многофункциональна и проста в употреблении, что, однажды познакомившись с ней, невозможно представить себе работу без нее.&lt;/p&gt;</content><category term="regex"></category></entry><entry><title>Node-RED - графический конструктор «Умного Дома»</title><link href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="alternate"></link><published>2017-10-25T00:00:00+03:00</published><updated>2017-10-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-25:/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/</id><summary type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии связи, по которым пересылаются данные между узлами. Связывать различные блоки можно просто мышкой и при этом не иметь каких-либо особых навыков в программировании. Когда есть идея, но лень писать код, то в первую очередь стоит вспомнить о Node-RED и подобных инструментах. Ну а если идея взлетит, то при желании код всегда можно дописать потом.&lt;/p&gt;
 &lt;p&gt;Разработка в Node-RED ведется через обыкновенный браузер, само приложение можно запустить на различных платформах – PC, Raspberry Pi, в облаке и т.д. &lt;/p&gt;
 &lt;h2&gt;ДЕМО&lt;/h2&gt;
 &lt;p&gt;На рисунке ниже Node-RED читает сообщения Твиттера на тему футбола, пропускает только сообщения в кодировке ASCII и с длиной более 99 символов, &lt;a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/"&gt;анализирует тональность&lt;/a&gt; текста и периодически выводит всё это дело на устройство с поддержкой протокола &lt;a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/"&gt;MQTT&lt;/a&gt;, разработанное в предыдущем материале. Красные лампочки указывают на грустные сообщения Твиттера, синие на радостные.&lt;/p&gt;
@@ -9,7 +456,7 @@
 &lt;p&gt;Данные Node-RED передается от узла к узлу в виде JavaScript объекта под названием &lt;code&gt;msg&lt;/code&gt; (совсем уж без программирования всё же не обойтись). У этого объекта есть обязательный атрибут &lt;code&gt;msg.payload&lt;/code&gt; (полезная нагрузка), он хранит основное значение, которое необходимо передать, в нашем случае это текст сообщения с твиттера. Значение может быть любого типа, который поддерживается в JavaScript, т.е. время, число, строка, json, другой JavaScript объект и т.д. Помимо &lt;code&gt;msg.payload&lt;/code&gt; атрибута к &lt;code&gt;msg&lt;/code&gt; компоненты могут добавлять другие атрибуты, например узел «sentiment» добавляет атрибут &lt;code&gt;msg.sentiment.score&lt;/code&gt; – число, характеризующее тональность текста. Исходя из значения этого числа узел «switch» осуществляет ветвление.&lt;/p&gt;
 &lt;p&gt;Пару слов про регулярные выражения. Нас интересует только текст ASCII с длиной 99 и более символов. С этой задачей справляется регулярное выражение вида &lt;code&gt;^[\x20-\x7e]{99,}$&lt;/code&gt; в узле с именем «ascii 99+».&lt;/p&gt;
 &lt;p&gt;Для случаев, когда без программирования всё же не обойтись, предусмотрен компонент «Function» – функция на языке JavaScript, которая получает &lt;code&gt;msg&lt;/code&gt; объект как параметр и должна вернуть уже свой &lt;code&gt;msg&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;Ещё в Node-RED предусмотрена возможность создавать свои библиотеки сценариев. Для этого создается Subflow, где есть возможность задать входные и выходные точки и прописать желаемый сценарий. Subflow можно использовать в других сценариях как отдельный компонент. Большое количество уже готовых к использованию библиотек, поддерживаемых сообществом, можно найти и установить с официального сайта &lt;a href="http://flows.nodered.org" rel="nofollow"&gt;flows.nodered.org&lt;/a&gt;. &lt;/p&gt;</content><category term="VPL"></category><category term="NLP"></category></entry><entry><title>Протоколы «Интернета вещей» - MQTT</title><link href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/" rel="alternate"></link><published>2017-10-20T00:00:00+03:00</published><updated>2017-10-20T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-20:/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; исследовать сетевые протоколы.&lt;/p&gt;
+&lt;p&gt;Ещё в Node-RED предусмотрена возможность создавать свои библиотеки сценариев. Для этого создается Subflow, где есть возможность задать входные и выходные точки и прописать желаемый сценарий. Subflow можно использовать в других сценариях как отдельный компонент. Большое количество уже готовых к использованию библиотек, поддерживаемых сообществом, можно найти и установить с официального сайта &lt;a href="http://flows.nodered.org" rel="nofollow"&gt;flows.nodered.org&lt;/a&gt;. &lt;/p&gt;</content><category term="regex"></category><category term="NLP"></category></entry><entry><title>Протоколы «Интернета вещей» - MQTT</title><link href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/" rel="alternate"></link><published>2017-10-20T00:00:00+03:00</published><updated>2017-10-20T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-20:/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; исследовать сетевые протоколы.&lt;/p&gt;
 &lt;p&gt;MQTT (Message Queue Telemetry Transport) – протокол прикладного уровня для организации межмашинной коммуникации (M2M, Machine to Machine), который работает по принципу «издатель-подписчик». Два главных компонента MQTT – клиент и брокер. MQTT-клиенты публикуют сообщения на определённую тему (topic), или подписываются на сообщения и прослушивают их. Тема – это произвольная строка …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; исследовать сетевые протоколы.&lt;/p&gt;
 &lt;p&gt;MQTT (Message Queue Telemetry Transport) – протокол прикладного уровня для организации межмашинной коммуникации (M2M, Machine to Machine), который работает по принципу «издатель-подписчик». Два главных компонента MQTT – клиент и брокер. MQTT-клиенты публикуют сообщения на определённую тему (topic), или подписываются на сообщения и прослушивают их. Тема – это произвольная строка, в которую входят любые символы за исключением специальных символов «/», «+» и «#», суть которых будет раскрыта ниже. MQTT-брокер получает все опубликованные издателями сообщения и перенаправляет релевантные сообщения подписчикам. Подписчики и издатели не должны знать друг о друге, роль играют лишь темы сообщений и сами сообщения. Для организации нормального взаимодействия издатели и подписчики должны использовать общие названия тем и формат сообщений.&lt;/p&gt;
 &lt;p&gt;MQTT работает поверх &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;ТСР&lt;/a&gt; и разработан в расчёте на маломощные встроенные устройства, поэтому вычислительные требования для его реализации минимальны. В дополнение к очень низкой нагрузке на систему, MQTT отличается высокой эффективностью и надёжностью связи даже в сетях с низкой пропускной способностью.&lt;/p&gt;
@@ -2043,7 +2490,7 @@ namespace blinky {
 &lt;p&gt;Ошибки при выполнении программы могут происходить на обоих этапах - за вводом недопустимых символов (например букв) должен следить лексической анализатор, а вот обработка деления на ноль или неправильное количество элементов в стеке это уже зона ответственности синтаксического анализа.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip"&gt;исходники&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex"&gt;hex&lt;/a&gt; | &lt;a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495"&gt;picsim.js&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;p&gt;При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. требуют POSIX. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - &lt;a href="http://re2c.org/" rel="nofollow"&gt;re2c&lt;/a&gt;. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция &lt;code&gt;lex_flt&lt;/code&gt; это облегчённая версия &lt;code&gt;atof&lt;/code&gt;/&lt;code&gt;strtod&lt;/code&gt;, достаточная для RPN калькулятора.&lt;/p&gt;
+&lt;p&gt;При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. завязаны на POSIX, а у нас тут голое железо. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - &lt;a href="http://re2c.org/" rel="nofollow"&gt;re2c&lt;/a&gt;. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция &lt;code&gt;lex_flt&lt;/code&gt; это облегчённая версия &lt;code&gt;atof&lt;/code&gt;/&lt;code&gt;strtod&lt;/code&gt;, достаточная для RPN калькулятора.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;stack.c&lt;/em&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdint.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;stdbool.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -2167,7 +2614,7 @@ namespace blinky {
 
 &lt;p&gt;Работа с символьным &lt;a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/"&gt;дисплеем&lt;/a&gt; и &lt;a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/"&gt;матричной&lt;/a&gt; клавиатурой описывались в предыдущем материале.&lt;/p&gt;
 &lt;p&gt;Для преобразования выражений из обычной (например &lt;code&gt;3 + 4 * (2 - 1)&lt;/code&gt;) инфиксной нотации в постфиксную (RPN) существует алгоритм «сортировочная станция», который так же как и RPN основан на стеке и легко может быть адаптирован под микроконтроллеры. Таким образом несложно разработать калькулятор для обычный людей.&lt;/p&gt;
-&lt;p&gt;Ещё раз ссылка на &lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip"&gt;исходники&lt;/a&gt; RPN-калькулятора. &lt;/p&gt;</content><category term="picsim"></category><category term="re2c"></category></entry><entry><title>PICSim.js - сопрограммы и простейшая многозадачность</title><link href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="alternate"></link><published>2017-02-05T00:00:00+02:00</published><updated>2017-02-05T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-05:/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/</id><summary type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи, причём в случае PIC18 это даже двухуровневая система прерываний. Обычно всего этого достаточно для реализации простой логики, однако при увеличении требований к системе традиционный подход теряет привлекательность. Альтернативный метод структурирования приложений состоит в том, чтобы выделить и отделить независимые подзадачи друг от друга и использовать некий программный каркас, который управляет этими подзадачами согласно набору ясно определенных правил. При таком подходе могут одновременно выполняться несколько (псевдо)параллельных задач, сообщающихся между собой и управляемых единым ядром. Этот подход к программированию - RTOS (операционная система реального времени), а многозадачность бывает 2 видов:&lt;/p&gt;
+&lt;p&gt;Ещё раз ссылка на &lt;a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip"&gt;исходники&lt;/a&gt; RPN-калькулятора. &lt;/p&gt;</content><category term="picsim"></category><category term="re2c"></category><category term="regex"></category></entry><entry><title>PICSim.js - сопрограммы и простейшая многозадачность</title><link href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/" rel="alternate"></link><published>2017-02-05T00:00:00+02:00</published><updated>2017-02-05T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-05:/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/</id><summary type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Микроконтроллеры выполняют только одну машинную инструкцию в каждый момент времени (многоядерные микроконтроллеры я пока не встречал). Традиционно простейшая &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;программа&lt;/a&gt; для микроконтроллера это &lt;em&gt;суперцикл&lt;/em&gt; - одна точка входа &lt;code&gt;main&lt;/code&gt; с бесконечным циклом, где крутится какая-то задача. Архитектура большинства микроконтроллеров также предусматривает механизм &lt;a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/"&gt;прерываний&lt;/a&gt; - немедленную обработку событий, что позволяет решать более сложные задачи, причём в случае PIC18 это даже двухуровневая система прерываний. Обычно всего этого достаточно для реализации простой логики, однако при увеличении требований к системе традиционный подход теряет привлекательность. Альтернативный метод структурирования приложений состоит в том, чтобы выделить и отделить независимые подзадачи друг от друга и использовать некий программный каркас, который управляет этими подзадачами согласно набору ясно определенных правил. При таком подходе могут одновременно выполняться несколько (псевдо)параллельных задач, сообщающихся между собой и управляемых единым ядром. Этот подход к программированию - RTOS (операционная система реального времени), а многозадачность бывает 2 видов:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;кооперативная - следующая задача выполняется только после того, как текущая задача явно передаст управление&lt;/p&gt;
@@ -9208,7 +9655,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;$s/,$//&amp;#39;&lt;/span&gt; &lt;span cl
 &lt;p&gt;&lt;img alt="Screenshot" src="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_sadov1.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot" src="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/linux_search_stem_hltr_tested.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;Далее&lt;/a&gt; рассмотрим синтаксис поисковых запросов в &lt;em&gt;Lucene&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/lucene-tutorial.zip"&gt;Исходники&lt;/a&gt;&lt;/p&gt;</content><category term="Lucene"></category><category term="JSP"></category><category term="Maven"></category></entry><entry><title>Lucene - языковые анализаторы</title><link href="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/" rel="alternate"></link><published>2012-10-27T00:00:00+03:00</published><updated>2012-10-27T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-27:/blog/posts/2012/10/27/lucene-iazykovye-analizatory/</id><summary type="html">&lt;p&gt;Как Вам &lt;a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/"&gt;поиск&lt;/a&gt; ? Мы вводим в качестве запроса слово &lt;strong&gt;сад&lt;/strong&gt; и получаем &lt;strong&gt;0&lt;/strong&gt; (НОЛЬ) результатов, в то время как это же слово в другом падеже - &lt;strong&gt;сады&lt;/strong&gt; - даёт целых &lt;strong&gt;6&lt;/strong&gt; (ШЕСТЬ) ! Всё дело в том, что в процессе индексации / поиска использовался стандартный анализатор текста - &lt;code&gt;StandardAnalyzer&lt;/code&gt;, который ничего не знает об особенностях …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как Вам &lt;a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/"&gt;поиск&lt;/a&gt; ? Мы вводим в качестве запроса слово &lt;strong&gt;сад&lt;/strong&gt; и получаем &lt;strong&gt;0&lt;/strong&gt; (НОЛЬ) результатов, в то время как это же слово в другом падеже - &lt;strong&gt;сады&lt;/strong&gt; - даёт целых &lt;strong&gt;6&lt;/strong&gt; (ШЕСТЬ) ! Всё дело в том, что в процессе индексации / поиска использовался стандартный анализатор текста - &lt;code&gt;StandardAnalyzer&lt;/code&gt;, который ничего не знает об особенностях того или иного языка. Какие вообще существуют алгоритмы для &lt;em&gt;программного&lt;/em&gt; выделения основы слова ? Очень распространёнными, и, что немаловажно в контексте процесса индексации - быстрыми, являются алгоритмы &lt;a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BC%D0%BC%D0%B8%D0%BD%D0%B3" rel="nofollow"&gt;стемминга&lt;/a&gt;, среди которых, наиболее популярными и часто используемыми являются &lt;a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BC%D0%BC%D0%B5%D1%80_%D0%9F%D0%BE%D1%80%D1%82%D0%B5%D1%80%D0%B0" rel="nofollow"&gt;Стеммеры Портера&lt;/a&gt; - впервые опубликованные ещё в далёком 1980 году. Введите ОДНО слово, выберите язык и нажмите кнопку "&lt;strong&gt;Стеммер!&lt;/strong&gt;":&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/lucene-tutorial.zip"&gt;Исходники&lt;/a&gt;&lt;/p&gt;</content><category term="Lucene"></category><category term="JSP"></category><category term="Maven"></category><category term="regex"></category></entry><entry><title>Lucene - языковые анализаторы</title><link href="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/" rel="alternate"></link><published>2012-10-27T00:00:00+03:00</published><updated>2012-10-27T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2012-10-27:/blog/posts/2012/10/27/lucene-iazykovye-analizatory/</id><summary type="html">&lt;p&gt;Как Вам &lt;a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/"&gt;поиск&lt;/a&gt; ? Мы вводим в качестве запроса слово &lt;strong&gt;сад&lt;/strong&gt; и получаем &lt;strong&gt;0&lt;/strong&gt; (НОЛЬ) результатов, в то время как это же слово в другом падеже - &lt;strong&gt;сады&lt;/strong&gt; - даёт целых &lt;strong&gt;6&lt;/strong&gt; (ШЕСТЬ) ! Всё дело в том, что в процессе индексации / поиска использовался стандартный анализатор текста - &lt;code&gt;StandardAnalyzer&lt;/code&gt;, который ничего не знает об особенностях …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как Вам &lt;a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/"&gt;поиск&lt;/a&gt; ? Мы вводим в качестве запроса слово &lt;strong&gt;сад&lt;/strong&gt; и получаем &lt;strong&gt;0&lt;/strong&gt; (НОЛЬ) результатов, в то время как это же слово в другом падеже - &lt;strong&gt;сады&lt;/strong&gt; - даёт целых &lt;strong&gt;6&lt;/strong&gt; (ШЕСТЬ) ! Всё дело в том, что в процессе индексации / поиска использовался стандартный анализатор текста - &lt;code&gt;StandardAnalyzer&lt;/code&gt;, который ничего не знает об особенностях того или иного языка. Какие вообще существуют алгоритмы для &lt;em&gt;программного&lt;/em&gt; выделения основы слова ? Очень распространёнными, и, что немаловажно в контексте процесса индексации - быстрыми, являются алгоритмы &lt;a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BC%D0%BC%D0%B8%D0%BD%D0%B3" rel="nofollow"&gt;стемминга&lt;/a&gt;, среди которых, наиболее популярными и часто используемыми являются &lt;a href="http://ru.wikipedia.org/wiki/%D0%A1%D1%82%D0%B5%D0%BC%D0%BC%D0%B5%D1%80_%D0%9F%D0%BE%D1%80%D1%82%D0%B5%D1%80%D0%B0" rel="nofollow"&gt;Стеммеры Портера&lt;/a&gt; - впервые опубликованные ещё в далёком 1980 году. Введите ОДНО слово, выберите язык и нажмите кнопку "&lt;strong&gt;Стеммер!&lt;/strong&gt;":&lt;/p&gt;
 &lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/stem.js"&gt; &lt;/script&gt;
 
 &lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/Snowball.min.js"&gt; &lt;/script&gt;

@@ -28,7 +28,478 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">Ищем свободные Wi-Fi каналы с помощью GnuPlot</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">Ликбез по «grep» и регулярным выражениям</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-11-03T00:00:00+02:00">
+                Published: Пт. 03 Ноябрь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
+</footer><!-- /.post-info --><p>Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений и выводит (отфильтровывает) только те строки, которые содержат текст, совпадающий с заданным шаблоном – <em>регулярным выражением</em>.</p>
+<p>Регулярные выражения — специальный формальный язык поиска и осуществления манипуляций с подстроками в тексте, основанный на использовании метасимволов. Сейчас уже практически все современные языки программирования имеют встроенную поддержку регулярных выражений для обработки текстов, однако исторически популяризации данного подхода во многом способствовал именно мир UNIX и в частности идеи, заложенные в команды «grep», «sed» и др. Философия «все есть файл» полностью пронизывает UNIX и владение инструментами для работы с текстовыми файлами является одним из обязательных навыков каждого пользователя Linux.</p>
+<h2>ПРИМЕР</h2>
+<p><a href="http://grep.js.org/index.html?gist=957620b1864a0951915cfdf826f48444">GIST</a> | Простейший поиск всех строк, в которых есть текст «Adams». При оформлении этого и последующих примеров будем придерживаться следующего порядка: параметры командной строки <code>args</code>, затем стандартные потоки ввода-вывода <code>stdin</code> (ввод) и <code>stdout</code> (вывод).</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>Adams
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+</pre></div>
+
+
+<p>Команда «grep» имеет внушительное количество опций, которые можно указать при запуске. С помощью этих опций можно делать много полезных вещей и при этом в принципе даже не обязательно хорошо разбираться в синтаксисе регулярных выражений.</p>
+<h2>ОПЦИИ</h2>
+<p>Начнём с того, что «grep» умеет не только фильтровать стандартный ввод <code>stdin</code>, но и осуществлять поиск по файлам. По умолчанию «grep» будет искать только в файлах, находящихся в текущем каталоге, однако при помощи очень полезной опции <code>--recursive</code> можно сказать команде «grep» искать рекурсивно начиная с заданной директории.</p>
+<p><a href="http://grep.js.org/index.html?gist=ff5db1fc8091ba2e1b203a942ee9eceb">GIST</a> | По умолчанию команда «grep» чувствительна к регистру. Следующий пример показывает как можно искать и при этом не учитывать регистр, например «Adams» и «adams» одно и то же:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--ignore-case &#39;adams&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=52e9acf3762c6ec1f13000d4dc8b3061">GIST</a> | Поиск наоборот (иногда говорят инвертный поиск), то есть будут выведены все строки, кроме имеющих вхождение указанного шаблона:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--invert-match &#39;Adams&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=0bcb3ff471727128123251ef1bec4986">GIST</a> | Опции конечно же можно и нужно комбинировать друг с другом. Например поиск наоборот с выводом порядковых номеров строк с вхождениями:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--line-number --invert-match &#39;Adams&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span><span class="mi">1</span><span class="o">:</span><span class="n">George</span> <span class="n">Washington</span><span class="o">,</span> <span class="mi">1789</span><span class="o">-</span><span class="mi">1797</span>
+<span class="mi">3</span><span class="o">:</span><span class="n">Thomas</span> <span class="n">Jefferson</span><span class="o">,</span> <span class="mi">1801</span><span class="o">-</span><span class="mi">1809</span>
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=1f53cf2e211e53e7e08bbf377ed0ddaf">GIST</a> | Раскраска. Иногда удобно, когда искомое нами слово подсвечивается цветом. Все это уже есть в «grep», остается только включить:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--line-number --color=always &#39;Adams&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span><span class="mi">2</span><span class="o">:</span><span class="n">John</span> <span class="n">Adams</span><span class="o">,</span> <span class="mi">1797</span><span class="o">-</span><span class="mi">1801</span>
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=21424ef462f6268cd04119a8c0afe803">GIST</a> | Мы хотим выбрать все ошибки из лог файла, но знаем что в следующей сточке после ошибки может содержаться полезная информация, тогда удобно вывести несколько строк из контекста. По умолчанию «grep» выводит лишь строку, в которой было найдено совпадение, но есть несколько опций, позволяющих заставить «grep» выводить больше. Для вывода нескольких строк (в нашем случае двух) после вхождения:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always -A2 &#39;Adams&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=5c4de2225af0eaba73f6ffcc75791662">GIST</a> | Аналогично для дополнительного вывода нескольких строк перед вхождением:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always -B2 &#39;James&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=a59f8dc38b7d892d51a3b62d6c185742">GIST</a> | Однако чаще всего требуется выводить симметричный контекст, для этого есть ещё более сокращённая запись. Выведем по две строки как сверху так и снизу от вхождения:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always -C2 &#39;James&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=b6d190d171ad140c7d02c2ff26815845">GIST</a> | Когда Вы ищете <code>qwe</code>, то по умолчанию «grep» будет выводить также, <code>qwe123</code>, <code>345qwerty</code> и тому подобные комбинации. Найдём только те строки, которые выключают именно всё слово целиком:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--word-regexp --color=always &#39;John&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>John Fitzgerald Kennedy, 1961-1963
+Lyndon Baines Johnson, 1963-1969
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Fitzgerald Kennedy, 1961-1963
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=5158adc77782fde28dc4c2c9dd708bcd">GIST</a> | Ну и напоследок если Вы просто хотите знать количество строк с совпадениями одним единственным числом, но при этом не выводить больше ничего:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--count --color=always &#39;John&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>John Fitzgerald Kennedy, 1961-1963
+Lyndon Baines Johnson, 1963-1969
+Richard Milhous Nixon, 1969-1974
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>2
+</pre></div>
+
+
+<p>Стоит отметить, что у большинства опций есть двойник, например <code>--ignore-case</code> можно привести к более короткому виду <code>-i</code> и т.д.</p>
+<h2>БАЗОВЫЕ РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ</h2>
+<p>Все регулярные выражения состоят из двух типов символов: стандартных текстовых символов, называемых <em>литералами</em>, и специальных символов, называемых <em>метасимволами</em>. В предыдущих примерах поиск осуществлялся по литералам (точное совпадение по буквам), но дальше будет куда интересней. Добро пожаловать в мир регулярных выражений !</p>
+<p><a href="http://grep.js.org/index.html?gist=9132fe6af8e861cec1327b57e2aeac4e">GIST</a> | Знак каретки <code>^</code> и доллара <code>$</code> имеют в регулярном выражении особый смысл. Их называют «якорями» (anchor). Якоря – это специальные символы, которые указывают местонахождение в строке необходимого совпадения. Когда поиск доходит до якоря, он проверяет, есть ли соответствие, и если есть – продолжает идти по шаблону, <strong>не прибавляя ничего к результату</strong>. Каретку <code>^</code> обычно используют, чтобы указать, что регулярное выражение необходимо проверить именно с начала строки:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;^J&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=d8ed4ca61d89a88f0f8fe429f6e5bd35">GIST</a> | Аналогично якорь <code>$</code> стоит использовать в конце шаблона, чтобы указать, что совпадение действительно только если искомая строка символов находится в конце текстовой строки и никак иначе:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;9$&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=e60f8303cd66566ea76f24283c49ae37">GIST</a> | Любой символ. Символ точка используется в регулярных выражениях для того, чтобы обозначить, что в указанном месте может находиться абсолютно любой символ:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;0.$&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=ee26eb8964f6337bc55c03a2835faf99">GIST</a> | Экранирование. Если нужно найти именно символ точка, тогда экранирование в помощь. Знак экранирования (как правило это обратный слеш), предшествующий символу вроде точки, превращает метасимвол в литерал:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;\.&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington. 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>George Washington. 1789-1797
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=74f3c2d2e1344b4ccc7641686adafcca">GIST</a> | Классы символов. В регулярных выражениях можно использовать диапазоны и классы символов. Для этого при составлении шаблона используются квадратные скобки. Поместив группу символов (включая символы, которые в противном случае были бы истолкованы как метасимволы) в квадратные скобки, можно указать, что в данной позиции может находиться любой из взятых в скобки символов:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;0[19]&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=e53854a41514c4ea3b70e862ef2099b4">GIST</a> | Диапазон. Это два символа, разделенные дефисом, например, 0-9 (десятичные цифры) или 0-9a-fA-F (шестнадцатеричные цифры):</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;[0-9]&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, ???
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=5f82ae62fd2ce1ed7a2ffb64691feb64">GIST</a> | Отрицание. Если первым символом выражения в квадратных скобках является каретка, то остальные символы принимаются как набор символов, которые не должны присутствовать в заданной позиции регулярного выражения:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;[^7]$&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=047156aa42a82eb3b10426b58160ea1c">GIST</a> | Классы символов POSIX. Существует некий набор уже заранее заготовленных классов символов, которые Вы можете использовать в регулярных выражениях. Их там с десяток, достаточно быстро просмотреть мануал чтобы понять назначение каждого. Например отфильтруем только шестнадцатеричные цифры:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;^[[:xdigit:]]*$&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>4.2
+42
+42abc
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>42
+42abc
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=746098bb08ea4d10b960e0556a975d1d">GIST</a> | Повторение (0 или больше раз). Одним из наиболее часто используемых метасимволов является символ звёздочка, что означает «повторить предыдущий символ или выражение ноль или больше раз»:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--color=always &#39;^[A-Za-z ,?]*$&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, ???
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>George Washington, ???
+</pre></div>
+
+
+<p>Существует два вида регулярных выражений: базовые регулярные выражения BRE (basic regular expressions) и расширенные регулярные выражения ERE (extended regular expressions. В чём различия BRE и ERE ? Всё дело в метасимволах. В BRE распознаются следующие метасимволы <code>^ $ . [ ] *</code> и все другие символы расцениваются как литералы. В ERE добавлены ещё такие метасимволы <code>( ) { } ? + |</code> и связанные с ними функции. Ну а чтобы всех окончательно запутать в «grep» придумали такую штуку — символы <code>( ) { }</code> в BRE обрабатываются как метасимволы, если они экранированы обратным слешем, в то время как в ERE постановка перед любыми метасимволами обратного слеша приводит к тому, что они трактуются как литералы.</p>
+<h2>РАСШИРЕННЫЕ РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ</h2>
+<p><a href="http://grep.js.org/index.html?gist=ef2f47f7ad7a8581cd755ca4f316ebeb">GIST</a> | Дизъюнкция. Подобно тому, как квадратные скобки задают различные возможные варианты совпадения одного символа, дизъюнкция позволяет указать альтернативные совпадения для строк символов или выражений. Для обозначения дизъюнкции используется символ вертикальной черты:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--extended-regexp --color=always &#39;George|John&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>George Washington, 1789-1797
+John Adams, 1797-1801
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=5f85410b230e1d7092215cac7ea452c6">GIST</a> | Совпадение ноль или один раз. В расширенных регулярных выражениях существуют несколько дополнительных метасимволов, указывающих частоту повторения символа или выражения (подобно тому, как метасимвол звездочка указывает на совпадения 0 или более раз). Один из таких метасимволов это вопросительный знак, который делает предыдущий символ или выражение, по сути, необязательными:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--extended-regexp --color=always &#39;^(Andrew )?John&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Andrew Johnson, 1865-1869
+Lyndon Baines Johnson, 1963-1969
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams, 1797-1801
+Andrew Johnson, 1865-1869
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=4274af34f6ce8090ddab665886d1bfe6">GIST</a> | Совпадение один или более раз. Для этого предусмотрен метасимвол в виде знака плюс. Он работает почти как символ звездочка, за исключением того, что выражение должно совпасть хотя бы один раз:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--extended-regexp --color=always &#39;^[[:alpha:] ]+$&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>John Adams
+Andrew Johnson, 1865-1869
+Lyndon Baines Johnson, 1963-1969
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>John Adams
+</pre></div>
+
+
+<p><a href="http://grep.js.org/index.html?gist=882fe7c7fab0a2186c9c7cfc7965a4cd">GIST</a> | Совпадение указанное количество раз. Для этого можно использовать фигурные скобки. Эти метасимволы используются для указания точного количества, диапазона, а также верхнего и нижнего предела количества совпадений выражения:</p>
+<p><em>args</em></p>
+<div class="highlight"><pre><span></span>--extended-regexp --color=always
+    &#39;[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}&#39;
+</pre></div>
+
+
+<p><em>stdin</em></p>
+<div class="highlight"><pre><span></span>42
+127.0.0.1
+</pre></div>
+
+
+<p><em>stdout</em></p>
+<div class="highlight"><pre><span></span>127.0.0.1
+</pre></div>
+
+
+<p>Команда grep настолько полезна, многофункциональна и проста в употреблении, что, однажды познакомившись с ней, невозможно представить себе работу без нее.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/" rel="bookmark"
+                           title="Permalink to Ищем свободные Wi-Fi каналы с помощью GnuPlot">Ищем свободные Wi-Fi каналы с помощью GnuPlot</a></h1>
+                </header>
+
+                <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2016-07-17T00:00:00+03:00">
                 Published: Вс. 17 Июль 2016
@@ -39,143 +510,10 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> </p>
-</footer><!-- /.post-info --><p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш. Для таких случаев в настройках роутера предусмотрена сетка каналов 1-13 (2.412GHz-2.472GHz). Соседей много, всем нужен хороший интернет. В данном материале мы научимся рисовать вот такую красивую картинку без стороннего ПО, т.е. исключительно средствами Linux и программы для построения графиков <a href="http://www.gnuplot.info/" rel="nofollow">gnuplot</a>.</p>
-<h2>TL;DR</h2>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/shot.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>~$ sudo iwlist wlo1 scanning <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
-
-<span class="s1">import re,sys</span>
-
-<span class="s1">def tokenize(code):</span>
-<span class="s1">    token_specification = [</span>
-<span class="s1">        (&quot;CELL&quot;,  r&quot;^\s+Cell \d+&quot;),</span>
-<span class="s1">        (&quot;FREQ&quot;,  r&quot;^\s+Frequency:(\d+(\.\d*)?)&quot;),</span>
-<span class="s1">        (&quot;CHNL&quot;,  r&quot;^\s+Channel:(\d+)&quot;),</span>
-<span class="s1">        (&quot;ESSID&quot;, r&quot;^\s+ESSID:\&quot;([- A-Za-z0-9$@^`,|%;.~()/\\{}:?[\]=+_#!]*)\&quot;&quot;),</span>
-<span class="s1">        (&quot;LEVEL&quot;, r&quot;\s+Signal level=(-\d+)&quot;),</span>
-<span class="s1">    ]</span>
-<span class="s1">    tok_regex = &quot;|&quot;.join(&quot;(?P&lt;%s&gt;%s)&quot; % pair for pair in token_specification)</span>
-
-<span class="s1">    for mo in re.finditer(tok_regex, code, re.M):</span>
-<span class="s1">        typ = mo.lastgroup</span>
-<span class="s1">        if typ == &quot;CELL&quot;:</span>
-<span class="s1">            if &quot;res&quot; in vars() and res:</span>
-<span class="s1">                yield res</span>
-<span class="s1">            res = {}</span>
-<span class="s1">        else:</span>
-<span class="s1">            grs = [v for v in mo.groups() if v not in [mo.group(typ), None]]</span>
-<span class="s1">            assert len(grs), &quot;Forgot capture value for %s ?&quot; % typ</span>
-<span class="s1">            res[typ] = grs[0]</span>
-<span class="s1">    if res:</span>
-<span class="s1">        yield res</span>
-
-<span class="s1">data = list(tokenize(sys.stdin.read()))</span>
-
-<span class="s1">print(</span>
-<span class="s1">&quot;&quot;&quot;</span>
-<span class="s1"># legend</span>
-<span class="s1">set key top left outside horizontal</span>
-<span class="s1">set xlabel &quot;Channel&quot;</span>
-<span class="s1">set ylabel &quot;Strength (dbm)&quot;</span>
-<span class="s1"># x axis step</span>
-<span class="s1">set xtics 1</span>
-<span class="s1"># show horizontal grid lines </span>
-<span class="s1">set grid ytics</span>
-<span class="s1">set xrange [-2:16]</span>
-<span class="s1">set yrange [%(bottom)d - 0.1:%(top)d]</span>
-<span class="s1">set term png truecolor size 1280,720</span>
-<span class="s1">plot for [IDX=0:%(total)d-1] &quot;-&quot; \</span>
-<span class="s1">    using 2:(%(bottom)d):(4):(2*abs(%(bottom)d - $1)) \</span>
-<span class="s1">    title columnheader(1) with ellipses \</span>
-<span class="s1">    fill transparent solid 0.5 </span>
-<span class="s1">&quot;&quot;&quot; </span>
-<span class="s1">% {</span>
-<span class="s1">    &quot;total&quot;: len(data), </span>
-<span class="s1">    &quot;top&quot;: max([int(tok[&quot;LEVEL&quot;]) for tok in data]) + 1, </span>
-<span class="s1">    &quot;bottom&quot;: min([int(tok[&quot;LEVEL&quot;]) for tok in data]) - 5, </span>
-<span class="s1">})</span>
-
-<span class="s1">for tok in data:</span>
-<span class="s1">    print(&quot;\&quot;%s\&quot;&quot; % (tok[&quot;ESSID&quot;] or &quot;&lt;HIDDEN&gt;&quot;))</span>
-<span class="s1">    print(tok[&quot;LEVEL&quot;], tok[&quot;CHNL&quot;])</span>
-<span class="s1">    print(&quot;e&quot;)</span>
-<span class="s1">    assert set((&quot;FREQ&quot;,&quot;CHNL&quot;,&quot;ESSID&quot;, &quot;LEVEL&quot;)) &lt;= set(tok)</span>
-<span class="s1">&#39;</span> <span class="p">|</span> gnuplot &gt; out.png
-</pre></div>
-
-
-<p>Часто полезно видеть график в реальном времени <code>while sleep 10; do sudo iwlist wlo1 scanning | python3 wifi.plot.py | gnuplot &gt; out.png; done</code> и какой нибудь периодический просмотрщик изображений типа <code>feh  --reload 1 out.png</code></p>
-<h2>GNUPLOT</h2>
-<p>В gnuplot можно рисовать графики как с помощью функций так и по заданным точкам. Нас интересует последний вариант:</p>
-<div class="highlight"><pre><span></span>~$ gnuplot --version
-gnuplot <span class="m">4</span>.6 patchlevel <span class="m">6</span>
-~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
-<span class="s1">plot for [IDX=0:1] &quot;-&quot; using 1:2 title columnheader(1) with lines</span>
-<span class="s1">hello</span>
-<span class="s1">1 1</span>
-<span class="s1">3 3</span>
-<span class="s1">e</span>
-<span class="s1">world</span>
-<span class="s1">1 3</span>
-<span class="s1">3 1</span>
-<span class="s1">e</span>
-<span class="s1">&#39;</span> <span class="p">|</span> gnuplot -p
-</pre></div>
-
-
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/hello.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
-<span class="s1">set term png truecolor size 1280,480</span>
-<span class="s1">set xrange [0:6]</span>
-<span class="s1">plot for [IDX=0:3] &quot;-&quot; using 2:1 title columnheader(1) with points pointsize 3</span>
-<span class="s1">&quot;Anna&quot;</span>
-<span class="s1">-93 1</span>
-<span class="s1">e</span>
-<span class="s1">&quot;Erika&quot;</span>
-<span class="s1">-73 1</span>
-<span class="s1">e</span>
-<span class="s1">&quot;Alina&quot;</span>
-<span class="s1">-84 1</span>
-<span class="s1">e</span>
-<span class="s1">&quot;Nast&quot;</span>
-<span class="s1">-93 5</span>
-<span class="s1">e</span>
-<span class="s1">&#39;</span> <span class="p">|</span> gnuplot &gt; wifi.points.png
-</pre></div>
-
-
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.points.png" style="width:100%; border:1px solid #ddd;"></p>
-<div class="highlight"><pre><span></span>~$ <span class="nb">echo</span> <span class="s1">&#39;</span>
-<span class="s1">set term png truecolor size 1280,480</span>
-<span class="s1">set xlabel &quot;Channel&quot;</span>
-<span class="s1">set ylabel &quot;Strength (dbm)&quot;</span>
-<span class="s1">set xrange [0:6]</span>
-<span class="s1">set yrange [-110:-60]</span>
-<span class="s1">set grid ytics</span>
-<span class="s1">plot for [IDX=0:3] &quot;-&quot; using 2:1:(2):(abs($1/3)) title columnheader(1) with ellipses</span>
-<span class="s1">&quot;Anna&quot;</span>
-<span class="s1">-93 1</span>
-<span class="s1">e</span>
-<span class="s1">&quot;Erika&quot;</span>
-<span class="s1">-73 1</span>
-<span class="s1">e</span>
-<span class="s1">&quot;Alina&quot;</span>
-<span class="s1">-84 1</span>
-<span class="s1">e</span>
-<span class="s1">&quot;Nast&quot;</span>
-<span class="s1">-93 5</span>
-<span class="s1">e</span>
-<span class="s1">&#39;</span> <span class="p">|</span> gnuplot &gt; wifi.ellipses.png
-</pre></div>
-
-
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.ellipses.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1</p><p>There are <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+</footer><!-- /.post-info -->                <p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -251,34 +589,6 @@ gnuplot <span class="m">4</span>.6 patchlevel <span class="m">6</span>
 </footer><!-- /.post-info -->                <p><a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow">Emscripten</a> это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу <em>online</em> демка портированных таким образом GNU <em>sed</em> и <em>grep</em>, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: <code>--help</code> и т.д. за …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="bookmark"
-                           title="Permalink to Как перестать беспокоиться и начать портировать">Как перестать беспокоиться и начать портировать</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-10-21T00:00:00+03:00">
-                Published: Ср. 21 Октябрь 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/es6">ES6</a> </p>
-</footer><!-- /.post-info -->                <p>Пример портирования <strong>Java</strong> =&gt; <strong>JavaScript</strong> на примере токенизаторов из <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. </p>
-<p><a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6">lucene-tokenizers.es6</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js">lucene-tokenizers.babel.js</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html">Тесты</a> | <a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src">Исходники</a></p>
-<h2>TL;DR</h2>
-<p>Процесс можно условно разделить на несколько этапов:</p>
-<ul>
-<li>
-<p>Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше …</p></li></ul>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
