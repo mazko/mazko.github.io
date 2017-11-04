@@ -1,450 +1,481 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-11-03T00:00:00+02:00</updated><entry><title>Ликбез по «grep» и регулярным выражениям</title><link href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="alternate"></link><published>2017-11-03T00:00:00+02:00</published><updated>2017-11-03T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-03:/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/</id><summary type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений и выводит (отфильтровывает) только те строки, которые содержат текст, совпадающий с заданным шаблоном – &lt;em&gt;регулярным выражением&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Регулярные выражения — специальный формальный язык поиска и осуществления манипуляций с подстроками в тексте, основанный на использовании метасимволов. Сейчас уже практически все современные языки программирования имеют встроенную поддержку регулярных выражений для обработки текстов, однако исторически популяризации данного подхода во многом способствовал именно мир UNIX и в частности идеи, заложенные в команды «grep», «sed» и др. Философия «все есть файл» полностью пронизывает UNIX и владение инструментами для работы с текстовыми файлами является одним из обязательных навыков каждого пользователя Linux.&lt;/p&gt;
-&lt;h2&gt;ПРИМЕР&lt;/h2&gt;
-&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=957620b1864a0951915cfdf826f48444"&gt;GIST&lt;/a&gt; | Простейший поиск всех строк, в которых есть текст «Adams». При оформлении этого и последующих примеров будем придерживаться следующего порядка: параметры командной строки &lt;code&gt;args&lt;/code&gt;, затем стандартные потоки ввода-вывода &lt;code&gt;stdin&lt;/code&gt; (ввод) и &lt;code&gt;stdout&lt;/code&gt; (вывод).&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Adams
-&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;ОБРАЗЕЦ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=957620b1864a0951915cfdf826f48444"&gt;GIST&lt;/a&gt; | Простейший поиск всех строк, в которых есть текст «Adams». При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода &lt;code&gt;stdin&lt;/code&gt; и справа вывода &lt;code&gt;stdout&lt;/code&gt;.&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+Adams
+&lt;/pre&gt;
 
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;Команда «grep» имеет внушительное количество опций, которые можно указать при запуске. С помощью этих опций можно делать много полезных вещей и при этом в принципе даже не обязательно хорошо разбираться в синтаксисе регулярных выражений.&lt;/p&gt;
 &lt;h2&gt;ОПЦИИ&lt;/h2&gt;
 &lt;p&gt;Начнём с того, что «grep» умеет не только фильтровать стандартный ввод &lt;code&gt;stdin&lt;/code&gt;, но и осуществлять поиск по файлам. По умолчанию «grep» будет искать только в файлах, находящихся в текущем каталоге, однако при помощи очень полезной опции &lt;code&gt;--recursive&lt;/code&gt; можно сказать команде «grep» искать рекурсивно начиная с заданной директории.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=ff5db1fc8091ba2e1b203a942ee9eceb"&gt;GIST&lt;/a&gt; | По умолчанию команда «grep» чувствительна к регистру. Следующий пример показывает как можно искать и при этом не учитывать регистр, например «Adams» и «adams» одно и то же:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--ignore-case &amp;#39;adams&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--ignore-case 'adams'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=52e9acf3762c6ec1f13000d4dc8b3061"&gt;GIST&lt;/a&gt; | Поиск наоборот (иногда говорят инвертный поиск), то есть будут выведены все строки, кроме имеющих вхождение указанного шаблона:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--invert-match &amp;#39;Adams&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--invert-match 'Adams'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=0bcb3ff471727128123251ef1bec4986"&gt;GIST&lt;/a&gt; | Опции конечно же можно и нужно комбинировать друг с другом. Например поиск наоборот с выводом порядковых номеров строк с вхождениями:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--line-number --invert-match &amp;#39;Adams&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--line-number --invert-match 'Adams'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+1:George Washington, 1789-1797
+3:Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;George&lt;/span&gt; &lt;span class="n"&gt;Washington&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1789&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1797&lt;/span&gt;
-&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;Thomas&lt;/span&gt; &lt;span class="n"&gt;Jefferson&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1801&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1809&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=1f53cf2e211e53e7e08bbf377ed0ddaf"&gt;GIST&lt;/a&gt; | Раскраска. Иногда удобно, когда искомое нами слово подсвечивается цветом. Все это уже есть в «grep», остается только включить:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--line-number --color=always &amp;#39;Adams&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--line-number --color=always 'Adams'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+2:John Adams, 1797-1801
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;John&lt;/span&gt; &lt;span class="n"&gt;Adams&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1797&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1801&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=21424ef462f6268cd04119a8c0afe803"&gt;GIST&lt;/a&gt; | Мы хотим выбрать все ошибки из лог файла, но знаем что в следующей сточке после ошибки может содержаться полезная информация, тогда удобно вывести несколько строк из контекста. По умолчанию «grep» выводит лишь строку, в которой было найдено совпадение, но есть несколько опций, позволяющих заставить «grep» выводить больше. Для вывода нескольких строк (в нашем случае двух) после вхождения:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always -A2 &amp;#39;Adams&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always -A2 'Adams'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
 James Madison, 1809-1817
 James Monroe, 1817-1825
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
 James Madison, 1809-1817
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5c4de2225af0eaba73f6ffcc75791662"&gt;GIST&lt;/a&gt; | Аналогично для дополнительного вывода нескольких строк перед вхождением:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always -B2 &amp;#39;James&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always -B2 'James'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
 James Madison, 1809-1817
 James Monroe, 1817-1825
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-James Madison, 1809-1817
-James Monroe, 1817-1825
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=a59f8dc38b7d892d51a3b62d6c185742"&gt;GIST&lt;/a&gt; | Однако чаще всего требуется выводить симметричный контекст, для этого есть ещё более сокращённая запись. Выведем по две строки как сверху так и снизу от вхождения:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always -C2 &amp;#39;James&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
 James Madison, 1809-1817
 James Monroe, 1817-1825
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=82b178669b38cb4f39c435ee8d872334"&gt;GIST&lt;/a&gt; | Однако чаще всего требуется выводить симметричный контекст, для этого есть ещё более сокращённая запись. Выведем по две строки как сверху так и снизу от вхождения:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always -C2 'James'
+&lt;/pre&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
 James Madison, 1809-1817
 James Monroe, 1817-1825
-&lt;/pre&gt;&lt;/div&gt;
+John Quincy Adams, 1825-1829
+Andrew Jackson, 1829-1837
+Martin Van Buren, 1837-1841
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+John Quincy Adams, 1825-1829
+Andrew Jackson, 1829-1837
+&lt;/pre&gt;
+
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=b6d190d171ad140c7d02c2ff26815845"&gt;GIST&lt;/a&gt; | Когда Вы ищете &lt;code&gt;qwe&lt;/code&gt;, то по умолчанию «grep» будет выводить также, &lt;code&gt;qwe123&lt;/code&gt;, &lt;code&gt;345qwerty&lt;/code&gt; и тому подобные комбинации. Найдём только те строки, которые выключают именно всё слово целиком:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--word-regexp --color=always &amp;#39;John&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--word-regexp --color=always 'John'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Fitzgerald Kennedy, 1961-1963
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Fitzgerald Kennedy, 1961-1963
 Lyndon Baines Johnson, 1963-1969
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Fitzgerald Kennedy, 1961-1963
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Fitzgerald Kennedy, 1961-1963
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5158adc77782fde28dc4c2c9dd708bcd"&gt;GIST&lt;/a&gt; | Ну и напоследок если Вы просто хотите знать количество строк с совпадениями одним единственным числом, но при этом не выводить больше ничего:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--count --color=always &amp;#39;John&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--count --color=always 'John'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Fitzgerald Kennedy, 1961-1963
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Fitzgerald Kennedy, 1961-1963
 Lyndon Baines Johnson, 1963-1969
 Richard Milhous Nixon, 1969-1974
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+2
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;2
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;Стоит отметить, что у большинства опций есть двойник, например &lt;code&gt;--ignore-case&lt;/code&gt; можно привести к более короткому виду &lt;code&gt;-i&lt;/code&gt; и т.д.&lt;/p&gt;
 &lt;h2&gt;БАЗОВЫЕ РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ&lt;/h2&gt;
 &lt;p&gt;Все регулярные выражения состоят из двух типов символов: стандартных текстовых символов, называемых &lt;em&gt;литералами&lt;/em&gt;, и специальных символов, называемых &lt;em&gt;метасимволами&lt;/em&gt;. В предыдущих примерах поиск осуществлялся по литералам (точное совпадение по буквам), но дальше будет куда интересней. Добро пожаловать в мир регулярных выражений !&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=9132fe6af8e861cec1327b57e2aeac4e"&gt;GIST&lt;/a&gt; | Знак каретки &lt;code&gt;^&lt;/code&gt; и доллара &lt;code&gt;$&lt;/code&gt; имеют в регулярном выражении особый смысл. Их называют «якорями» (anchor). Якоря – это специальные символы, которые указывают местонахождение в строке необходимого совпадения. Когда поиск доходит до якоря, он проверяет, есть ли соответствие, и если есть – продолжает идти по шаблону, &lt;strong&gt;не прибавляя ничего к результату&lt;/strong&gt;. Каретку &lt;code&gt;^&lt;/code&gt; обычно используют, чтобы указать, что регулярное выражение необходимо проверить именно с начала строки:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;^J&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Знак каретки &lt;code&gt;^&lt;/code&gt; и доллара &lt;code&gt;$&lt;/code&gt; имеют в регулярном выражении особый смысл. Их называют «якорями» (anchor). Якоря – это специальные символы, которые указывают местонахождение в строке необходимого совпадения. Когда поиск доходит до якоря, он проверяет, есть ли соответствие, и если есть – продолжает идти по шаблону, &lt;strong&gt;не прибавляя ничего к результату&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=9132fe6af8e861cec1327b57e2aeac4e"&gt;GIST&lt;/a&gt; | Якорь каретка используют чтобы указать, что регулярное выражение необходимо проверить именно с начала строки:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '^J'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
 
+&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=d8ed4ca61d89a88f0f8fe429f6e5bd35"&gt;GIST&lt;/a&gt; | Аналогично якорь доллар стоит использовать в конце шаблона, чтобы указать, что совпадение действительно только если искомая строка символов находится в конце текстовой строки и никак иначе:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '9$'
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=d8ed4ca61d89a88f0f8fe429f6e5bd35"&gt;GIST&lt;/a&gt; | Аналогично якорь &lt;code&gt;$&lt;/code&gt; стоит использовать в конце шаблона, чтобы указать, что совпадение действительно только если искомая строка символов находится в конце текстовой строки и никак иначе:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;9$&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div style="display: flex;"&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=e60f8303cd66566ea76f24283c49ae37"&gt;GIST&lt;/a&gt; | Любой символ. Символ точка используется в регулярных выражениях для того, чтобы обозначить, что в указанном месте может находиться абсолютно любой символ:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;0.$&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '0.$'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=ee26eb8964f6337bc55c03a2835faf99"&gt;GIST&lt;/a&gt; | Экранирование. Если нужно найти именно символ точка, тогда экранирование в помощь. Знак экранирования (как правило это обратный слеш), предшествующий символу вроде точки, превращает метасимвол в литерал:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;\.&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '\.'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington. 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington. 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington. 1789-1797
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington. 1789-1797
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=74f3c2d2e1344b4ccc7641686adafcca"&gt;GIST&lt;/a&gt; | Классы символов. В регулярных выражениях можно использовать диапазоны и классы символов. Для этого при составлении шаблона используются квадратные скобки. Поместив группу символов (включая символы, которые в противном случае были бы истолкованы как метасимволы) в квадратные скобки, можно указать, что в данной позиции может находиться любой из взятых в скобки символов:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;0[19]&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '0[19]'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=e53854a41514c4ea3b70e862ef2099b4"&gt;GIST&lt;/a&gt; | Диапазон. Это два символа, разделенные дефисом, например, 0-9 (десятичные цифры) или 0-9a-fA-F (шестнадцатеричные цифры):&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;[0-9]&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '[0-9]'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, ???
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, ???
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5f82ae62fd2ce1ed7a2ffb64691feb64"&gt;GIST&lt;/a&gt; | Отрицание. Если первым символом выражения в квадратных скобках является каретка, то остальные символы принимаются как набор символов, которые не должны присутствовать в заданной позиции регулярного выражения:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;[^7]$&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '[^7]$'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=047156aa42a82eb3b10426b58160ea1c"&gt;GIST&lt;/a&gt; | Классы символов POSIX. Существует некий набор уже заранее заготовленных классов символов, которые Вы можете использовать в регулярных выражениях. Их там с десяток, достаточно быстро просмотреть мануал чтобы понять назначение каждого. Например отфильтруем только шестнадцатеричные цифры:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;^[[:xdigit:]]*$&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '^[[:xdigit:]]*$'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;4.2
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+4.2
 42
 42abc
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;42
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+42
 42abc
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=746098bb08ea4d10b960e0556a975d1d"&gt;GIST&lt;/a&gt; | Повторение (0 или больше раз). Одним из наиболее часто используемых метасимволов является символ звёздочка, что означает «повторить предыдущий символ или выражение ноль или больше раз»:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--color=always &amp;#39;^[A-Za-z ,?]*$&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--color=always '^[A-Za-z ,?]*$'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, ???
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, ???
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, ???
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, ???
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/div&gt;
 
-
-&lt;p&gt;Существует два вида регулярных выражений: базовые регулярные выражения BRE (basic regular expressions) и расширенные регулярные выражения ERE (extended regular expressions. В чём различия BRE и ERE ? Всё дело в метасимволах. В BRE распознаются следующие метасимволы &lt;code&gt;^ $ . [ ] *&lt;/code&gt; и все другие символы расцениваются как литералы. В ERE добавлены ещё такие метасимволы &lt;code&gt;( ) { } ? + |&lt;/code&gt; и связанные с ними функции. Ну а чтобы всех окончательно запутать в «grep» придумали такую штуку — символы &lt;code&gt;( ) { }&lt;/code&gt; в BRE обрабатываются как метасимволы, если они экранированы обратным слешем, в то время как в ERE постановка перед любыми метасимволами обратного слеша приводит к тому, что они трактуются как литералы.&lt;/p&gt;
+&lt;p&gt;Различают базовые регулярные выражения BRE (basic regular expressions) и расширенные ERE (extended regular expressions). В BRE распознаются следующие метасимволы &lt;code&gt;^ $ . [ ] *&lt;/code&gt; и все другие символы расцениваются как литералы. В ERE добавлены ещё такие метасимволы &lt;code&gt;( ) { } ? + |&lt;/code&gt; и связанные с ними функции. Ну а чтобы всех окончательно запутать в «grep» придумали такую штуку – символы &lt;code&gt;( ) { }&lt;/code&gt; в BRE обрабатываются как метасимволы, если они экранированы обратным слешем, в то время как в ERE постановка перед любыми метасимволами обратного слеша приводит к тому, что они трактуются как литералы.&lt;/p&gt;
 &lt;h2&gt;РАСШИРЕННЫЕ РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=ef2f47f7ad7a8581cd755ca4f316ebeb"&gt;GIST&lt;/a&gt; | Дизъюнкция. Подобно тому, как квадратные скобки задают различные возможные варианты совпадения одного символа, дизъюнкция позволяет указать альтернативные совпадения для строк символов или выражений. Для обозначения дизъюнкции используется символ вертикальной черты:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always &amp;#39;George|John&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--extended-regexp --color=always 'George|John'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
 Thomas Jefferson, 1801-1809
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;George Washington, 1789-1797
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
 John Adams, 1797-1801
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=5f85410b230e1d7092215cac7ea452c6"&gt;GIST&lt;/a&gt; | Совпадение ноль или один раз. В расширенных регулярных выражениях существуют несколько дополнительных метасимволов, указывающих частоту повторения символа или выражения (подобно тому, как метасимвол звездочка указывает на совпадения 0 или более раз). Один из таких метасимволов это вопросительный знак, который делает предыдущий символ или выражение, по сути, необязательными:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always &amp;#39;^(Andrew )?John&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--extended-regexp --color=always '^(Andrew )?John'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Andrew Johnson, 1865-1869
 Lyndon Baines Johnson, 1963-1969
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
-
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams, 1797-1801
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
 Andrew Johnson, 1865-1869
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=4274af34f6ce8090ddab665886d1bfe6"&gt;GIST&lt;/a&gt; | Совпадение один или более раз. Для этого предусмотрен метасимвол в виде знака плюс. Он работает почти как символ звездочка, за исключением того, что выражение должно совпасть хотя бы один раз:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always &amp;#39;^[[:alpha:] ]+$&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--extended-regexp --color=always '^[[:alpha:] ]+$'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams
 Andrew Johnson, 1865-1869
 Lyndon Baines Johnson, 1963-1969
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;John Adams
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=882fe7c7fab0a2186c9c7cfc7965a4cd"&gt;GIST&lt;/a&gt; | Совпадение указанное количество раз. Для этого можно использовать фигурные скобки. Эти метасимволы используются для указания точного количества, диапазона, а также верхнего и нижнего предела количества совпадений выражения:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;args&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;--extended-regexp --color=always
-    &amp;#39;[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+--extended-regexp --color=always
+    '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+&lt;/pre&gt;
 
+&lt;div style="display: flex;"&gt;
 
-&lt;p&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;42
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+42
 127.0.0.1
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;
 
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+127.0.0.1
+&lt;/pre&gt;
 
-&lt;p&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;127.0.0.1
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/div&gt;
 
 &lt;p&gt;Команда grep настолько полезна, многофункциональна и проста в употреблении, что, однажды познакомившись с ней, невозможно представить себе работу без нее.&lt;/p&gt;</content><category term="regex"></category></entry><entry><title>Node-RED - графический конструктор «Умного Дома»</title><link href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="alternate"></link><published>2017-10-25T00:00:00+03:00</published><updated>2017-10-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-25:/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/</id><summary type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии связи, по которым пересылаются данные между узлами. Связывать различные блоки можно просто мышкой и при этом не иметь каких-либо особых навыков в программировании. Когда есть идея, но лень писать код, то в первую очередь стоит вспомнить о Node-RED и подобных инструментах. Ну а если идея взлетит, то при желании код всегда можно дописать потом.&lt;/p&gt;
 &lt;p&gt;Разработка в Node-RED ведется через обыкновенный браузер, само приложение можно запустить на различных платформах – PC, Raspberry Pi, в облаке и т.д. &lt;/p&gt;
