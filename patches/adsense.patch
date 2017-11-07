@@ -60,10 +60,25 @@ index 0000000..efeaa86
 +
 +{% endif %}
 diff --git a/templates/base.html b/templates/base.html
-index 7818c23..6fece24 100644
+index 7818c23..c06ba9b 100644
 --- a/templates/base.html
 +++ b/templates/base.html
-@@ -36,6 +36,7 @@
+@@ -1,6 +1,14 @@
+ <!DOCTYPE html>
+ <html lang="{{ DEFAULT_LANG }}">
+ <head>
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
++<script>
++  (adsbygoogle = window.adsbygoogle || []).push({
++    google_ad_client: "ca-pub-6247427373315098",
++    enable_page_level_ads: true
++  });
++</script>
++    
+         <meta charset="utf-8" />
+         <title>{% block title %}{{ SITENAME }}{%endblock%}</title>
+         <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}/css/{{ CSS_FILE }}" />
+@@ -36,6 +44,7 @@
                  {% endif %}
                  </ul></nav>
          </header><!-- /#banner -->
@@ -71,7 +86,7 @@ index 7818c23..6fece24 100644
          {% block content %}
          {% endblock %}
          <section id="extras" class="body">
-@@ -44,7 +45,7 @@
+@@ -44,7 +53,7 @@
                          <h2>{{ LINKS_WIDGET_NAME | default('links') }}</h2>
                          <ul>
                          {% for name, link in LINKS %}
@@ -80,7 +95,7 @@ index 7818c23..6fece24 100644
                          {% endfor %}
                          </ul>
                  </div><!-- /.blogroll -->
-@@ -61,7 +62,7 @@
+@@ -61,7 +70,7 @@
                              {% endif %}
  
                          {% for name, link in SOCIAL %}
@@ -89,7 +104,7 @@ index 7818c23..6fece24 100644
                          {% endfor %}
                          </ul>
                  </div><!-- /.social -->
-@@ -70,10 +71,10 @@
+@@ -70,10 +79,10 @@
  
          <footer id="contentinfo" class="body">
                  <address id="about" class="vcard body">
