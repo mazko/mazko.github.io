@@ -10,7 +10,7 @@
 </script>
     
         <meta charset="utf-8" />
-        <title>🏠 Интернет Всего 🚗 - regex</title>
+        <title>Неинтерактивный текстовый редактор SED</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
@@ -26,17 +26,22 @@
         <header id="banner" class="body">
                 <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="bookmark"
+           title="Permalink to Неинтерактивный текстовый редактор SED">Неинтерактивный текстовый редактор SED</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">Неинтерактивный текстовый редактор SED</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-11-11T00:00:00+02:00">
                 Published: Сб. 11 Ноябрь 2017
@@ -47,7 +52,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info --><p>Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем применяет весь этот набор команд к каждой строчке текста. Команду «sed» удобно использовать для <em>автоматического</em> редактирования текстовых данных. Чуть ранее мы уже рассмотрели одну замечательную утилиту для фильтрации текста <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">grep</a>. Как «grep», так и «sed» используют <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярные выражения</a>, но «sed» мощнее, поскольку это и потоковый текстовый редактор и Тьюринг-полный язык программирования, настолько полный, что на нём можно, но не нужно, писать даже игры типа шахмат. Выбирая между этими утилитами стоит помнить, что «grep» это просто фильтр, а «sed» это уже полноценный редактор с большими возможностями.</p>
+</footer><!-- /.post-info -->      <p>Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем применяет весь этот набор команд к каждой строчке текста. Команду «sed» удобно использовать для <em>автоматического</em> редактирования текстовых данных. Чуть ранее мы уже рассмотрели одну замечательную утилиту для фильтрации текста <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">grep</a>. Как «grep», так и «sed» используют <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярные выражения</a>, но «sed» мощнее, поскольку это и потоковый текстовый редактор и Тьюринг-полный язык программирования, настолько полный, что на нём можно, но не нужно, писать даже игры типа шахмат. Выбирая между этими утилитами стоит помнить, что «grep» это просто фильтр, а «sed» это уже полноценный редактор с большими возможностями.</p>
 <h2>ОБРАЗЕЦ</h2>
 <p><a href="http://sed.js.org/index.html?gist=a794d768907cca6c2e97bc1ae2706147">GIST</a> | Если не передавать «sed» никаких команд редактирования, то его можно использовать в качестве обычной читалки текстовых файлов с выводом на экран. При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода <code>stdin</code> и справа вывода <code>stdout</code>:</p>
 <pre style="border:1px solid #ddd;">
@@ -616,102 +621,26 @@ Thomas Jefferson, 1801-1809 James Madison, 1809-1817
 
 </div>
 
-<p><code>1~2h</code> – диапазон адреса, каждая нечётная строка, начина с первой, копируется в дополнительный буфер командой «h». Затем берётся каждая чётная строка <code>2~2</code>. Остальная часть команды взята в фигурные скобки. Это означает, что эта часть команды будут наследовать адрес, который был только что указан. Без этих скобок, наследовать адрес будет только команда «H», а остальные команды будут выполняться для каждой строки. В фигурных скобочках буферы склеиваются в одну строку, после чего символ новой строки заменяется символом пробела и результат печатается на экран. Ура !</p><p>There are <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p><code>1~2h</code> – диапазон адреса, каждая нечётная строка, начина с первой, копируется в дополнительный буфер командой «h». Затем берётся каждая чётная строка <code>2~2</code>. Остальная часть команды взята в фигурные скобки. Это означает, что эта часть команды будут наследовать адрес, который был только что указан. Без этих скобок, наследовать адрес будет только команда «H», а остальные команды будут выполняться для каждой строки. В фигурных скобочках буферы склеиваются в одну строку, после чего символ новой строки заменяется символом пробела и результат печатается на экран. Ура !</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="bookmark"
-                           title="Permalink to Ликбез по GREP и регулярным выражениям">Ликбез по GREP и регулярным выражениям</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-03T00:00:00+02:00">
-                Published: Пт. 03 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="bookmark"
-                           title="Permalink to Node-RED - графический конструктор «Умного Дома»">Node-RED - графический конструктор «Умного Дома»</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-25T00:00:00+03:00">
-                Published: Ср. 25 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
-</footer><!-- /.post-info -->                <p>Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/" rel="bookmark"
-                           title="Permalink to PICSim.js - калькулятор и обратная польская запись">PICSim.js - калькулятор и обратная польская запись</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-02-14T00:00:00+02:00">
-                Published: Вт. 14 Февраль 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/re2c">re2c</a> <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/" rel="bookmark"
-                           title="Permalink to Lucene - подсветка вхождений в результатах выдачи">Lucene - подсветка вхождений в результатах выдачи</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2012-10-28T00:00:00+03:00">
-                Published: Вс. 28 Октябрь 2012
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsp">JSP</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Наш <a href="http://proiot.ru/blog/posts/2012/10/27/lucene-iazykovye-analizatory/">поиск</a> работает вроде бы неплохо, но выглядит как-то не очень аппетитно. Для улучшения визуального восприятия слово или фразу, по которой документ был найден, желательно выделить - например покрасить в другой цвет. Кроме того, текущий способ отображения результатов очень примитивен - не факт, что в начале текста вообще встречается искомая фраза - необходимо …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

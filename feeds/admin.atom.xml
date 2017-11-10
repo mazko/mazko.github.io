@@ -1,5 +1,574 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗 - Admin</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/admin.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-11-03T00:00:00+02:00</updated><entry><title>Ликбез по GREP и регулярным выражениям</title><link href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="alternate"></link><published>2017-11-03T00:00:00+02:00</published><updated>2017-11-03T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-03:/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/</id><summary type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений и выводит (отфильтровывает) только те строки, которые содержат текст, совпадающий с заданным шаблоном – &lt;em&gt;регулярным выражением&lt;/em&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗 - Admin</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/admin.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-11-11T00:00:00+02:00</updated><entry><title>Неинтерактивный текстовый редактор SED</title><link href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="alternate"></link><published>2017-11-11T00:00:00+02:00</published><updated>2017-11-11T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-11:/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/</id><summary type="html">&lt;p&gt;Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем применяет весь этот набор команд к каждой строчке текста. Команду «sed» удобно использовать для &lt;em&gt;автоматического&lt;/em&gt; редактирования текстовых данных. Чуть ранее мы уже рассмотрели одну замечательную утилиту для фильтрации текста &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;grep&lt;/a&gt;. Как «grep», так и «sed» используют &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярные выражения&lt;/a&gt;, но «sed» мощнее, поскольку это и потоковый текстовый редактор и Тьюринг-полный язык программирования, настолько полный, что на нём можно, но не нужно, писать даже игры типа шахмат. Выбирая между этими утилитами стоит помнить, что «grep» это просто фильтр, а «sed» это уже полноценный редактор с большими возможностями.&lt;/p&gt;
+&lt;h2&gt;ОБРАЗЕЦ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=a794d768907cca6c2e97bc1ae2706147"&gt;GIST&lt;/a&gt; | Если не передавать «sed» никаких команд редактирования, то его можно использовать в качестве обычной читалки текстовых файлов с выводом на экран. При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода &lt;code&gt;stdin&lt;/code&gt; и справа вывода &lt;code&gt;stdout&lt;/code&gt;:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+''
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Команда «sed» имеет не так уж много опций командной строки, которые можно указать при запуске. Из них часто используются далеко не все. Действительно полезными опциями являются возможность включить &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;расширенные&lt;/a&gt; регулярные выражения, возможность редактирования файла на месте и возможность подавлять автоматический вывод каждой строки.&lt;/p&gt;
+&lt;h2&gt;ПЕЧАТЬ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=39526c24bb114bb3efbb2dbc8a170ba3"&gt;GIST&lt;/a&gt; | Почему «sed» напечатал каждую строку дважды ? Всё потому, что «sed» работает построчно. Он принимает строку, выполняет поставленную задачу и выводит результат, а затем повторяет процесс для следующей строки. После того, как «sed» получил команду печати «p» (print), он помимо этого ещё вывел каждую строку автоматически:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+p
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+George Washington, 1789-1797
+John Adams, 1797-1801
+John Adams, 1797-1801
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=1390f7965021a31bbe435cb2ba0242f7"&gt;GIST&lt;/a&gt; | Чтобы освободить результаты от повторов при использовании команды «p», можно отключить в «sed» автоматический вывод каждой строки:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n p
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Согласен, пока не впечатляет. Мы пришли к тому, с чего начинали в образце, только сложнее. Но дальше будет интересней.&lt;/p&gt;
+&lt;h2&gt;ДИАПАЗОНЫ АДРЕСОВ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=a247498954df9d2bfb00d33222f59ae7"&gt;GIST&lt;/a&gt; | Как насчёт вывода только одной единственной строки ? Чтобы напечатать только первую строку, достаточно указать её номер перед командой «p»:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n '1p'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=8f160094063d22771486e4b8958c3f63"&gt;GIST&lt;/a&gt; | Если в команде указан диапазон, то «sed» выполняет все команды только на строках, которые входят в этот диапазон. Следующий пример использует диапазон строк с первой по пятую и применит команду для печати «p» для них:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n '1,5p'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+John Quincy Adams, 1825-1829
+Andrew Jackson, 1829-1837
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=93f1ead7166f726b70e429ca11569696"&gt;GIST&lt;/a&gt; | Диапазон можно задать разными способами. Следующий пример печатает первую плюс четыре следующие строки относительно первой:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n '1,+4p'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+John Quincy Adams, 1825-1829
+Andrew Jackson, 1829-1837
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=3b834e9645275075f1e759a87e9a0018"&gt;GIST&lt;/a&gt; | Тильда диапазон вида &lt;code&gt;A~B&lt;/code&gt; выполнит заданную команду на каждую строку B, начиная со строки A. Следующий интересный пример выполняет команду печати для всех нечётных строк:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n '1~2p'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+John Quincy Adams, 1825-1829
+Andrew Jackson, 1829-1837
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+Thomas Jefferson, 1801-1809
+James Monroe, 1817-1825
+Andrew Jackson, 1829-1837
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Если нет адреса, «sed» обрабатывает все строки.&lt;/p&gt;
+&lt;h2&gt;УДАЛЕНИЕ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=f8a131b1b241f04ed935b8247b942367"&gt;GIST&lt;/a&gt; | Для удаления текста в «sed» предусмотрена команда «d» (delete). Удалим нечётные строки используя тильда диапазон с прошлого примера:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'1~2d'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+John Quincy Adams, 1825-1829
+Andrew Jackson, 1829-1837
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+James Madison, 1809-1817
+John Quincy Adams, 1825-1829
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Команды удаления и печати очень просты и понятны, но без &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярных выражений&lt;/a&gt; толку от них пока немного. Мы не будем сейчас подробно останавливаться на синтаксисе регулярных выражений т.к. эта тема уже подробно освещалось в предыдущем материале по &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;grep&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;ЗАМЕНА&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=42a90cf22cd2871bacc3269f98a134cc"&gt;GIST&lt;/a&gt; | Команда «s» (substitute) – это команда замены. В данном примере три слеша разделяют команду, регулярное выражение и то, чем это выражение нужно заменить. В качестве разделителя необязательно использовать слеши, это могут быть любые другие одинаковые символы. Разделителем считается первый символ, который будет встречен после «s»:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/o/@/'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Ge@rge Washington, 1789-1797
+J@hn Adams, 1797-1801
+Th@mas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=c996e18cdca1bca37d238a6661c4e5a3"&gt;GIST&lt;/a&gt; | По умолчанию команда «s» выполняет замену только первого совпадения в строке, после чего переходит к следующей строке. Если требуется заменить все совпадения, нужно использовать дополнительный флаг «g» (global), который помещается после шаблона замены:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/o/@/g'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Ge@rge Washingt@n, 1789-1797
+J@hn Adams, 1797-1801
+Th@mas Jeffers@n, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=e2bb61a432dd41455d56b3b998f0efba"&gt;GIST&lt;/a&gt; | Чтобы заменить только каждое второе совпадение в каждой строке, вместо флага «g» нужно указать числовой модификатор «2». Числовой модификатор указывает, какое по счету совпадение подлежит замене:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/o/@/2'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washingt@n, 1789-1797
+John Adams, 1797-1801
+Thomas Jeffers@n, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=88f8b1b3f5f3040d3c5c9aa50d6252f9"&gt;GIST&lt;/a&gt; | Команды можно комбинировать, например команда замены и команда печати могут работать совместно. Замена каждого второго совпадения в строке и последующая фильтрация только тех строк, в которых произошла замена:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n 's/o/@/2p'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washingt@n, 1789-1797
+Thomas Jeffers@n, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=583764fb194580632ad5ce71856cd230"&gt;GIST&lt;/a&gt; | Флаги тоже можно комбинировать. Например глобальный флаг «g» и флаг поиска без учёта регистра «i» (ignore case):&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/G/@/ig'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+@eor@e Washin@ton, 1789-1797
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Прежде чем двигаться дальше, для закрепления пройденного материала ответьте для себя на вопрос, что делает следующее выражение &lt;code&gt;'1s/o/@/ig'&lt;/code&gt; ? Ответ &lt;a href="http://sed.js.org/index.html?gist=f08585d7412a7d26ec68f44c978d259b"&gt;GIST&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;ОБРАТНЫЕ ССЫЛКИ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=21fbe495b08b8c58b7417fbb32f3b45f"&gt;GIST&lt;/a&gt; | Для начала давайте освежим в памяти что делает звёздочка в регулярных выражениях. Метасимвол звездочка означает повторить предыдущий символ или выражение ноль или больше раз. Это позволяет захватывать текст, не зная точной фразы:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/^.*on/REPLACED/'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+REPLACED, 1789-1797
+John Adams, 1797-1801
+REPLACED, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=36f951b6313aa1cfc12011127ee65a8e"&gt;GIST&lt;/a&gt; | Ссылка «&amp;amp;» указывает на всё подвыражение, удовлетворяющее заданному регулярному выражению, целиком. Например, чтобы взять в фигурные скобки весь текст, совпадающий с шаблоном:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/^.*on/{&amp;}/'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+{George Washington}, 1789-1797
+John Adams, 1797-1801
+{Thomas Jefferson}, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=d48469cba0623c095c31bdee4a6c7414"&gt;GIST&lt;/a&gt; | Группы в регулярных выражениях обозначаются метасимволами в виде круглых скобок и имеют смысл, схожий с математическими выражениями. В «sed» можно ссылаться по отдельности на каждую группу, используя её порядковый номер отсчитывая слева:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/\([a-zA-Z0-9]\+\) \([a-zA-Z0-9]\+\)/\2 \1/'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Washington George, 1789-1797
+Adams John, 1797-1801
+Jefferson Thomas, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Следует учитывать, что обработка обратных ссылок может негативно сказаться на производительности скриптов (особенно если строк много и они длинные), т.к. при использовании обратных ссылок «sed» хранит ВСЕ захваченные подвыражения в скобках в оперативной памяти.&lt;/p&gt;
+&lt;h2&gt;ЦЕПОЧКИ СКРИПТОВ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=cb0a609dca9df82c168a0220577f8fa7"&gt;GIST&lt;/a&gt; | До этого мы всегда передавали в «sed» только один скрипт, но иногда возникает необходимость выполнить сразу несколько. Пример выполнения множества скриптов:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-e 's/James/J./' -e 's/George/G./'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+G. Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+J. Madison, 1809-1817
+J. Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=8944e985cff0fd4317ff69547c4bcf34"&gt;GIST&lt;/a&gt; | А можно вообще объединить скрипты в один при помощи символа точки с запятой. Этот метод работает точно так же как и предыдущий:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'s/James/J./;s/George/G./'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+G. Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+J. Madison, 1809-1817
+J. Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;При использовании точки с запятой все команды можно перечислить в одних кавычках.&lt;/p&gt;
+&lt;h2&gt;ПРОДВИНУТАЯ АДРЕСАЦИЯ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=5ffa5ffd5ae98fb848b74d95d1511c88"&gt;GIST&lt;/a&gt; | Вернёмся к адресации. В качестве критериев выбора строк (адресации), которые редактирует «sed», также разрешается использовать регулярные выражения:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'/John Adams/s/.*/Hello/'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+Hello
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=86ee4cf15e7f4a3f63be568f07fa195b"&gt;GIST&lt;/a&gt; | Регулярные выражения могут быть использованы в любой части диапазона. Следующий пример удалит все строки от первого найденного слова START до первого найденного слова END:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'/^START$/,/^END$/d'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+START
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+END
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=1a4377fe007c853b9073dd67cd465503"&gt;GIST&lt;/a&gt; | Чтобы инвертировать адресацию, то есть выбрать строки, которые не соответствуют шаблону, используйте восклицательный знак:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'/John Adams/!s/.*/Hello/'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Hello
+John Adams, 1797-1801
+Hello
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Инверсия точно так же работает с обычной нумерацией.&lt;/p&gt;
+&lt;h2&gt;ДОПОЛНИТЕЛЬНЫЙ БУФЕР&lt;/h2&gt;
+&lt;p&gt;Дополнительный буфер (hold buffer) в «sed» позволяет выполнять многострочное редактирование. Наличие этого  буфера позволяет хранить строки во время работы над другими строками. Команды для работы с буфером:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;h: копирует текущий буфер обработки  (последней совпавшей строки, с которой вы работаете) в дополнительный буфер&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;H: добавляет текущий буфер обработки в конец текущей дополнительной обработки, разделяя их символом новой строки&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;g: копирует текущий дополнительный буфер в текущий буфер обработки. Предыдущий буфер обработки будет утерян&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;G: добавляет текущий шаблон в текущий буфер обработки, разделяя их символом новой строки&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;x: Подкачивает текущий шаблон и дополнительный буфер&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=d7e6d30a4aa389b960ae704d6cd3b0f1"&gt;GIST&lt;/a&gt; | На закуску такой вот нехилый примерчик для склеивания смежных строк:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-n '1~2h;2~2{H;g;s/\n/ /;p}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+James Madison, 1809-1817
+James Monroe, 1817-1825
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797 John Adams, 1797-1801
+Thomas Jefferson, 1801-1809 James Madison, 1809-1817
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;1~2h&lt;/code&gt; – диапазон адреса, каждая нечётная строка, начина с первой, копируется в дополнительный буфер командой «h». Затем берётся каждая чётная строка &lt;code&gt;2~2&lt;/code&gt;. Остальная часть команды взята в фигурные скобки. Это означает, что эта часть команды будут наследовать адрес, который был только что указан. Без этих скобок, наследовать адрес будет только команда «H», а остальные команды будут выполняться для каждой строки. В фигурных скобочках буферы склеиваются в одну строку, после чего символ новой строки заменяется символом пробела и результат печатается на экран. Ура !&lt;/p&gt;</content><category term="regex"></category></entry><entry><title>Ликбез по GREP и регулярным выражениям</title><link href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="alternate"></link><published>2017-11-03T00:00:00+02:00</published><updated>2017-11-03T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-03:/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/</id><summary type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений и выводит (отфильтровывает) только те строки, которые содержат текст, совпадающий с заданным шаблоном – &lt;em&gt;регулярным выражением&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Регулярные выражения — специальный формальный язык поиска и осуществления манипуляций с подстроками в тексте, основанный на использовании метасимволов. Сейчас уже практически все современные языки программирования имеют встроенную поддержку регулярных выражений для обработки текстов, однако исторически популяризации данного подхода во многом способствовал именно мир UNIX и в частности идеи, заложенные в команды «grep», «sed» и др. Философия «все есть файл» полностью пронизывает UNIX и владение инструментами для работы с текстовыми файлами является одним из обязательных навыков каждого пользователя Linux.&lt;/p&gt;
 &lt;h2&gt;ОБРАЗЕЦ&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://grep.js.org/index.html?gist=957620b1864a0951915cfdf826f48444"&gt;GIST&lt;/a&gt; | Простейший поиск всех строк, в которых есть текст «Adams». При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода &lt;code&gt;stdin&lt;/code&gt; и справа вывода &lt;code&gt;stdout&lt;/code&gt;.&lt;/p&gt;

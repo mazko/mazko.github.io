@@ -193,7 +193,7 @@
 
 
 <p>Применение паттернов и ООП в микроконтроллерах имеет свою специфику, накладываемую в основном моделью управления памятью. Неважно на чём писать — Си или С++ для встраиваемых систем предпочтительней использовать память в стеке т.к. она проверяется компилятором. В свою очередь динамическое выделение памяти на куче <strong>не проверяется компилятором</strong> и как следствие её наличие в нужный момент времени выполнения программы не гарантируется. ООП же больше любит динамическое выделение памяти — операторы <code>new</code>, <code>malloc</code>, умные указатели. Не стоит этого всего использовать в микроконтроллерах без ясного понимания возможных последствий.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">Далее</a> игра «Змейка» где работа с памятью будет описана более подробно.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/#disqus_thread">comments</a>.</p>                </article>
+<p><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">Далее</a> игра «Змейка» где работа с памятью будет описана более подробно. Приведенная реализация игры использует <a href="https://www.state-machine.com/" rel="nofollow">Quantum Framework</a>. У каждого Активного Объекта в Quantum Framework можно выделить два паттерна — «Состояние» и «Наблюдатель».</p><p>There are <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
                 <section id="content" class="body">
                     <h1>Other articles</h1>
