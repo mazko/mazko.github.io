@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>🏠 Интернет Всего 🚗 - Oleg Mazko</title>
+        <title>Язык обработки структурированных текстов AWK</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
@@ -18,7 +18,7 @@
         <header id="banner" class="body">
                 <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
@@ -35,10 +35,15 @@
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-</div>
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">Язык обработки структурированных текстов AWK</a></h1>
+</div><section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/" rel="bookmark"
+           title="Permalink to Язык обработки структурированных текстов AWK">Язык обработки структурированных текстов AWK</a></h1>
+    </header>
+
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2017-11-17T00:00:00+02:00">
                 Published: Пт. 17 Ноябрь 2017
@@ -49,7 +54,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info --><p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
+</footer><!-- /.post-info -->      <p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
 <p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида «шаблон — действие», где шаблон является <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярным выражением</a>, а действие — последовательностью команд или функций. Если шаблон не указан, то действие выполняется для любой записи. Если не указано действие, то запись выводится в выходной поток. Каждая запись поочерёдно сравнивается со всеми шаблонами, и каждый раз когда она соответствует шаблону, выполняется указанное действие. Каждая запись в свою очередь делится на поля. Упрощенно, если говорить об обычном тексте и не учитывать возможности настройки «AWK», то запись — это <strong>строка</strong>, а поле — это <strong>слово</strong> в строке.</p>
 <p>Если сравнивать редактор <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">SED</a> и язык «AWK», то в первую очередь стоит вспомнить, что оба они являются Тьюринг-полными. Это даёт основание утверждать, что в теории любая задача может быть успешно решена как на «SED» так и на «AWK», вопрос только в том, сколько времени и нервов это займёт. «AWK» выводит обработку текстовых данных на более высокий уровень. Благодаря «AWK» в нашем распоряжении оказывается полноценный язык программирования, а не ограниченный набор команд, отдаваемых редактору. Математические операции, поддержка переменных и ассоциативных массивов, управляющие конструкции <code>if-then</code>, циклы и т.д. всё это поддерживается в «AWK» из коробки.</p>
 <h2>ОБРАЗЕЦ</h2>
@@ -459,107 +464,26 @@ Maximum = 20
 
 </div>
 
-<p>«AWK» читает всю программу перед началом ее выполнения, так что необязательно помещать определения функций перед вызовом, они могут располагаться где угодно между правилами программы в любой последовательности. Правильное имя функции подобно правильному имени переменной: последовательность букв, цифр и подчеркиваний, начинающаяся не с цифры. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
+<p>«AWK» читает всю программу перед началом ее выполнения, так что необязательно помещать определения функций перед вызовом, они могут располагаться где угодно между правилами программы в любой последовательности. Правильное имя функции подобно правильному имени переменной: последовательность букв, цифр и подчеркиваний, начинающаяся не с цифры. </p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_shortname = 'mazko';
+        var disqus_identifier = 'blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/';
+        var disqus_url = 'http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/';
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//mazko.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+      <noscript>Please enable JavaScript to view the comments.</noscript>
+    </div>
 
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="bookmark"
-                           title="Permalink to Неинтерактивный текстовый редактор SED">Неинтерактивный текстовый редактор SED</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-11T00:00:00+02:00">
-                Published: Сб. 11 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="bookmark"
-                           title="Permalink to Ликбез по GREP и регулярным выражениям">Ликбез по GREP и регулярным выражениям</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-03T00:00:00+02:00">
-                Published: Пт. 03 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="bookmark"
-                           title="Permalink to Node-RED - графический конструктор «Умного Дома»">Node-RED - графический конструктор «Умного Дома»</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-25T00:00:00+03:00">
-                Published: Ср. 25 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
-</footer><!-- /.post-info -->                <p>Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/" rel="bookmark"
-                           title="Permalink to Протоколы «Интернета вещей» - MQTT">Протоколы «Интернета вещей» - MQTT</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-20T00:00:00+03:00">
-                Published: Пт. 20 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
-<p>MQTT (Message Queue Telemetry Transport) – протокол прикладного уровня для организации межмашинной коммуникации (M2M, Machine to Machine), который работает по принципу «издатель-подписчик». Два главных компонента MQTT – клиент и брокер. MQTT-клиенты публикуют сообщения на определённую тему (topic), или подписываются на сообщения и прослушивают их. Тема – это произвольная строка …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 16
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+  </article>
+</section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

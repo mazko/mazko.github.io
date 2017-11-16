@@ -1,5 +1,416 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗 - Admin</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/admin.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-11-11T00:00:00+02:00</updated><entry><title>Неинтерактивный текстовый редактор SED</title><link href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="alternate"></link><published>2017-11-11T00:00:00+02:00</published><updated>2017-11-11T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-11:/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/</id><summary type="html">&lt;p&gt;Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем применяет весь этот набор команд к каждой строчке текста. Команду «sed» удобно использовать для &lt;em&gt;автоматического&lt;/em&gt; редактирования текстовых данных. Чуть ранее мы уже рассмотрели одну замечательную утилиту для фильтрации текста &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;grep&lt;/a&gt;. Как «grep», так и «sed» используют &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярные выражения&lt;/a&gt;, но «sed» мощнее, поскольку это и потоковый текстовый редактор и Тьюринг-полный язык программирования, настолько полный, что на нём можно, но не нужно, писать даже игры типа шахмат. Выбирая между этими утилитами стоит помнить, что «grep» это просто фильтр, а «sed» это уже полноценный редактор с большими возможностями.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗 - Admin</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/admin.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-11-17T00:00:00+02:00</updated><entry><title>Язык обработки структурированных текстов AWK</title><link href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/" rel="alternate"></link><published>2017-11-17T00:00:00+02:00</published><updated>2017-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-17:/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/</id><summary type="html">&lt;p&gt;«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — &lt;em&gt;Alfred V. &lt;strong&gt;A&lt;/strong&gt;ho&lt;/em&gt;, &lt;em&gt;Peter J. &lt;strong&gt;W&lt;/strong&gt;einberger&lt;/em&gt; и &lt;em&gt;Brian W. &lt;strong&gt;K&lt;/strong&gt;ernighan&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида …&lt;/p&gt;</summary><content type="html">&lt;p&gt;«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — &lt;em&gt;Alfred V. &lt;strong&gt;A&lt;/strong&gt;ho&lt;/em&gt;, &lt;em&gt;Peter J. &lt;strong&gt;W&lt;/strong&gt;einberger&lt;/em&gt; и &lt;em&gt;Brian W. &lt;strong&gt;K&lt;/strong&gt;ernighan&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида «шаблон — действие», где шаблон является &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярным выражением&lt;/a&gt;, а действие — последовательностью команд или функций. Если шаблон не указан, то действие выполняется для любой записи. Если не указано действие, то запись выводится в выходной поток. Каждая запись поочерёдно сравнивается со всеми шаблонами, и каждый раз когда она соответствует шаблону, выполняется указанное действие. Каждая запись в свою очередь делится на поля. Упрощенно, если говорить об обычном тексте и не учитывать возможности настройки «AWK», то запись — это &lt;strong&gt;строка&lt;/strong&gt;, а поле — это &lt;strong&gt;слово&lt;/strong&gt; в строке.&lt;/p&gt;
+&lt;p&gt;Если сравнивать редактор &lt;a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/"&gt;SED&lt;/a&gt; и язык «AWK», то в первую очередь стоит вспомнить, что оба они являются Тьюринг-полными. Это даёт основание утверждать, что в теории любая задача может быть успешно решена как на «SED» так и на «AWK», вопрос только в том, сколько времени и нервов это займёт. «AWK» выводит обработку текстовых данных на более высокий уровень. Благодаря «AWK» в нашем распоряжении оказывается полноценный язык программирования, а не ограниченный набор команд, отдаваемых редактору. Математические операции, поддержка переменных и ассоциативных массивов, управляющие конструкции &lt;code&gt;if-then&lt;/code&gt;, циклы и т.д. всё это поддерживается в «AWK» из коробки.&lt;/p&gt;
+&lt;h2&gt;ОБРАЗЕЦ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=e625cdb4661bf560d0c94010c795d7d8"&gt;GIST&lt;/a&gt; | Простой пример «AWK» — обычная читалка текстовых файлов с выводом на экран. При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода &lt;code&gt;stdin&lt;/code&gt; и справа вывода &lt;code&gt;stdout&lt;/code&gt;:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'{print}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Из полезных опций командной строки, которые можно указать при запуске «AWK», стоит выделить возможность указать символ-разделитель для полей &lt;code&gt;-F&lt;/code&gt; и возможность объявить переменную и задать её значение по умолчанию &lt;code&gt;-v var=value&lt;/code&gt;. Как видно из примера, команда &lt;code&gt;print&lt;/code&gt; без дополнительных параметров печатает все содержимое текущей записи. &lt;/p&gt;
+&lt;h2&gt;ТАБЛИЦЫ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=13e9a1bce9aabd91474113cb46567d62"&gt;GIST&lt;/a&gt; | «AWK» отлично справляется с файлами, структурированными предсказуемым образом. К примеру, эта команда особенно сильна в анализе и обработке табличных данных. По умолчанию для разделения полей «AWK» использует пробельные символы и символы табуляции, а для разделения записей используется символ новой строки. Каждому полю автоматического назначается своя переменная согласно его порядковому номеру следования в записи:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'{print $1}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George
+John
+Thomas
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=764f8f9cd2ec6b7f8e76bb57816f4349"&gt;GIST&lt;/a&gt; | Иногда в качестве разделителей полей удобно использовать не пробелы или символы табуляции, а какой-то особый шаблон. Выше мы упоминали ключ &lt;code&gt;-F&lt;/code&gt;, теперь пример, где разделитель полей задаётся с помощью &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярного выражения&lt;/a&gt;:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-F '[-,]+' '{print $1 " ("$3-$2")"}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington (8)
+John Adams (4)
+Thomas Jefferson (8)
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Для более тонкой настройки в «AWK» предусмотрен свой собственный комплект встроенных переменных. Одна из таких переменных с именем &lt;code&gt;RS&lt;/code&gt; позволяет задать особый разделитель записей. Подробнее о встроенных переменных чуть позже. &lt;/p&gt;
+&lt;h2&gt;РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ И БЛОКИ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=bcc5225c73d3c49634c367217ab07eaa"&gt;GIST&lt;/a&gt; | «AWK» позволяет использовать &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярные выражения&lt;/a&gt; для избирательного выполнения отдельных блоков программы в зависимости от того, совпадает или нет регулярное выражение с текущей записью:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'/on/ { print }'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Если не указано действие, то по умолчанию запись выводится в выходной поток и потому в данном случае действие &lt;code&gt;{ print }&lt;/code&gt; можно было бы вообще не указывать.&lt;/p&gt;
+&lt;h2&gt;ЛОГИЧЕСКИЕ ВЫРАЖЕНИЯ И БЛОКИ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=9016d8d037f2fab13ba7171261c3874e"&gt;GIST&lt;/a&gt; | Есть и другие способов избирательно выполнять блок программы. Мы можем поместить перед блоком программы любое булево выражение для управления исполнением этого блока и «AWK» будет выполнять блок программы только если предыдущее булево выражение истинно:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'$1 == "John"'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=26ab431015165ac4935e6b1f0d4c27ee"&gt;GIST&lt;/a&gt; | «AWK» предлагает полный набор операторов сравнения, в том числе обычные &lt;code&gt;==&lt;/code&gt;, &lt;code&gt;&amp;lt;&lt;/code&gt;, &lt;code&gt;&amp;gt;&lt;/code&gt;, &lt;code&gt;&amp;lt;=&lt;/code&gt;, &lt;code&gt;&amp;gt;=&lt;/code&gt; и &lt;code&gt;!=&lt;/code&gt;. Для сложных выражений стоит помнить об условном операторе &lt;code&gt;if&lt;/code&gt;:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'{
+  if ($1 == "John" &amp;&amp; $2 ~ /Ada/) { 
+    print
+  }
+}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+John Adams, 1797-1801
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Операторы &lt;code&gt;~&lt;/code&gt; и &lt;code&gt;!~&lt;/code&gt; означают &lt;em&gt;совпадает&lt;/em&gt; или &lt;em&gt;не совпадает&lt;/em&gt; значение слева с регулярным выражением справа. &lt;/p&gt;
+&lt;h2&gt;НЕОБЯЗАТЕЛЬНЫЕ БЛОКИ BEGIN И END&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=629cbedc6bb0f4ebd2ea97846936e93b"&gt;GIST&lt;/a&gt; | Часто встречаются ситуации, когда требуется выполнить код инициализации перед тем, как «AWK» начнет обрабатывать текст. Для таких случаев «AWK» дает возможность определять необязательный блок &lt;code&gt;BEGIN&lt;/code&gt;. Это отличное место для инициализации встроенных или глобальных переменных, вывода заголовка и т.д.:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'BEGIN {print "Hello", "World !"}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+any text
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Hello World !
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Есть еще один необязательный блок &lt;code&gt;END&lt;/code&gt;. «AWK» выполняет этот блок после того, как все записи были обработаны. Обычно блок &lt;code&gt;END&lt;/code&gt; используется для выполнения заключительных вычислений или вывода итогов, которые должны появиться в конце выходного потока.&lt;/p&gt;
+&lt;h2&gt;ВСТРОЕННЫЕ ПЕРЕМЕННЫЕ&lt;/h2&gt;
+&lt;p&gt;«AWK» — динамически типизированный язык: все примитивы хранятся как строки, хотя могут обрабатываться как числа в зависимости от контекста их использования (например, в арифметических выражениях). Основная структура данных языка — ассоциативный массив с индексами-строками.&lt;/p&gt;
+&lt;p&gt;Мы уже рассматривали позиционные переменные — &lt;code&gt;$1&lt;/code&gt;, &lt;code&gt;$2&lt;/code&gt;, &lt;code&gt;$3&lt;/code&gt;, которые позволяют извлекать значения полей из записей. На самом деле их довольно много и вот список некоторых из наиболее часто используемых:&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=2617a81bf5ec753b9528e3e8e78b0621"&gt;GIST&lt;/a&gt; | &lt;code&gt;ARGC&lt;/code&gt; — число аргументов командной строки. В данном примере вся логика ограничивается блоком &lt;code&gt;BEGIN&lt;/code&gt;, до непосредственной обработки текста дело даже не доходит:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'BEGIN {print "Arguments =", ARGC}' One Two Three Four
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+any text
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Arguments = 5
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=10579811ba2de1a874d1b924b4a65aa6"&gt;GIST&lt;/a&gt; | &lt;code&gt;ARGV&lt;/code&gt; — массив аргументов командной строки. В данном примере массив перебирается с помощью цикла. Циклы используются во множестве языков программировании, поддерживает их и «AWK»:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'BEGIN { 
+   for (i = 0; i &lt; ARGC - 1; ++i) { 
+      printf "ARGV[%d] = %s\n", i, ARGV[i] 
+   } 
+}' one two three four
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+any text
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+ARGV[0] = mawk
+ARGV[1] = one
+ARGV[2] = two
+ARGV[3] = three
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=c586aa7ac8c6c354aafe49efecee325e"&gt;GIST&lt;/a&gt; | &lt;code&gt;NF&lt;/code&gt; позволяет обращаться к последнему полю данных в записи, не зная его точной позиции. «AWK» автоматически устанавливает значение этой переменной равным числу полей в текущей записи:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-F "[, ]+" '{print $NF ":", $1, $(NF-1)}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+1789-1797: George Washington
+1797-1801: John Adams
+1801-1809: Thomas Jefferson
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=271467fd80112e9f13e392e83054148d"&gt;GIST&lt;/a&gt; | &lt;code&gt;NR&lt;/code&gt; хранит номер текущей записи, начиная с единицы:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'NR &lt; 3'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+Thomas Jefferson, 1801-1809
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+George Washington, 1789-1797
+John Adams, 1797-1801
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Многие встроенные переменные, например &lt;code&gt;ARGC&lt;/code&gt;, устанавливаются автоматически и обычно не предназначены для записи в них, т.е. используются только для чтения.&lt;/p&gt;
+&lt;h2&gt;ПОЛЬЗОВАТЕЛЬСКИЕ ПЕРЕМЕННЫЕ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=4d9e43c7efba917086ddea54c93a2716"&gt;GIST&lt;/a&gt; | Как и любые другие языки программирования, «AWK» позволяет программисту объявлять переменные. Имена переменных могут включать в себя буквы, цифры, символы подчёркивания, но не могут начинаться с цифры. Объявить переменную, присвоить ей значение можно как из командной строки &lt;code&gt;-v var=value&lt;/code&gt; так и непосредственно в коде:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+-v msg="Hello World !" 
+'BEGIN {
+   num1="21"
+   num2=21
+   print num1*2, num2*2, msg + 1
+} 
+{ print msg }'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+a
+b
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+42 42 1
+Hello World !
+Hello World !
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Допускается производить математические операции над строками. Если в строковой переменной не содержится правильного числа, то при вычислении математического выражения «AWK» будет обращаться с этой переменной как с числовым нулем.&lt;/p&gt;
+&lt;h2&gt;АССОЦИАТИВНЫЕ МАССИВЫ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=bc4f6914346dbf43c184e812655fe8bb"&gt;GIST&lt;/a&gt; | Из структур данных в «AWK» поддерживаются только ассоциативные массивы. В ассоциативном массиве хранятся пары вида &lt;em&gt;ключ&lt;/em&gt; =&amp;gt; &lt;em&gt;значение&lt;/em&gt;. Предполагается, что ассоциативный массив не может хранить две пары с одинаковыми ключами:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'BEGIN {
+   fruits["mango"] = "yellow";
+   fruits["orange"] = "orange"
+   print fruits["orange"] "\n" fruits["mango"]
+}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+anything here
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+orange
+yellow
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=cb6c15fece0f60a286e3a64296bdbdad"&gt;GIST&lt;/a&gt; | Для удаления элемента из массива по его ключу предусмотрено ключевое слово &lt;code&gt;delete&lt;/code&gt;:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'BEGIN {
+   fruits[1] = "yellow";
+   fruits[2] = "orange";
+   delete fruits["2"];
+   for (fruit in fruits) { 
+      print fruits[fruit]
+   } 
+}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+anything here
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+mango
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Для перебора всех элементов массива предусмотрена конструкция &lt;code&gt;for...in&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;ФУНКЦИИ&lt;/h2&gt;
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=e83563c5015ca799622e9c13b98d8852"&gt;GIST&lt;/a&gt; | «AWK» имеет набор встроенных функций для выполнения некоторых в известном смысле стандартных операций. К встроенным относятся функции для работы со строками, временем и арифметикой. В следующем примере время конечно же будет отличаться от указанного:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'BEGIN {print strftime("%T",systime()), cos(0), toupper("hello")}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+some text
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+20:14:27 1 HELLO
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=40932c2d2436ef9f5d915d71743aca85"&gt;GIST&lt;/a&gt; | Сложные программы часто могут быть упрощены определением ваших собственных функций. Пользовательские функции могут вызываться точно так же как и встроенные, но определять их вы должны сами:&lt;/p&gt;
+&lt;pre style="border:1px solid #ddd;"&gt;
+'# Script execution starts here
+BEGIN {
+   main(10, 20)
+}
+# Returns minimum number
+function find_min(num1, num2){
+   if (num1 &lt; num2)
+   return num1
+   return num2
+}
+# Returns maximum number
+function find_max(num1, num2){
+   if (num1 &gt; num2)
+   return num1
+   return num2
+}
+# Main function
+function main(num1, num2){
+   # Find minimum number
+   result = find_min(10, 20)
+   print "Minimum =", result
+
+   # Find maximum number
+   result = find_max(10, 20)
+   print "Maximum =", result
+}'
+&lt;/pre&gt;
+
+&lt;!-- https://stackoverflow.com/a/20669539 --&gt;
+
+&lt;div style="display: flex;"&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+anything here
+&lt;/pre&gt;
+
+&lt;pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;"&gt;
+Minimum = 10
+Maximum = 20
+&lt;/pre&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;«AWK» читает всю программу перед началом ее выполнения, так что необязательно помещать определения функций перед вызовом, они могут располагаться где угодно между правилами программы в любой последовательности. Правильное имя функции подобно правильному имени переменной: последовательность букв, цифр и подчеркиваний, начинающаяся не с цифры. &lt;/p&gt;</content><category term="regex"></category></entry><entry><title>Неинтерактивный текстовый редактор SED</title><link href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="alternate"></link><published>2017-11-11T00:00:00+02:00</published><updated>2017-11-11T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-11-11:/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/</id><summary type="html">&lt;p&gt;Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем применяет весь этот набор команд к каждой строчке текста. Команду «sed» удобно использовать для &lt;em&gt;автоматического&lt;/em&gt; редактирования текстовых данных. Чуть ранее мы уже рассмотрели одну замечательную утилиту для фильтрации текста &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;grep&lt;/a&gt;. Как «grep», так и «sed» используют &lt;a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/"&gt;регулярные выражения&lt;/a&gt;, но «sed» мощнее, поскольку это и потоковый текстовый редактор и Тьюринг-полный язык программирования, настолько полный, что на нём можно, но не нужно, писать даже игры типа шахмат. Выбирая между этими утилитами стоит помнить, что «grep» это просто фильтр, а «sed» это уже полноценный редактор с большими возможностями.&lt;/p&gt;
 &lt;h2&gt;ОБРАЗЕЦ&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://sed.js.org/index.html?gist=a794d768907cca6c2e97bc1ae2706147"&gt;GIST&lt;/a&gt; | Если не передавать «sed» никаких команд редактирования, то его можно использовать в качестве обычной читалки текстовых файлов с выводом на экран. При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода &lt;code&gt;stdin&lt;/code&gt; и справа вывода &lt;code&gt;stdout&lt;/code&gt;:&lt;/p&gt;
 &lt;pre style="border:1px solid #ddd;"&gt;
