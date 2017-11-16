@@ -13,12 +13,36 @@ index 03a77e6..1a27c84 100644
  	}
 diff --git a/templates/adsense.html b/templates/adsense.html
 new file mode 100644
-index 0000000..f0fb497
+index 0000000..1f18471
 --- /dev/null
 +++ b/templates/adsense.html
-@@ -0,0 +1,11 @@
-+<div class="body" style="text-align: center; margin-bottom: 25px">
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+@@ -0,0 +1,36 @@
++<style>
++    .style-2025290f9b2b474c8cf200c91f2af69a {
++        animation: anime-2025290f9b2b474c8cf200c91f2af69a 2s infinite;
++        color: red;
++        font-weight: bold;
++        text-align: center;
++    }
++    @keyframes anime-2025290f9b2b474c8cf200c91f2af69a {
++        0%   {color:red;}
++        33%  {color:green;}
++        66%  {color:blue;}
++    }
++</style>
++
++<script>
++function adBlockFunction2025290f9b2b474c8cf200c91f2af69a() {
++    var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
++    elm.innerHTML = 'Пожалуйста, добавьте proiot.ru в исключения AdBlock<br/>' +
++                    'Реклама помогает поддерживать и развивать наши сервисы<br/>' +
++                    'Искренне благодарим за помощь и понимание!';
++    elm.className += " style-2025290f9b2b474c8cf200c91f2af69a";
++}
++</script>
++
++<div class="body" style="text-align: center; margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="adBlockFunction2025290f9b2b474c8cf200c91f2af69a();"></script>
 +<!-- pelican728x90 -->
 +<ins class="adsbygoogle"
 +     style="display:inline-block;width:728px;height:90px"
@@ -28,6 +52,7 @@ index 0000000..f0fb497
 +(adsbygoogle = window.adsbygoogle || []).push({});
 +</script>
 +</div>
++
 diff --git a/templates/base.html b/templates/base.html
 index 7818c23..6fece24 100644
 --- a/templates/base.html
