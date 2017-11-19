@@ -11,11 +11,52 @@ index 03a77e6..1a27c84 100644
  		margin: 0 0 .6em .2em;
  		text-decoration: none;
  	}
-diff --git a/templates/adsense.html b/templates/adsense.html
+diff --git a/templates/ads-bottom.html b/templates/ads-bottom.html
+new file mode 100644
+index 0000000..71765df
+--- /dev/null
++++ b/templates/ads-bottom.html
+@@ -0,0 +1,35 @@
++<script>
++var varf34565f46d1f4e4ca1463ed13c639e88 = true;
++function adBlockFunctionf34565f46d1f4e4ca1463ed13c639e88() {
++    if (varf34565f46d1f4e4ca1463ed13c639e88) {
++        var elm = document.getElementById('ad-f34565f46d1f4e4ca1463ed13c639e88');
++        elm.innerHTML = '<img alt="" src="/blog/images/noads.svg" style="width:100%">';
++        varf34565f46d1f4e4ca1463ed13c639e88 = false;
++    }
++}
++setTimeout(function() {
++    if (varf34565f46d1f4e4ca1463ed13c639e88) {
++        var elm = document.getElementById('ad-f34565f46d1f4e4ca1463ed13c639e88');
++        // https://developer.mozilla.org/ru/docs/Web/API/HTMLElement/style
++        elm.style.background = 'url(/blog/images/noads.svg)';
++        elm.style.backgroundSize = '100%';
++        elm.style.backgroundRepeat = 'no-repeat';
++        elm.style.backgroundPosition = 'center';
++        varf34565f46d1f4e4ca1463ed13c639e88 = false;
++    }
++}, 4444);
++</script>
++
++<div class="body" style="margin-bottom: 30px" id="ad-f34565f46d1f4e4ca1463ed13c639e88">
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="adBlockFunctionf34565f46d1f4e4ca1463ed13c639e88();"></script>
++<!-- adaptive -->
++<ins class="adsbygoogle"
++     style="display:block"
++     data-ad-client="ca-pub-6247427373315098"
++     data-ad-slot="6683691686"
++     data-ad-format="auto"></ins>
++<script>
++(adsbygoogle = window.adsbygoogle || []).push({});
++</script>
++</div>
++
+diff --git a/templates/ads-top.html b/templates/ads-top.html
 new file mode 100644
 index 0000000..2e5b004
 --- /dev/null
-+++ b/templates/adsense.html
++++ b/templates/ads-top.html
 @@ -0,0 +1,35 @@
 +<script>
 +var var2025290f9b2b474c8cf200c91f2af69a = true;
@@ -52,19 +93,31 @@ index 0000000..2e5b004
 +</script>
 +</div>
 +
+diff --git a/templates/article.html b/templates/article.html
+index 06110b4..c26c06a 100644
+--- a/templates/article.html
++++ b/templates/article.html
+@@ -1,6 +1,9 @@
+ {% extends "base.html" %}
+ {% block title %}{{ article.title|striptags }}{% endblock %}
+ {% block content %}
++
++{% include 'ads-top.html' %}
++
+ <section id="content" class="body">
+   <article>
+     <header>
+@@ -34,4 +37,5 @@
+ 
+   </article>
+ </section>
++{% include 'ads-bottom.html' %}
+ {% endblock %}
 diff --git a/templates/base.html b/templates/base.html
-index 7818c23..6fece24 100644
+index 7818c23..eb21052 100644
 --- a/templates/base.html
 +++ b/templates/base.html
-@@ -36,6 +36,7 @@
-                 {% endif %}
-                 </ul></nav>
-         </header><!-- /#banner -->
-+        {% include 'adsense.html' %}
-         {% block content %}
-         {% endblock %}
-         <section id="extras" class="body">
-@@ -44,7 +45,7 @@
+@@ -44,7 +44,7 @@
                          <h2>{{ LINKS_WIDGET_NAME | default('links') }}</h2>
                          <ul>
                          {% for name, link in LINKS %}
@@ -73,7 +126,7 @@ index 7818c23..6fece24 100644
                          {% endfor %}
                          </ul>
                  </div><!-- /.blogroll -->
-@@ -61,7 +62,7 @@
+@@ -61,7 +61,7 @@
                              {% endif %}
  
                          {% for name, link in SOCIAL %}
@@ -82,7 +135,7 @@ index 7818c23..6fece24 100644
                          {% endfor %}
                          </ul>
                  </div><!-- /.social -->
-@@ -70,10 +71,10 @@
+@@ -70,10 +70,10 @@
  
          <footer id="contentinfo" class="body">
                  <address id="about" class="vcard body">
@@ -106,3 +159,26 @@ index ccc401f..cae5e64 100644
  {% if GITHUB_POSITION != "left" %}
  <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
  {% else %}
+diff --git a/templates/index.html b/templates/index.html
+index 6019987..a938e86 100644
+--- a/templates/index.html
++++ b/templates/index.html
+@@ -6,12 +6,18 @@
+ 
+         {# First item #}
+         {% if loop.first and not articles_page.has_previous() %}
++
++            {% include 'ads-top.html' %}
++
+             <aside id="featured" class="body">
+                 <article>
+                     <h1 class="entry-title"><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h1>
+                     {% include 'article_infos.html' %}{{ article.content }}{% include 'comments.html' %}
+                 </article>
+             </aside><!-- /#featured -->
++
++            {% include 'ads-bottom.html' %}
++
+             {% if loop.length > 1 %}
+                 <section id="content" class="body">
+                     <h1>Other articles</h1>
