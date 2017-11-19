@@ -13,32 +13,37 @@ index 03a77e6..1a27c84 100644
  	}
 diff --git a/templates/adsense.html b/templates/adsense.html
 new file mode 100644
-index 0000000..c5dc9d0
+index 0000000..cbf368e
 --- /dev/null
 +++ b/templates/adsense.html
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,42 @@
 +<style>
 +    .style-2025290f9b2b474c8cf200c91f2af69a {
-+        animation: anime-2025290f9b2b474c8cf200c91f2af69a 2s infinite;
-+        color: red;
-+        font-weight: bold;
-+        text-align: center;
-+    }
-+    @keyframes anime-2025290f9b2b474c8cf200c91f2af69a {
-+        0%   {color:red;}
-+        33%  {color:green;}
-+        66%  {color:blue;}
++        /* https://stackoverflow.com/a/25536764 */
++        /* https://www.w3schools.com/cssref/css3_pr_background-size.asp */
++        background: url(/blog/images/noads.svg);
++        background-size: 100%;
++        background-repeat: no-repeat;
++        background-position: center;
 +    }
 +</style>
 +
 +<script>
++var var2025290f9b2b474c8cf200c91f2af69a = true;
 +function adBlockFunction2025290f9b2b474c8cf200c91f2af69a() {
-+    var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-+    elm.innerHTML = 'Пожалуйста, добавьте proiot.ru в исключения AdBlock<br/>' +
-+                    'Реклама помогает поддерживать и развивать наши сервисы<br/>' +
-+                    'Искренне благодарим за помощь и понимание!';
-+    elm.className += " style-2025290f9b2b474c8cf200c91f2af69a";
++    if (var2025290f9b2b474c8cf200c91f2af69a) {
++        var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
++        elm.innerHTML = '<img alt="screenshot" src="/blog/images/noads.svg" style="width:100%">';
++        var2025290f9b2b474c8cf200c91f2af69a = false;
++    }
 +}
++setTimeout(function() {
++    if (var2025290f9b2b474c8cf200c91f2af69a) {
++        var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
++        elm.className += " style-2025290f9b2b474c8cf200c91f2af69a";
++        var2025290f9b2b474c8cf200c91f2af69a = false;
++    }
++}, 1984);
 +</script>
 +
 +<div class="body" style="margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
