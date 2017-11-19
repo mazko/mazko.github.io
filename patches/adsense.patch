@@ -13,37 +13,30 @@ index 03a77e6..1a27c84 100644
  	}
 diff --git a/templates/adsense.html b/templates/adsense.html
 new file mode 100644
-index 0000000..cbf368e
+index 0000000..2e5b004
 --- /dev/null
 +++ b/templates/adsense.html
-@@ -0,0 +1,42 @@
-+<style>
-+    .style-2025290f9b2b474c8cf200c91f2af69a {
-+        /* https://stackoverflow.com/a/25536764 */
-+        /* https://www.w3schools.com/cssref/css3_pr_background-size.asp */
-+        background: url(/blog/images/noads.svg);
-+        background-size: 100%;
-+        background-repeat: no-repeat;
-+        background-position: center;
-+    }
-+</style>
-+
+@@ -0,0 +1,35 @@
 +<script>
 +var var2025290f9b2b474c8cf200c91f2af69a = true;
 +function adBlockFunction2025290f9b2b474c8cf200c91f2af69a() {
 +    if (var2025290f9b2b474c8cf200c91f2af69a) {
 +        var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-+        elm.innerHTML = '<img alt="screenshot" src="/blog/images/noads.svg" style="width:100%">';
++        elm.innerHTML = '<img alt="" src="/blog/images/noads.svg" style="width:100%">';
 +        var2025290f9b2b474c8cf200c91f2af69a = false;
 +    }
 +}
 +setTimeout(function() {
 +    if (var2025290f9b2b474c8cf200c91f2af69a) {
 +        var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-+        elm.className += " style-2025290f9b2b474c8cf200c91f2af69a";
++        // https://developer.mozilla.org/ru/docs/Web/API/HTMLElement/style
++        elm.style.background = 'url(/blog/images/noads.svg)';
++        elm.style.backgroundSize = '100%';
++        elm.style.backgroundRepeat = 'no-repeat';
++        elm.style.backgroundPosition = 'center';
 +        var2025290f9b2b474c8cf200c91f2af69a = false;
 +    }
-+}, 1984);
++}, 4444);
 +</script>
 +
 +<div class="body" style="margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
