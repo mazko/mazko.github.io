@@ -13,10 +13,10 @@ index 03a77e6..1a27c84 100644
  	}
 diff --git a/templates/adsense.html b/templates/adsense.html
 new file mode 100644
-index 0000000..1f18471
+index 0000000..c5dc9d0
 --- /dev/null
 +++ b/templates/adsense.html
-@@ -0,0 +1,36 @@
+@@ -0,0 +1,37 @@
 +<style>
 +    .style-2025290f9b2b474c8cf200c91f2af69a {
 +        animation: anime-2025290f9b2b474c8cf200c91f2af69a 2s infinite;
@@ -41,13 +41,14 @@ index 0000000..1f18471
 +}
 +</script>
 +
-+<div class="body" style="text-align: center; margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
++<div class="body" style="margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
 +<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="adBlockFunction2025290f9b2b474c8cf200c91f2af69a();"></script>
-+<!-- pelican728x90 -->
++<!-- adaptive -->
 +<ins class="adsbygoogle"
-+     style="display:inline-block;width:728px;height:90px"
++     style="display:block"
 +     data-ad-client="ca-pub-6247427373315098"
-+     data-ad-slot="6352163977"></ins>
++     data-ad-slot="6683691686"
++     data-ad-format="auto"></ins>
 +<script>
 +(adsbygoogle = window.adsbygoogle || []).push({});
 +</script>
