@@ -13,34 +13,12 @@ index 03a77e6..1a27c84 100644
  	}
 diff --git a/templates/ads-bottom.html b/templates/ads-bottom.html
 new file mode 100644
-index 0000000..71765df
+index 0000000..2bf1b3c
 --- /dev/null
 +++ b/templates/ads-bottom.html
-@@ -0,0 +1,35 @@
-+<script>
-+var varf34565f46d1f4e4ca1463ed13c639e88 = true;
-+function adBlockFunctionf34565f46d1f4e4ca1463ed13c639e88() {
-+    if (varf34565f46d1f4e4ca1463ed13c639e88) {
-+        var elm = document.getElementById('ad-f34565f46d1f4e4ca1463ed13c639e88');
-+        elm.innerHTML = '<img alt="" src="/blog/images/noads.svg" style="width:100%">';
-+        varf34565f46d1f4e4ca1463ed13c639e88 = false;
-+    }
-+}
-+setTimeout(function() {
-+    if (varf34565f46d1f4e4ca1463ed13c639e88) {
-+        var elm = document.getElementById('ad-f34565f46d1f4e4ca1463ed13c639e88');
-+        // https://developer.mozilla.org/ru/docs/Web/API/HTMLElement/style
-+        elm.style.background = 'url(/blog/images/noads.svg)';
-+        elm.style.backgroundSize = '100%';
-+        elm.style.backgroundRepeat = 'no-repeat';
-+        elm.style.backgroundPosition = 'center';
-+        varf34565f46d1f4e4ca1463ed13c639e88 = false;
-+    }
-+}, 4444);
-+</script>
-+
-+<div class="body" style="margin-bottom: 30px" id="ad-f34565f46d1f4e4ca1463ed13c639e88">
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="adBlockFunctionf34565f46d1f4e4ca1463ed13c639e88();"></script>
+@@ -0,0 +1,13 @@
++<div class="body" style="margin-bottom: 30px">
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 +<!-- adaptive -->
 +<ins class="adsbygoogle"
 +     style="display:block"
@@ -54,34 +32,12 @@ index 0000000..71765df
 +
 diff --git a/templates/ads-top.html b/templates/ads-top.html
 new file mode 100644
-index 0000000..2e5b004
+index 0000000..a66167e
 --- /dev/null
 +++ b/templates/ads-top.html
-@@ -0,0 +1,35 @@
-+<script>
-+var var2025290f9b2b474c8cf200c91f2af69a = true;
-+function adBlockFunction2025290f9b2b474c8cf200c91f2af69a() {
-+    if (var2025290f9b2b474c8cf200c91f2af69a) {
-+        var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-+        elm.innerHTML = '<img alt="" src="/blog/images/noads.svg" style="width:100%">';
-+        var2025290f9b2b474c8cf200c91f2af69a = false;
-+    }
-+}
-+setTimeout(function() {
-+    if (var2025290f9b2b474c8cf200c91f2af69a) {
-+        var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-+        // https://developer.mozilla.org/ru/docs/Web/API/HTMLElement/style
-+        elm.style.background = 'url(/blog/images/noads.svg)';
-+        elm.style.backgroundSize = '100%';
-+        elm.style.backgroundRepeat = 'no-repeat';
-+        elm.style.backgroundPosition = 'center';
-+        var2025290f9b2b474c8cf200c91f2af69a = false;
-+    }
-+}, 4444);
-+</script>
-+
-+<div class="body" style="margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" onerror="adBlockFunction2025290f9b2b474c8cf200c91f2af69a();"></script>
+@@ -0,0 +1,13 @@
++<div class="body" style="margin-bottom: 25px">
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 +<!-- adaptive -->
 +<ins class="adsbygoogle"
 +     style="display:block"

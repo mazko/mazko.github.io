@@ -73,10 +73,9 @@ CATEGORIES_SAVE_AS = 'blog/categories.html'
 TAGS_URL = 'blog/tags.html'
 TAGS_SAVE_AS = 'blog/tags.html'
 
-STATIC_PATHS = ['posts','extra/favicon.ico','extra/noads.svg']
+STATIC_PATHS = ['posts','extra/favicon.ico']
 EXTRA_PATH_METADATA = {
-    'extra/favicon.ico': {'path': 'favicon.ico'},
-    'extra/noads.svg': {'path': 'blog/images/noads.svg'}
+    'extra/favicon.ico': {'path': 'favicon.ico'}
 }
 
 ARTICLE_PATHS = ['posts']
