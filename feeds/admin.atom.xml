@@ -194,7 +194,7 @@ Arguments = 5
 &lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=10579811ba2de1a874d1b924b4a65aa6"&gt;GIST&lt;/a&gt; | &lt;code&gt;ARGV&lt;/code&gt; — массив аргументов командной строки. В данном примере массив перебирается с помощью цикла. Циклы используются во множестве языков программировании, поддерживает их и «AWK»:&lt;/p&gt;
 &lt;pre style="border:1px solid #ddd;"&gt;
 'BEGIN { 
-   for (i = 0; i &lt; ARGC - 1; ++i) { 
+   for (i = 0; i &amp;lt; ARGC - 1; ++i) { 
       printf "ARGV[%d] = %s\n", i, ARGV[i] 
    } 
 }' one two three four
@@ -242,7 +242,7 @@ Thomas Jefferson, 1801-1809
 
 &lt;p&gt;&lt;a href="http://awk.js.org/index.html?gist=271467fd80112e9f13e392e83054148d"&gt;GIST&lt;/a&gt; | &lt;code&gt;NR&lt;/code&gt; хранит номер текущей записи, начиная с единицы:&lt;/p&gt;
 &lt;pre style="border:1px solid #ddd;"&gt;
-'NR &lt; 3'
+'NR &amp;lt; 3'
 &lt;/pre&gt;
 
 &lt;!-- https://stackoverflow.com/a/20669539 --&gt;
@@ -373,7 +373,7 @@ BEGIN {
 }
 # Returns minimum number
 function find_min(num1, num2){
-   if (num1 &lt; num2)
+   if (num1 &amp;lt; num2)
    return num1
    return num2
 }

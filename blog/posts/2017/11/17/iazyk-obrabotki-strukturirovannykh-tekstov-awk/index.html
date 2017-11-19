@@ -25,33 +25,26 @@
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-<style>
-    .style-2025290f9b2b474c8cf200c91f2af69a {
-        /* https://stackoverflow.com/a/25536764 */
-        /* https://www.w3schools.com/cssref/css3_pr_background-size.asp */
-        background: url(/blog/images/noads.svg);
-        background-size: 100%;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-</style>
-
 <script>
 var var2025290f9b2b474c8cf200c91f2af69a = true;
 function adBlockFunction2025290f9b2b474c8cf200c91f2af69a() {
     if (var2025290f9b2b474c8cf200c91f2af69a) {
         var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-        elm.innerHTML = '<img alt="screenshot" src="/blog/images/noads.svg" style="width:100%">';
+        elm.innerHTML = '<img alt="" src="/blog/images/noads.svg" style="width:100%">';
         var2025290f9b2b474c8cf200c91f2af69a = false;
     }
 }
 setTimeout(function() {
     if (var2025290f9b2b474c8cf200c91f2af69a) {
         var elm = document.getElementById('ad-2025290f9b2b474c8cf200c91f2af69a');
-        elm.className += " style-2025290f9b2b474c8cf200c91f2af69a";
+        // https://developer.mozilla.org/ru/docs/Web/API/HTMLElement/style
+        elm.style.background = 'url(/blog/images/noads.svg)';
+        elm.style.backgroundSize = '100%';
+        elm.style.backgroundRepeat = 'no-repeat';
+        elm.style.backgroundPosition = 'center';
         var2025290f9b2b474c8cf200c91f2af69a = false;
     }
-}, 1984);
+}, 4444);
 </script>
 
 <div class="body" style="margin-bottom: 25px" id="ad-2025290f9b2b474c8cf200c91f2af69a">
@@ -279,7 +272,7 @@ Arguments = 5
 <p><a href="http://awk.js.org/index.html?gist=10579811ba2de1a874d1b924b4a65aa6">GIST</a> | <code>ARGV</code> — массив аргументов командной строки. В данном примере массив перебирается с помощью цикла. Циклы используются во множестве языков программировании, поддерживает их и «AWK»:</p>
 <pre style="border:1px solid #ddd;">
 'BEGIN { 
-   for (i = 0; i < ARGC - 1; ++i) { 
+   for (i = 0; i &lt; ARGC - 1; ++i) { 
       printf "ARGV[%d] = %s\n", i, ARGV[i] 
    } 
 }' one two three four
@@ -327,7 +320,7 @@ Thomas Jefferson, 1801-1809
 
 <p><a href="http://awk.js.org/index.html?gist=271467fd80112e9f13e392e83054148d">GIST</a> | <code>NR</code> хранит номер текущей записи, начиная с единицы:</p>
 <pre style="border:1px solid #ddd;">
-'NR < 3'
+'NR &lt; 3'
 </pre>
 
 <!-- https://stackoverflow.com/a/20669539 -->
@@ -458,7 +451,7 @@ BEGIN {
 }
 # Returns minimum number
 function find_min(num1, num2){
-   if (num1 < num2)
+   if (num1 &lt; num2)
    return num1
    return num2
 }
