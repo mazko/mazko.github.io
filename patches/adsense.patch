@@ -11,19 +11,19 @@ index 03a77e6..1a27c84 100644
  		margin: 0 0 .6em .2em;
  		text-decoration: none;
  	}
-diff --git a/templates/ads-bottom.html b/templates/ads-bottom.html
+diff --git a/templates/ads-index.html b/templates/ads-index.html
 new file mode 100644
-index 0000000..2bf1b3c
+index 0000000..0af753a
 --- /dev/null
-+++ b/templates/ads-bottom.html
++++ b/templates/ads-index.html
 @@ -0,0 +1,13 @@
 +<div class="body" style="margin-bottom: 30px">
 +<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-+<!-- adaptive -->
++<!-- proiot-index -->
 +<ins class="adsbygoogle"
 +     style="display:block"
 +     data-ad-client="ca-pub-6247427373315098"
-+     data-ad-slot="6683691686"
++     data-ad-slot="2711782349"
 +     data-ad-format="auto"></ins>
 +<script>
 +(adsbygoogle = window.adsbygoogle || []).push({});
@@ -32,17 +32,17 @@ index 0000000..2bf1b3c
 +
 diff --git a/templates/ads-top.html b/templates/ads-top.html
 new file mode 100644
-index 0000000..a66167e
+index 0000000..dca958e
 --- /dev/null
 +++ b/templates/ads-top.html
 @@ -0,0 +1,13 @@
 +<div class="body" style="margin-bottom: 25px">
 +<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-+<!-- adaptive -->
++<!-- proiot-top -->
 +<ins class="adsbygoogle"
 +     style="display:block"
 +     data-ad-client="ca-pub-6247427373315098"
-+     data-ad-slot="6683691686"
++     data-ad-slot="7698060307"
 +     data-ad-format="auto"></ins>
 +<script>
 +(adsbygoogle = window.adsbygoogle || []).push({});
@@ -50,7 +50,7 @@ index 0000000..a66167e
 +</div>
 +
 diff --git a/templates/article.html b/templates/article.html
-index 06110b4..c26c06a 100644
+index 06110b4..dcd8aac 100644
 --- a/templates/article.html
 +++ b/templates/article.html
 @@ -1,6 +1,9 @@
@@ -63,12 +63,6 @@ index 06110b4..c26c06a 100644
  <section id="content" class="body">
    <article>
      <header>
-@@ -34,4 +37,5 @@
- 
-   </article>
- </section>
-+{% include 'ads-bottom.html' %}
- {% endblock %}
 diff --git a/templates/base.html b/templates/base.html
 index 7818c23..eb21052 100644
 --- a/templates/base.html
@@ -116,10 +110,10 @@ index ccc401f..cae5e64 100644
  <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
  {% else %}
 diff --git a/templates/index.html b/templates/index.html
-index 6019987..a938e86 100644
+index 6019987..6cadb29 100644
 --- a/templates/index.html
 +++ b/templates/index.html
-@@ -6,12 +6,18 @@
+@@ -6,6 +6,9 @@
  
          {# First item #}
          {% if loop.first and not articles_page.has_previous() %}
@@ -129,12 +123,13 @@ index 6019987..a938e86 100644
              <aside id="featured" class="body">
                  <article>
                      <h1 class="entry-title"><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h1>
-                     {% include 'article_infos.html' %}{{ article.content }}{% include 'comments.html' %}
+@@ -13,6 +16,9 @@
                  </article>
              </aside><!-- /#featured -->
-+
-+            {% include 'ads-bottom.html' %}
-+
              {% if loop.length > 1 %}
++
++                {% include 'ads-index.html' %}
++
                  <section id="content" class="body">
                      <h1>Other articles</h1>
+                     <hr />
