@@ -32,22 +32,10 @@ index 0000000..0af753a
 +
 diff --git a/templates/ads-top.html b/templates/ads-top.html
 new file mode 100644
-index 0000000..dca958e
+index 0000000..8b13789
 --- /dev/null
 +++ b/templates/ads-top.html
-@@ -0,0 +1,13 @@
-+<div class="body" style="margin-bottom: 25px">
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-+<!-- proiot-top -->
-+<ins class="adsbygoogle"
-+     style="display:block"
-+     data-ad-client="ca-pub-6247427373315098"
-+     data-ad-slot="7698060307"
-+     data-ad-format="auto"></ins>
-+<script>
-+(adsbygoogle = window.adsbygoogle || []).push({});
-+</script>
-+</div>
+@@ -0,0 +1 @@
 +
 diff --git a/templates/article.html b/templates/article.html
 index 06110b4..dcd8aac 100644
