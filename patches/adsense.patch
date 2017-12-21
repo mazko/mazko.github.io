@@ -33,11 +33,11 @@ index 03a77e6..ee24538 100644
 +}
 diff --git a/templates/ads-comments.html b/templates/ads-comments.html
 new file mode 100644
-index 0000000..0af753a
+index 0000000..c09c864
 --- /dev/null
 +++ b/templates/ads-comments.html
 @@ -0,0 +1,13 @@
-+<div class="body" style="margin-bottom: 30px">
++<div class="body" style="margin-bottom: 2em">
 +<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 +<!-- proiot-index -->
 +<ins class="adsbygoogle"
@@ -52,11 +52,11 @@ index 0000000..0af753a
 +
 diff --git a/templates/ads-index.html b/templates/ads-index.html
 new file mode 100644
-index 0000000..0af753a
+index 0000000..c09c864
 --- /dev/null
 +++ b/templates/ads-index.html
 @@ -0,0 +1,13 @@
-+<div class="body" style="margin-bottom: 30px">
++<div class="body" style="margin-bottom: 2em">
 +<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 +<!-- proiot-index -->
 +<ins class="adsbygoogle"
