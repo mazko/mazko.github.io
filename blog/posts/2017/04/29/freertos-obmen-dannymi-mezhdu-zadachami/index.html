@@ -219,24 +219,38 @@
 <p>После оптимизации количество задач сократилось с 5 до 4 и соответственно освободилась RAM. Функцию <code>xQueueSend()</code> нельзя использовать в прерываниях — для этого есть <code>xQueueSendFromISR()</code>.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Гибридная</a> многозадачность во FreeRTOS является комбинацией вытесняющей и кооперативной. В нашем случае происходит прерывание по нажатию на кнопку, но по окончании работы обработчика прерывания выполнение возвращается не к текущей низкоприоритетной задаче, а к более высокоприоритетной путём немедленного переключения контекста <code>portYIELD_FROM_ISR</code> не дожидаясь окончания текущего кванта времени планировщика. Гибридная подход позволяет сократить время реакции системы на прерывание.</p>
     </div><!-- /.entry-content -->
-    <div class="comments">
-      <h2>Comments !</h2>
-      <div id="disqus_thread"></div>
-      <script type="text/javascript">
-        var disqus_shortname = 'mazko';
-        var disqus_identifier = 'blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/';
-        var disqus_url = 'http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/';
-        (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//mazko.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-      </script>
-      <noscript>Please enable JavaScript to view the comments.</noscript>
-    </div>
-
   </article>
 </section>
+
+<div class="body" style="margin-bottom: 30px">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
