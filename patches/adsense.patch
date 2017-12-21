@@ -1,5 +1,5 @@
 diff --git a/static/css/main.css b/static/css/main.css
-index 03a77e6..1a27c84 100644
+index 03a77e6..ee24538 100644
 --- a/static/css/main.css
 +++ b/static/css/main.css
 @@ -164,7 +164,7 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
@@ -11,6 +11,45 @@ index 03a77e6..1a27c84 100644
  		margin: 0 0 .6em .2em;
  		text-decoration: none;
  	}
+@@ -450,3 +450,19 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
+ 	
+ 	#add-comment input[type='submit'] {float: right; margin: 0 .5em;}
+ 	#add-comment * {margin-bottom: .5em;}
++
++
++/*
++	proiot
++*****************/
++#proiot-comments {
++	background: #fff;
++	margin-bottom: 2em;
++	overflow: hidden;
++	padding: 20px;
++	width: 760px;
++	
++	border-radius: 10px;
++	-moz-border-radius: 10px;
++	-webkit-border-radius: 10px;
++}
+diff --git a/templates/ads-comments.html b/templates/ads-comments.html
+new file mode 100644
+index 0000000..0af753a
+--- /dev/null
++++ b/templates/ads-comments.html
+@@ -0,0 +1,13 @@
++<div class="body" style="margin-bottom: 30px">
++<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
++<!-- proiot-index -->
++<ins class="adsbygoogle"
++     style="display:block"
++     data-ad-client="ca-pub-6247427373315098"
++     data-ad-slot="2711782349"
++     data-ad-format="auto"></ins>
++<script>
++(adsbygoogle = window.adsbygoogle || []).push({});
++</script>
++</div>
++
 diff --git a/templates/ads-index.html b/templates/ads-index.html
 new file mode 100644
 index 0000000..0af753a
@@ -38,7 +77,7 @@ index 0000000..8b13789
 @@ -0,0 +1 @@
 +
 diff --git a/templates/article.html b/templates/article.html
-index 06110b4..dcd8aac 100644
+index 06110b4..07f3387 100644
 --- a/templates/article.html
 +++ b/templates/article.html
 @@ -1,6 +1,9 @@
@@ -51,6 +90,52 @@ index 06110b4..dcd8aac 100644
  <section id="content" class="body">
    <article>
      <header>
+@@ -14,24 +17,27 @@
+       {% include 'article_infos.html' %}
+       {{ article.content }}
+     </div><!-- /.entry-content -->
+-    {% if DISQUS_SITENAME and SITEURL and article.status != "draft" %}
+-    <div class="comments">
+-      <h2>Comments !</h2>
+-      <div id="disqus_thread"></div>
+-      <script type="text/javascript">
+-        var disqus_shortname = '{{ DISQUS_SITENAME }}';
+-        var disqus_identifier = '{{ article.url }}';
+-        var disqus_url = '{{ SITEURL }}/{{ article.url }}';
+-        (function() {
+-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+-        dsq.src = '//{{ DISQUS_SITENAME }}.disqus.com/embed.js';
+-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+-        })();
+-      </script>
+-      <noscript>Please enable JavaScript to view the comments.</noscript>
+-    </div>
+-    {% endif %}
+-
+   </article>
+ </section>
++
++{% include 'ads-comments.html' %}
++
++<div class="body" id="proiot-comments">
++  {% if DISQUS_SITENAME and SITEURL and article.status != "draft" %}
++  <div class="comments">
++    <div id="disqus_thread"></div>
++    <script type="text/javascript">
++      var disqus_shortname = '{{ DISQUS_SITENAME }}';
++      var disqus_identifier = '{{ article.url }}';
++      var disqus_url = '{{ SITEURL }}/{{ article.url }}';
++      (function() {
++      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
++      dsq.src = '//{{ DISQUS_SITENAME }}.disqus.com/embed.js';
++      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
++      })();
++    </script>
++    <noscript>Please enable JavaScript to view the comments.</noscript>
++  </div>
++  {% endif %}
++</div>
+ {% endblock %}
 diff --git a/templates/base.html b/templates/base.html
 index 7818c23..eb21052 100644
 --- a/templates/base.html
