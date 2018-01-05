@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>🏠 Интернет Всего 🚗 - Oleg Mazko</title>
+        <title>Безопасность «Интернета вещей» - TLS / DTLS</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
@@ -21,16 +21,21 @@
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
 
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/" rel="bookmark"
+           title="Permalink to Безопасность «Интернета вещей» - TLS / DTLS">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-01-05T00:00:00+02:00">
                 Published: Пт. 05 Январь 2018
@@ -41,7 +46,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
 <p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT) работать без изменений. Исторически протокол TLS является наследником SSL (Secure Sockets Layer), изначально разработанном в Netscape для повышения безопасности электронной коммерции в Интернете.</p>
 <p>Для <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a> (User Datagram Protocol) была разработана специальная версия TLS, получившая название DTLS (Datagram Transport Layer Security). В то время как TCP обеспечивает обязательную доставку пакетов от источника к получателю, UDP пакеты могут потеряться и их последовательность не гарантируется. Протокол DTLS учитывает вышеуказанные отличия TCP и UDP. </p>
 <h2>ДЕМО</h2>
@@ -92,8 +97,10 @@ openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
 
 
 <p>Обмен данными между клиентом и сервером двусторонний, пишем что-нибудь в консоль и смотрим как идут пакеты в Wireshark.</p>
-<p>Протоколы TLS / DTLS предназначены для предоставления трёх услуг всем приложениям, работающим над ними: <strong>шифрование</strong>, <strong>аутентификацию</strong> и <strong>целостность</strong>. Для того чтобы установить криптографически безопасный канал данных, клиент и сервер должны согласовать параметры соединения, а именно: версия используемого протокола, способ шифрования данных, а также проверить сертификаты (в случае асимметричного шифрования). Процедура начала соединения называется Handshake (рукопожатие). Также в рамках процедуры Handshake клиент и сервер обмениваются случайными числами, т.е, происходит аутентификация – проверка соответствия субъекта и того, за кого он пытается себя выдать. После Handshake происходит обмен зашифрованными данными с проверкой целостности информации и защиты от её подмены.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
+<p>Протоколы TLS / DTLS предназначены для предоставления трёх услуг всем приложениям, работающим над ними: <strong>шифрование</strong>, <strong>аутентификацию</strong> и <strong>целостность</strong>. Для того чтобы установить криптографически безопасный канал данных, клиент и сервер должны согласовать параметры соединения, а именно: версия используемого протокола, способ шифрования данных, а также проверить сертификаты (в случае асимметричного шифрования). Процедура начала соединения называется Handshake (рукопожатие). Также в рамках процедуры Handshake клиент и сервер обмениваются случайными числами, т.е, происходит аутентификация – проверка соответствия субъекта и того, за кого он пытается себя выдать. После Handshake происходит обмен зашифрованными данными с проверкой целостности информации и защиты от её подмены.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
 
 <div class="body" style="margin-bottom: 2em">
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -108,105 +115,22 @@ openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
 </script>
 </div>
 
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/" rel="bookmark"
-                           title="Permalink to Язык обработки структурированных текстов AWK">Язык обработки структурированных текстов AWK</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-17T00:00:00+02:00">
-                Published: Пт. 17 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
-<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="bookmark"
-                           title="Permalink to Неинтерактивный текстовый редактор SED">Неинтерактивный текстовый редактор SED</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-11T00:00:00+02:00">
-                Published: Сб. 11 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="bookmark"
-                           title="Permalink to Ликбез по GREP и регулярным выражениям">Ликбез по GREP и регулярным выражениям</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-03T00:00:00+02:00">
-                Published: Пт. 03 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="bookmark"
-                           title="Permalink to Node-RED - графический конструктор «Умного Дома»">Node-RED - графический конструктор «Умного Дома»</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-25T00:00:00+03:00">
-                Published: Ср. 25 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
-</footer><!-- /.post-info -->                <p>Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 16
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

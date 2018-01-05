@@ -30,428 +30,69 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">Язык обработки структурированных текстов AWK</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2017-11-17T00:00:00+02:00">
-                Published: Пт. 17 Ноябрь 2017
+        <abbr class="published" title="2018-01-05T00:00:00+02:00">
+                Published: Пт. 05 Январь 2018
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info --><p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
-<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида «шаблон — действие», где шаблон является <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярным выражением</a>, а действие — последовательностью команд или функций. Если шаблон не указан, то действие выполняется для любой записи. Если не указано действие, то запись выводится в выходной поток. Каждая запись поочерёдно сравнивается со всеми шаблонами, и каждый раз когда она соответствует шаблону, выполняется указанное действие. Каждая запись в свою очередь делится на поля. Упрощенно, если говорить об обычном тексте и не учитывать возможности настройки «AWK», то запись — это <strong>строка</strong>, а поле — это <strong>слово</strong> в строке.</p>
-<p>Если сравнивать редактор <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">SED</a> и язык «AWK», то в первую очередь стоит вспомнить, что оба они являются Тьюринг-полными. Это даёт основание утверждать, что в теории любая задача может быть успешно решена как на «SED» так и на «AWK», вопрос только в том, сколько времени и нервов это займёт. «AWK» выводит обработку текстовых данных на более высокий уровень. Благодаря «AWK» в нашем распоряжении оказывается полноценный язык программирования, а не ограниченный набор команд, отдаваемых редактору. Математические операции, поддержка переменных и ассоциативных массивов, управляющие конструкции <code>if-then</code>, циклы и т.д. всё это поддерживается в «AWK» из коробки.</p>
-<h2>ОБРАЗЕЦ</h2>
-<p><a href="http://awk.js.org/index.html?gist=e625cdb4661bf560d0c94010c795d7d8">GIST</a> | Простой пример «AWK» — обычная читалка текстовых файлов с выводом на экран. При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода <code>stdin</code> и справа вывода <code>stdout</code>:</p>
-<pre style="border:1px solid #ddd;">
-'{print}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-</div>
-
-<p>Из полезных опций командной строки, которые можно указать при запуске «AWK», стоит выделить возможность указать символ-разделитель для полей <code>-F</code> и возможность объявить переменную и задать её значение по умолчанию <code>-v var=value</code>. Как видно из примера, команда <code>print</code> без дополнительных параметров печатает все содержимое текущей записи. </p>
-<h2>ТАБЛИЦЫ</h2>
-<p><a href="http://awk.js.org/index.html?gist=13e9a1bce9aabd91474113cb46567d62">GIST</a> | «AWK» отлично справляется с файлами, структурированными предсказуемым образом. К примеру, эта команда особенно сильна в анализе и обработке табличных данных. По умолчанию для разделения полей «AWK» использует пробельные символы и символы табуляции, а для разделения записей используется символ новой строки. Каждому полю автоматического назначается своя переменная согласно его порядковому номеру следования в записи:</p>
-<pre style="border:1px solid #ddd;">
-'{print $1}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George
-John
-Thomas
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=764f8f9cd2ec6b7f8e76bb57816f4349">GIST</a> | Иногда в качестве разделителей полей удобно использовать не пробелы или символы табуляции, а какой-то особый шаблон. Выше мы упоминали ключ <code>-F</code>, теперь пример, где разделитель полей задаётся с помощью <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярного выражения</a>:</p>
-<pre style="border:1px solid #ddd;">
--F '[-,]+' '{print $1 " ("$3-$2")"}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington (8)
-John Adams (4)
-Thomas Jefferson (8)
-</pre>
-
-</div>
-
-<p>Для более тонкой настройки в «AWK» предусмотрен свой собственный комплект встроенных переменных. Одна из таких переменных с именем <code>RS</code> позволяет задать особый разделитель записей. Подробнее о встроенных переменных чуть позже. </p>
-<h2>РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ И БЛОКИ</h2>
-<p><a href="http://awk.js.org/index.html?gist=bcc5225c73d3c49634c367217ab07eaa">GIST</a> | «AWK» позволяет использовать <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярные выражения</a> для избирательного выполнения отдельных блоков программы в зависимости от того, совпадает или нет регулярное выражение с текущей записью:</p>
-<pre style="border:1px solid #ddd;">
-'/on/ { print }'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-Thomas Jefferson, 1801-1809
-</pre>
-
-</div>
-
-<p>Если не указано действие, то по умолчанию запись выводится в выходной поток и потому в данном случае действие <code>{ print }</code> можно было бы вообще не указывать.</p>
-<h2>ЛОГИЧЕСКИЕ ВЫРАЖЕНИЯ И БЛОКИ</h2>
-<p><a href="http://awk.js.org/index.html?gist=9016d8d037f2fab13ba7171261c3874e">GIST</a> | Есть и другие способов избирательно выполнять блок программы. Мы можем поместить перед блоком программы любое булево выражение для управления исполнением этого блока и «AWK» будет выполнять блок программы только если предыдущее булево выражение истинно:</p>
-<pre style="border:1px solid #ddd;">
-'$1 == "John"'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-John Adams, 1797-1801
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=26ab431015165ac4935e6b1f0d4c27ee">GIST</a> | «AWK» предлагает полный набор операторов сравнения, в том числе обычные <code>==</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code> и <code>!=</code>. Для сложных выражений стоит помнить об условном операторе <code>if</code>:</p>
-<pre style="border:1px solid #ddd;">
-'{
-  if ($1 == "John" && $2 ~ /Ada/) { 
-    print
-  }
-}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-John Adams, 1797-1801
-</pre>
-
-</div>
-
-<p>Операторы <code>~</code> и <code>!~</code> означают <em>совпадает</em> или <em>не совпадает</em> значение слева с регулярным выражением справа. </p>
-<h2>НЕОБЯЗАТЕЛЬНЫЕ БЛОКИ BEGIN И END</h2>
-<p><a href="http://awk.js.org/index.html?gist=629cbedc6bb0f4ebd2ea97846936e93b">GIST</a> | Часто встречаются ситуации, когда требуется выполнить код инициализации перед тем, как «AWK» начнет обрабатывать текст. Для таких случаев «AWK» дает возможность определять необязательный блок <code>BEGIN</code>. Это отличное место для инициализации встроенных или глобальных переменных, вывода заголовка и т.д.:</p>
-<pre style="border:1px solid #ddd;">
-'BEGIN {print "Hello", "World !"}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-any text
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-Hello World !
-</pre>
-
-</div>
-
-<p>Есть еще один необязательный блок <code>END</code>. «AWK» выполняет этот блок после того, как все записи были обработаны. Обычно блок <code>END</code> используется для выполнения заключительных вычислений или вывода итогов, которые должны появиться в конце выходного потока.</p>
-<h2>ВСТРОЕННЫЕ ПЕРЕМЕННЫЕ</h2>
-<p>«AWK» — динамически типизированный язык: все примитивы хранятся как строки, хотя могут обрабатываться как числа в зависимости от контекста их использования (например, в арифметических выражениях). Основная структура данных языка — ассоциативный массив с индексами-строками.</p>
-<p>Мы уже рассматривали позиционные переменные — <code>$1</code>, <code>$2</code>, <code>$3</code>, которые позволяют извлекать значения полей из записей. На самом деле их довольно много и вот список некоторых из наиболее часто используемых:</p>
-<p><a href="http://awk.js.org/index.html?gist=2617a81bf5ec753b9528e3e8e78b0621">GIST</a> | <code>ARGC</code> — число аргументов командной строки. В данном примере вся логика ограничивается блоком <code>BEGIN</code>, до непосредственной обработки текста дело даже не доходит:</p>
-<pre style="border:1px solid #ddd;">
-'BEGIN {print "Arguments =", ARGC}' One Two Three Four
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-any text
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-Arguments = 5
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=10579811ba2de1a874d1b924b4a65aa6">GIST</a> | <code>ARGV</code> — массив аргументов командной строки. В данном примере массив перебирается с помощью цикла. Циклы используются во множестве языков программировании, поддерживает их и «AWK»:</p>
-<pre style="border:1px solid #ddd;">
-'BEGIN { 
-   for (i = 0; i &lt; ARGC - 1; ++i) { 
-      printf "ARGV[%d] = %s\n", i, ARGV[i] 
-   } 
-}' one two three four
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-any text
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-ARGV[0] = mawk
-ARGV[1] = one
-ARGV[2] = two
-ARGV[3] = three
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=c586aa7ac8c6c354aafe49efecee325e">GIST</a> | <code>NF</code> позволяет обращаться к последнему полю данных в записи, не зная его точной позиции. «AWK» автоматически устанавливает значение этой переменной равным числу полей в текущей записи:</p>
-<pre style="border:1px solid #ddd;">
--F "[, ]+" '{print $NF ":", $1, $(NF-1)}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-1789-1797: George Washington
-1797-1801: John Adams
-1801-1809: Thomas Jefferson
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=271467fd80112e9f13e392e83054148d">GIST</a> | <code>NR</code> хранит номер текущей записи, начиная с единицы:</p>
-<pre style="border:1px solid #ddd;">
-'NR &lt; 3'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-Thomas Jefferson, 1801-1809
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-George Washington, 1789-1797
-John Adams, 1797-1801
-</pre>
-
-</div>
-
-<p>Многие встроенные переменные, например <code>ARGC</code>, устанавливаются автоматически и обычно не предназначены для записи в них, т.е. используются только для чтения.</p>
-<h2>ПОЛЬЗОВАТЕЛЬСКИЕ ПЕРЕМЕННЫЕ</h2>
-<p><a href="http://awk.js.org/index.html?gist=4d9e43c7efba917086ddea54c93a2716">GIST</a> | Как и любые другие языки программирования, «AWK» позволяет программисту объявлять переменные. Имена переменных могут включать в себя буквы, цифры, символы подчёркивания, но не могут начинаться с цифры. Объявить переменную, присвоить ей значение можно как из командной строки <code>-v var=value</code> так и непосредственно в коде:</p>
-<pre style="border:1px solid #ddd;">
--v msg="Hello World !" 
-'BEGIN {
-   num1="21"
-   num2=21
-   print num1*2, num2*2, msg + 1
-} 
-{ print msg }'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-a
-b
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-42 42 1
-Hello World !
-Hello World !
-</pre>
-
-</div>
-
-<p>Допускается производить математические операции над строками. Если в строковой переменной не содержится правильного числа, то при вычислении математического выражения «AWK» будет обращаться с этой переменной как с числовым нулем.</p>
-<h2>АССОЦИАТИВНЫЕ МАССИВЫ</h2>
-<p><a href="http://awk.js.org/index.html?gist=bc4f6914346dbf43c184e812655fe8bb">GIST</a> | Из структур данных в «AWK» поддерживаются только ассоциативные массивы. В ассоциативном массиве хранятся пары вида <em>ключ</em> =&gt; <em>значение</em>. Предполагается, что ассоциативный массив не может хранить две пары с одинаковыми ключами:</p>
-<pre style="border:1px solid #ddd;">
-'BEGIN {
-   fruits["mango"] = "yellow";
-   fruits["orange"] = "orange"
-   print fruits["orange"] "\n" fruits["mango"]
-}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-anything here
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-orange
-yellow
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=cb6c15fece0f60a286e3a64296bdbdad">GIST</a> | Для удаления элемента из массива по его ключу предусмотрено ключевое слово <code>delete</code>:</p>
-<pre style="border:1px solid #ddd;">
-'BEGIN {
-   fruits[1] = "yellow";
-   fruits[2] = "orange";
-   delete fruits["2"];
-   for (fruit in fruits) { 
-      print fruits[fruit]
-   } 
-}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-anything here
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-yellow
-</pre>
-
-</div>
-
-<p>Для перебора всех элементов массива предусмотрена конструкция <code>for...in</code>.</p>
-<h2>ФУНКЦИИ</h2>
-<p><a href="http://awk.js.org/index.html?gist=e83563c5015ca799622e9c13b98d8852">GIST</a> | «AWK» имеет набор встроенных функций для выполнения некоторых в известном смысле стандартных операций. К встроенным относятся функции для работы со строками, временем и арифметикой. В следующем примере время конечно же будет отличаться от указанного:</p>
-<pre style="border:1px solid #ddd;">
-'BEGIN {print strftime("%T",systime()), cos(0), toupper("hello")}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-some text
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-20:14:27 1 HELLO
-</pre>
-
-</div>
-
-<p><a href="http://awk.js.org/index.html?gist=40932c2d2436ef9f5d915d71743aca85">GIST</a> | Сложные программы часто могут быть упрощены определением ваших собственных функций. Пользовательские функции могут вызываться точно так же как и встроенные, но определять их вы должны сами:</p>
-<pre style="border:1px solid #ddd;">
-'# Script execution starts here
-BEGIN {
-   main(10, 20)
-}
-# Returns minimum number
-function find_min(num1, num2){
-   if (num1 &lt; num2)
-   return num1
-   return num2
-}
-# Returns maximum number
-function find_max(num1, num2){
-   if (num1 > num2)
-   return num1
-   return num2
-}
-# Main function
-function main(num1, num2){
-   # Find minimum number
-   result = find_min(10, 20)
-   print "Minimum =", result
-
-   # Find maximum number
-   result = find_max(10, 20)
-   print "Maximum =", result
-}'
-</pre>
-
-<!-- https://stackoverflow.com/a/20669539 -->
-
-<div style="display: flex;">
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-anything here
-</pre>
-
-<pre style="flex: 1; border:1px solid #ddd; margin-bottom: 0;">
-Minimum = 10
-Maximum = 20
-</pre>
-
-</div>
-
-<p>«AWK» читает всю программу перед началом ее выполнения, так что необязательно помещать определения функций перед вызовом, они могут располагаться где угодно между правилами программы в любой последовательности. Правильное имя функции подобно правильному имени переменной: последовательность букв, цифр и подчеркиваний, начинающаяся не с цифры. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </article>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
+<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT) работать без изменений. Исторически протокол TLS является наследником SSL (Secure Sockets Layer), изначально разработанном в Netscape для повышения безопасности электронной коммерции в Интернете.</p>
+<p>Для <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a> (User Datagram Protocol) была разработана специальная версия TLS, получившая название DTLS (Datagram Transport Layer Security). В то время как TCP обеспечивает обязательную доставку пакетов от источника к получателю, UDP пакеты могут потеряться и их последовательность не гарантируется. Протокол DTLS учитывает вышеуказанные отличия TCP и UDP. </p>
+<h2>ДЕМО</h2>
+<p>На картинке DTLS сервер на микроконтроллере c ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту. Из коробки Contiki не умеет работать с TLS / DTLS, потому используется сторонняя библиотека TinyDTLS. Для обмена зашифрованными данными использовался нативный DTLS клиент из примеров самой TinyDTLS, но по идее клиент может быть любой с поддержкой IPv6:</p>
+<div class="highlight"><pre><span></span>~$ ping6 fe80::200:e2ff:fe58:b66e%mazko # bug ?
+~$ cat &lt;(echo Hello DTLS) - | \
+./tinydtls/tests/dtls-client fe80::200:e2ff:fe58:b66e%mazko
+</pre></div>
+
+
+<p><a href="http://localhost:9148/a7d33b89268292d04630429cc5f16a5a">ipv6.dtls.server</a> | <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/contiki-dtls.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/demo.png" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>В данном примере используется симметричное шифрование TLS_PSK (Pre-Shared Key) по AES алгоритму. Симметричный – значит, что для шифрования и дешифрования используется один и тот же секретный ключ (существуют также ассиметричные алгоритмы, для шифрования используется один ключ, для дешифрования – другой). Ключ алгоритма должен сохраняться в секрете обеими сторонами, в данном случае он зашит в коде <code>#define PSK_DEFAULT_KEY "secretPSK"</code> и сервера и клиента.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/wireshark.png" style="width:100%;"></p>
+<p>Для тех, кто не знает секретный ключ как например Wireshark на картинке ниже, зашифрованные данные не представляют никакой ценности – это выглядит как беспорядочный и бессмысленный набор байт. При использовании TLS / DTLS, «злоумышленнику» (иногда говорят «человек посередине») будет доступна информация о подключении (хост, порт, тип используемого шифрования), частоте и количестве передаваемой информации. Кроме того, он может разорвать соединение, но обе стороны будут знать, что соединение было прервано третьей стороной.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/data.png" style="width:100%;"></p>
+<h2>ВВЕДЕНИЕ В КРИПТОГРАФИЮ</h2>
+<blockquote>
+<p>Криптография (от др.-греч. κρυπτός — скрытый и γράφω — пишу) — наука о методах обеспечения конфиденциальности (невозможности прочтения информации посторонним), целостности данных (невозможности незаметного изменения информации), аутентификации (проверки подлинности авторства или иных свойств объекта), а также невозможности отказа от авторства. — Википедия</p>
+</blockquote>
+<p>Криптография включает в себя множество различных направлений, таких как шифрование, электронно-цифровая подпись, хеширование и т. д. Шифрование — это преобразование исходных данных («открытого текста») в видоизмененное состояние («закрытый текст») с целью скрыть содержимое «открытого текста» от потенциального «злоумышленника». Дешифрование — это обратная процедура, восстановление «открытого текста» из «закрытого». Понятия «открытый текст» и «закрытый текст» в данном случае подразумевают любую, не обязательно текстовую информацию.</p>
+<p>Предположим, что сторона А (Алиса) хочет передать стороне Б (Боб) секретную информацию, чтобы никто, кроме Боба, не смог прочесть её. Для того чтобы «зашифровать» данные, можно переставить местами символы в исходном тесте по определенному алгоритму (шифр подстановки), известному только Алисе и Бобу. Такие алгоритмы шифрования, при которых Алиса и Боб должны заранее (до начала обмена данными) придумать и согласовать одинаковый секрет, называются <strong>симметричными</strong>. </p>
+<p>Современные алгоритмы шифрования предполагают, что «злоумышленник» потенциально знает сам алгоритм шифрования (алгоритм преобразования над открытым тестом), имеет доступ к закрытому тексту и даже может знать фрагменты открытого текста (например «злоумышленник» может предположить, что открытый текст сообщения начинается с фразы «Добрый день!»). Единственное, что неизвестно «злоумышленнику», это некий «секрет» (секретный ключ шифрования) и единственный способ вычислить секретный ключ (и расшифровать информацию целиком) — это полный перебор всех возможных вариантов секретного ключа. Считается, что длина применяемых в современных алгоритмах ключей (например, 256 бит) не позволяет подобрать ключ перебором за приемлемое время. Экзотические способы вроде терморектального криптоанализа в расчёт не берём.</p>
+<p>Для закрепления материала пример симметричного шифрования. Алиса хочет передать фразу "Some Secret", для этого она шифрует сообщение. Пароль пусть будет pass:</p>
+<div class="highlight"><pre><span></span>~$ echo &quot;Some Secret&quot; | \
+openssl enc -aes-256-cbc -a -pass pass:pass -nosalt
+</pre></div>
+
+
+<p>На выходе Алиса получает зашифрованный текст и отправляет его по незащищённому каналу связи. Боб, получив зашифрованные данные, знает пароль и дешифрует их:</p>
+<div class="highlight"><pre><span></span>~$ echo &quot;9pIRFLwioGc41Fw+aHLxuw==&quot; | \
+openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
+</pre></div>
+
+
+<p>Чудненько, но как Бобу знать, что это именно Алиса отправила сообщение ? Да, «злоумышленник» не может расшифровать содержимое посылки, но что, если ему это и не нужно ? Ведь ничто не мешает «злоумышленнику» просто повторно отправить перехваченное ранее зашифрованное сообщение в нужный момент. </p>
+<p>Предположим у нас есть передатчик и приемник, который управляет исполнительным механизмом (например, открывает дверь). Мы хотим открывать дверь по команде с передатчика. Естественно, мы хотим обезопасить себя, приемник должен реагировать только на «родной» передатчик. Записываем в передатчик и приемник одинаковый «секретный» пароль (ключ). Передатчик отправляет команду, приемник дешифрует паролем и открывает двери. Тем временем «злоумышленник» прослушивает радиоэфир и если он просто повторно отправит перехваченный ранее данные, двери откроются... Выходит одного шифрования недостаточно.</p>
+<p>Рассмотрим решение подобной проблемы на «бытовом» примере. Предположим, я общаюсь со своим другом в чате. Я хочу убедиться, что я общаюсь именно с ним, а не с его дедушкой/бабушкой которая села за его компьютер. Я могу задать другу вопрос, ответ на который знает только он и я. У меня и у друга есть одинаковый «секретный» ключ шифрования. Я отправляю ему любой, абсолютно случайный фрагмент текста (случайное число) и прошу его зашифровать. Он шифрует фрагмент своим ключом и отправляет зашифрованный текст мне. Я расшифровываю полученный текст и сравниваю с оригиналом. Если исходный и расшифрованный фрагмент идентичны – значит я общаюсь действительно с другом, так как «правильно» зашифровать текст мог только он. В следующий раз, при необходимости <strong>аутентифицировать</strong> собеседника я вышлю новый, случайный, фрагмент текста и даже если «злоумышленник» перехватил предыдущий «сеанс аутентификации» — это ему ничего не даст, так как каждый раз будет новый запрос (новый фрагмент открытого текста) и соответственно новый ответ (закрытый текст).</p>
+<h2>TLS / DTLS</h2>
+<p>Тестовый сервер DTLS:</p>
+<div class="highlight"><pre><span></span>~$ openssl s_server -port 20220 -psk 1a2b3c4d -nocert -dtls1_2
+</pre></div>
+
+
+<p>Тестовый клиент DTLS:</p>
+<div class="highlight"><pre><span></span>~$ openssl s_client -port 20220 -psk 1a2b3c4d -dtls1_2
+</pre></div>
+
+
+<p>Обмен данными между клиентом и сервером двусторонний, пишем что-нибудь в консоль и смотрим как идут пакеты в Wireshark.</p>
+<p>Протоколы TLS / DTLS предназначены для предоставления трёх услуг всем приложениям, работающим над ними: <strong>шифрование</strong>, <strong>аутентификацию</strong> и <strong>целостность</strong>. Для того чтобы установить криптографически безопасный канал данных, клиент и сервер должны согласовать параметры соединения, а именно: версия используемого протокола, способ шифрования данных, а также проверить сертификаты (в случае асимметричного шифрования). Процедура начала соединения называется Handshake (рукопожатие). Также в рамках процедуры Handshake клиент и сервер обмениваются случайными числами, т.е, происходит аутентификация – проверка соответствия субъекта и того, за кого он пытается себя выдать. После Handshake происходит обмен зашифрованными данными с проверкой целостности информации и защиты от её подмены.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
 <div class="body" style="margin-bottom: 2em">
@@ -471,6 +112,29 @@ Maximum = 20
                     <h1>Other articles</h1>
                     <hr />
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/" rel="bookmark"
+                           title="Permalink to Язык обработки структурированных текстов AWK">Язык обработки структурированных текстов AWK</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-11-17T00:00:00+02:00">
+                Published: Пт. 17 Ноябрь 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
+</footer><!-- /.post-info -->                <p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
+<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -536,29 +200,6 @@ Maximum = 20
 </footer><!-- /.post-info -->                <p>Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/" rel="bookmark"
-                           title="Permalink to Протоколы «Интернета вещей» - MQTT">Протоколы «Интернета вещей» - MQTT</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-20T00:00:00+03:00">
-                Published: Пт. 20 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
-<p>MQTT (Message Queue Telemetry Transport) – протокол прикладного уровня для организации межмашинной коммуникации (M2M, Machine to Machine), который работает по принципу «издатель-подписчик». Два главных компонента MQTT – клиент и брокер. MQTT-клиенты публикуют сообщения на определённую тему (topic), или подписываются на сообщения и прослушивают их. Тема – это произвольная строка …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
