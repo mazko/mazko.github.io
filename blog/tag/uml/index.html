@@ -55,7 +55,7 @@
 <p>существует особая форма оператора <code>new</code>, называемая <em>Placement new</em>. Данный оператор не выделяет память, а получает своим аргументом адрес на уже выделенную каким-либо образом память. Например память под объект «Змейка» выделяется в стеке на этапе компиляции, а  размещение (инициализация) объекта в ней путём вызова конструктора происходит в процессе выполнения программы, таким образом можно пересоздавать «Змейку» при перезапуске игры</p>
 </li>
 </ul>
-<p>Под капотом «Змейки» <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
+<p>Под капотом «Змейки» <a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>На картинке иерархический конечный автомат <em>Play</em> где отсчитываются временные интервалы для движения «Змейки» и обрабатывается нажатие от кнопок. Если метод <code>eat_or_move()</code> вернёт <code>false</code> переход в состояние <em>GameOver</em> где отображается количество набранных очков. При нажатии любой кнопки снова <em>Play</em>.</p>
 <p>«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </article>
@@ -81,8 +81,8 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/" rel="bookmark"
-                           title="Permalink to Реактивное программирование QP/C++ | UML">Реактивное программирование QP/C++ | UML</a></h1>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/" rel="bookmark"
+                           title="Permalink to Жизнь после RTOS - модель акторов QP/C++ | UML">Жизнь после RTOS - модель акторов QP/C++ | UML</a></h1>
                 </header>
 
                 <div class="entry-content">
@@ -95,13 +95,13 @@
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
 </footer><!-- /.post-info -->                <blockquote>
 <p>Компьютер — это конечный автомат. Потоковое программирование нужно тем, кто не умеет программировать конечные автоматы. — Алан Кокс </p>
 </blockquote>
 <p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/reaktivnoe-programmirovanie-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
