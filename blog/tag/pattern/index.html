@@ -30,10 +30,10 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">С++ для микроконтроллеров - «Декоратор»</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">С++ для микроконтроллеров - «Наблюдатель»</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2017-03-22T00:00:00+02:00">
-                Published: Ср. 22 Март 2017
+        <abbr class="published" title="2018-03-18T00:00:00+02:00">
+                Published: Вс. 18 Март 2018
         </abbr>
 
         <address class="vcard author">
@@ -41,33 +41,124 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
-</footer><!-- /.post-info --><blockquote>
-<p>Есть два способа создания дизайна программы. Один из них, это сделать его настолько простым, что в нем, очевидно, не будет недостатков. Другой способ — сделать его настолько запутанным, что в нем не будет очевидных недостатков. — C.A. R. Hoare</p>
-</blockquote>
-<p>«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.</p>
-<p>GoF даёт следующее классическое определение: декоратор (англ. Decorator) — паттерн, структурирующий объекты. Динамически добавляет объекту новые обязанности. Является гибкой альтернативой порождению подклассов с целью расширения функциональности.</p>
-<p>Объект, который предполагается использовать (в нашем случае <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">слой</a> для лампочек), выполняет основные функции. Однако может потребоваться добавить к нему некоторую дополнительную функциональность (<a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">анимации</a>), которая будет выполняться до, после или даже вместо основной функциональности объекта.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
-<p>Поскольку анимации и их последовательность заранее известны на этапе компиляции, декоратор легко реализуется на С++ шаблонах. Такая реализация позволяет не использовать виртуальные функции и будет занимать больше памяти ROM (code bloat), но работать должна шустрее - хотя для мигающих лампочек это не критично. Ещё использование шаблонов даёт удобную возможность делать простые проверки <code>static_assert()</code> на этапе компиляции. Нечто подобное <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">можно</a> конечно же соорудить и на Си с помощью макросов, но в С++ <code>static_assert()</code> это уже встроенный и весьма полезный механизм так что не приходится заново изобретать велосипед.</p>
-<p>Все классы для создания анимаций реализуют интерфейс Декоратора - методы <code>void draw(RgbStripLayer&amp; layer);</code> и <code>void set_color(const auto&amp; co)</code>. Работая в цепочке каждый последовательно добавляет (декорирует) к слою <code>RgbStripLayer</code> новые свойства. Эти классы взаимозаменяемы, их последовательность определяет конкретную анимацию. В прилагаемых исходниках добавлено больше анимаций плюс пример использования стандартной библиотекой шаблонов (STL) в С++ - алгоритм <code>std::rotate</code> для массивов.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/a.out">elf</a> | <a href="http://mazko.github.io/MSP430.js/3523e01e3e6c96088d0ac6a4c335609b">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/src.zip">исходники</a></p>
+</footer><!-- /.post-info --><p>Продолжаем присматриваться к <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a>.</p>
+<p>Наблюдатель – это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">паттерн</a> проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">GoF</a> даёт следующее классическое определение: наблюдатель (англ. Observer) – паттерн поведения объектов. Определяет зависимость типа «один ко многим» между объектами таким образом, что при изменении состояния одного объекта все зависящие от него оповещаются об этом и автоматически обновляются.</p>
+<p>Аналогия из жизни: после того как вы оформили подписку на газету или журнал, вам больше не нужно ездить в супермаркет и проверять, не вышел ли очередной номер. Вместо этого, издательство будет присылать новые номера сразу после выхода прямо к вам домой. Издательство ведёт список подписчиков и знает, кому какой журнал слать. Вы можете в любой момент отказаться от подписки, и журнал перестанет к вам приходить.</p>
+<p><a href="http://mazko.github.io/MSP430.js/8490b771b5c0189e639726f219cb2b16">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/msp430-observer.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Давайте называть «издателями» те объекты, которые содержат важное или интересное для других состояние. Остальные объекты, которые хотят отслеживать изменения этого состояния, назовём «подписчиками».</p>
+<p>Паттерн «Наблюдатель» предлагает хранить внутри объекта «издателя» (контейнера) список ссылок на объекты «подписчиков». Причём, «издатель» не должен вести список подписки самостоятельно. Он должен предоставить методы, с помощью которых «подписчики» могли бы добавлять или убирать себя из списка.</p>
+<p>Когда в «издателе» будет происходить важное событие, он будет проходиться по списку «подписчиков» и оповещать их об этом, вызывая определённый метод объектов-подписчиков.</p>
+<p><em>observers/state.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;DoublyLinkedList.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;non-copyable.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">obsevers</span> <span class="p">{</span>
+
+    <span class="c1">// alias</span>
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">using</span> <span class="n">DLLE</span> <span class="o">=</span> <span class="n">mozilla</span><span class="o">::</span><span class="n">DoublyLinkedListElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+
+    <span class="k">namespace</span> <span class="n">state</span> <span class="p">{</span>
+
+        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+            <span class="n">left_active</span><span class="p">,</span>
+            <span class="n">left_sleep</span>
+        <span class="p">}</span> <span class="n">state_t</span><span class="p">;</span>
+
+        <span class="k">struct</span> <span class="nl">IObserver</span> <span class="p">:</span> <span class="k">public</span> <span class="n">DLLE</span><span class="o">&lt;</span><span class="n">IObserver</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">NonCopyable</span>
+        <span class="p">{</span>
+            <span class="k">virtual</span> <span class="kt">void</span> <span class="n">observe</span><span class="p">(</span><span class="n">state_t</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">};</span>
+
+
+        <span class="k">class</span> <span class="nc">Container</span> <span class="o">:</span> <span class="n">NonCopyable</span>
+        <span class="p">{</span>
+            <span class="n">mozilla</span><span class="o">::</span><span class="n">DoublyLinkedList</span><span class="o">&lt;</span><span class="n">IObserver</span><span class="o">&gt;</span> <span class="n">mList</span><span class="p">;</span>
+
+        <span class="k">public</span><span class="o">:</span>
+            <span class="kt">void</span> <span class="n">addObserver</span><span class="p">(</span><span class="n">IObserver</span><span class="o">*</span> <span class="n">aObserver</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="c1">// Will assert if |aObserver| is part of another list.</span>
+                <span class="n">mList</span><span class="p">.</span><span class="n">pushFront</span><span class="p">(</span><span class="n">aObserver</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="kt">void</span> <span class="n">removeObserver</span><span class="p">(</span><span class="n">IObserver</span><span class="o">*</span> <span class="n">aObserver</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="c1">// Will assert if |aObserver| is not part of |list|.</span>
+                <span class="n">mList</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">aObserver</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="kt">void</span> <span class="n">notifyObservers</span><span class="p">(</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">IObserver</span><span class="o">&amp;</span> <span class="nl">o</span> <span class="p">:</span> <span class="n">mList</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">o</span><span class="p">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aState</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">};</span>
+
+        <span class="k">extern</span> <span class="n">Container</span> <span class="n">event</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>В приведенной реализации «подписчики» образуют двусвязный список, что позволяет обойтись без динамического выделения памяти. Почему это важно для микроконтроллеров описано <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">тут</a>. Используется готовая реализация двусвязного списка взятая из исходников mozilla.</p>
+<p>Шаблон «Наблюдатель» работает синхронно. Обычно выделяется главный цикл приложения, тело которого состоит из двух частей: выборки события и обработки события. Как правило, в реальных задачах оказывается недопустимым длительное выполнение обработчика события, поскольку при этом программа не может реагировать на другие события.</p>
 <p><em>app.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;animation.h&quot;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;app.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;observers/buttons.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;observers/state.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;tasks/left.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;tasks/right.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;tasks/counter.h&quot;</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">obsevers</span><span class="p">;</span>
+
+<span class="n">buttons</span><span class="o">::</span><span class="n">Container</span> <span class="n">obsevers</span><span class="o">::</span><span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">;</span>
+<span class="n">state</span><span class="o">::</span><span class="n">Container</span>   <span class="n">obsevers</span><span class="o">::</span><span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">;</span>
 
 <span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
 
-    <span class="k">using</span> <span class="k">namespace</span> <span class="n">animation</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
 
-    <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">SZ</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">STRIP_SZ</span><span class="p">;</span>
+        <span class="n">tasks</span><span class="o">::</span><span class="n">left</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
+        <span class="n">tasks</span><span class="o">::</span><span class="n">right</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
+        <span class="n">tasks</span><span class="o">::</span><span class="n">counter</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
 
-    <span class="kt">int</span> <span class="nf">run</span><span class="p">()</span> <span class="p">{</span>
-
-        <span class="n">RgbStripLayer</span> <span class="n">l1</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="n">lastBtns</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">volatile</span> <span class="kt">uint16_t</span> <span class="n">longPress</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// TODO: use timer</span>
+        <span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">lastState</span> <span class="o">=</span> <span class="n">state</span><span class="o">::</span><span class="n">left_sleep</span><span class="p">;</span>
 
         <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">DynFill</span><span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">SZ</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">55555</span><span class="p">,</span> <span class="n">Nop</span> <span class="o">&gt;&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
-            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">FillCW</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">4444</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;&gt;</span> <span class="o">&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
-            <span class="n">EachColor</span><span class="o">&lt;</span> <span class="n">FillCCW</span><span class="o">&lt;</span> <span class="n">Sleep</span><span class="o">&lt;</span> <span class="mi">4444</span><span class="p">,</span> <span class="n">Flush</span><span class="o">&lt;&gt;</span> <span class="o">&gt;&gt;&gt;</span><span class="p">().</span><span class="n">draw</span><span class="p">(</span><span class="n">l1</span><span class="p">);</span>
+
+            <span class="kt">char</span> <span class="n">btns</span> <span class="o">=</span> <span class="n">hal</span><span class="o">::</span><span class="n">get_buttons</span><span class="p">();</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lastBtns</span> <span class="o">&amp;&amp;</span> <span class="n">btns</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">notifyObservers</span><span class="p">(</span><span class="n">btns</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">btns</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="cm">/* left first button */</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">longPress</span> <span class="o">&amp;&amp;</span> <span class="o">!--</span><span class="n">longPress</span><span class="p">)</span> 
+                <span class="p">{</span>
+                    <span class="k">switch</span> <span class="p">(</span><span class="n">lastState</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
+                            <span class="n">lastState</span> <span class="o">=</span> <span class="n">state</span><span class="o">::</span><span class="n">left_sleep</span><span class="p">;</span>
+                            <span class="k">break</span><span class="p">;</span>
+                        <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_sleep</span><span class="p">:</span>
+                            <span class="n">lastState</span> <span class="o">=</span> <span class="n">state</span><span class="o">::</span><span class="n">left_active</span><span class="p">;</span>
+                            <span class="k">break</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">notifyObservers</span><span class="p">(</span><span class="n">lastState</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="n">longPress</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">lastBtns</span> <span class="o">=</span> <span class="n">btns</span><span class="p">;</span>
+
+            <span class="c1">// other events like timer e.t.c...</span>
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
@@ -76,118 +167,56 @@
 </pre></div>
 
 
-<p><em>animation.h</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;rgb.h&quot;</span><span class="cp"></span>
+<p>В данном примере два события: изменение состояния и нажатие на кнопки. При изменении состояния (длительное нажатие) левые лампочки динамически подписываются / отписываются от события нажатия на кнопки. Правые лампочки и счётчик нажатий подписаны на событие кнопок всегда.</p>
+<p>Никогда не полагайтесь на определенный порядок оповещения наблюдателей. Метод <code>addObserver</code> класса <code>state::Container</code> добавляет новый наблюдателя в начало связного списка. А если добавлять не в начало а в конец ? Какой порядок считать правильным ? <strong>Любой</strong>. Нужно писать код таким образом, чтобы порядок обхода наблюдателей никак не влиял на поведение программы. Чем меньше компоненты системы знают друг о друге, тем проще их изменять и развивать. О силе слабых связей чуть ниже.</p>
+<p><em>tasks/left.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;left.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;color-observer.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;observers/state.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="n">animation</span> <span class="p">{</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">obsevers</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">tasks</span><span class="p">;</span>
 
-    <span class="k">using</span> <span class="k">namespace</span> <span class="n">rgb</span><span class="p">;</span>
+<span class="k">class</span> <span class="nc">LockerObserver</span> <span class="o">:</span> <span class="k">public</span> <span class="n">state</span><span class="o">::</span><span class="n">IObserver</span> <span class="p">{</span>
 
-    <span class="k">struct</span> <span class="nl">Nop</span> <span class="p">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{}</span>
-    <span class="p">};</span>
+    <span class="n">ColorObserver</span><span class="o">&lt;</span><span class="n">hal</span><span class="o">::</span><span class="n">LeftLeds</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;</span> <span class="n">o</span><span class="p">;</span>
 
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span> <span class="o">=</span> <span class="n">Nop</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">Flush</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">layer</span><span class="p">.</span><span class="n">flush</span><span class="p">();</span>
-            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+    <span class="kt">void</span> <span class="nf">observe</span><span class="p">(</span><span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
+                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left subscribed  &quot;</span><span class="p">);</span>
+                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_sleep</span><span class="p">:</span>
+                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
+                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">removeObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
         <span class="p">}</span>
-    <span class="p">};</span>
+    <span class="p">}</span>
 
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span> <span class="n">cycles</span><span class="p">,</span> <span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">Sleep</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">cycles</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
-            <span class="n">__delay_cycles</span><span class="p">(</span><span class="n">cycles</span><span class="p">);</span>
-            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
+    <span class="k">public</span><span class="o">:</span> 
+        <span class="kt">void</span> <span class="n">str</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">draw</span><span class="o">::</span><span class="n">str</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_0</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
         <span class="p">}</span>
-    <span class="p">};</span>
+<span class="p">};</span>
 
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span><span class="o">&amp;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">FillCW</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="cm">/* clockwise */</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">m</span> <span class="p">:</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-            <span class="p">}</span>
+<span class="k">static</span> <span class="n">LockerObserver</span> <span class="n">observer</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="n">tasks</span> <span class="p">{</span>
+    <span class="k">namespace</span> <span class="n">left</span> <span class="p">{</span>
+        <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">observer</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
+            <span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">observer</span><span class="p">);</span>
         <span class="p">}</span>
-
-        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">,</span> <span class="k">const</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span><span class="o">&amp;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">FillCCW</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="cm">/* counterclockwise */</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// while a pointer is a form of iterator,</span>
-            <span class="c1">// not all iterators have the same functionality of pointer</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">it</span> <span class="o">=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">rbegin</span><span class="p">();</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">crend</span><span class="p">();</span> <span class="n">it</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-                <span class="o">*</span><span class="n">it</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-
-        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">EachColor</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="k">static</span> <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">,</span>    <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">GREEN</span><span class="p">,</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">BLUE</span><span class="p">,</span>   <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">YELLOW</span><span class="p">,</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">VIOLET</span><span class="p">,</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">CYAN</span><span class="p">,</span>
-            <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">WHITE</span><span class="p">,</span>  
-        <span class="p">};</span>
-
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">colors</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
-                <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
-
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span> <span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span> <span class="n">l</span><span class="p">,</span> <span class="k">class</span> <span class="nc">A</span><span class="o">&gt;</span>
-    <span class="k">class</span> <span class="nc">DynFill</span> <span class="o">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-        <span class="n">A</span> <span class="n">m_stream</span><span class="p">;</span>
-        <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RGB</span> <span class="n">m_color</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">;</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="kt">void</span> <span class="n">draw</span><span class="p">(</span><span class="n">RgbStripLayer</span><span class="o">&amp;</span> <span class="n">layer</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">);</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">);</span>
-            <span class="k">static_assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-            <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">l</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">layer</span><span class="p">.</span><span class="n">mem</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_color</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="n">m_stream</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">layer</span><span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="kt">void</span> <span class="n">set_color</span><span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">co</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">m_color</span> <span class="o">=</span> <span class="n">co</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">};</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 
 
-<p>Применение паттернов и ООП в микроконтроллерах имеет свою специфику, накладываемую в основном моделью управления памятью. Неважно на чём писать — Си или С++ для встраиваемых систем предпочтительней использовать память в стеке т.к. она проверяется компилятором. В свою очередь динамическое выделение памяти на куче <strong>не проверяется компилятором</strong> и как следствие её наличие в нужный момент времени выполнения программы не гарантируется. ООП же больше любит динамическое выделение памяти — операторы <code>new</code>, <code>malloc</code>, умные указатели. Не стоит этого всего использовать в микроконтроллерах без ясного понимания возможных последствий.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">Далее</a> игра «Змейка» где работа с памятью будет описана более подробно. Приведенная реализация игры использует <a href="https://www.state-machine.com/" rel="nofollow">Quantum Framework</a>. У каждого Активного Объекта в Quantum Framework можно выделить два паттерна — «Состояние» и «Наблюдатель».</p><p>There are <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/#disqus_thread">comments</a>.</p>                </article>
+<p>Если объекты могут взаимодействовать, не обладая практически никакой информацией друг о друге, такие объекты называют слабосвязанными. Единственное, что знает «издатель» о «подписчиках», – то, что они реализует некоторый интерфейс (IObserver). Ему не нужно знать ни конкретный класс «подписчика», ни его функциональность. Добавление новых типов «подписчиков» не требует модификации «издателя». </p>
+<p>На базе слабосвязанных архитектур строятся гибкие системы, которые хорошо адаптируются к изменениям благодаря минимальным зависимостям между объектами.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
 <div class="body" style="margin-bottom: 2em">
@@ -207,6 +236,31 @@
                     <h1>Other articles</h1>
                     <hr />
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/" rel="bookmark"
+                           title="Permalink to С++ для микроконтроллеров - «Декоратор»">С++ для микроконтроллеров - «Декоратор»</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-03-22T00:00:00+02:00">
+                Published: Ср. 22 Март 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
+</footer><!-- /.post-info -->                <blockquote>
+<p>Есть два способа создания дизайна программы. Один из них, это сделать его настолько простым, что в нем, очевидно, не будет недостатков. Другой способ — сделать его настолько запутанным, что в нем не будет очевидных недостатков. — C.A. R. Hoare</p>
+</blockquote>
+<p>«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>

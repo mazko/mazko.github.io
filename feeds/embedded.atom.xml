@@ -1,5 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗 - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2017-06-22T00:00:00+03:00</updated><entry><title>С++ для микроконтроллеров - управление памятью</title><link href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/" rel="alternate"></link><published>2017-06-22T00:00:00+03:00</published><updated>2017-06-22T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-06-22:/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/</id><summary type="html">&lt;p&gt;Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции &lt;code&gt;malloc()&lt;/code&gt; и &lt;code&gt;free()&lt;/code&gt;. В С++ для этих целей предусмотрены операторы &lt;code&gt;new&lt;/code&gt; и &lt;code&gt;delete&lt;/code&gt;. Когда оператор &lt;code&gt;new&lt;/code&gt; не может удовлетворить запрос на выделение памяти, он возбуждает исключение &lt;code&gt;std::bad_alloc&lt;/code&gt;, сигнализируя тем самым об ошибке. В &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции &lt;code&gt;malloc()&lt;/code&gt; и &lt;code&gt;free()&lt;/code&gt;. В С++ для этих целей предусмотрены операторы &lt;code&gt;new&lt;/code&gt; и &lt;code&gt;delete&lt;/code&gt;. Когда оператор &lt;code&gt;new&lt;/code&gt; не может удовлетворить запрос на выделение памяти, он возбуждает исключение &lt;code&gt;std::bad_alloc&lt;/code&gt;, сигнализируя тем самым об ошибке. В &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt; механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение &lt;code&gt;std::bad_alloc&lt;/code&gt;, оператор &lt;code&gt;new&lt;/code&gt; вызывает специальную функцию-обработчик. Эту функцию можно переопределять &lt;code&gt;std::set_new_handler&lt;/code&gt;, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗 - Embedded</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/embedded.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2018-03-18T00:00:00+02:00</updated><entry><title>С++ для микроконтроллеров - «Наблюдатель»</title><link href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/" rel="alternate"></link><published>2018-03-18T00:00:00+02:00</published><updated>2018-03-18T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2018-03-18:/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/</id><summary type="html">&lt;p&gt;Продолжаем присматриваться к &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Наблюдатель – это &lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;паттерн&lt;/a&gt; проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;GoF&lt;/a&gt; даёт следующее классическое определение …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Продолжаем присматриваться к &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Наблюдатель – это &lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;паттерн&lt;/a&gt; проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;GoF&lt;/a&gt; даёт следующее классическое определение: наблюдатель (англ. Observer) – паттерн поведения объектов. Определяет зависимость типа «один ко многим» между объектами таким образом, что при изменении состояния одного объекта все зависящие от него оповещаются об этом и автоматически обновляются.&lt;/p&gt;
+&lt;p&gt;Аналогия из жизни: после того как вы оформили подписку на газету или журнал, вам больше не нужно ездить в супермаркет и проверять, не вышел ли очередной номер. Вместо этого, издательство будет присылать новые номера сразу после выхода прямо к вам домой. Издательство ведёт список подписчиков и знает, кому какой журнал слать. Вы можете в любой момент отказаться от подписки, и журнал перестанет к вам приходить.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/8490b771b5c0189e639726f219cb2b16"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/msp430-observer.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
+&lt;p&gt;Давайте называть «издателями» те объекты, которые содержат важное или интересное для других состояние. Остальные объекты, которые хотят отслеживать изменения этого состояния, назовём «подписчиками».&lt;/p&gt;
+&lt;p&gt;Паттерн «Наблюдатель» предлагает хранить внутри объекта «издателя» (контейнера) список ссылок на объекты «подписчиков». Причём, «издатель» не должен вести список подписки самостоятельно. Он должен предоставить методы, с помощью которых «подписчики» могли бы добавлять или убирать себя из списка.&lt;/p&gt;
+&lt;p&gt;Когда в «издателе» будет происходить важное событие, он будет проходиться по списку «подписчиков» и оповещать их об этом, вызывая определённый метод объектов-подписчиков.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;observers/state.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;DoublyLinkedList.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;non-copyable.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;obsevers&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="c1"&gt;// alias&lt;/span&gt;
+    &lt;span class="k"&gt;template&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;T&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="n"&gt;DLLE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;mozilla&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;DoublyLinkedListElement&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;T&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+        &lt;span class="k"&gt;typedef&lt;/span&gt; &lt;span class="k"&gt;enum&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;left_active&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;left_sleep&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="n"&gt;state_t&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+        &lt;span class="k"&gt;struct&lt;/span&gt; &lt;span class="nl"&gt;IObserver&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;DLLE&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;IObserver&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;NonCopyable&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;virtual&lt;/span&gt; &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;observe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Container&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;NonCopyable&lt;/span&gt;
+        &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;mozilla&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;DoublyLinkedList&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;IObserver&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;mList&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+        &lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+            &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;addObserver&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IObserver&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;aObserver&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// Will assert if |aObserver| is part of another list.&lt;/span&gt;
+                &lt;span class="n"&gt;mList&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pushFront&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aObserver&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+
+            &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;removeObserver&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IObserver&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;aObserver&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="c1"&gt;// Will assert if |aObserver| is not part of |list|.&lt;/span&gt;
+                &lt;span class="n"&gt;mList&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aObserver&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+
+            &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;notifyObservers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state_t&lt;/span&gt; &lt;span class="n"&gt;aState&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;IObserver&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="nl"&gt;o&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mList&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                    &lt;span class="n"&gt;o&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;observe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aState&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;};&lt;/span&gt;
+
+        &lt;span class="k"&gt;extern&lt;/span&gt; &lt;span class="n"&gt;Container&lt;/span&gt; &lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В приведенной реализации «подписчики» образуют двусвязный список, что позволяет обойтись без динамического выделения памяти. Почему это важно для микроконтроллеров описано &lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;тут&lt;/a&gt;. Используется готовая реализация двусвязного списка взятая из исходников mozilla.&lt;/p&gt;
+&lt;p&gt;Шаблон «Наблюдатель» работает синхронно. Обычно выделяется главный цикл приложения, тело которого состоит из двух частей: выборки события и обработки события. Как правило, в реальных задачах оказывается недопустимым длительное выполнение обработчика события, поскольку при этом программа не может реагировать на другие события.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;app.cpp&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;app.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;hal.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;observers/buttons.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;observers/state.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;tasks/left.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;tasks/right.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;tasks/counter.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;obsevers&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Container&lt;/span&gt; &lt;span class="n"&gt;obsevers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;Container&lt;/span&gt;   &lt;span class="n"&gt;obsevers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+        &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;left&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;right&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;counter&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+        &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;lastBtns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="k"&gt;volatile&lt;/span&gt; &lt;span class="kt"&gt;uint16_t&lt;/span&gt; &lt;span class="n"&gt;longPress&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="c1"&gt;// TODO: use timer&lt;/span&gt;
+        &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;state_t&lt;/span&gt; &lt;span class="n"&gt;lastState&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;left_sleep&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+            &lt;span class="kt"&gt;char&lt;/span&gt; &lt;span class="n"&gt;btns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;hal&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;get_buttons&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;lastBtns&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;btns&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notifyObservers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;btns&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;btns&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="cm"&gt;/* left first button */&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;longPress&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="o"&gt;!--&lt;/span&gt;&lt;span class="n"&gt;longPress&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; 
+                &lt;span class="p"&gt;{&lt;/span&gt;
+                    &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lastState&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                        &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="nl"&gt;left_active&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                            &lt;span class="n"&gt;lastState&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;left_sleep&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                            &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                        &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="nl"&gt;left_sleep&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                            &lt;span class="n"&gt;lastState&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;left_active&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                            &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+                    &lt;span class="p"&gt;}&lt;/span&gt;
+                    &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;notifyObservers&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lastState&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="p"&gt;}&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;longPress&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;5000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="p"&gt;}&lt;/span&gt;
+
+            &lt;span class="n"&gt;lastBtns&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;btns&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+            &lt;span class="c1"&gt;// other events like timer e.t.c...&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В данном примере два события: изменение состояния и нажатие на кнопки. При изменении состояния (длительное нажатие) левые лампочки динамически подписываются / отписываются от события нажатия на кнопки. Правые лампочки и счётчик нажатий подписаны на событие кнопок всегда.&lt;/p&gt;
+&lt;p&gt;Никогда не полагайтесь на определенный порядок оповещения наблюдателей. Метод &lt;code&gt;addObserver&lt;/code&gt; класса &lt;code&gt;state::Container&lt;/code&gt; добавляет новый наблюдателя в начало связного списка. А если добавлять не в начало а в конец ? Какой порядок считать правильным ? &lt;strong&gt;Любой&lt;/strong&gt;. Нужно писать код таким образом, чтобы порядок обхода наблюдателей никак не влиял на поведение программы. Чем меньше компоненты системы знают друг о друге, тем проще их изменять и развивать. О силе слабых связей чуть ниже.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;tasks/left.cpp&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;left.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;color-observer.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;observers/state.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;draw.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;hal.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;obsevers&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LockerObserver&lt;/span&gt; &lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="k"&gt;public&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;IObserver&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+    &lt;span class="n"&gt;ColorObserver&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;hal&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;LeftLeds&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;o&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="nf"&gt;observe&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;state_t&lt;/span&gt; &lt;span class="n"&gt;aState&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;switch&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aState&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="nl"&gt;left_active&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;left subscribed  &amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addObserver&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="nl"&gt;left_sleep&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;left unsubscribed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;buttons&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;removeObserver&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;o&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+                &lt;span class="k"&gt;break&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;public&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; 
+        &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;const&lt;/span&gt; &lt;span class="kt"&gt;char&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+          &lt;span class="n"&gt;draw&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;draw&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;PAGE_0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+
+&lt;span class="k"&gt;static&lt;/span&gt; &lt;span class="n"&gt;LockerObserver&lt;/span&gt; &lt;span class="n"&gt;observer&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;tasks&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;left&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="kt"&gt;void&lt;/span&gt; &lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;observer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;left unsubscribed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;state&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;event&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;addObserver&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="n"&gt;observer&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Если объекты могут взаимодействовать, не обладая практически никакой информацией друг о друге, такие объекты называют слабосвязанными. Единственное, что знает «издатель» о «подписчиках», – то, что они реализует некоторый интерфейс (IObserver). Ему не нужно знать ни конкретный класс «подписчика», ни его функциональность. Добавление новых типов «подписчиков» не требует модификации «издателя». &lt;/p&gt;
+&lt;p&gt;На базе слабосвязанных архитектур строятся гибкие системы, которые хорошо адаптируются к изменениям благодаря минимальным зависимостям между объектами.&lt;/p&gt;</content><category term="msp430"></category><category term="Паттерн"></category></entry><entry><title>С++ для микроконтроллеров - управление памятью</title><link href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/" rel="alternate"></link><published>2017-06-22T00:00:00+03:00</published><updated>2017-06-22T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-06-22:/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/</id><summary type="html">&lt;p&gt;Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции &lt;code&gt;malloc()&lt;/code&gt; и &lt;code&gt;free()&lt;/code&gt;. В С++ для этих целей предусмотрены операторы &lt;code&gt;new&lt;/code&gt; и &lt;code&gt;delete&lt;/code&gt;. Когда оператор &lt;code&gt;new&lt;/code&gt; не может удовлетворить запрос на выделение памяти, он возбуждает исключение &lt;code&gt;std::bad_alloc&lt;/code&gt;, сигнализируя тем самым об ошибке. В &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции &lt;code&gt;malloc()&lt;/code&gt; и &lt;code&gt;free()&lt;/code&gt;. В С++ для этих целей предусмотрены операторы &lt;code&gt;new&lt;/code&gt; и &lt;code&gt;delete&lt;/code&gt;. Когда оператор &lt;code&gt;new&lt;/code&gt; не может удовлетворить запрос на выделение памяти, он возбуждает исключение &lt;code&gt;std::bad_alloc&lt;/code&gt;, сигнализируя тем самым об ошибке. В &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt; механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение &lt;code&gt;std::bad_alloc&lt;/code&gt;, оператор &lt;code&gt;new&lt;/code&gt; вызывает специальную функцию-обработчик. Эту функцию можно переопределять &lt;code&gt;std::set_new_handler&lt;/code&gt;, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://mazko.github.io/MSP430.js/efadb63e855ca5799cc873ca38ebc2ad"&gt;MSP430.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/snake-qv-msp430-js.zip"&gt;исходники&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/ui.gif" style="width:55%; margin: 0 auto; display:block;"&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -16,7 +193,8 @@
 &lt;p&gt;Под капотом «Змейки» &lt;a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/"&gt;QP/C++&lt;/a&gt; и соответствущая диаграмма состояний UML:&lt;/p&gt;
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;На картинке иерархический конечный автомат &lt;em&gt;Play&lt;/em&gt; где отсчитываются временные интервалы для движения «Змейки» и обрабатывается нажатие от кнопок. Если метод &lt;code&gt;eat_or_move()&lt;/code&gt; вернёт &lt;code&gt;false&lt;/code&gt; переход в состояние &lt;em&gt;GameOver&lt;/em&gt; где отображается количество набранных очков. При нажатии любой кнопки снова &lt;em&gt;Play&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.&lt;/p&gt;</content><category term="msp430"></category><category term="QP"></category><category term="UML"></category></entry><entry><title>Жизнь после RTOS - модель акторов QP/C++ | UML</title><link href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/" rel="alternate"></link><published>2017-05-25T00:00:00+03:00</published><updated>2017-05-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-05-25:/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/"&gt;Далее&lt;/a&gt; паттерн «Наблюдатель».&lt;/p&gt;</content><category term="msp430"></category><category term="QP"></category><category term="UML"></category></entry><entry><title>Жизнь после RTOS - модель акторов QP/C++ | UML</title><link href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/" rel="alternate"></link><published>2017-05-25T00:00:00+03:00</published><updated>2017-05-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-05-25:/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;Компьютер — это конечный автомат. Потоковое программирование нужно тем, кто не умеет программировать конечные автоматы. — Алан Кокс &lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;a href="https://www.state-machine.com/" rel="nofollow"&gt;Quantum Platform&lt;/a&gt; (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;«плюсах»&lt;/a&gt; (QP/C++), так и на Си (QP/C и QP-nano), что …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
@@ -1183,7 +1361,7 @@ namespace blinky {
 
 
 &lt;p&gt;Применение паттернов и ООП в микроконтроллерах имеет свою специфику, накладываемую в основном моделью управления памятью. Неважно на чём писать — Си или С++ для встраиваемых систем предпочтительней использовать память в стеке т.к. она проверяется компилятором. В свою очередь динамическое выделение памяти на куче &lt;strong&gt;не проверяется компилятором&lt;/strong&gt; и как следствие её наличие в нужный момент времени выполнения программы не гарантируется. ООП же больше любит динамическое выделение памяти — операторы &lt;code&gt;new&lt;/code&gt;, &lt;code&gt;malloc&lt;/code&gt;, умные указатели. Не стоит этого всего использовать в микроконтроллерах без ясного понимания возможных последствий.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/"&gt;Далее&lt;/a&gt; игра «Змейка» где работа с памятью будет описана более подробно. Приведенная реализация игры использует &lt;a href="https://www.state-machine.com/" rel="nofollow"&gt;Quantum Framework&lt;/a&gt;. У каждого Активного Объекта в Quantum Framework можно выделить два паттерна — «Состояние» и «Наблюдатель».&lt;/p&gt;</content><category term="msp430"></category><category term="Паттерн"></category></entry><entry><title>С++ (18+) для микроконтроллеров - разведка боем</title><link href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/" rel="alternate"></link><published>2017-03-20T00:00:00+02:00</published><updated>2017-03-20T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-03-20:/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/"&gt;Далее&lt;/a&gt; игра «Змейка» где работа с памятью будет описана более подробно.&lt;/p&gt;</content><category term="msp430"></category><category term="Паттерн"></category></entry><entry><title>С++ (18+) для микроконтроллеров - разведка боем</title><link href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/" rel="alternate"></link><published>2017-03-20T00:00:00+02:00</published><updated>2017-03-20T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-03-20:/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;Большинство С++ программистов не знают, что делает большинство С++ программистов. — Андрей Александреску&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Программы для микроконтроллеров де-факто &lt;a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/"&gt;пишутся&lt;/a&gt; либо на Си либо на ассемблере. Си это процедурный язык программирования со статической слабой типизацией, обладающий простым и понятным синтаксисом, высокой переносимостью (в сравнении с ассемблером), он хорошо подходит для системного программирования и …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
