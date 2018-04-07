@@ -168,7 +168,7 @@
 
 
 <p>В данном примере два события: изменение состояния и нажатие на кнопки. При изменении состояния (длительное нажатие) левые лампочки динамически подписываются / отписываются от события нажатия на кнопки. Правые лампочки и счётчик нажатий подписаны на событие кнопок всегда.</p>
-<p>Никогда не полагайтесь на определенный порядок оповещения наблюдателей. Метод <code>addObserver</code> класса <code>state::Container</code> добавляет новый наблюдателя в начало связного списка. А если добавлять не в начало а в конец ? Какой порядок считать правильным ? <strong>Любой</strong>. Нужно писать код таким образом, чтобы порядок обхода наблюдателей никак не влиял на поведение программы. Чем меньше компоненты системы знают друг о друге, тем проще их изменять и развивать. О силе слабых связей чуть ниже.</p>
+<p>Никогда не полагайтесь на определенный порядок оповещения «подписчиков». Метод <code>addObserver</code> класса <code>state::Container</code> добавляет нового «подписчика» в начало связного списка. А если добавлять не в начало а в конец ? Какой порядок считать правильным ? <strong>Любой</strong>. Нужно писать код таким образом, чтобы порядок обхода «подписчиков» никак не влиял на поведение программы. Чем меньше компоненты системы знают друг о друге, тем проще их изменять и развивать. О силе слабых связей чуть ниже.</p>
 <p><em>tasks/left.cpp</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;left.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;color-observer.h&quot;</span><span class="cp"></span>
@@ -183,7 +183,7 @@
 
     <span class="n">ColorObserver</span><span class="o">&lt;</span><span class="n">hal</span><span class="o">::</span><span class="n">LeftLeds</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;</span> <span class="n">o</span><span class="p">;</span>
 
-    <span class="kt">void</span> <span class="nf">observe</span><span class="p">(</span><span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">void</span> <span class="nf">observe</span><span class="p">(</span><span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="k">switch</span> <span class="p">(</span><span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
             <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
                 <span class="n">str</span><span class="p">(</span><span class="s">&quot;left subscribed  &quot;</span><span class="p">);</span>
