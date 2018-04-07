@@ -3,7 +3,7 @@ branches:
   only:
     - src
 before_install:
-  - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-en language-pack-ru
+  - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-en language-pack-ru && openssl aes-256-cbc -K $encrypted_de1cef0a973d_key -iv $encrypted_de1cef0a973d_iv -in github_deploy_key.enc -out github_deploy_key -d && chmod 600 deploy-key && eval `ssh-agent -s` && ssh-add deploy-key
 install:
   - pip install pelican==3.7.1 markdown==2.6.8
 before_script:
@@ -11,8 +11,4 @@ before_script:
 script:
   - PCO='.PCO#42' && pelican content --fatal warnings -o ${PCO} -s publishconf.py && cp .travis.yml google6294828ff42db199.html CNAME ${PCO} && git remote set-branches --add origin master && git fetch origin && git checkout master && rm -rf * && mv ${PCO}/{.[!.],}* . && rm -rf ${PCO} && git add -A && git -c user.name='Travis CI' -c user.email='<>' commit -m "up" && ! git status --porcelain | grep -q . && if [[ "`ls -A -1 -I 'index?*.html' -I '.git' | cksum`" != "2510849406 80" ]]; then echo 'Trap ls,cksum FAIL - check pelican version ?'; exit 1; fi
 after_success:
-  - openssl aes-256-cbc -K $encrypted_de1cef0a973d_key -iv $encrypted_de1cef0a973d_iv -in github_deploy_key.enc -out github_deploy_key -d
-  - chmod 600 deploy-key
-  - eval `ssh-agent -s`
-  - ssh-add deploy-key
-  - bash -c 'if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then git push "https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git" master > /dev/null 2>&1 || exit 42; else echo "skip git push for PULL REQUEST"; fi'
+  - bash -c 'if [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then git push "git@github.com:mazko/mazko.github.io.git" master > /dev/null 2>&1 || exit 42; else echo "skip git push for PULL REQUEST"; fi'
