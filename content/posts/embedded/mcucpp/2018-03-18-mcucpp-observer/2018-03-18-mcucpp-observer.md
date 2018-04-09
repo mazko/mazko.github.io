@@ -198,3 +198,118 @@ tags: msp430, Паттерн
 Если объекты могут взаимодействовать, не обладая практически никакой информацией друг о друге, такие объекты называют слабосвязанными. Единственное, что знает «издатель» о «подписчиках», – то, что они реализует некоторый интерфейс (IObserver). Ему не нужно знать ни конкретный класс «подписчика», ни его функциональность. Добавление новых типов «подписчиков» не требует модификации «издателя». 
 
 На базе слабосвязанных архитектур строятся гибкие системы, которые хорошо адаптируются к изменениям благодаря минимальным зависимостям между объектами.
+
+> Есть всего два типа языков программирования: те, на которые люди всё время ругаются, и те, которые никто не использует. — Bjarne Stroustrup
+
+Как вы думаете, что выведет следующая команда ?
+
+    :::text
+    ~$ strings a.out | grep alloc
+    # output
+    lib_a-malloc.o
+    lib_a-nano-mallocr.o
+    malloc
+    _malloc_r
+    __malloc_sbrk_start
+    __malloc_free_list
+
+Как только мы начали использовать **виртуальные функции**, компилятор решил помочь и молча добавил в исполняемый файл `malloc` и это [явно не то]({filename}../2017-03-22-mcucpp-decorator/2017-03-22-mcucpp-decorator.md), что мы хотим использовать в микроконтроллерах. Можно ли это как-то обойти ?
+
+[MSP430.js](http://mazko.github.io/MSP430.js/9bdb1cd8da54384ba5b6211ea135b7f8) | [исходники]({attach}msp430-observer-static-polymorphism.zip)
+
+В старом добром Cи полиморфизм представлен в виде указателей на функции. Наиболее распространенное применение указателей на функции в Cи – это использование библиотечных функций, таких как qsort. Реализация указателей на функции проста: это всего лишь «указатели на код», в них содержится начальный адрес участка ассемблерного кода. Различные типы указателей существуют лишь для уверенности в корректности применяемого соглашения о вызове.
+
+*observers/state.h*
+
+    :::cpp
+    #include "DoublyLinkedList.h"
+    #include "non-copyable.h"
+
+    namespace obsevers {
+
+        // alias
+        template<class T> using DLLE = mozilla::DoublyLinkedListElement<T>;
+
+        namespace state {
+
+            typedef enum {
+                left_active,
+                left_sleep
+            } state_t;
+
+            class Observer : public DLLE<Observer>, NonCopyable
+            {
+                typedef void (*ObserveFunc) (state_t, Observer*);
+
+                ObserveFunc m_observe_func_ptr;
+
+            public:
+                void observe(state_t aState) {
+                    (*m_observe_func_ptr)(aState, this);
+                }
+
+                Observer(ObserveFunc f): m_observe_func_ptr(f){}
+            };
+
+            template<class T>
+            class Adapter : public Observer
+            {
+                T m_observer_impl;
+
+            public:
+                Adapter(): Observer(
+                    [](state_t aState, Observer* aThis)
+                    {
+                        auto self = static_cast<Adapter*>(aThis);
+                        self->m_observer_impl.observe(aState);
+                    }){/* empty constructor */}
+            };
+        }
+    }
+
+*tasks/left.cpp*
+
+    :::cpp
+    #include "left.h"
+    #include "color-observer.h"
+    #include "observers/state.h"
+    #include "draw.h"
+    #include "hal.h"
+
+    using namespace obsevers;
+    using namespace tasks;
+
+    static void str(const char* str) {
+        draw::str(draw::PAGE_0, str);
+    }
+
+    struct LockerObserver : NonCopyable {
+
+        buttons::Adapter<ColorObserver<hal::LeftLeds, 1, 2, 3, 0>> o;
+
+        void observe(state::state_t aState) {
+            switch (aState) {
+                case state::left_active:
+                    str("left subscribed  ");
+                    buttons::event.addObserver(&o);
+                    break;
+                case state::left_sleep:
+                    str("left unsubscribed");
+                    buttons::event.removeObserver(&o);
+                    break;
+            }
+        }
+    };
+
+    static state::Adapter<LockerObserver> observer;
+
+    namespace tasks {
+        namespace left {
+            void start() {
+                str("left unsubscribed");
+                state::event.addObserver(&observer);
+            }
+        }
+    }
+
+Возможно существует какое-то более элегантный способ отучить виртуальные функции от вызова malloc, но в целом представленное решение выглядит вполне съедобным.
