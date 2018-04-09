@@ -216,7 +216,119 @@
 
 
 <p>Если объекты могут взаимодействовать, не обладая практически никакой информацией друг о друге, такие объекты называют слабосвязанными. Единственное, что знает «издатель» о «подписчиках», – то, что они реализует некоторый интерфейс (IObserver). Ему не нужно знать ни конкретный класс «подписчика», ни его функциональность. Добавление новых типов «подписчиков» не требует модификации «издателя». </p>
-<p>На базе слабосвязанных архитектур строятся гибкие системы, которые хорошо адаптируются к изменениям благодаря минимальным зависимостям между объектами.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </article>
+<p>На базе слабосвязанных архитектур строятся гибкие системы, которые хорошо адаптируются к изменениям благодаря минимальным зависимостям между объектами.</p>
+<blockquote>
+<p>Есть всего два типа языков программирования: те, на которые люди всё время ругаются, и те, которые никто не использует. — Bjarne Stroustrup</p>
+</blockquote>
+<p>Как вы думаете, что выведет следующая команда ?</p>
+<div class="highlight"><pre><span></span>~$ strings a.out | grep alloc
+# output
+lib_a-malloc.o
+lib_a-nano-mallocr.o
+malloc
+_malloc_r
+__malloc_sbrk_start
+__malloc_free_list
+</pre></div>
+
+
+<p>Как только мы начали использовать <strong>виртуальные функции</strong>, компилятор решил помочь и молча добавил в исполняемый файл <code>malloc</code> и это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">явно не то</a>, что мы хотим использовать в микроконтроллерах. Можно ли это как-то обойти ?</p>
+<p><a href="http://mazko.github.io/MSP430.js/9bdb1cd8da54384ba5b6211ea135b7f8">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/msp430-observer-static-polymorphism.zip">исходники</a></p>
+<p>В старом добром Cи полиморфизм представлен в виде указателей на функции. Наиболее распространенное применение указателей на функции в Cи – это использование библиотечных функций, таких как qsort. Реализация указателей на функции проста: это всего лишь «указатели на код», в них содержится начальный адрес участка ассемблерного кода. Различные типы указателей существуют лишь для уверенности в корректности применяемого соглашения о вызове.</p>
+<p><em>observers/state.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;DoublyLinkedList.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;non-copyable.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">obsevers</span> <span class="p">{</span>
+
+    <span class="c1">// alias</span>
+    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">using</span> <span class="n">DLLE</span> <span class="o">=</span> <span class="n">mozilla</span><span class="o">::</span><span class="n">DoublyLinkedListElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+
+    <span class="k">namespace</span> <span class="n">state</span> <span class="p">{</span>
+
+        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
+            <span class="n">left_active</span><span class="p">,</span>
+            <span class="n">left_sleep</span>
+        <span class="p">}</span> <span class="n">state_t</span><span class="p">;</span>
+
+        <span class="k">class</span> <span class="nc">Observer</span> <span class="o">:</span> <span class="k">public</span> <span class="n">DLLE</span><span class="o">&lt;</span><span class="n">Observer</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">NonCopyable</span>
+        <span class="p">{</span>
+            <span class="k">typedef</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">ObserveFunc</span><span class="p">)</span> <span class="p">(</span><span class="n">state_t</span><span class="p">,</span> <span class="n">Observer</span><span class="o">*</span><span class="p">);</span>
+
+            <span class="n">ObserveFunc</span> <span class="n">m_observe_func_ptr</span><span class="p">;</span>
+
+        <span class="k">public</span><span class="o">:</span>
+            <span class="kt">void</span> <span class="n">observe</span><span class="p">(</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
+                <span class="p">(</span><span class="o">*</span><span class="n">m_observe_func_ptr</span><span class="p">)(</span><span class="n">aState</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="n">Observer</span><span class="p">(</span><span class="n">ObserveFunc</span> <span class="n">f</span><span class="p">)</span><span class="o">:</span> <span class="n">m_observe_func_ptr</span><span class="p">(</span><span class="n">f</span><span class="p">){}</span>
+        <span class="p">};</span>
+
+        <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
+        <span class="k">class</span> <span class="nc">Adapter</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Observer</span>
+        <span class="p">{</span>
+            <span class="n">T</span> <span class="n">m_observer_impl</span><span class="p">;</span>
+
+        <span class="k">public</span><span class="o">:</span>
+            <span class="n">Adapter</span><span class="p">()</span><span class="o">:</span> <span class="n">Observer</span><span class="p">(</span>
+                <span class="p">[](</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">,</span> <span class="n">Observer</span><span class="o">*</span> <span class="n">aThis</span><span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="k">auto</span> <span class="n">self</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Adapter</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">aThis</span><span class="p">);</span>
+                    <span class="n">self</span><span class="o">-&gt;</span><span class="n">m_observer_impl</span><span class="p">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aState</span><span class="p">);</span>
+                <span class="p">}){</span><span class="cm">/* empty constructor */</span><span class="p">}</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>tasks/left.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;left.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;color-observer.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;observers/state.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">obsevers</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">tasks</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">str</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">draw</span><span class="o">::</span><span class="n">str</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_0</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="nl">LockerObserver</span> <span class="p">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
+
+    <span class="n">buttons</span><span class="o">::</span><span class="n">Adapter</span><span class="o">&lt;</span><span class="n">ColorObserver</span><span class="o">&lt;</span><span class="n">hal</span><span class="o">::</span><span class="n">LeftLeds</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;&gt;</span> <span class="n">o</span><span class="p">;</span>
+
+    <span class="kt">void</span> <span class="nf">observe</span><span class="p">(</span><span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
+                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left subscribed  &quot;</span><span class="p">);</span>
+                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_sleep</span><span class="p">:</span>
+                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
+                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">removeObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="n">state</span><span class="o">::</span><span class="n">Adapter</span><span class="o">&lt;</span><span class="n">LockerObserver</span><span class="o">&gt;</span> <span class="n">observer</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="n">tasks</span> <span class="p">{</span>
+    <span class="k">namespace</span> <span class="n">left</span> <span class="p">{</span>
+        <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
+            <span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">observer</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Возможно существует какое-то более элегантный способ отучить виртуальные функции от вызова malloc, но в целом представленное решение выглядит вполне съедобным.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
 <div class="body" style="margin-bottom: 2em">
