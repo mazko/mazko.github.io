@@ -1490,7 +1490,7 @@ namespace blinky {
 &lt;span class="cm"&gt;reset &amp;amp;&amp;amp; (export GCC_DIR=~/ti/msp430_gcc ; &lt;/span&gt;
 &lt;span class="cm"&gt;    $GCC_DIR/bin/msp430-elf-c++ \&lt;/span&gt;
 &lt;span class="cm"&gt;    -I $GCC_DIR/include -L $GCC_DIR/include \&lt;/span&gt;
-&lt;span class="cm"&gt;    -Werror -Wall -mmcu=msp430f1611 -O2 *.cpp)&lt;/span&gt;
+&lt;span class="cm"&gt;    -Werror -Wall -Weffc++ -mmcu=msp430f1611 -O2 *.cpp)&lt;/span&gt;
 &lt;span class="cm"&gt;*/&lt;/span&gt;
 
 &lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;lt;msp430.h&amp;gt;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
@@ -1761,6 +1761,36 @@ namespace blinky {
 &lt;p&gt;аргументы функций в С++ могут иметь значения по умолчания как например &lt;code&gt;const bool v = true&lt;/code&gt; , это же можно было бы сделать и с помощью перегрузки функций&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;Одной из типичных ошибок при программировании на C++ является использование &lt;strong&gt;неинициализированных переменных&lt;/strong&gt;. Чтение из неинициализированной переменной по Стандарту является неопределённым поведением. На практике обычно оказывается прочитанным какое-то полуслучайное мусорное значение, причём оно может быть разным от запуска к запуску и разным на разных платформах. Отсюда и получается, что программа ни с того ни с сего работает по-разному.&lt;/p&gt;
+&lt;p&gt;Как и в Си, глобальные переменные простых типов в С++ автоматически инициализируются нулями, локальные — нет. Если же мы работаем с объектами, для которых определён конструктор по умолчанию, он будет вызван в любом случае и в нём рекомендуется по умолчанию инициализировать все поля, чтобы не сталкиваться с тем, что программа работает нестабильно. Рассмотрим следующий пример:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;app.h&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cm"&gt;/*&lt;/span&gt;
+&lt;span class="cm"&gt;reset &amp;amp;&amp;amp; (export GCC_DIR=~/ti/gcc ; &lt;/span&gt;
+&lt;span class="cm"&gt;    $GCC_DIR/bin/msp430-elf-c++ \&lt;/span&gt;
+&lt;span class="cm"&gt;    -I $GCC_DIR/include -L $GCC_DIR/include \&lt;/span&gt;
+&lt;span class="cm"&gt;    -Werror -Wall -mmcu=msp430f1611 *.cpp)&lt;/span&gt;
+&lt;span class="cm"&gt;*/&lt;/span&gt;
+
+&lt;span class="cp"&gt;#include&lt;/span&gt; &lt;span class="cpf"&gt;&amp;quot;rgb.h&amp;quot;&lt;/span&gt;&lt;span class="cp"&gt;&lt;/span&gt;
+
+&lt;span class="k"&gt;using&lt;/span&gt; &lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;rgb&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;namespace&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;int&lt;/span&gt; &lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="p"&gt;(;;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;RgbStripLayer&lt;/span&gt; &lt;span class="n"&gt;rgb_strip&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;rgb_strip&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flush&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+            &lt;span class="k"&gt;auto&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;bug&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;rgb_strip&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="n"&gt;mem&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+            &lt;span class="n"&gt;bug&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;RgbStripLayer&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="n"&gt;RED&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+        &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Достаточно отключить оптимизацию компилятора и убрать из &lt;code&gt;rgb.h&lt;/code&gt; конструктор по умолчанию &lt;code&gt;RgbStripLayer(): mem() {}&lt;/code&gt; как программа начнёт вести себя по-разному &lt;a href="http://mazko.github.io/MSP430.js/89cdcc2f31e21ba31c3d218c0463e8d4"&gt;ok&lt;/a&gt; | &lt;a href="http://mazko.github.io/MSP430.js/602b5588cb3fb1200af441cd9fc6efee"&gt;bug&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Вообще по-хорошему нормальный язык просто не должен позволять использовать неинициализированные переменные. Необязательно нужно указывать конкретное значение, значением по умолчанию может стать все тот же ноль. Для выявления неинициализированных переменных у gcc подобных компиляторов есть опция командной строки &lt;code&gt;-Weffc++&lt;/code&gt;, также можно посмотреть в сторону Valgrind или статических анализаторов кода.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;Далее&lt;/a&gt; паттерн декоратор.&lt;/p&gt;</content><category term="msp430"></category></entry><entry><title>PICSim.js - калькулятор и обратная польская запись</title><link href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/" rel="alternate"></link><published>2017-02-14T00:00:00+02:00</published><updated>2017-02-14T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-02-14:/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/</id><summary type="html">&lt;p&gt;Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например &lt;code&gt;4 2 + = 4 + 2 = 6&lt;/code&gt; или &lt;code&gt;4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4&lt;/code&gt;. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например &lt;code&gt;4 2 + = 4 + 2 = 6&lt;/code&gt; или &lt;code&gt;4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4&lt;/code&gt;. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается в стек, а если встречается оператор, то из стека извлекаются два последних операнда и выполняется
 операция, после чего результат посылается обратно в стек. Классическая реализация калькулятора на базе обратной польской записи подробно расписана в книге «Язык программирования Си» Брайана Кернигана и Денниса Ритчи (последний один из непосредственных авторов и разработчиков языка Си). В общем случае алгоритм решения подобных задач сводится к двум этапам:&lt;/p&gt;
 &lt;ul&gt;

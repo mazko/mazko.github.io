@@ -60,7 +60,7 @@
 <span class="cm">reset &amp;&amp; (export GCC_DIR=~/ti/msp430_gcc ; </span>
 <span class="cm">    $GCC_DIR/bin/msp430-elf-c++ \</span>
 <span class="cm">    -I $GCC_DIR/include -L $GCC_DIR/include \</span>
-<span class="cm">    -Werror -Wall -mmcu=msp430f1611 -O2 *.cpp)</span>
+<span class="cm">    -Werror -Wall -Weffc++ -mmcu=msp430f1611 -O2 *.cpp)</span>
 <span class="cm">*/</span>
 
 <span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
@@ -331,6 +331,36 @@
 <p>аргументы функций в С++ могут иметь значения по умолчания как например <code>const bool v = true</code> , это же можно было бы сделать и с помощью перегрузки функций</p>
 </li>
 </ul>
+<p>Одной из типичных ошибок при программировании на C++ является использование <strong>неинициализированных переменных</strong>. Чтение из неинициализированной переменной по Стандарту является неопределённым поведением. На практике обычно оказывается прочитанным какое-то полуслучайное мусорное значение, причём оно может быть разным от запуска к запуску и разным на разных платформах. Отсюда и получается, что программа ни с того ни с сего работает по-разному.</p>
+<p>Как и в Си, глобальные переменные простых типов в С++ автоматически инициализируются нулями, локальные — нет. Если же мы работаем с объектами, для которых определён конструктор по умолчанию, он будет вызван в любом случае и в нём рекомендуется по умолчанию инициализировать все поля, чтобы не сталкиваться с тем, что программа работает нестабильно. Рассмотрим следующий пример:</p>
+<p><em>app.h</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">reset &amp;&amp; (export GCC_DIR=~/ti/gcc ; </span>
+<span class="cm">    $GCC_DIR/bin/msp430-elf-c++ \</span>
+<span class="cm">    -I $GCC_DIR/include -L $GCC_DIR/include \</span>
+<span class="cm">    -Werror -Wall -mmcu=msp430f1611 *.cpp)</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;rgb.h&quot;</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">rgb</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+            <span class="n">RgbStripLayer</span> <span class="n">rgb_strip</span><span class="p">;</span>
+            <span class="n">rgb_strip</span><span class="p">.</span><span class="n">flush</span><span class="p">();</span>
+            <span class="k">auto</span><span class="o">&amp;</span> <span class="n">bug</span> <span class="o">=</span> <span class="n">rgb_strip</span><span class="p">.</span><span class="n">mem</span><span class="p">;</span>
+            <span class="n">bug</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">RgbStripLayer</span><span class="o">::</span><span class="n">RED</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Достаточно отключить оптимизацию компилятора и убрать из <code>rgb.h</code> конструктор по умолчанию <code>RgbStripLayer(): mem() {}</code> как программа начнёт вести себя по-разному <a href="http://mazko.github.io/MSP430.js/89cdcc2f31e21ba31c3d218c0463e8d4">ok</a> | <a href="http://mazko.github.io/MSP430.js/602b5588cb3fb1200af441cd9fc6efee">bug</a>.</p>
+<p>Вообще по-хорошему нормальный язык просто не должен позволять использовать неинициализированные переменные. Необязательно нужно указывать конкретное значение, значением по умолчанию может стать все тот же ноль. Для выявления неинициализированных переменных у gcc подобных компиляторов есть опция командной строки <code>-Weffc++</code>, также можно посмотреть в сторону Valgrind или статических анализаторов кода.</p>
 <p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">Далее</a> паттерн декоратор.</p>
     </div><!-- /.entry-content -->
   </article>
