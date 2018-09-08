@@ -4,7 +4,7 @@
 
     ~$ virtualenv ~/virtualenvs/pelican
     ~$ cd ~/virtualenvs/pelican && . bin/activate ; cd -
-    ~$ pip install pelican==3.7.1 markdown==2.6.8
+    ~$ pip install -r requirements.txt
     ~$ git clone -b src https://github.com/mazko/mazko.github.io.git
     ~$ cd mazko.github.io
     ~$ pelican --fatal warnings content && \
