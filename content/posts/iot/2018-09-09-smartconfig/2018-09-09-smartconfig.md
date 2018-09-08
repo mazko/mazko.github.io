@@ -31,7 +31,7 @@ tags: Wi-Fi
               Retry short  long limit:2   RTS thr:off   Fragment thr:off
               Power Management:off
 
-Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из [14 каналов]({filename}../../admin/2016-07-17-gnuplot-wifi/2016-07-17-gnuplot-wifi.md), для простоты будем слушать только тот (8), к которому подключён wlo1.
+Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из [14 каналов]({filename}../2016-07-17-gnuplot-wifi/2016-07-17-gnuplot-wifi.md), для простоты будем слушать только тот (8), к которому подключён wlo1.
 
     :::bash
     ~$ iwlist wlo1 channel
