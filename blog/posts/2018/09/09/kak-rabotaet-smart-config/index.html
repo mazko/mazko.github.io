@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>🏠 Интернет Всего 🚗 - Oleg Mazko</title>
+        <title>Как работает «Smart Config»</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
@@ -21,16 +21,21 @@
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
                     <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
 
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/" rel="bookmark"
+           title="Permalink to Как работает «Smart Config»">Как работает «Smart Config»</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/">Как работает «Smart Config»</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2018-09-09T00:00:00+03:00">
                 Published: Вс. 09 Сентябрь 2018
@@ -41,7 +46,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/wi-fi">Wi-Fi</a> </p>
-</footer><!-- /.post-info --><p>Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет никакого пользовательского интерфейса. Таким устройствам нужны другие способы получения имени сети и пароля от пользователя.</p>
+</footer><!-- /.post-info -->      <p>Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет никакого пользовательского интерфейса. Таким устройствам нужны другие способы получения имени сети и пароля от пользователя.</p>
 <p>Режим точки доступа (Access Point, AP) — наиболее изученный сегодня способ подключения устройств, не имеющих пользовательского интерфейса. После того как пользователь подключит свой смартфон к AP неинициализированного устройства, он открывает веб-браузер смартфона и входит на веб-сайт устройства, используя заданный локальный URL или IP-адрес. На встроенном веб-сайте пользователь выбирает имя Wi-Fi сети и пароль. Устройство сохраняет сетевые реквизиты в энергонезависимой памяти, а затем переходит из режима AP в режим станции, чтобы подключиться к домашней сети с использованием сохраненных сетевых реквизитов. Недостаток режима AP заключается в том, что при подключении к конфигурационной сети AP неинициализированного устройства телефон отключается от домашней сети. Это может вызвать перерывы в передаче данных и привести к появлению сообщений об ошибках. Также не все производители телефонов предоставляют API для программного переключения Wi-Fi сетей, пользователь вынужден это делать вручную.</p>
 <p>Технология «Smart Config» лишена данных недостатков. Она предполагает использование ПК, телефона или планшета в качестве интерфейса пользователя, который позволяет ввести информацию о сети с помощью дисплея и клавиатуры ПК, телефона или планшета с последующей передачей введённой информации IoT-устройствам. Из известных реализаций на текущий момент стоит упомянуть CC3200 SmartConfig и ESP-Touch.</p>
 <h2>КАК РАБОТАЕТ</h2>
@@ -189,8 +194,10 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 <p>В зависимости от зашумлённости эфира часть передаваемых пакетов теряется и это неизбежно. Для увеличения надёжности можно добавить Код Хемминга, но это уже удел производителя чипов и SDK со «Smart Config» на борту.</p>
 <p>Ключевые преимущества «Smart Config» — простота использования и возможность беспрепятственной интеграции в телефонное приложение устройства. Кроме того, если несколько устройств Wi-Fi одновременно находятся в режиме «Smart Config», одно телефонное приложение может обеспечить подключение их всех одновременно.</p>
 <p>Основной недостаток этой технологии заключается в том, что телефон должен подключаться к сети, используя ту полосу частот и ту скорость передачи данных, которые поддерживаются неподключенным устройством. Что если неподключенное устройство поддерживает диапазон 2,4 ГГц, а телефон использует для связи с двухдиапазонной сетью диапазон 5 ГГц ?</p>
-<p><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip">Исходники</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
+<p><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip">Исходники</a>.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
 
 <div class="body" style="margin-bottom: 2em">
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -205,108 +212,22 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 </script>
 </div>
 
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/" rel="bookmark"
-                           title="Permalink to С++ для микроконтроллеров - «Наблюдатель»">С++ для микроконтроллеров - «Наблюдатель»</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-03-18T00:00:00+02:00">
-                Published: Вс. 18 Март 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
-</footer><!-- /.post-info -->                <p>Продолжаем присматриваться к <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a>.</p>
-<p>Наблюдатель – это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">паттерн</a> проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">GoF</a> даёт следующее классическое определение …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/" rel="bookmark"
-                           title="Permalink to Безопасность «Интернета вещей» - TLS / DTLS">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-05T00:00:00+02:00">
-                Published: Пт. 05 Январь 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
-<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT и др.) работать без изменений. Исторически …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/" rel="bookmark"
-                           title="Permalink to Язык обработки структурированных текстов AWK">Язык обработки структурированных текстов AWK</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-17T00:00:00+02:00">
-                Published: Пт. 17 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
-<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="bookmark"
-                           title="Permalink to Неинтерактивный текстовый редактор SED">Неинтерактивный текстовый редактор SED</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-11T00:00:00+02:00">
-                Published: Сб. 11 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 17
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2018/09/09/kak-rabotaet-smart-config/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

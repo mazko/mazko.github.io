@@ -1,5 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2018-03-18T00:00:00+02:00</updated><entry><title>С++ для микроконтроллеров - «Наблюдатель»</title><link href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/" rel="alternate"></link><published>2018-03-18T00:00:00+02:00</published><updated>2018-03-18T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2018-03-18:/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/</id><summary type="html">&lt;p&gt;Продолжаем присматриваться к &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>🏠 Интернет Всего 🚗</title><link href="http://proiot.ru/" rel="alternate"></link><link href="http://proiot.ru/feeds/all.atom.xml" rel="self"></link><id>http://proiot.ru/</id><updated>2018-09-09T00:00:00+03:00</updated><entry><title>Как работает «Smart Config»</title><link href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/" rel="alternate"></link><published>2018-09-09T00:00:00+03:00</published><updated>2018-09-09T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2018-09-09:/blog/posts/2018/09/09/kak-rabotaet-smart-config/</id><summary type="html">&lt;p&gt;Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет никакого пользовательского интерфейса. Таким устройствам нужны другие способы получения имени сети и пароля от пользователя.&lt;/p&gt;
+&lt;p&gt;Режим точки доступа (Access Point, AP) — наиболее изученный сегодня способ подключения устройств, не имеющих пользовательского интерфейса. После того как пользователь подключит свой смартфон к AP неинициализированного устройства, он открывает веб-браузер смартфона и входит на веб-сайт устройства, используя заданный локальный URL или IP-адрес. На встроенном веб-сайте пользователь выбирает имя Wi-Fi сети и пароль. Устройство сохраняет сетевые реквизиты в энергонезависимой памяти, а затем переходит из режима AP в режим станции, чтобы подключиться к домашней сети с использованием сохраненных сетевых реквизитов. Недостаток режима AP заключается в том, что при подключении к конфигурационной сети AP неинициализированного устройства телефон отключается от домашней сети. Это может вызвать перерывы в передаче данных и привести к появлению сообщений об ошибках. Также не все производители телефонов предоставляют API для программного переключения Wi-Fi сетей, пользователь вынужден это делать вручную.&lt;/p&gt;
+&lt;p&gt;Технология «Smart Config» лишена данных недостатков. Она предполагает использование ПК, телефона или планшета в качестве интерфейса пользователя, который позволяет ввести информацию о сети с помощью дисплея и клавиатуры ПК, телефона или планшета с последующей передачей введённой информации IoT-устройствам. Из известных реализаций на текущий момент стоит упомянуть CC3200 SmartConfig и ESP-Touch.&lt;/p&gt;
+&lt;h2&gt;КАК РАБОТАЕТ&lt;/h2&gt;
+&lt;p&gt;Итак у нас есть два устройства — одно (телефон) уже подключено к Wi-Fi сети, и другое (IoT), которое нужно подключить к Wi-Fi сети. IoT устройство непрерывно сканирует Wi-Fi эфир. Для эксперимента понадобится два  Wi-Fi адаптера, можно даже на одном компьютере:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ iwconfig &lt;span class="m"&gt;2&lt;/span&gt;&amp;gt; /dev/null
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wlo1      IEEE 802.11  ESSID:&amp;quot;Dumer&amp;quot;  
+          Mode:Managed  Frequency:2.447 GHz  Access Point: XX:XX:XX:XX:XX:XX   
+          Bit Rate=121.5 Mb/s   Tx-Power=15 dBm   
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Power Management:off
+          Link Quality=61/70  Signal level=-49 dBm  
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:27  Invalid misc:3493   Missed beacon:0
+
+wlxbcf68565bc38  IEEE 802.11  ESSID:off/any  
+          Mode:Managed  Access Point: Not-Associated   Tx-Power=20 dBm   
+          Retry short  long limit:2   RTS thr:off   Fragment thr:off
+          Power Management:off
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из &lt;a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/"&gt;14 каналов&lt;/a&gt;, для простоты будем слушать только тот (8), к которому подключён wlo1.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ iwlist wlo1 channel
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Вывод:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wlo1      14 channels in total; available frequencies :
+          Channel 01 : 2.412 GHz
+          Channel 02 : 2.417 GHz
+          Channel 03 : 2.422 GHz
+          Channel 04 : 2.427 GHz
+          Channel 05 : 2.432 GHz
+          Channel 06 : 2.437 GHz
+          Channel 07 : 2.442 GHz
+          Channel 08 : 2.447 GHz
+          Channel 09 : 2.452 GHz
+          Channel 10 : 2.457 GHz
+          Channel 11 : 2.462 GHz
+          Channel 12 : 2.467 GHz
+          Channel 13 : 2.472 GHz
+          Channel 14 : 2.484 GHz
+          Current Frequency=2.447 GHz (Channel 8)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Переведём адаптер в режим сканирования:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ifconfig wlxbcf68565bc38 down
+~$ iwconfig wlxbcf68565bc38 mode monitor
+~$ ifconfig wlxbcf68565bc38 up
+~$ iwconfig wlxbcf68565bc38 channel &lt;span class="m"&gt;8&lt;/span&gt;
+~$ iwlist wlxbcf68565bc38 channel
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Примерно так выглядит эфир Wi-Fi в WireShark:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/wirshark.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;MAC адреса идут в открытом виде. Полезные данные внутри Wi-Fi фрейма зашифрованы, но мы видим их длину. Если предположить, что шифрование изменяет длину передаваемых данных на какую-то константу, почему бы не попробовать передавать данные меняя длину пакета по принципу один пакет == один байт. Для передачи 42 байт нужно отправит 42 пакета где длина каждого пакета зависит от значения передаваемого байта. Все скрипты проверялись на &lt;strong&gt;python3&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;transmitter.py&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python3&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;binascii&lt;/span&gt;
+
+&lt;span class="n"&gt;MCAST_GRP&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;234.42.42.42&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;MCAST_PORT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;7001&lt;/span&gt;
+
+&lt;span class="n"&gt;sock&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;AF_INET&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;SOCK_DGRAM&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IPPROTO_UDP&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setsockopt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IPPROTO_IP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;IP_MULTICAST_TTL&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;crc8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;binascii&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;crc32&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;transmit_one_byte&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;assert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;assert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;=&lt;/span&gt; &lt;span class="mi"&gt;548&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;# 576(MTU) - 20(IP) - 8(UDP)&lt;/span&gt;
+  &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;bytes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;sock&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sendto&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;MCAST_GRP&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;MCAST_PORT&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="n"&gt;preamble&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;515&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;514&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;513&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;payload&lt;/span&gt;  &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hello world!&amp;#39;&lt;/span&gt;
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;preamble&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;transmit_one_byte&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="n"&gt;transmit_one_byte&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+  &lt;span class="n"&gt;transmit_one_byte&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;crc8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;transmit_one_byte&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В текущем примере данные передаются на мультикаст адрес 234.xx.xx.xx по &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;UDP&lt;/a&gt;. Вначале идёт фиксированная посылка синхронизации preamble. Содержимое preamble также известно приёмнику, сравнивая принятые пакеты с preamble он может высчитать константу, добавляемую при шифровании. Затем передаём общую длину полезных данных, их контрольную сумму и сами данные.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;receiver.py&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/python3&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;sys&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;binascii&lt;/span&gt;
+
+&lt;span class="n"&gt;preamble&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;515&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;514&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;513&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;512&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;crc8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;binascii&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;crc32&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="mh"&gt;0xFF&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;crc&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;bytes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;crc&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;crc8&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+      &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;except&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+  &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;enumerate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;idx&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;preamble&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+      &lt;span class="n"&gt;diff&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;zip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;preamble&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;preamble&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="p"&gt;]))&lt;/span&gt;
+      &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;diff&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;idx&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;diff&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pop&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;l&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+        &lt;span class="n"&gt;payload&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;idx&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;l&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+        &lt;span class="n"&gt;decode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:],&lt;/span&gt; &lt;span class="n"&gt;payload&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;received&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;sys&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stdin&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;line&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;received&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;received&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pop&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isdigit&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;received&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;line&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;received&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;У Wireshark есть консольный аналог tshark. Заодно отфильтруем точно не нужные пакеты, оставив только data:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ tshark -i wlxbcf68565bc38 -I -T fields -e data.len subtype data &lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+   python3 receiver.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;В зависимости от зашумлённости эфира часть передаваемых пакетов теряется и это неизбежно. Для увеличения надёжности можно добавить Код Хемминга, но это уже удел производителя чипов и SDK со «Smart Config» на борту.&lt;/p&gt;
+&lt;p&gt;Ключевые преимущества «Smart Config» — простота использования и возможность беспрепятственной интеграции в телефонное приложение устройства. Кроме того, если несколько устройств Wi-Fi одновременно находятся в режиме «Smart Config», одно телефонное приложение может обеспечить подключение их всех одновременно.&lt;/p&gt;
+&lt;p&gt;Основной недостаток этой технологии заключается в том, что телефон должен подключаться к сети, используя ту полосу частот и ту скорость передачи данных, которые поддерживаются неподключенным устройством. Что если неподключенное устройство поддерживает диапазон 2,4 ГГц, а телефон использует для связи с двухдиапазонной сетью диапазон 5 ГГц ?&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip"&gt;Исходники&lt;/a&gt;.&lt;/p&gt;</content><category term="Wi-Fi"></category></entry><entry><title>С++ для микроконтроллеров - «Наблюдатель»</title><link href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/" rel="alternate"></link><published>2018-03-18T00:00:00+02:00</published><updated>2018-03-18T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2018-03-18:/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/</id><summary type="html">&lt;p&gt;Продолжаем присматриваться к &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Наблюдатель – это &lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;паттерн&lt;/a&gt; проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;GoF&lt;/a&gt; даёт следующее классическое определение …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Продолжаем присматриваться к &lt;a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/"&gt;C++ для микроконтроллеров&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Наблюдатель – это &lt;a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/"&gt;паттерн&lt;/a&gt; проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.&lt;/p&gt;
@@ -1823,12 +1971,12 @@ John Adams
 
 &lt;/div&gt;
 
-&lt;p&gt;Команда grep настолько полезна, многофункциональна и проста в употреблении, что, однажды познакомившись с ней, невозможно представить себе работу без нее.&lt;/p&gt;</content><category term="regex"></category></entry><entry><title>Node-RED - графический конструктор «Умного Дома»</title><link href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="alternate"></link><published>2017-10-25T00:00:00+03:00</published><updated>2017-10-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-25:/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/</id><summary type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии связи, по которым пересылаются данные между узлами. Связывать различные блоки можно просто мышкой и при этом не иметь каких-либо особых навыков в программировании. Когда есть идея, но лень писать код, то в первую очередь стоит вспомнить о Node-RED и подобных инструментах. Ну а если идея взлетит, то при желании код всегда можно дописать потом.&lt;/p&gt;
+&lt;p&gt;Команда grep настолько полезна, многофункциональна и проста в употреблении, что, однажды познакомившись с ней, невозможно представить себе работу без нее.&lt;/p&gt;</content><category term="regex"></category></entry><entry><title>Node-RED - графический конфигуратор «Умного Дома»</title><link href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/" rel="alternate"></link><published>2017-10-25T00:00:00+03:00</published><updated>2017-10-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-25:/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/</id><summary type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии связи, по которым пересылаются данные между узлами. Связывать различные блоки можно просто мышкой и при этом не иметь каких-либо особых навыков в программировании. Когда есть идея, но лень писать код, то в первую очередь стоит вспомнить о Node-RED и подобных инструментах. Ну а если идея взлетит, то при желании код всегда можно дописать потом.&lt;/p&gt;
 &lt;p&gt;Разработка в Node-RED ведется через обыкновенный браузер, само приложение можно запустить на различных платформах – PC, Raspberry Pi, в облаке и т.д. &lt;/p&gt;
 &lt;h2&gt;ДЕМО&lt;/h2&gt;
 &lt;p&gt;На рисунке ниже Node-RED читает сообщения Твиттера на тему футбола, пропускает только сообщения в кодировке ASCII и с длиной более 99 символов, &lt;a href="http://proiot.ru/blog/posts/2016/04/26/analiz-tonalnosti-teksta-s-pomoshchiu-weka/"&gt;анализирует тональность&lt;/a&gt; текста и периодически выводит всё это дело на устройство с поддержкой протокола &lt;a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/"&gt;MQTT&lt;/a&gt;, разработанное в предыдущем материале. Красные лампочки указывают на грустные сообщения Твиттера, синие на радостные.&lt;/p&gt;
-&lt;p&gt;Каждое приложение Node-RED можно импортировать и экспортировать в формате JSON. Собственно по такому случаю прилагается файл &lt;a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/football.sentiment.mqtt.json"&gt;football.sentiment.mqtt.json&lt;/a&gt; для быстрого импорта проекта как на картинке. После импорта нужно авторизовать Node-RED через Ваш твиттер аккаунт — двойной щелчок по узлу «twitter» и т.п. Для активации сценария нажать «Deploy» и в окне отладки Node-RED справа начнут появляться интересующие сообщения с Твиттера. Магия да и только !&lt;/p&gt;
-&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/run.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
+&lt;p&gt;Каждое приложение Node-RED можно импортировать и экспортировать в формате JSON. Собственно по такому случаю прилагается файл &lt;a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/football.sentiment.mqtt.json"&gt;football.sentiment.mqtt.json&lt;/a&gt; для быстрого импорта проекта как на картинке. После импорта нужно авторизовать Node-RED через Ваш твиттер аккаунт — двойной щелчок по узлу «twitter» и т.п. Для активации сценария нажать «Deploy» и в окне отладки Node-RED справа начнут появляться интересующие сообщения с Твиттера. Магия да и только !&lt;/p&gt;
+&lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/run.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
 &lt;p&gt;Слева в редакторе Node-RED находится список возможных компонентов. На рисунке узел «twitter» является источником данных, а в конечном счёте модифицированные и отфильтрованные данные отсылаются в MQTT топик &lt;code&gt;proiot3/cmd/ledisp&lt;/code&gt;. Зелёный компонент справа нужен только для удобной отладки приложения, его можно спокойно отключить или добавить других таких же в другие узлы.&lt;/p&gt;
 &lt;p&gt;Данные Node-RED передается от узла к узлу в виде JavaScript объекта под названием &lt;code&gt;msg&lt;/code&gt; (совсем уж без программирования всё же не обойтись). У этого объекта есть обязательный атрибут &lt;code&gt;msg.payload&lt;/code&gt; (полезная нагрузка), он хранит основное значение, которое необходимо передать, в нашем случае это текст сообщения с твиттера. Значение может быть любого типа, который поддерживается в JavaScript, т.е. время, число, строка, json, другой JavaScript объект и т.д. Помимо &lt;code&gt;msg.payload&lt;/code&gt; атрибута к &lt;code&gt;msg&lt;/code&gt; компоненты могут добавлять другие атрибуты, например узел «sentiment» добавляет атрибут &lt;code&gt;msg.sentiment.score&lt;/code&gt; – число, характеризующее тональность текста. Исходя из значения этого числа узел «switch» осуществляет ветвление.&lt;/p&gt;
 &lt;p&gt;Пару слов про регулярные выражения. Нас интересует только текст ASCII с длиной 99 и более символов. С этой задачей справляется регулярное выражение вида &lt;code&gt;^[\x20-\x7e]{99,}$&lt;/code&gt; в узле с именем «ascii 99+».&lt;/p&gt;
@@ -1881,7 +2029,7 @@ John Adams
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/pub.png" style="width:100%;"&gt;&lt;/p&gt;
 &lt;p&gt;Брокер является наиболее критичным элементом системы «издатель-подписчик», от его надёжности и скорости многое зависит. Брокер отвечает за прием всех сообщений, их фильтрацию, принятие решения о том, кому интересны эти сообщения, и, в конечном итоге, за пересылку сообщений всем клиентам-подписчикам. Среди серверных реализаций брокера помимо уже упомянутого открытого ПО Mosquitto можно выделить IBM WebSphere MQ; легко масштабируемый и высокопроизводительный открытый сервер emqttd на Erlang; брокер HiveMQ и др.&lt;/p&gt;
 &lt;p&gt;Как уже упоминалось, MQTT работает поверх TCP, где как известно по умолчанию данных ходят без шифрования. Для защиты от бородатых хаккеров и безопасного обмена данными по MQTT протоколу предлагается использовать TLS (Transport Layer Security) вместо TCP. Протокол TLS работает поверх TCP и предназначен для предоставления трёх услуг всем приложениям, работающим над ним – шифрование, аутентификацию и целостность. TLS даёт возможность клиент-серверным приложениям осуществлять связь в сети таким образом, что нельзя производить прослушивание пакетов и осуществить несанкционированный доступ.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/"&gt;Далее&lt;/a&gt; Node-RED.&lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category><category term="m2m"></category></entry><entry><title>Протоколы «Интернета вещей» - CoAP</title><link href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/" rel="alternate"></link><published>2017-10-17T00:00:00+03:00</published><updated>2017-10-17T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-17:/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; развлекаться с сетевыми протоколам.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/"&gt;Далее&lt;/a&gt; Node-RED.&lt;/p&gt;</content><category term="contiki"></category><category term="msp430"></category><category term="m2m"></category></entry><entry><title>Протоколы «Интернета вещей» - CoAP</title><link href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/" rel="alternate"></link><published>2017-10-17T00:00:00+03:00</published><updated>2017-10-17T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2017-10-17:/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/</id><summary type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; развлекаться с сетевыми протоколам.&lt;/p&gt;
 &lt;p&gt;CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;HTTP&lt;/a&gt;, но с дополнительными фичами и улучшениями. В отличие …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;Продолжаем&lt;/a&gt; развлекаться с сетевыми протоколам.&lt;/p&gt;
 &lt;p&gt;CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;HTTP&lt;/a&gt;, но с дополнительными фичами и улучшениями. В отличие от протокола HTTP, который является текстовым и использует &lt;a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/"&gt;ТСР&lt;/a&gt;, CoAP – это бинарный протокол, который работает поверх &lt;a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/"&gt;UDP&lt;/a&gt;, что значительно уменьшает общий размер передаваемых данных и повышает гибкость взаимодействия.&lt;/p&gt;
 &lt;p&gt;С точки зрения разработчика CoAP выглядит почти так же, как HTTP. В обоих случаях серверы предоставляют свои ресурсы по адресам URL, и клиенты обращаются к ним посредством стандартных методов, таких как GET, PUT, POST и DELETE. Архитектура REST (Representational State Transfer — «передача состояния представления»), получившая столь широкое распространение при разработке HTTP сервисов, также хорошо ложится и на CoAP сервисы. &lt;/p&gt;
@@ -6973,7 +7121,7 @@ gnuplot &lt;span class="m"&gt;4&lt;/span&gt;.6 patchlevel &lt;span class="m"&gt;
 
 
 &lt;p&gt;&lt;img alt="screenshot" src="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/wifi.ellipses.png" style="width:100%; border:1px solid #ddd;"&gt;&lt;/p&gt;
-&lt;p&gt;Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1&lt;/p&gt;</content><category term="GnuPlot"></category></entry><entry><title>ElasticSearch - практическое введение</title><link href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="alternate"></link><published>2016-06-25T00:00:00+03:00</published><updated>2016-06-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-06-25:/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/</id><summary type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
+&lt;p&gt;Мы ввели зависимость высоты эллипса от уровня сигнала. Осталось правильно её пересчитать, закрасить полупрозрачностью и опустить вниз на половину. Также gnuplot не обрабатывает точки, находящиеся за предалами xrange, yrange - поэтому к yrange для страховки прибавлено ~0.1&lt;/p&gt;</content><category term="GnuPlot"></category><category term="Wi-Fi"></category></entry><entry><title>ElasticSearch - практическое введение</title><link href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="alternate"></link><published>2016-06-25T00:00:00+03:00</published><updated>2016-06-25T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2016-06-25:/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/</id><summary type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
 &lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/"&gt;подсветку …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="https://www.elastic.co/products/elasticsearch" rel="nofollow"&gt;ElasticSearch&lt;/a&gt; - поисковый движок с JSON REST API, использующий под капотом &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. Предлагаю смастерить с помощью Elastic поиск для парочки &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;фильмов&lt;/a&gt;. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим &lt;a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow"&gt;способом&lt;/a&gt;. Затем копнём поглубже в &lt;a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/"&gt;процесс индексации&lt;/a&gt;, &lt;a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/"&gt;поисковые запросы&lt;/a&gt;,
 &lt;a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/"&gt;подсветку&lt;/a&gt; вхождений в результатах выдачи и &lt;a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/"&gt;агрегацию данных&lt;/a&gt; в Elastic и всё это только лишь с помощью REST API без необходимости наличия каких-либо глубоких познаний как в самом Lucene так и в программировании в целом !&lt;/p&gt;
 &lt;!-- cd ./dist/ &amp;&amp; find . -type f | sort | xargs -I{} -n1 echo -e '&lt;a href="\x7Battach\x7Ddist/{}"&gt;&lt;/a&gt;' | xclip -selection clipboard &amp;&amp; cd - --&gt;
@@ -9205,261 +9353,7 @@ notify-send -u critical &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span c
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Ключи &lt;strong&gt;Яндекс&lt;/strong&gt; даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить &lt;code&gt;xsel-translate-notify&lt;/code&gt;, но куда удобней выполнять это действие комбинацией клавиш.&lt;/p&gt;</content><category term="REST"></category><category term="NLP"></category></entry><entry><title>Emscripten: портирование C/C++ на JavaScript (GNU sed | grep)</title><link href="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/" rel="alternate"></link><published>2015-11-17T00:00:00+02:00</published><updated>2015-11-17T00:00:00+02:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-11-17:/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/</id><summary type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://kripken.github.io/emscripten-site/docs/compiling/Building-Projects.html" rel="nofollow"&gt;Emscripten&lt;/a&gt; это набор инструментов с открытым кодом для кросскомпиляции C/C++ проектов в JavaScript. Собственно сразу &lt;em&gt;online&lt;/em&gt; демка портированных таким образом GNU &lt;em&gt;sed&lt;/em&gt; и &lt;em&gt;grep&lt;/em&gt;, а ниже можно оценить до чего же просто это делается. В поле ввода вводятся аргументы как при обычном вызове программ: &lt;code&gt;--help&lt;/code&gt; и т.д. за исключением работы с файловой системой, т.к. браузер работает в песочнице.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://sed.js.org/"&gt;sed&lt;/a&gt; | &lt;a href="http://grep.js.org/"&gt;grep&lt;/a&gt;&lt;/p&gt;
-&lt;noscript&gt;&lt;span style="color:red;"&gt;Включите JavaScript ! &lt;/span&gt;&lt;/noscript&gt;
-
-&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_sed.js"&gt;&lt;/script&gt;
-
-&lt;script type="text/javascript" src="http://proiot.ru/blog/posts/2015/11/17/emscripten-portirovanie-cc-na-javascript-gnu-sed-grep/gnu_grep.js"&gt;&lt;/script&gt;
-
-&lt;script type="text/javascript"&gt;
-(function() {
-
-  var parseId, 
-      sed_default_input = "-e 's/Fyodor \\(Dostoyevsky\\)/F. \\1/' -e 'n;d'",
-      grep_default_input = "--text 'Dostoyevsky\\|Tolstoy'";
-
-  function id(i) {
-      return document.getElementById(i);
-  }
-  function parse(delay) {
-      if (parseId) {
-          window.clearTimeout(parseId);
-      }
-
-      parseId = window.setTimeout(function () {
-        var input = id("text-input").value;
-        var args = id("current-exec-args").value;
-        var exec = id("current-exec").value;
-        var output = window[exec](input, args);
-        id("out-result").value = output.replace(/\n$/, "");
-      }, delay || 555);
-  }
-  window.onload = function () {
-      var update = function() { parse(); };
-      id("text-input").onkeyup = update;
-      id("current-exec").onchange = function() {
-        id("current-exec-args").value = 
-          id("current-exec").value === 'fn_gnu_sed'
-            ? sed_default_input
-            : grep_default_input;
-        update(); 
-      };
-      id("current-exec-args").onkeyup = update;
-      id("current-exec-args").value = sed_default_input;
-      parse();
-  };
-})();
-&lt;/script&gt;
-
-&lt;!-- http://stackoverflow.com/q/5825861/ --&gt;
-
-&lt;p style="display: flex;"&gt;
-&lt;select id="current-exec" style="margin-right:5px;"&gt;
-    &lt;option value="fn_gnu_sed"&gt;sed&lt;/option&gt;
-    &lt;option value="fn_gnu_grep"&gt;grep&lt;/option&gt;
-&lt;/select&gt;
-&lt;input id="current-exec-args" type="text" style="flex: 1;"&gt;
-&lt;/p&gt;
-
-&lt;div&gt;
-&lt;!-- http://www.freeformatter.com/html-escape.html --&gt;
-&lt;div style="width:49%; border:1px solid #ddd; float:left;"&gt;
-  &lt;textarea rows="10" id="text-input" autocomplete="off"
-    style="width:97%; margin:auto; color: #AAFF00; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;"&gt;1  . In Search of Lost Time by Marcel Proust 
-2  . Ulysses by James Joyce
-3  . Don Quixote by Miguel de Cervantes
-4  . Moby Dick by Herman Melville
-5  . Hamlet by William Shakespeare
-6  . War and Peace by Leo Tolstoy
-7  . The Odyssey by Homer
-8  . The Great Gatsby by F. Scott Fitzgerald
-9  . The Divine Comedy by Dante Alighieri 
-10 . Madame Bovary by Gustave Flaubert
-11 . The Brothers Karamazov by Fyodor Dostoyevsky
-12 . One Hundred Years of Solitude by Gabriel Garcia Marquez
-13 . The Adventures of Huckleberry Finn by Mark Twain
-14 . The Iliad by Homer
-15 . Lolita by Vladimir Nabokov
-16 . Anna Karenina by Leo Tolstoy
-17 . Crime and Punishment by Fyodor Dostoyevsky
-18 . Alice's Adventures in Wonderland by Lewis Carroll
-19 . The Sound and the Fury by William Faulkner
-20 . Pride and Prejudice by Jane Austen
-21 . The Catcher in the Rye by J. D. Salinger
-22 . Wuthering Heights by Emily Brontë
-23 . Nineteen Eighty Four by George Orwell
-24 . Heart of Darkness by Joseph Conrad
-25 . To the Lighthouse by Virginia Woolf
-26 . Absalom, Absalom! by William Faulkner
-27 . Middlemarch by George Eliot
-28 . The Trial by Franz Kafka
-29 . One Thousand and One Nights by India/Iran/Iraq/Egypt
-30 . The Stories of Anton Chekhov by Anton Chekhov
-31 . The Red and the Black by Stendhal
-32 . Gulliver's Travels by Jonathan Swift
-33 . Catch-22 by Joseph Heller
-34 . The Grapes of Wrath by John Steinbeck
-35 . Invisible Man by Ralph Ellison
-36 . The Stranger by Albert Camus
-37 . Great Expectations by Charles Dickens
-38 . The Aeneid by Virgil
-39 . David Copperfield by Charles Dickens
-40 . Mrs. Dalloway by Virginia Woolf
-41 . Beloved by Toni Morrison
-42 . The Canterbury Tales by Geoffrey Chaucer
-43 . Collected Fiction by Jorge Luis Borges
-44 . Leaves of Grass by Walt Whitman
-45 . Candide by Voltaire
-46 . Jane Eyre by Charlotte Brontë
-47 . As I Lay Dying by William Faulkner
-48 . The Sun Also Rises by Ernest Hemingway
-49 . The Complete Stories of Franz Kafka by Franz Kafka
-50 . Tristram Shandy by Laurence Sterne
-51 . A Portrait of the Artist as a Young Man by James Joyce
-52 . The Portrait of a Lady by Henry James
-53 . Oedipus the King by Sophocles
-54 . Les Misérables by Victor Hugo
-55 . To Kill a Mockingbird by Harper Lee
-56 . Paradise Lost by John Milton
-57 . The Complete Tales and Poems of Edgar Allan Poe by Edgar Allan Poe
-58 . Pale Fire by Vladimir Nabokov
-59 . A Passage to India by E.M. Forster
-60 . The Idiot by Fyodor Dostoyevsky
-61 . The Scarlet Letter by Nathaniel Hawthorne
-62 . Antigone by Sophocles
-63 . Faust by Johann Wolfgang von Goethe
-64 . The Magic Mountain by Thomas Mann
-65 . Dead Souls by Nikolai Gogol
-66 . The Metamorphosis by Franz Kafka
-67 . Midnight's Children by Salman Rushdie
-68 . Emma by Jane Austen
-69 . For Whom the Bell Tolls by Ernest Hemingway
-70 . Frankenstein by Mary Shelley
-71 . Journey to the End of The Night by Louis-Ferdinand Céline
-72 . Oresteia by Aeschylus
-73 . The Old Man and the Sea by Ernest Hemingway
-74 . Vanity Fair by William Makepeace Thackeray
-75 . The Complete Stories of Flannery O'Connor by Flannery O'Connor
-76 . Under the Volcano by Malcolm Lowry
-77 . Gargantua and Pantagruel by Francois Rabelais
-78 . Tom Jones by Henry Fielding
-79 . Fairy Tales and Stories by Hans Christian Anderson
-80 . Things Fall Apart by Chinua Achebe
-81 . The Flowers of Evil by Charles Baudelaire
-82 . Brave New World by Aldous Huxley
-83 . The Tin Drum by Günter Grass
-84 . The Good Soldier by Ford Madox Ford
-85 . A Farewell to Arms by Ernest Hemingway
-86 . The Possessed by Fyodor Dostoevsky
-87 . Poems of Emily Dickinson by Emily Dickinson
-88 . On the Road by Jack Kerouac
-89 . The Master and Margarita by Mikhail Bulgakov
-90 . The Castle by Franz Kafka
-91 . Father Goriot by Honoré de Balzac
-92 . Stories of Ernest Hemingway by Ernest Hemingway
-93 . Robinson Crusoe by Daniel Defoe
-94 . Collected Poems of W. B. Yeats by W. B. Yeats
-95 . The Charterhouse of Parma by Stendhal
-96 . The Tale of Genji by Murasaki Shikibu
-97 . Oedipus at Colonus by Sophocles
-98 . Fathers and Sons by Ivan Turgenev
-99 . Metamorphoses by Ovid&lt;/textarea&gt;
-&lt;/div&gt;
-&lt;div style="width:49%; border:1px solid #ddd; float:right;"&gt;
-  &lt;textarea rows="10" id="out-result" autocomplete="off"
-    style="width:97%; margin:auto; color: #EE00AA; background-color: #111111; border: none; overflow:auto; padding: 5px; display: block;" readonly&gt;&lt;/textarea&gt;
-&lt;/div&gt;
-&lt;div style="clear:both;"&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;p&gt;Собирается &lt;em&gt;Emscripten&lt;/em&gt; из исходников довольно небыстро ~3 часа на ноуте core i3 4GB, посему проще прибегнуть к помощи готового образа для &lt;a href="http://docs.docker.com/engine/installation/ubuntulinux/" rel="nofollow"&gt;docker&lt;/a&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;emcc-env/activate&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="nb"&gt;alias&lt;/span&gt; in &lt;span class="s1"&gt;&amp;#39;emcc&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;emconfigure&amp;#39;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;emmake&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-  &lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;$alias&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;sudo docker run -i -t --rm -v \$(pwd):/home/src 42ua/emsdk &lt;/span&gt;&lt;span class="nv"&gt;$alias&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-&lt;span class="k"&gt;done&lt;/span&gt;
-&lt;span class="nb"&gt;unset&lt;/span&gt; &lt;span class="nb"&gt;alias&lt;/span&gt;
-
-&lt;span class="nv"&gt;PS1&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;(emsdk)&lt;/span&gt;&lt;span class="nv"&gt;$PS1&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Трюк с &lt;em&gt;activate&lt;/em&gt; позволит абстрагироваться от деталей работы с &lt;em&gt;docker&lt;/em&gt; и сконцентрироваться на кросскомпиляции:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sudo docker pull 42ua/emsdk
-~$ &lt;span class="nb"&gt;source&lt;/span&gt; emcc-env/activate
-&lt;span class="o"&gt;(&lt;/span&gt;emsdk&lt;span class="o"&gt;)&lt;/span&gt;~$ emcc -v
-emcc &lt;span class="o"&gt;(&lt;/span&gt;Emscripten gcc/clang-like replacement + linker emulating GNU ld&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;.35.8
-clang version &lt;span class="m"&gt;3&lt;/span&gt;.8.0  &lt;span class="o"&gt;(&lt;/span&gt;emscripten &lt;span class="m"&gt;1&lt;/span&gt;.35.8 : &lt;span class="m"&gt;1&lt;/span&gt;.35.8&lt;span class="o"&gt;)&lt;/span&gt;
-Target: x86_64-unknown-linux-gnu
-Thread model: posix
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Если повезёт, кросскомпиляция мало чем отличается от обычной сборки:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ curl -sL http://ftp.gnu.org/gnu/sed/sed-4.2.2.tar.gz  &lt;span class="p"&gt;|&lt;/span&gt; tar xz &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; sed-4.2.2
-~$ emconfigure ./configure --host&lt;span class="o"&gt;=&lt;/span&gt;asmjs-local-emscripten
-~$ emmake make
-~$ emcc -o sed.node.js sed/*.o lib/libsed.a
-~$ &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;xof nworb kciuq ehT&amp;#39;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; node sed.node.js &lt;span class="se"&gt;\&lt;/span&gt;
-    -e &lt;span class="s1"&gt;&amp;#39;/\n/!G;s/\(.\)\(.*\n\)/&amp;amp;\2\1/;//D;s/.//&amp;#39;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
-    -e &lt;span class="s1"&gt;&amp;#39;s/$/!/&amp;#39;&lt;/span&gt;
-The quick brown fox!
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Оптимизация возможна как на уровне LLVM так и JS включительно с Closure Compiler. Чего можно ожидать от оптимизации ?&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ls -sh sed.node.js
-&lt;span class="m"&gt;1&lt;/span&gt;,9M sed.node.js
-~$ emcc -O2 --memory-init-file &lt;span class="m"&gt;0&lt;/span&gt; -o sed.js sed/*.o lib/libsed.a
-~$ ls -sh sed.js
-620K sed.js
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Наконец для удобства работы в брузере немного &lt;a href="http://mozakai.blogspot.com/2012/03/howto-port-cc-library-to-javascript.html" rel="nofollow"&gt;шаманства&lt;/a&gt; и дело в шляпе:&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;gnu_sed_template.js&lt;/em&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;fn_parse_argc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;require&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;shell-quote&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nx"&gt;parse&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-&lt;span class="nx"&gt;module&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;exports&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;input_str&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;args_str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-
-  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;Module&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{},&lt;/span&gt; &lt;span class="nb"&gt;window&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{};&lt;/span&gt;
-
-  &lt;span class="nb"&gt;window&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;prompt&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-    &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;input&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;input_str&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-      &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;input&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-      &lt;span class="nx"&gt;input&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;value&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="p"&gt;};&lt;/span&gt;
-  &lt;span class="p"&gt;})();&lt;/span&gt;
-
-  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;thisProgram&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;sed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;arguments&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;fn_parse_argc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;args_str&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
-
-  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-
-  &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;print&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;printErr&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
-      &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="nx"&gt;text&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;\n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="p"&gt;};&lt;/span&gt;
-
-  &lt;span class="cm"&gt;/* SED.RAW.JS */&lt;/span&gt;
-
-  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nx"&gt;Module&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;return&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;];&lt;/span&gt;
-&lt;span class="p"&gt;};&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sed &lt;span class="s1"&gt;&amp;#39;/\/\* SED.RAW.JS \*\// {&lt;/span&gt;
-&lt;span class="s1"&gt;  r sed.js&lt;/span&gt;
-&lt;span class="s1"&gt;  d&lt;/span&gt;
-&lt;span class="s1"&gt;}&amp;#39;&lt;/span&gt; &amp;lt; gnu_sed_template.js &amp;gt; gnu_sed.node.js
-~$ browserify gnu_sed.node.js --standalone fn_gnu_sed &amp;gt; gnu_sed.js
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Процедура с портирования &lt;a href="http://ftp.gnu.org/gnu/grep/grep-2.22.tar.xz" rel="nofollow"&gt;grep&lt;/a&gt; мало чем отличается за исключением флага &lt;em&gt;--disable-threads&lt;/em&gt; на этапе &lt;code&gt;./configure&lt;/code&gt;.&lt;/p&gt;</content><category term="Emscripten"></category><category term="Docker"></category></entry><entry><title>Как перестать беспокоиться и начать портировать</title><link href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="alternate"></link><published>2015-10-21T00:00:00+03:00</published><updated>2015-10-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-10-21:/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/</id><summary type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Ключи &lt;strong&gt;Яндекс&lt;/strong&gt; даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить &lt;code&gt;xsel-translate-notify&lt;/code&gt;, но куда удобней выполнять это действие комбинацией клавиш.&lt;/p&gt;</content><category term="REST"></category><category term="NLP"></category></entry><entry><title>Как перестать беспокоиться и начать портировать</title><link href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="alternate"></link><published>2015-10-21T00:00:00+03:00</published><updated>2015-10-21T00:00:00+03:00</updated><author><name>Oleg Mazko</name></author><id>tag:proiot.ru,2015-10-21:/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/</id><summary type="html">&lt;p&gt;Пример портирования &lt;strong&gt;Java&lt;/strong&gt; =&amp;gt; &lt;strong&gt;JavaScript&lt;/strong&gt; на примере токенизаторов из &lt;a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/"&gt;Lucene&lt;/a&gt;. &lt;/p&gt;
 &lt;p&gt;&lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6"&gt;lucene-tokenizers.es6&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js"&gt;lucene-tokenizers.babel.js&lt;/a&gt; | &lt;a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html"&gt;Тесты&lt;/a&gt; | &lt;a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src"&gt;Исходники&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;Процесс можно условно разделить на несколько этапов:&lt;/p&gt;

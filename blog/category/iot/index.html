@@ -30,94 +30,166 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/">Как работает «Smart Config»</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2018-01-05T00:00:00+02:00">
-                Published: Пт. 05 Январь 2018
+        <abbr class="published" title="2018-09-09T00:00:00+03:00">
+                Published: Вс. 09 Сентябрь 2018
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
-</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
-<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT и др.) работать без изменений. Исторически протокол TLS является наследником SSL (Secure Sockets Layer), изначально разработанном в Netscape для повышения безопасности электронной коммерции в Интернете.</p>
-<p>Для <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a> (User Datagram Protocol) была разработана специальная версия TLS, получившая название DTLS (Datagram Transport Layer Security). В то время как TCP обеспечивает обязательную доставку пакетов от источника к получателю, UDP пакеты могут потеряться и их последовательность не гарантируется. Протокол DTLS учитывает вышеуказанные отличия TCP и UDP. </p>
-<h2>ДЕМО</h2>
-<p>На картинке DTLS сервер на микроконтроллере c ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту. Из коробки Contiki не умеет работать с TLS / DTLS, потому используется сторонняя библиотека TinyDTLS. Для обмена зашифрованными данными использовался нативный DTLS клиент из примеров самой TinyDTLS, но по идее клиент может быть любой с поддержкой IPv6:</p>
-<div class="highlight"><pre><span></span>~$ ping6 fe80::200:e2ff:fe58:b66e%mazko # bug ?
-~$ cat &lt;(echo Hello DTLS) - | \
-./tinydtls/tests/dtls-client fe80::200:e2ff:fe58:b66e%mazko
+<p>tags: <a href="http://proiot.ru/blog/tag/wi-fi">Wi-Fi</a> </p>
+</footer><!-- /.post-info --><p>Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет никакого пользовательского интерфейса. Таким устройствам нужны другие способы получения имени сети и пароля от пользователя.</p>
+<p>Режим точки доступа (Access Point, AP) — наиболее изученный сегодня способ подключения устройств, не имеющих пользовательского интерфейса. После того как пользователь подключит свой смартфон к AP неинициализированного устройства, он открывает веб-браузер смартфона и входит на веб-сайт устройства, используя заданный локальный URL или IP-адрес. На встроенном веб-сайте пользователь выбирает имя Wi-Fi сети и пароль. Устройство сохраняет сетевые реквизиты в энергонезависимой памяти, а затем переходит из режима AP в режим станции, чтобы подключиться к домашней сети с использованием сохраненных сетевых реквизитов. Недостаток режима AP заключается в том, что при подключении к конфигурационной сети AP неинициализированного устройства телефон отключается от домашней сети. Это может вызвать перерывы в передаче данных и привести к появлению сообщений об ошибках. Также не все производители телефонов предоставляют API для программного переключения Wi-Fi сетей, пользователь вынужден это делать вручную.</p>
+<p>Технология «Smart Config» лишена данных недостатков. Она предполагает использование ПК, телефона или планшета в качестве интерфейса пользователя, который позволяет ввести информацию о сети с помощью дисплея и клавиатуры ПК, телефона или планшета с последующей передачей введённой информации IoT-устройствам. Из известных реализаций на текущий момент стоит упомянуть CC3200 SmartConfig и ESP-Touch.</p>
+<h2>КАК РАБОТАЕТ</h2>
+<p>Итак у нас есть два устройства — одно (телефон) уже подключено к Wi-Fi сети, и другое (IoT), которое нужно подключить к Wi-Fi сети. IoT устройство непрерывно сканирует Wi-Fi эфир. Для эксперимента понадобится два  Wi-Fi адаптера, можно даже на одном компьютере:</p>
+<div class="highlight"><pre><span></span>~$ iwconfig <span class="m">2</span>&gt; /dev/null
 </pre></div>
 
 
-<p><a href="http://localhost:9148/a7d33b89268292d04630429cc5f16a5a">ipv6.dtls.server</a> | <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/contiki-dtls.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/demo.png" style="width:50%; margin: 0 auto; display:block;"></p>
-<p>В данном примере используется симметричное шифрование TLS_PSK (Pre-Shared Key) по AES алгоритму. Симметричный – значит, что для шифрования и дешифрования используется один и тот же секретный ключ (существуют также асимметричные алгоритмы, для шифрования используется один ключ, для дешифрования – другой). Ключ алгоритма должен сохраняться в секрете обеими сторонами, в данном случае он зашит в коде <code>#define PSK_DEFAULT_KEY "secretPSK"</code> и сервера и клиента.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/wireshark.png" style="width:100%;"></p>
-<p>Для тех, кто не знает секретный ключ как например Wireshark на картинке ниже, зашифрованные данные не представляют никакой ценности – это выглядит как беспорядочный и бессмысленный набор байт. При использовании TLS / DTLS, «злоумышленнику» (иногда говорят «человек посередине») будет доступна информация о подключении (хост, порт, тип используемого шифрования), частоте и количестве передаваемой информации. Кроме того, он может разорвать соединение, но обе стороны будут знать, что соединение было прервано третьей стороной.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/data.png" style="width:100%;"></p>
-<h2>ВВЕДЕНИЕ В КРИПТОГРАФИЮ</h2>
-<blockquote>
-<p>Криптография (от др.-греч. κρυπτός — скрытый и γράφω — пишу) — наука о методах обеспечения конфиденциальности (невозможности прочтения информации посторонним), целостности данных (невозможности незаметного изменения информации), аутентификации (проверки подлинности авторства или иных свойств объекта), а также невозможности отказа от авторства. — Википедия</p>
-</blockquote>
-<p>Криптография включает в себя множество различных направлений, таких как шифрование, электронно-цифровая подпись, хеширование и т. д. Шифрование — это преобразование исходных данных («открытого текста») в видоизмененное состояние («закрытый текст») с целью скрыть содержимое «открытого текста» от потенциального «злоумышленника». Дешифрование — это обратная процедура, восстановление «открытого текста» из «закрытого». Понятия «открытый текст» и «закрытый текст» в данном случае подразумевают любую, не обязательно текстовую информацию.</p>
-<p>Предположим, что сторона А (Алиса) хочет передать стороне Б (Боб) секретную информацию, чтобы никто, кроме Боба, не смог прочесть её. Для того чтобы «зашифровать» данные, можно переставить местами символы в исходном тесте по определенному алгоритму (шифр подстановки), известному только Алисе и Бобу. Такие алгоритмы шифрования, при которых Алиса и Боб должны заранее (до начала обмена данными) придумать и согласовать одинаковый секрет, называются <strong>симметричными</strong>. </p>
-<p>Современные алгоритмы шифрования предполагают, что «злоумышленник» потенциально знает сам алгоритм шифрования (алгоритм преобразования над открытым тестом), имеет доступ к закрытому тексту и даже может знать фрагменты открытого текста (например «злоумышленник» может предположить, что открытый текст сообщения начинается с фразы «Добрый день!»). Единственное, что неизвестно «злоумышленнику», это некий «секрет» (секретный ключ шифрования) и единственный способ вычислить секретный ключ (и расшифровать информацию целиком) – это полный перебор всех возможных вариантов секретного ключа. Считается, что длина применяемых в современных алгоритмах ключей (например, 256 бит) не позволяет подобрать ключ перебором за приемлемое время. Экзотические способы вроде терморектального криптоанализа в расчёт не берём.</p>
-<p>Для закрепления материала пример симметричного шифрования. Алиса хочет передать фразу "Some Secret", для этого она шифрует сообщение. Пароль пусть будет pass:</p>
-<div class="highlight"><pre><span></span>~$ echo &quot;Some Secret&quot; | \
-openssl enc -aes-256-cbc -a -pass pass:pass -nosalt
+<p>Вывод:</p>
+<div class="highlight"><pre><span></span>wlo1      IEEE 802.11  ESSID:&quot;Dumer&quot;  
+          Mode:Managed  Frequency:2.447 GHz  Access Point: XX:XX:XX:XX:XX:XX   
+          Bit Rate=121.5 Mb/s   Tx-Power=15 dBm   
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Power Management:off
+          Link Quality=61/70  Signal level=-49 dBm  
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:27  Invalid misc:3493   Missed beacon:0
+
+wlxbcf68565bc38  IEEE 802.11  ESSID:off/any  
+          Mode:Managed  Access Point: Not-Associated   Tx-Power=20 dBm   
+          Retry short  long limit:2   RTS thr:off   Fragment thr:off
+          Power Management:off
 </pre></div>
 
 
-<p>На выходе Алиса получает зашифрованный текст и отправляет его по незащищённому каналу связи. Боб, получив зашифрованные данные, знает пароль и дешифрует их:</p>
-<div class="highlight"><pre><span></span>~$ echo &quot;9pIRFLwioGc41Fw+aHLxuw==&quot; | \
-openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
+<p>Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">14 каналов</a>, для простоты будем слушать только тот (8), к которому подключён wlo1.</p>
+<div class="highlight"><pre><span></span>~$ iwlist wlo1 channel
 </pre></div>
 
 
-<p>Чудненько, но как Бобу знать, что это именно Алиса отправила сообщение ? Да, «злоумышленник» не может расшифровать содержимое посылки, но что, если ему это и не нужно ? Ведь ничто не мешает «злоумышленнику» просто повторно отправить перехваченное ранее зашифрованное сообщение в нужный момент. </p>
-<p>Предположим у нас есть передатчик и приемник, который управляет исполнительным механизмом (например, открывает дверь). Мы хотим открывать дверь по команде с передатчика. Естественно, мы хотим обезопасить себя, приемник должен реагировать только на «родной» передатчик. Записываем в передатчик и приемник одинаковый «секретный» пароль (ключ). Передатчик отправляет команду, приемник дешифрует паролем и открывает двери. Тем временем «злоумышленник» прослушивает радиоэфир и если он просто повторно отправит перехваченные ранее данные, двери откроются... Выходит одного шифрования недостаточно.</p>
-<p>Рассмотрим решение подобной проблемы на «бытовом» примере. Предположим, я общаюсь со своим другом в чате. Я хочу убедиться, что я общаюсь именно с ним, а не с его дедушкой/бабушкой которая села за его компьютер. Я могу задать другу вопрос, ответ на который знает только он и я. У меня и у друга есть одинаковый «секретный» ключ шифрования. Я отправляю ему любой, абсолютно случайный фрагмент текста (случайное число) и прошу его зашифровать. Он шифрует фрагмент своим ключом и отправляет зашифрованный текст мне. Я расшифровываю полученный текст и сравниваю с оригиналом. Если исходный и расшифрованный фрагмент идентичны – значит я общаюсь действительно с другом, так как «правильно» зашифровать текст мог только он. В следующий раз, при необходимости <strong>аутентифицировать</strong> собеседника я вышлю новый, случайный, фрагмент текста и даже если «злоумышленник» перехватил предыдущий «сеанс аутентификации» – это ему ничего не даст, так как каждый раз будет новый запрос (новый фрагмент открытого текста) и соответственно новый ответ (закрытый текст).</p>
-<h2>TLS / DTLS</h2>
-<p>Протоколы TLS / DTLS предназначены для предоставления трёх услуг всем приложениям, работающим над ними: <strong>шифрование</strong>, <strong>аутентификацию</strong> и <strong>целостность</strong>. Для того чтобы установить криптографически безопасный канал данных, клиент и сервер должны согласовать параметры соединения, а именно: версия используемого протокола, способ шифрования данных, а также проверить сертификаты (в случае асимметричного шифрования). Процедура начала соединения называется Handshake (рукопожатие). Также в рамках процедуры Handshake клиент и сервер обмениваются случайными числами, т.е, происходит аутентификация – проверка соответствия субъекта и того, за кого он пытается себя выдать. После Handshake происходит обмен зашифрованными данными с проверкой целостности информации и защиты от её подмены.</p>
-<h2>PRE-SHARED KEY</h2>
-<p>Вернёмся к примеру с микроконтроллером. Клиент и сервер обладают общим секретом (ключом) и устанавливают соединение только если была установлена подлинность данного секрета. В общем случае для знакомства с PSK (pre-shared key) удобно воспользоваться каким-либо тестовыми сервером и клиентом.</p>
-<p>Сервер DTLS-PSK:</p>
-<div class="highlight"><pre><span></span>~$ openssl s_server -port 20220 -psk 1a2b3c4d -nocert -dtls1_2
+<p>Вывод:</p>
+<div class="highlight"><pre><span></span>wlo1      14 channels in total; available frequencies :
+          Channel 01 : 2.412 GHz
+          Channel 02 : 2.417 GHz
+          Channel 03 : 2.422 GHz
+          Channel 04 : 2.427 GHz
+          Channel 05 : 2.432 GHz
+          Channel 06 : 2.437 GHz
+          Channel 07 : 2.442 GHz
+          Channel 08 : 2.447 GHz
+          Channel 09 : 2.452 GHz
+          Channel 10 : 2.457 GHz
+          Channel 11 : 2.462 GHz
+          Channel 12 : 2.467 GHz
+          Channel 13 : 2.472 GHz
+          Channel 14 : 2.484 GHz
+          Current Frequency=2.447 GHz (Channel 8)
 </pre></div>
 
 
-<p>Клиент DTLS-PSK:</p>
-<div class="highlight"><pre><span></span>~$ openssl s_client -port 20220 -psk 1a2b3c4d -dtls1_2
+<p>Переведём адаптер в режим сканирования:</p>
+<div class="highlight"><pre><span></span>~$ ifconfig wlxbcf68565bc38 down
+~$ iwconfig wlxbcf68565bc38 mode monitor
+~$ ifconfig wlxbcf68565bc38 up
+~$ iwconfig wlxbcf68565bc38 channel <span class="m">8</span>
+~$ iwlist wlxbcf68565bc38 channel
 </pre></div>
 
 
-<p>Обмен данными между клиентом и сервером двусторонний, пишем что-нибудь в консоль и смотрим как идут пакеты в Wireshark. <strong>Симметричное шифрование</strong> менее требовательно к ресурсам чем асимметричное, это может оказаться решающим фактором для устройств на микроконтроллерах.</p>
-<h2>PUBLIC KEY</h2>
-<p>В современных интернетах наибольшее распространение получило <strong>асимметричное шифрование</strong>, которое предполагает наличие двух ключей – публичного и приватного. Сообщение шифруется публичным ключом, а расшифровывается приватным. В основе данной магии лежит математика и <em>односторонние функции с потайным входом</em>, то есть такие функции, у которых по известному <em>x</em> довольно просто найти значение <em>f(x)</em>, тогда как обратное определение <em>x</em> из <em>f(x)</em> невозможно за разумный срок без специальной информации (секрета), называемой «лазейкой» или «потайным входом».</p>
-<p>Упрощённо шифрование с открытым ключом можно представить в виде обычного (например навесного) замка с автоматической защёлкой. Любой способен запереть замок, просто защелкнув его, чтобы он закрылся, но отпереть его может только тот, у кого есть ключ. Запереть замок (зашифровывать данные) легко, почти все могут это сделать, но открыть его (расшифровывать данные) имеет возможность только владелец ключа. Понимание того, как защелкнуть замок, чтобы он закрылся, ничего не скажет вам, как его отпереть.</p>
-<p>Для начала экспериментов нужно сгенерировать пару ключей (открытый и закрытый).</p>
-<div class="highlight"><pre><span></span>~$ openssl req -x509 -days 365 -nodes -newkey rsa:2048  \
-    -subj &quot;/CN=localhost&quot; -keyout selfsigned.key -out selfsigned.crt
+<p>Примерно так выглядит эфир Wi-Fi в WireShark:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/wirshark.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>MAC адреса идут в открытом виде. Полезные данные внутри Wi-Fi фрейма зашифрованы, но мы видим их длину. Если предположить, что шифрование изменяет длину передаваемых данных на какую-то константу, почему бы не попробовать передавать данные меняя длину пакета по принципу один пакет == один байт. Для передачи 42 байт нужно отправит 42 пакета где длина каждого пакета зависит от значения передаваемого байта. Все скрипты проверялись на <strong>python3</strong>:</p>
+<p><em>transmitter.py</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="n">MCAST_GRP</span> <span class="o">=</span> <span class="s1">&#39;234.42.42.42&#39;</span>
+<span class="n">MCAST_PORT</span> <span class="o">=</span> <span class="mi">7001</span>
+
+<span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_UDP</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_IP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IP_MULTICAST_TTL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">crc8</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+
+<span class="k">def</span> <span class="nf">transmit_one_byte</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+  <span class="k">assert</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">)</span>
+  <span class="k">assert</span><span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">548</span><span class="p">)</span> <span class="c1"># 576(MTU) - 20(IP) - 8(UDP)</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">MCAST_GRP</span><span class="p">,</span> <span class="n">MCAST_PORT</span><span class="p">))</span>
+
+<span class="n">preamble</span> <span class="o">=</span> <span class="p">[</span><span class="mi">515</span><span class="p">,</span> <span class="mi">514</span><span class="p">,</span> <span class="mi">513</span><span class="p">,</span> <span class="mi">512</span><span class="p">]</span>
+<span class="n">payload</span>  <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;hello world!&#39;</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+  <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">preamble</span><span class="p">:</span>
+    <span class="n">transmit_one_byte</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+  <span class="n">transmit_one_byte</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+  <span class="n">transmit_one_byte</span><span class="p">(</span><span class="n">crc8</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+    <span class="n">transmit_one_byte</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Закрытый ключ хранится в секрете на сервере, открытый можно передавать кому угодно, в том числе и злоумышленнику. Простейший тестовый сервер:</p>
-<div class="highlight"><pre><span></span>~$ openssl s_server -key selfsigned.key -cert selfsigned.crt -accept 44330 -www
+<p>В текущем примере данные передаются на мультикаст адрес 234.xx.xx.xx по <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a>. Вначале идёт фиксированная посылка синхронизации preamble. Содержимое preamble также известно приёмнику, сравнивая принятые пакеты с preamble он может высчитать константу, добавляемую при шифровании. Затем передаём общую длину полезных данных, их контрольную сумму и сами данные.</p>
+<p><em>receiver.py</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="n">preamble</span> <span class="o">=</span> <span class="p">[</span><span class="mi">515</span><span class="p">,</span> <span class="mi">514</span><span class="p">,</span> <span class="mi">513</span><span class="p">,</span> <span class="mi">512</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">crc8</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+
+<span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">crc</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">crc</span> <span class="o">==</span> <span class="n">crc8</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+      <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">preamble</span><span class="p">):</span>
+      <span class="n">diff</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">preamble</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">preamble</span><span class="p">):</span><span class="n">idx</span><span class="p">]))</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">-</span><span class="n">c</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">l</span><span class="p">]]</span>
+        <span class="n">decode</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">received</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">received</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">42</span><span class="p">:</span>
+    <span class="n">received</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+    <span class="n">received</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+    <span class="n">parse</span><span class="p">(</span><span class="n">received</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Для установки защищённого соединения по незащищённому каналу клиенту нужен только открытый ключ.</p>
-<div class="highlight"><pre><span></span>~$ curl https://localhost:44330 -v --cacert selfsigned.crt
+<p>У Wireshark есть консольный аналог tshark. Заодно отфильтруем точно не нужные пакеты, оставив только data:</p>
+<div class="highlight"><pre><span></span>~$ tshark -i wlxbcf68565bc38 -I -T fields -e data.len subtype data <span class="p">|</span> <span class="se">\</span>
+   python3 receiver.py
 </pre></div>
 
 
-<p>Вот что по этому поводу думает Wireshark. Из списка всех поддерживаемых клиентом (Client Hello) алгоритмов шифрования сервер выбрал <code>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</code>:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/https.png" style="width:100%;"></p>
-<p>Нераскрытым остался один вопрос – как передать открытый ключ так, чтобы его нельзя было подменить ? Каждый день в сети появляются / исчезают тысячи ресурсов и физически сложно было бы поставлять / обновлять все их открытые ключи сразу вместе с клиентом (браузером). Тут на помощь приходят т.н. центры сертификации (англ. Certification authority, CA) – стороны, чья честность неоспорима, а открытый ключ широко известен и клиент (curl, браузер) его никогда не запрашивает по незащищённому каналу. Задача центра сертификации – подтверждать подлинность ключей шифрования с помощью сертификатов электронной подписи. </p>
-<p>Асимметричное шифрование используется только в процедуре TLS Handshake во время первоначальной настройки соединения. После настройки туннеля в дело вступает симметричная криптография, и общение в пределах текущей сессии зашифровано именно установленными симметричными ключами. Это необходимо для увеличения быстродействия, так как криптография с открытым ключом требует значительно больше вычислительной мощности. Ну как-то так.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </article>
+<p>В зависимости от зашумлённости эфира часть передаваемых пакетов теряется и это неизбежно. Для увеличения надёжности можно добавить Код Хемминга, но это уже удел производителя чипов и SDK со «Smart Config» на борту.</p>
+<p>Ключевые преимущества «Smart Config» — простота использования и возможность беспрепятственной интеграции в телефонное приложение устройства. Кроме того, если несколько устройств Wi-Fi одновременно находятся в режиме «Smart Config», одно телефонное приложение может обеспечить подключение их всех одновременно.</p>
+<p>Основной недостаток этой технологии заключается в том, что телефон должен подключаться к сети, используя ту полосу частот и ту скорость передачи данных, которые поддерживаются неподключенным устройством. Что если неподключенное устройство поддерживает диапазон 2,4 ГГц, а телефон использует для связи с двухдиапазонной сетью диапазон 5 ГГц ?</p>
+<p><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip">Исходники</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
 <div class="body" style="margin-bottom: 2em">
@@ -140,8 +212,31 @@ openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/" rel="bookmark"
-                           title="Permalink to Node-RED - графический конструктор «Умного Дома»">Node-RED - графический конструктор «Умного Дома»</a></h1>
+                    <h1><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/" rel="bookmark"
+                           title="Permalink to Безопасность «Интернета вещей» - TLS / DTLS">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-01-05T00:00:00+02:00">
+                Published: Пт. 05 Январь 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
+<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT и др.) работать без изменений. Исторически …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/" rel="bookmark"
+                           title="Permalink to Node-RED - графический конфигуратор «Умного Дома»">Node-RED - графический конфигуратор «Умного Дома»</a></h1>
                 </header>
 
                 <div class="entry-content">
@@ -156,8 +251,8 @@ openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
 <p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
 </footer><!-- /.post-info -->                <p>Node-RED — это инструмент с открытым исходным кодом, который позволяет создавать приложения  полностью в графическом редакторе без написания какого-либо кода, просто соединяя готовые компоненты. Компоненты это предварительно прописанные части кода, выполняющие желаемое действие, например взаимодействие с внешними устройствами, онлайн-службы и т.д. Для связи компонентов друг с другом используются графические линии …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konstruktor-umnogo-doma/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/10/25/node-red-graficheskii-konfigurator-umnogo-doma/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
@@ -204,29 +299,6 @@ openssl enc -aes-256-cbc -d -a -pass pass:pass -nosalt
 <p>CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">HTTP</a>, но с дополнительными фичами и улучшениями. В отличие …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-09T00:00:00+03:00">
-                Published: Пн. 09 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
-<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
