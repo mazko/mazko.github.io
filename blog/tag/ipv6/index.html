@@ -49,9 +49,9 @@
 <h2>TL;DR</h2>
 <p>Часики берут данные времени из интернета по NTP (Network Time Protocol — протокол сетевого времени). Под капотом часов используется Contiki — компактная, свободная, переносимая, многозадачная операционная система для встраиваемых систем. Процессы Contiki используют облегчённую потоковую модель — протопотоки, в основе которых лежит <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативная</a> многозадачность. Где-то сбоку к Contiki можно прикрутить ещё и <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">вытесняющую</a> многозадачность через некую библиотеку
 <a href="https://github.com/contiki-os/contiki/wiki/Multithreading" rel="nofollow">mt library</a>, но нам это не понадобится. Всё же главная ценность Contiki это конечно же встроенный TCP/IP стек <strong>uIP (micro IP)</strong>, который оптимизирован с точки зрения ресурсов памяти и в частности не использует динамически выделяемую память (кучу).</p>
-<div class="highlight"><pre><span></span>~$ alias get_tm=&#39;echo $((0x`printf c%47s|nc -uw1 pool.ntp.org 123|xxd -s40 -l4 -p`-64#23GDW0))&#39;
-~$ date -d @`get_tm`
-~$ printf &#39;%(%m-%d-%Y %H:%M:%S)T\n&#39; `get_tm`
+<div class="highlight"><pre><span></span>~$ getm<span class="o">(){</span> <span class="nb">echo</span> <span class="k">$((</span><span class="m">0</span>x<span class="sb">`</span><span class="nb">printf</span> c%47s<span class="p">|</span>nc -uw1 <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="p">|</span>xxd -s40 -l4 -p<span class="sb">`</span><span class="o">-</span><span class="m">64#23</span>GDW0<span class="k">))</span><span class="p">;</span> <span class="o">}</span>
+~$ date -d @<span class="sb">`</span>getm pool.ntp.org <span class="m">123</span><span class="sb">`</span>
+~$ <span class="nb">printf</span> <span class="s1">&#39;%(%m-%d-%Y %H:%M:%S)T\n&#39;</span> <span class="sb">`</span>getm pool.ntp.org <span class="m">123</span><span class="sb">`</span>
 </pre></div>
 
 

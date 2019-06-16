@@ -238,6 +238,13 @@ __malloc_free_list
 
 
 <p>Как только мы начали использовать <strong>виртуальные функции</strong>, компилятор решил помочь и молча добавил в исполняемый файл <code>malloc</code> и это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">явно не то</a>, что мы хотим использовать в микроконтроллерах. Можно ли это как-то обойти ?</p>
+<p>У нас тут GCC-подобный компилятор, компоновщик которого позволяет ставить свои обёртки на интересующие функции. Можно попробовать сломать компиляцию при вызове функций динамического выделения памяти <code>malloc</code>, <code>calloc</code>, <code>realloc</code>, <code>free</code>:</p>
+<div class="highlight"><pre><span></span>-fno-builtin -Wl,--wrap=malloc  -Wl,--wrap=calloc \
+             -Wl,--wrap=realloc -Wl,--wrap=free -Wl,--wrap=sbrk
+</pre></div>
+
+
+<p>Теперь при вызове <code>malloc</code> будет вызвана <code>__wrap_malloc</code> и т.д. Поскольку мы не предоставляем реализацию <code>__wrap_malloc</code>, компиляция сломается. Если же <code>malloc</code> нигде не вызывается в коде компилятор выдаст прошивку.</p>
 <p><a href="http://mazko.github.io/MSP430.js/9bdb1cd8da54384ba5b6211ea135b7f8">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/msp430-observer-static-polymorphism.zip">исходники</a></p>
 <p>В старом добром Cи полиморфизм представлен в виде указателей на функции. Наиболее распространенное применение указателей на функции в Cи – это использование библиотечных функций, таких как qsort. Реализация указателей на функции проста: это всего лишь «указатели на код», в них содержится начальный адрес участка ассемблерного кода. Различные типы указателей существуют лишь для уверенности в корректности применяемого соглашения о вызове.</p>
 <p><em>observers/state.h</em></p>
