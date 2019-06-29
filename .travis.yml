@@ -8,8 +8,8 @@ branches:
 before_install:
   - sudo apt-get update
   - sudo apt-get --reinstall install -qq language-pack-en language-pack-ru
-  - openssl aes-256-cbc -K $encrypted_de1cef0a973d_key -iv $encrypted_de1cef0a973d_iv -in github_deploy_key.enc -out github_deploy_key -d
-  - chmod 600 github_deploy_key && eval `ssh-agent -s` > /dev/null 2>&1 && ssh-add github_deploy_key
+  - openssl aes-256-cbc -K $encrypted_de1cef0a973d_key -iv $encrypted_de1cef0a973d_iv -in github_deploy_key.enc -out github_deploy_key -d > /dev/null 2>&1
+  - chmod 600 github_deploy_key && eval `ssh-agent -s` > /dev/null 2>&1 && ssh-add github_deploy_key > /dev/null 2>&1
 install:
   - if [[ ${TRAVIS_PYTHON_VERSION} == '2.7'* ]]; then pip install -r requirements.txt; else exit 1; fi
 before_script:
