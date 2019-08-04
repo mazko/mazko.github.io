@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
         <meta charset="utf-8" />
-        <title>🏠 Интернет Всего 🚗 - Oleg Mazko</title>
+        <title>Мигаем светодиодом по расписанию | cron</title>
         <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
         <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
@@ -20,17 +20,22 @@
                 <nav><ul>
                     <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
                     <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
                     <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
                     <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
 
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/" rel="bookmark"
+           title="Permalink to Мигаем светодиодом по расписанию | cron">Мигаем светодиодом по расписанию | cron</a></h1>
+    </header>
 
-            <aside id="featured" class="body">
-                <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/">Мигаем светодиодом по расписанию | cron</a></h1>
+    <div class="entry-content">
 <footer class="post-info">
         <abbr class="published" title="2019-07-28T00:00:00+03:00">
                 Published: Вс. 28 Июль 2019
@@ -41,7 +46,7 @@
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
 <p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/cron">cron</a> </p>
-</footer><!-- /.post-info --><p>Некоторые регулярно выполняемые задачи, например управление освещением, отоплением, поливом и т.п, отнимают у нас довольно много времени, которое можно использовать с гораздо большей пользой. Имея в распоряжении какой-нибудь микроконтроллер совсем нетрудно организовать автоматическое выполнение указанных задач, причем делать в оптимальное для работы время. Можно например автоматически включать свет днём, отопление в летние месяцы и даже в зимние.</p>
+</footer><!-- /.post-info -->      <p>Некоторые регулярно выполняемые задачи, например управление освещением, отоплением, поливом и т.п, отнимают у нас довольно много времени, которое можно использовать с гораздо большей пользой. Имея в распоряжении какой-нибудь микроконтроллер совсем нетрудно организовать автоматическое выполнение указанных задач, причем делать в оптимальное для работы время. Можно например автоматически включать свет днём, отопление в летние месяцы и даже в зимние.</p>
 <p>Любой пользователь Linux когда-нибудь слышал о <strong>cron</strong> – сервисе (демоне), который можно использовать для запуска повторяющихся заданий по расписанию, задаваемого по календарному времени. Предусмотрен также неоднократный запуск заданий, т.е. задание можно запускать периодически в определенное время или через определенный промежуток времени. Демон имеет простой, понятный и удивительно гибкий для своей компактности синтаксис, который де-факто является своего рода стандартом в мире Unix и как следствие большое количество обучающих материалов с примерами. Было бы здорово использовать такой же синтаксис при планировании задач в микроконтроллере, чтобы не заниматься изобретением своего велосипеда.</p>
 <p><a href="http://mazko.github.io/MSP430.js/87ea53d45e9b33bd2b91b8b48f309c89">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/emcron.zip">исходники</a></p>
 <p><img alt="screenshot" src="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
@@ -107,8 +112,10 @@
 
 
 <p>Все условия (времени запуска) проверяются по «логическому И», кроме условий «день недели» и «день месяца» – указанные совместно, они обрабатываются по «логическому ИЛИ», то есть «по любому из дней», что отражено в документации (Ubuntu, Debian, FreeBSD). Однако такая логика неочевидна и не позволяет создать условие типа «первый понедельник каждого месяца» или «каждую пятницу в 13 число». Разработчики не изменяют данное поведение, считая его стандартом.</p>
-<p>Также стоит помнить о переходе на летнее / зимнее время. Тут нет единого мнения и различные реализации cron могут вести себя по разному. В Unix системах есть альтернатива Anacron, который в отличие от cron не поддерживает запуск заданий по расписанию, вместо этого задания запускаются с заданным интервалом времени. Это очень удобно для систем которые работают не регулярно, например домашние рабочие станции или ноутбуки.</p><p>There are <a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
+<p>Также стоит помнить о переходе на летнее / зимнее время. Тут нет единого мнения и различные реализации cron могут вести себя по разному. В Unix системах есть альтернатива Anacron, который в отличие от cron не поддерживает запуск заданий по расписанию, вместо этого задания запускаются с заданным интервалом времени. Это очень удобно для систем которые работают не регулярно, например домашние рабочие станции или ноутбуки.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
 
 <div class="body" style="margin-bottom: 2em">
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -123,108 +130,22 @@
 </script>
 </div>
 
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/" rel="bookmark"
-                           title="Permalink to Как работает «Smart Config»">Как работает «Smart Config»</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-09-09T00:00:00+03:00">
-                Published: Вс. 09 Сентябрь 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/wi-fi">Wi-Fi</a> </p>
-</footer><!-- /.post-info -->                <p>Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/" rel="bookmark"
-                           title="Permalink to С++ для микроконтроллеров - «Наблюдатель»">С++ для микроконтроллеров - «Наблюдатель»</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-03-18T00:00:00+02:00">
-                Published: Вс. 18 Март 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
-</footer><!-- /.post-info -->                <p>Продолжаем присматриваться к <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a>.</p>
-<p>Наблюдатель – это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">паттерн</a> проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">GoF</a> даёт следующее классическое определение …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/" rel="bookmark"
-                           title="Permalink to Безопасность «Интернета вещей» - TLS / DTLS">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-05T00:00:00+02:00">
-                Published: Пт. 05 Январь 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
-<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT и др.) работать без изменений. Исторически …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/" rel="bookmark"
-                           title="Permalink to Язык обработки структурированных текстов AWK">Язык обработки структурированных текстов AWK</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-11-17T00:00:00+02:00">
-                Published: Пт. 17 Ноябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
-</footer><!-- /.post-info -->                <p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
-<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-<p class="paginator">
-    Page 1 / 17
-        <a href="http://proiot.ru/blog/author/oleg-mazko/index2.html">&raquo;</a>
-</p>
-                </section><!-- /#content -->
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

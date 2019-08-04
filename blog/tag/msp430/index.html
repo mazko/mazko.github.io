@@ -30,312 +30,84 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">С++ для микроконтроллеров - «Наблюдатель»</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/">Мигаем светодиодом по расписанию | cron</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2018-03-18T00:00:00+02:00">
-                Published: Вс. 18 Март 2018
+        <abbr class="published" title="2019-07-28T00:00:00+03:00">
+                Published: Вс. 28 Июль 2019
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
-</footer><!-- /.post-info --><p>Продолжаем присматриваться к <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a>.</p>
-<p>Наблюдатель – это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">паттерн</a> проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">GoF</a> даёт следующее классическое определение: наблюдатель (англ. Observer) – паттерн поведения объектов. Определяет зависимость типа «один ко многим» между объектами таким образом, что при изменении состояния одного объекта все зависящие от него оповещаются об этом и автоматически обновляются.</p>
-<p>Аналогия из жизни: после того как вы оформили подписку на газету или журнал, вам больше не нужно ездить в супермаркет и проверять, не вышел ли очередной номер. Вместо этого, издательство будет присылать новые номера сразу после выхода прямо к вам домой. Издательство ведёт список подписчиков и знает, кому какой журнал слать. Вы можете в любой момент отказаться от подписки, и журнал перестанет к вам приходить.</p>
-<p><a href="http://mazko.github.io/MSP430.js/8490b771b5c0189e639726f219cb2b16">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/msp430-observer.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
-<p>Давайте называть «издателями» те объекты, которые содержат важное или интересное для других состояние. Остальные объекты, которые хотят отслеживать изменения этого состояния, назовём «подписчиками».</p>
-<p>Паттерн «Наблюдатель» предлагает хранить внутри объекта «издателя» (контейнера) список ссылок на объекты «подписчиков». Причём, «издатель» не должен вести список подписки самостоятельно. Он должен предоставить методы, с помощью которых «подписчики» могли бы добавлять или убирать себя из списка.</p>
-<p>Когда в «издателе» будет происходить важное событие, он будет проходиться по списку «подписчиков» и оповещать их об этом, вызывая определённый метод объектов-подписчиков.</p>
-<p><em>observers/state.h</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;DoublyLinkedList.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;non-copyable.h&quot;</span><span class="cp"></span>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/cron">cron</a> </p>
+</footer><!-- /.post-info --><p>Некоторые регулярно выполняемые задачи, например управление освещением, отоплением, поливом и т.п, отнимают у нас довольно много времени, которое можно использовать с гораздо большей пользой. Имея в распоряжении какой-нибудь микроконтроллер совсем нетрудно организовать автоматическое выполнение указанных задач, причем делать в оптимальное для работы время. Можно например автоматически включать свет днём, отопление в летние месяцы и даже в зимние.</p>
+<p>Любой пользователь Linux когда-нибудь слышал о <strong>cron</strong> – сервисе (демоне), который можно использовать для запуска повторяющихся заданий по расписанию, задаваемого по календарному времени. Предусмотрен также неоднократный запуск заданий, т.е. задание можно запускать периодически в определенное время или через определенный промежуток времени. Демон имеет простой, понятный и удивительно гибкий для своей компактности синтаксис, который де-факто является своего рода стандартом в мире Unix и как следствие большое количество обучающих материалов с примерами. Было бы здорово использовать такой же синтаксис при планировании задач в микроконтроллере, чтобы не заниматься изобретением своего велосипеда.</p>
+<p><a href="http://mazko.github.io/MSP430.js/87ea53d45e9b33bd2b91b8b48f309c89">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/emcron.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>В Linux каждый пользователь системы имеет свой файл заданий <strong>crontab</strong>, в котором описано, в какое время и какие программы запускать от имени этого пользователя, а также переменные, настраивающие среду окружения, в котором будут работать задачи cron. В микроконтроллере часть этих настроек выглядит явно избыточной – скорее всего там нет такого понятия, как пользователи и переменные среды окружения да и программы запускать тоже навряд ли получится. Можно упростить себе жизнь и просто ограничится каким-нибудь контейнером вроде связного списка, чтобы иметь возможность пройтись по контейнеру и динамически добавлять / удалять задачи cron в него например из командной строки. Ну а для демонстрации возможностей cron сойдёт даже обычный статический массив (нельзя изменять размер во время выполнения программы), заданный на этапе компиляции. Элемент контейнера состоит из события – выражения cron, и действия. Действие описывает устройство периферии (например светодиод) и в какое состояние его необходимо перевести.</p>
+<p><em>crond.c</em></p>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">struct</span> <span class="n">crond_job</span> <span class="n">jobs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">{</span> <span class="p">.</span><span class="n">expr</span> <span class="o">=</span> <span class="s">&quot;*/6 */2 * * * *&quot;</span><span class="p">,</span> <span class="p">.</span><span class="n">led</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="n">b0000011111</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">}</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="p">.</span><span class="n">expr</span> <span class="o">=</span> <span class="s">&quot;2/6 */2 * * * *&quot;</span><span class="p">,</span> <span class="p">.</span><span class="n">led</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="n">b1111100000</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">}</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="p">.</span><span class="n">expr</span> <span class="o">=</span> <span class="s">&quot;4/6 */2 * * * *&quot;</span><span class="p">,</span> <span class="p">.</span><span class="n">led</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="n">b1111111111</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span> <span class="p">},</span>
 
-<span class="k">namespace</span> <span class="n">obsevers</span> <span class="p">{</span>
-
-    <span class="c1">// alias</span>
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">using</span> <span class="n">DLLE</span> <span class="o">=</span> <span class="n">mozilla</span><span class="o">::</span><span class="n">DoublyLinkedListElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
-
-    <span class="k">namespace</span> <span class="n">state</span> <span class="p">{</span>
-
-        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-            <span class="n">left_active</span><span class="p">,</span>
-            <span class="n">left_sleep</span>
-        <span class="p">}</span> <span class="n">state_t</span><span class="p">;</span>
-
-        <span class="k">struct</span> <span class="nl">IObserver</span> <span class="p">:</span> <span class="k">public</span> <span class="n">DLLE</span><span class="o">&lt;</span><span class="n">IObserver</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">NonCopyable</span>
-        <span class="p">{</span>
-            <span class="k">virtual</span> <span class="kt">void</span> <span class="n">observe</span><span class="p">(</span><span class="n">state_t</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="p">};</span>
-
-
-        <span class="k">class</span> <span class="nc">Container</span> <span class="o">:</span> <span class="n">NonCopyable</span>
-        <span class="p">{</span>
-            <span class="n">mozilla</span><span class="o">::</span><span class="n">DoublyLinkedList</span><span class="o">&lt;</span><span class="n">IObserver</span><span class="o">&gt;</span> <span class="n">mList</span><span class="p">;</span>
-
-        <span class="k">public</span><span class="o">:</span>
-            <span class="kt">void</span> <span class="n">addObserver</span><span class="p">(</span><span class="n">IObserver</span><span class="o">*</span> <span class="n">aObserver</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="c1">// Will assert if |aObserver| is part of another list.</span>
-                <span class="n">mList</span><span class="p">.</span><span class="n">pushFront</span><span class="p">(</span><span class="n">aObserver</span><span class="p">);</span>
-            <span class="p">}</span>
-
-            <span class="kt">void</span> <span class="n">removeObserver</span><span class="p">(</span><span class="n">IObserver</span><span class="o">*</span> <span class="n">aObserver</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="c1">// Will assert if |aObserver| is not part of |list|.</span>
-                <span class="n">mList</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">aObserver</span><span class="p">);</span>
-            <span class="p">}</span>
-
-            <span class="kt">void</span> <span class="n">notifyObservers</span><span class="p">(</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span>
-            <span class="p">{</span>
-                <span class="k">for</span> <span class="p">(</span><span class="n">IObserver</span><span class="o">&amp;</span> <span class="nl">o</span> <span class="p">:</span> <span class="n">mList</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="n">o</span><span class="p">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aState</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">};</span>
-
-        <span class="k">extern</span> <span class="n">Container</span> <span class="n">event</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>В приведенной реализации «подписчики» образуют двусвязный список, что позволяет обойтись без динамического выделения памяти. Почему это важно для микроконтроллеров описано <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">тут</a>. Используется готовая реализация двусвязного списка взятая из исходников mozilla.</p>
-<p>Шаблон «Наблюдатель» работает синхронно. Обычно выделяется главный цикл приложения, тело которого состоит из двух частей: выборки события и обработки события. Как правило, в реальных задачах оказывается недопустимым длительное выполнение обработчика события, поскольку при этом программа не может реагировать на другие события.</p>
-<p><em>app.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;app.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;observers/buttons.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;observers/state.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;tasks/left.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;tasks/right.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;tasks/counter.h&quot;</span><span class="cp"></span>
-
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">obsevers</span><span class="p">;</span>
-
-<span class="n">buttons</span><span class="o">::</span><span class="n">Container</span> <span class="n">obsevers</span><span class="o">::</span><span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">;</span>
-<span class="n">state</span><span class="o">::</span><span class="n">Container</span>   <span class="n">obsevers</span><span class="o">::</span><span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">;</span>
-
-<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
-
-    <span class="kt">int</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
-
-        <span class="n">tasks</span><span class="o">::</span><span class="n">left</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
-        <span class="n">tasks</span><span class="o">::</span><span class="n">right</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
-        <span class="n">tasks</span><span class="o">::</span><span class="n">counter</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
-
-        <span class="kt">char</span> <span class="n">lastBtns</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="k">volatile</span> <span class="kt">uint16_t</span> <span class="n">longPress</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// TODO: use timer</span>
-        <span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">lastState</span> <span class="o">=</span> <span class="n">state</span><span class="o">::</span><span class="n">left_sleep</span><span class="p">;</span>
-
-        <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-
-            <span class="kt">char</span> <span class="n">btns</span> <span class="o">=</span> <span class="n">hal</span><span class="o">::</span><span class="n">get_buttons</span><span class="p">();</span>
-
-            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lastBtns</span> <span class="o">&amp;&amp;</span> <span class="n">btns</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">notifyObservers</span><span class="p">(</span><span class="n">btns</span><span class="p">);</span>
-            <span class="p">}</span>
-
-            <span class="k">if</span> <span class="p">(</span><span class="n">btns</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="cm">/* left first button */</span><span class="p">)</span> <span class="p">{</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">longPress</span> <span class="o">&amp;&amp;</span> <span class="o">!--</span><span class="n">longPress</span><span class="p">)</span> 
-                <span class="p">{</span>
-                    <span class="k">switch</span> <span class="p">(</span><span class="n">lastState</span><span class="p">)</span> <span class="p">{</span>
-                        <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
-                            <span class="n">lastState</span> <span class="o">=</span> <span class="n">state</span><span class="o">::</span><span class="n">left_sleep</span><span class="p">;</span>
-                            <span class="k">break</span><span class="p">;</span>
-                        <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_sleep</span><span class="p">:</span>
-                            <span class="n">lastState</span> <span class="o">=</span> <span class="n">state</span><span class="o">::</span><span class="n">left_active</span><span class="p">;</span>
-                            <span class="k">break</span><span class="p">;</span>
-                    <span class="p">}</span>
-                    <span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">notifyObservers</span><span class="p">(</span><span class="n">lastState</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-                <span class="n">longPress</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
-            <span class="p">}</span>
-
-            <span class="n">lastBtns</span> <span class="o">=</span> <span class="n">btns</span><span class="p">;</span>
-
-            <span class="c1">// other events like timer e.t.c...</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>В данном примере два события: изменение состояния и нажатие на кнопки. При изменении состояния (длительное нажатие) левые лампочки динамически подписываются / отписываются от события нажатия на кнопки. Правые лампочки и счётчик нажатий подписаны на событие кнопок всегда.</p>
-<p>Никогда не полагайтесь на определенный порядок оповещения «подписчиков». Метод <code>addObserver</code> класса <code>state::Container</code> добавляет нового «подписчика» в начало связного списка. А если добавлять не в начало а в конец ? Какой порядок считать правильным ? <strong>Любой</strong>. Нужно писать код таким образом, чтобы порядок обхода «подписчиков» никак не влиял на поведение программы. Чем меньше компоненты системы знают друг о друге, тем проще их изменять и развивать. О силе слабых связей чуть ниже.</p>
-<p><em>tasks/left.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;left.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;color-observer.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;observers/state.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
-
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">obsevers</span><span class="p">;</span>
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">tasks</span><span class="p">;</span>
-
-<span class="k">class</span> <span class="nc">LockerObserver</span> <span class="o">:</span> <span class="k">public</span> <span class="n">state</span><span class="o">::</span><span class="n">IObserver</span> <span class="p">{</span>
-
-    <span class="n">ColorObserver</span><span class="o">&lt;</span><span class="n">hal</span><span class="o">::</span><span class="n">LeftLeds</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;</span> <span class="n">o</span><span class="p">;</span>
-
-    <span class="kt">void</span> <span class="nf">observe</span><span class="p">(</span><span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
-        <span class="k">switch</span> <span class="p">(</span><span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
-                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left subscribed  &quot;</span><span class="p">);</span>
-                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_sleep</span><span class="p">:</span>
-                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
-                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">removeObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">public</span><span class="o">:</span> 
-        <span class="kt">void</span> <span class="n">str</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">str</span><span class="p">)</span> <span class="p">{</span>
-          <span class="n">draw</span><span class="o">::</span><span class="n">str</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_0</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-        <span class="p">}</span>
+  <span class="p">{</span> <span class="p">.</span><span class="n">expr</span> <span class="o">=</span> <span class="s">&quot;*/6 1/2 * * * *&quot;</span><span class="p">,</span> <span class="p">.</span><span class="n">led</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="n">b1010101010</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">}</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="p">.</span><span class="n">expr</span> <span class="o">=</span> <span class="s">&quot;2/6 1/2 * * * *&quot;</span><span class="p">,</span> <span class="p">.</span><span class="n">led</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="n">b0101010101</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="p">.</span><span class="n">expr</span> <span class="o">=</span> <span class="s">&quot;4/6 1/2 * * * *&quot;</span><span class="p">,</span> <span class="p">.</span><span class="n">led</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="n">b1111111111</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span> <span class="p">},</span>
 <span class="p">};</span>
-
-<span class="k">static</span> <span class="n">LockerObserver</span> <span class="n">observer</span><span class="p">;</span>
-
-<span class="k">namespace</span> <span class="n">tasks</span> <span class="p">{</span>
-    <span class="k">namespace</span> <span class="n">left</span> <span class="p">{</span>
-        <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
-            <span class="n">observer</span><span class="p">.</span><span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
-            <span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">observer</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
 </pre></div>
 
 
-<p>Если объекты могут взаимодействовать, не обладая практически никакой информацией друг о друге, такие объекты называют слабосвязанными. Единственное, что знает «издатель» о «подписчиках», – то, что они реализует некоторый интерфейс (IObserver). Ему не нужно знать ни конкретный класс «подписчика», ни его функциональность. Добавление новых типов «подписчиков» не требует модификации «издателя». </p>
-<p>На базе слабосвязанных архитектур строятся гибкие системы, которые хорошо адаптируются к изменениям благодаря минимальным зависимостям между объектами.</p>
-<blockquote>
-<p>Есть всего два типа языков программирования: те, на которые люди всё время ругаются, и те, которые никто не использует. — Bjarne Stroustrup</p>
-</blockquote>
-<p>Как вы думаете, что выведет следующая команда ?</p>
-<div class="highlight"><pre><span></span>~$ strings a.out | grep alloc
-# output
-lib_a-malloc.o
-lib_a-nano-mallocr.o
-malloc
-_malloc_r
-__malloc_sbrk_start
-__malloc_free_list
+<p>Как несложно убедиться каждое выражение cron состоит из шести полей, разделяемых пробелами или табуляторами. В этих полях  задают время выполнения (Секунда, Минута, Час, День, Месяц, День недели), в них может находиться число, список чисел, разделённых запятыми, символы <code>*</code> или <code>/</code> и диапазон чисел, разделённых дефисом. Месяцы и дни недели можно также задавать в 3-х буквенном варианте:</p>
+<div class="highlight"><pre><span></span>* * * * * *     Действие (установить цвет RGB светодиодов с 1 по 10)
+| | | | | |
+| | | | | ----- День недели (0 - 6) (0 это воскресенье)
+| | | | ------- Месяц (1 - 12)
+| | | --------- День (1 - 31)
+| | ----------- Час (0 - 23)
+| ------------- Минута (0 - 59)
+--------------- Секунда (0 - 59)
 </pre></div>
 
 
-<p>Как только мы начали использовать <strong>виртуальные функции</strong>, компилятор решил помочь и молча добавил в исполняемый файл <code>malloc</code> и это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">явно не то</a>, что мы хотим использовать в микроконтроллерах. Можно ли это как-то обойти ?</p>
-<p>У нас тут GCC-подобный компилятор, компоновщик которого позволяет ставить свои обёртки на интересующие функции. Можно попробовать сломать компиляцию при вызове функций динамического выделения памяти <code>malloc</code>, <code>calloc</code>, <code>realloc</code>, <code>free</code>:</p>
-<div class="highlight"><pre><span></span>-fno-builtin -Wl,--wrap=malloc  -Wl,--wrap=calloc \
-             -Wl,--wrap=realloc -Wl,--wrap=free -Wl,--wrap=sbrk
+<p>Символ <code>*</code> подразумевает любое значение. Каждую секунду:</p>
+<div class="highlight"><pre><span></span>* * * * * *
 </pre></div>
 
 
-<p>Теперь при вызове <code>malloc</code> будет вызвана <code>__wrap_malloc</code> и т.д. Поскольку мы не предоставляем реализацию <code>__wrap_malloc</code>, компиляция сломается. Если же <code>malloc</code> нигде не вызывается в коде компилятор выдаст прошивку.</p>
-<p><a href="http://mazko.github.io/MSP430.js/9bdb1cd8da54384ba5b6211ea135b7f8">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/msp430-observer-static-polymorphism.zip">исходники</a></p>
-<p>В старом добром Cи полиморфизм представлен в виде указателей на функции. Наиболее распространенное применение указателей на функции в Cи – это использование библиотечных функций, таких как qsort. Реализация указателей на функции проста: это всего лишь «указатели на код», в них содержится начальный адрес участка ассемблерного кода. Различные типы указателей существуют лишь для уверенности в корректности применяемого соглашения о вызове.</p>
-<p><em>observers/state.h</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;DoublyLinkedList.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;non-copyable.h&quot;</span><span class="cp"></span>
-
-<span class="k">namespace</span> <span class="n">obsevers</span> <span class="p">{</span>
-
-    <span class="c1">// alias</span>
-    <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="k">using</span> <span class="n">DLLE</span> <span class="o">=</span> <span class="n">mozilla</span><span class="o">::</span><span class="n">DoublyLinkedListElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
-
-    <span class="k">namespace</span> <span class="n">state</span> <span class="p">{</span>
-
-        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
-            <span class="n">left_active</span><span class="p">,</span>
-            <span class="n">left_sleep</span>
-        <span class="p">}</span> <span class="n">state_t</span><span class="p">;</span>
-
-        <span class="k">class</span> <span class="nc">Observer</span> <span class="o">:</span> <span class="k">public</span> <span class="n">DLLE</span><span class="o">&lt;</span><span class="n">Observer</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">NonCopyable</span>
-        <span class="p">{</span>
-            <span class="k">typedef</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">ObserveFunc</span><span class="p">)</span> <span class="p">(</span><span class="n">state_t</span><span class="p">,</span> <span class="n">Observer</span><span class="o">*</span><span class="p">);</span>
-
-            <span class="n">ObserveFunc</span> <span class="n">m_observe_func_ptr</span><span class="p">;</span>
-
-        <span class="k">public</span><span class="o">:</span>
-            <span class="kt">void</span> <span class="n">observe</span><span class="p">(</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
-                <span class="p">(</span><span class="o">*</span><span class="n">m_observe_func_ptr</span><span class="p">)(</span><span class="n">aState</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-            <span class="p">}</span>
-
-            <span class="n">Observer</span><span class="p">(</span><span class="n">ObserveFunc</span> <span class="n">f</span><span class="p">)</span><span class="o">:</span> <span class="n">m_observe_func_ptr</span><span class="p">(</span><span class="n">f</span><span class="p">){}</span>
-        <span class="p">};</span>
-
-        <span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
-        <span class="k">class</span> <span class="nc">Adapter</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Observer</span>
-        <span class="p">{</span>
-            <span class="n">T</span> <span class="n">m_observer_impl</span><span class="p">;</span>
-
-        <span class="k">public</span><span class="o">:</span>
-            <span class="n">Adapter</span><span class="p">()</span><span class="o">:</span> <span class="n">Observer</span><span class="p">(</span>
-                <span class="p">[](</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">,</span> <span class="n">Observer</span><span class="o">*</span> <span class="n">aThis</span><span class="p">)</span>
-                <span class="p">{</span>
-                    <span class="k">auto</span> <span class="n">self</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Adapter</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">aThis</span><span class="p">);</span>
-                    <span class="n">self</span><span class="o">-&gt;</span><span class="n">m_observer_impl</span><span class="p">.</span><span class="n">observe</span><span class="p">(</span><span class="n">aState</span><span class="p">);</span>
-                <span class="p">}){</span><span class="cm">/* empty constructor */</span><span class="p">}</span>
-        <span class="p">};</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<p>Каждый день в 03:15:00:</p>
+<div class="highlight"><pre><span></span>0 15 3 * * *
 </pre></div>
 
 
-<p><em>tasks/left.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;left.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;color-observer.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;observers/state.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;hal.h&quot;</span><span class="cp"></span>
-
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">obsevers</span><span class="p">;</span>
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">tasks</span><span class="p">;</span>
-
-<span class="k">static</span> <span class="kt">void</span> <span class="nf">str</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">str</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">draw</span><span class="o">::</span><span class="n">str</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_0</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">struct</span> <span class="nl">LockerObserver</span> <span class="p">:</span> <span class="n">NonCopyable</span> <span class="p">{</span>
-
-    <span class="n">buttons</span><span class="o">::</span><span class="n">Adapter</span><span class="o">&lt;</span><span class="n">ColorObserver</span><span class="o">&lt;</span><span class="n">hal</span><span class="o">::</span><span class="n">LeftLeds</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">&gt;&gt;</span> <span class="n">o</span><span class="p">;</span>
-
-    <span class="kt">void</span> <span class="nf">observe</span><span class="p">(</span><span class="n">state</span><span class="o">::</span><span class="n">state_t</span> <span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">switch</span> <span class="p">(</span><span class="n">aState</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_active</span><span class="p">:</span>
-                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left subscribed  &quot;</span><span class="p">);</span>
-                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-            <span class="k">case</span> <span class="n">state</span><span class="o">::</span><span class="nl">left_sleep</span><span class="p">:</span>
-                <span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
-                <span class="n">buttons</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">removeObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">o</span><span class="p">);</span>
-                <span class="k">break</span><span class="p">;</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">};</span>
-
-<span class="k">static</span> <span class="n">state</span><span class="o">::</span><span class="n">Adapter</span><span class="o">&lt;</span><span class="n">LockerObserver</span><span class="o">&gt;</span> <span class="n">observer</span><span class="p">;</span>
-
-<span class="k">namespace</span> <span class="n">tasks</span> <span class="p">{</span>
-    <span class="k">namespace</span> <span class="n">left</span> <span class="p">{</span>
-        <span class="kt">void</span> <span class="n">start</span><span class="p">()</span> <span class="p">{</span>
-            <span class="n">str</span><span class="p">(</span><span class="s">&quot;left unsubscribed&quot;</span><span class="p">);</span>
-            <span class="n">state</span><span class="o">::</span><span class="n">event</span><span class="p">.</span><span class="n">addObserver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">observer</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<p>Каждый понедельник:</p>
+<div class="highlight"><pre><span></span>0 0 0 * * 1
 </pre></div>
 
 
-<p>Возможно существует какое-то более элегантный способ отучить виртуальные функции от вызова malloc, но в целом представленное решение выглядит вполне съедобным.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </article>
+<p>Каждый четный час:</p>
+<div class="highlight"><pre><span></span>0 0 */2 * * *
+</pre></div>
+
+
+<p>Тоже что и выше, но расписанное полностью:</p>
+<div class="highlight"><pre><span></span>0 0 0,2,4,6,8,10,12,14,16,18,20,22 * * *
+</pre></div>
+
+
+<p>Каждый будний день в 22:00:</p>
+<div class="highlight"><pre><span></span>0 0 22 * * 1-5
+</pre></div>
+
+
+<p>Новый год:</p>
+<div class="highlight"><pre><span></span>59 59 23 31 dec *
+</pre></div>
+
+
+<p>Все условия (времени запуска) проверяются по «логическому И», кроме условий «день недели» и «день месяца» – указанные совместно, они обрабатываются по «логическому ИЛИ», то есть «по любому из дней», что отражено в документации (Ubuntu, Debian, FreeBSD). Однако такая логика неочевидна и не позволяет создать условие типа «первый понедельник каждого месяца» или «каждую пятницу в 13 число». Разработчики не изменяют данное поведение, считая его стандартом.</p>
+<p>Также стоит помнить о переходе на летнее / зимнее время. Тут нет единого мнения и различные реализации cron могут вести себя по разному. В Unix системах есть альтернатива Anacron, который в отличие от cron не поддерживает запуск заданий по расписанию, вместо этого задания запускаются с заданным интервалом времени. Это очень удобно для систем которые работают не регулярно, например домашние рабочие станции или ноутбуки.</p><p>There are <a href="http://proiot.ru/blog/posts/2019/07/28/migaem-svetodiodom-po-raspisaniiu-cron/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
 <div class="body" style="margin-bottom: 2em">
@@ -355,6 +127,30 @@ __malloc_free_list
                     <h1>Other articles</h1>
                     <hr />
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/" rel="bookmark"
+                           title="Permalink to С++ для микроконтроллеров - «Наблюдатель»">С++ для микроконтроллеров - «Наблюдатель»</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-03-18T00:00:00+02:00">
+                Published: Вс. 18 Март 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
+</footer><!-- /.post-info -->                <p>Продолжаем присматриваться к <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a>.</p>
+<p>Наблюдатель – это <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">паттерн</a> проектирования, который создаёт механизм подписки, позволяющий одним объектам следить и реагировать на события, происходящие в других объектах. Данный шаблон часто применяют в ситуациях, в которых отправителя сообщений не интересует, что делают получатели с предоставленной им информацией.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">GoF</a> даёт следующее классическое определение …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -423,29 +219,6 @@ __malloc_free_list
 <p>CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">HTTP</a>, но с дополнительными фичами и улучшениями. В отличие …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
-                           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2017-10-09T00:00:00+03:00">
-                Published: Пн. 09 Октябрь 2017
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
-<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
