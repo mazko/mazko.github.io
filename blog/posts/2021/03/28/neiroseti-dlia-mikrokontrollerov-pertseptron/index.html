@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Нейросети для микроконтроллеров - «Перцептрон»</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/" rel="bookmark"
+           title="Permalink to Нейросети для микроконтроллеров - «Перцептрон»">Нейросети для микроконтроллеров - «Перцептрон»</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2021-03-28T00:00:00+02:00">
+                Published: Вс. 28 Март 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ai">ai</a> </p>
+</footer><!-- /.post-info -->      <p>Искусственные нейронные сети (ИНС) — это упрощенные математические модели организации реальных биологических нейронных сетей (БНС). Пока что ИНС еще очень далеки от возможностей человеческого мозга и мышления, однако уже сейчас нейросети успешно применяются во многих сферах деятельности человека таких как распознавание, а также синтез речи и изображений, роботы-курьеры, беспилотный транспорт, прогнозирование временных рядов и др.</p>
+<p>Базовый элемент нейросети — нейрон. Как мы видим на рисунке ниже, структуру биологического нейрона можно упростить до следующей: дендриты, тело нейрона и аксон. Дендриты — ветвящиеся отростки, собирающие информацию со входа в нейрон (это может быть внешняя информация с рецепторов, или внутренняя информация от другого нейрона). В том случае, если входящая информация активировала нейрон (в биологическом случае — потенциал стал выше какого-то порога), рождается волна возбуждения, которая распространяется по мембране тела нейрона, а затем через аксон, посредством выброса нейромедиатора, передает сигнал другим нервным клетками или тканям.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/neuron.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
+<p>Сначала будет немного математики, потом собственно код.</p>
+<h2>ТЕОРИЯ</h2>
+<p>Уоррен Мак-Каллок и Уолтер Питтс в 1943 году предложили модель математического нейрона. А в 1958 году Френк Розенблатт на основе нейрона Мак-Каллока-Питтса создал компьютерную программу, а затем и физическое устройство — <strong>перцептрон</strong>. С этого и началась история искусственных нейронных сетей. Теперь рассмотрим математическую модель нейрона, с которым мы будем иметь дело дальше. На вход подаются числа (сигналы), после они умножаются на веса (каждый сигнал – на свой вес) и суммируются. К результату суммирования иногда еще добавляют какую-то константу смещения (для упрощения на рисунке смещение отсутствует). Затем функция активации высчитывает выходной сигнал и подает его на выход.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/perceptron.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
+<p>Идея функции активации также взята из биологии. Функция активации позволяет проходить или не проходить сигналам от нейрона к нейронам в зависимости от информации, которую они передают. Т.е. если информация является важной, то функция пропускает ее, а если информации мало или она недостоверна, то функция активации не позволяет ей пройти дальше.</p>
+<p>Функции активации бывают очень разные, выбор обуславливается областью применения ИНС и является важной исследовательской задачей для специалиста по машинному обучению. Вот так например выглядят некоторые из них:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/activation.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
+<p>Очевидно, что в самом простом случае вся нейросеть может быть представлена одним единственным нейроном. При этом даже один нейрон хорошо справляется с задачей  распознавания класса объекта в пространстве, в котором объекты этих классов являются линейно сепарабельными. Простым примером линейной сепарабельности являются булевы функции OR и AND, для таких функций всегда можно провести прямую (или гиперплоскость в многомерном пространстве), отделяющую 0 значения от 1. А вот с функцией XOR дела обстоят немного сложнее и сеть из одного нейрона с такой задачей увы не справится.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/or_xor.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
+<p>Невозможно провести одну прямую таким образом, чтобы разделить значения исключающего ИЛИ. К счастью, решение достаточно простое. Для этого существуют более сложные архитектуры нейронных сетей, состоящие из множества таких нейронов, объединенных в слои. Такие многослойные сети еще называют глубокими. Им под силу решать сложные задачи, с которыми не может справиться перцептрон. В частности, линейно неразделимые задачи. Графически <strong>многослойный перцептрон</strong> с одним скрытым слоем выглядит вот так:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/dog_cat.gif" style="width:100%; display:block; border:1px solid #ddd;"></p>
+<p>Перед тем как приступить к практике пару слов о том как обучить нейросеть. Как правильно подобрать веса для нейронов так, чтобы ошибка на выходе была минимальной ? Обычно веса инициализируются случайным образом. В процессе обучения значения весов меняются. На практике сейчас наиболее часто применяют метод градиентного спуска и обратного распространения ошибки. Множество библиотек машинного обучения например Tensorflow, Pytorch и др. дают возможность с легкостью реализовать обучение этим методом, не вдаваясь в подробности его реализации. Градиентный спуск — метод нахождения минимального значения функции ошибки (существует множество видов этой функции). Минимизация любой функции означает поиск самой глубокой впадины в этой функции.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/gradient.gif" style="width:100%; display:block; border:1px solid #ddd; padding: 10px 0;"></p>
+<p>Итак у нас есть исходные матрицы весов, мы хотим внести в них изменения, которые делают нашу модель лучше, уменьшают ошибку. Еще у нас есть набор данных для обучения, который состоит из входных данных, и того что мы хотим получать на выходе нейронной сети. Также есть некая фиксированная функция для численной оценки ошибки на выходе. Если будет известно, насколько влияют веса на эту функцию, то будет известно, насколько их нужно изменить. Тут нам поможет частная <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">производная функции</a> ошибки — градиент. Производная позволяет определить крутизну и направление функции при заданном аргументе. Если частная производная известна, можно приступать к обучению сети, которое состоит из двух шагов:</p>
+<ul>
+<li>
+<p>прямое распространение — обучающие данные подаются на вход сети, проходят через все веса, результаты сравниваются с желаемыми целевыми значеними и таким образом вычисляется текущая ошибка сети</p>
+</li>
+<li>
+<p>обратное распространение — зная величину ошибки сети и частную производную, которая  вычисляется по каждому весу, веса корректируются с учетом некоего небольшого коэффициента начиная с весов выходных нейронов</p>
+</li>
+</ul>
+<p>Повторять эти шаги нужно итеративно, до тех пор пока ошибка не перестанет уменьшаться. Двигаясь по направлению градиента мы будем плавно скатываться в низину, а динамика обучения нейронной сети напоминает шарик, постепенно скатывающийся в локальный минимум.</p>
+<h2>ПРАКТИКА</h2>
+<p>Тут мы обучим многослойный перцептрон выполнять функцию XOR. Обучать будем в Tensorflow (не принципиально, можно использовать любую другую библиотеку машинного обучения). Обученную модель развернем на микроконтроллере с <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++</a> компилятором.</p>
+<p><a href="http://mazko.github.io/MSP430.js/2ccb68b454f4da854ee5ed23df03dee6">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/uxor.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Чтобы обучить нейронную сеть, нам понадобится исходный набор данных, в нашем случае это таблица истинности исключающего или:</p>
+<div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+
+
+<p>Также нужно создать модель нейронной сети. Пусть это будет перцептрон с одним скрытым слоем из трех нейронов. Функция активации скрытого слоя Relu. Выходной слой состоит из одного нейрона с функцией активации Sigmoid. Два входа:</p>
+<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">x_in</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span>
+                       <span class="n">kernel_regularizer</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span>
+                       <span class="n">bias_regularizer</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">x_in</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Теперь нужно скомпилировать нашу модель, то есть, по существу, настроить ее для обучения. Будем использовать оптимизатор Adam. Оптимизатор — это алгоритм, который изменяет веса и смещения во время обучения. В качестве функции ошибки используем среднеквадратическую ошибку MSE(mean squared error). В нейронный сетях функцию ошибки часто называют функцией потерь:</p>
+<div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Теперь можно обучить нашу модель. Обучение занимает какое-то время, которое зависит от сложности сети и количестве обучающих данных. В нашем случае сеть крошечная, можно обучать на любом компьютере. Более сложные сети целесообразней обучать на хороших видеокартах. Метод fit в качестве аргумента принимает количество эпох. Эпоха — это один проход всех элементов датасета. С каждой эпохой обучения ошибка должна падать вплоть до какого-то разумного предела.</p>
+<div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+
+<p>После обучения сетью уже можно пользоваться. Так как по-умолчанию в процессе создания нейронной сети её веса инициализируются случайным образом, результаты после каждого нового обучения будут немного отличаться от приведенных ниже:</p>
+<div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Результат:</p>
+<div class="highlight"><pre><span></span>array(
+  [[0.01152042],
+   [0.98572624],
+   [0.99311346],
+   [0.00970006]], dtype=float32)
+</pre></div>
+
+
+<p>Теперь немножко линейной алгебры. В частности неплохо бы вспомнить что там нам в институте рассказывали про матрицы. Для начала выведем все значения найденных весов на экран.</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">get_weights</span><span class="p">():</span>
+    <span class="n">arr2str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%0.9g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">w</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;W{} = {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr2str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">w</span><span class="p">)))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;B{} = {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">arr2str</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
+</pre></div>
+
+
+<p>Результат:</p>
+<div class="highlight"><pre><span></span>W1 = [[-0.100219101, 0.0986418799, 0.0540673025], [-0.101571321, 0.055912815, -0.0540193357]]
+B1 = [0.101785883, -0.0555998087, -7.84907461e-05]
+W2 = [[-85.8035507], [-90.0149384], [87.0291138]]
+B2 = [4.28154087]
+</pre></div>
+
+
+<p>У нас два слоя с соответствующими весами для каждого из них плюс смещение. Чтобы лучше понимать математику внутри перцептрона давайте отвяжемся от Tensorflow и вычислим все то же самое исходя из уже имеющихся у нас весов:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
+  <span class="c1"># First layer calculation</span>
+  <span class="n">L1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W1</span><span class="p">)</span> <span class="o">+</span> <span class="n">B1</span>
+  <span class="c1"># Relu activation function</span>
+  <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">L1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="c1"># Second layer calculation</span>
+  <span class="n">L2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">W2</span><span class="p">)</span> <span class="o">+</span> <span class="n">B2</span>
+  <span class="c1"># Sigmoid</span>
+  <span class="n">output</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">L2</span><span class="p">))</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Результат:</p>
+<div class="highlight"><pre><span></span><span class="k">[0.01152039]</span>
+<span class="k">[0.98572624]</span>
+<span class="k">[0.99311345]</span>
+<span class="k">[0.00970005]</span>
+</pre></div>
+
+
+<p>Как видим результат полностью совпал с тем, что выдает метод predict в натренированной нами сети. Вычисление выхода слоя заключается в умножении входного вектора на соответствующую весовую матрицу, к результату прибавляется смещение. Затем идет активационная функция. Результирующий вектор умножается на вторую весовую матрицу и т.д.</p>
+<p>Думаю математика ясна :) Теперь провернем то же самое, но для микроконтроллера:</p>
+<p><em>nn.h</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;array&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">nn</span> <span class="p">{</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+  <span class="k">using</span> <span class="n">o</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span><span class="p">;</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+  <span class="k">using</span> <span class="n">i</span> <span class="o">=</span> <span class="k">const</span> <span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span><span class="p">;</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">K</span><span class="o">&gt;</span>
+  <span class="k">using</span> <span class="n">m</span> <span class="o">=</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span><span class="p">;</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">K</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">dot</span><span class="p">(</span><span class="n">m</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">K</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">,</span> <span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span>
+      <span class="k">for</span> <span class="p">(</span><span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">o</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">r</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">o</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+=</span> <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">r</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">relu</span><span class="p">(</span><span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">const</span> <span class="n">T</span> <span class="n">zero</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+      <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">zero</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">,</span> <span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+      <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+  <span class="kt">void</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">const</span> <span class="n">T</span> <span class="n">one</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+      <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">one</span> <span class="o">/</span> <span class="p">(</span><span class="n">one</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)));</span>
+  <span class="p">}</span>
+
+<span class="p">}</span> <span class="c1">// namespace</span>
+</pre></div>
+
+
+<p><em>app.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;float32.hpp&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;nn.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
+
+<span class="k">using</span> <span class="n">flt</span> <span class="o">=</span> <span class="n">float32</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">float</span> <span class="nf">inference</span><span class="p">(</span><span class="k">const</span> <span class="n">flt</span><span class="o">&amp;</span> <span class="n">x1</span><span class="p">,</span> <span class="k">const</span> <span class="n">flt</span><span class="o">&amp;</span> <span class="n">x2</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">m</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span> <span class="n">W1</span>
+  <span class="p">{</span>
+    <span class="o">-</span><span class="mf">0.100219101</span><span class="p">,</span> <span class="mf">0.0986418799</span><span class="p">,</span> <span class="mf">0.0540673025</span><span class="p">,</span>
+    <span class="o">-</span><span class="mf">0.101571321</span><span class="p">,</span> <span class="mf">0.055912815</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0540193357</span>
+  <span class="p">};</span>
+  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">i</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span> <span class="n">B1</span>
+  <span class="p">{</span>
+    <span class="mf">0.101785883</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0555998087</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.84907461e-05</span>
+  <span class="p">};</span>
+  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">m</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="n">W2</span>
+  <span class="p">{</span>
+    <span class="o">-</span><span class="mf">85.8035507</span><span class="p">,</span> <span class="o">-</span><span class="mf">90.0149384</span><span class="p">,</span> <span class="mf">87.0291138</span>
+  <span class="p">};</span>
+  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">i</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="n">B2</span>
+  <span class="p">{</span>
+    <span class="mf">4.28154087</span>
+  <span class="p">};</span>
+
+  <span class="c1">// Inputs</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">i</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">x</span><span class="p">{</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">};</span>
+
+  <span class="c1">// First layer has 3 units</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">o</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span> <span class="n">L1</span><span class="p">;</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">dot</span><span class="p">(</span><span class="n">W1</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">L1</span><span class="p">);</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">add</span><span class="p">(</span><span class="n">B1</span><span class="p">,</span> <span class="n">L1</span><span class="p">);</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">relu</span><span class="p">(</span><span class="n">L1</span><span class="p">);</span>
+
+  <span class="c1">// Second layer has 1 unit</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">o</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="n">L2</span><span class="p">;</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">dot</span><span class="p">(</span><span class="n">W2</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">);</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">add</span><span class="p">(</span><span class="n">B2</span><span class="p">,</span> <span class="n">L2</span><span class="p">);</span>
+  <span class="n">nn</span><span class="o">::</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">L2</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">L2</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
+
+  <span class="kt">int</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_0</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_2</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_4</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_6</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Тренировка сложных нейронных сетей может потребовать больших вычислительных мощностей. Здесь на помощь приходят готовые библиотеки для машинного обучения такие как Tensorflow. С их помощью можно обучать нейронные сети на видеокартах, в облаке, и даже в специальных кластерах, состоящих из нескольких вычислительных единиц. Использовать обученную модель можно на где-угодно, даже на очень слабых микроконтроллерах.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
