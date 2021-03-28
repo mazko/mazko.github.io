@@ -13,6 +13,11 @@
 
 Browse http://localhost:8000/
 
+As a security precaution, GitHub automatically deletes SSH keys that haven't been used in a year.
+
+	~: ssh-keygen -t ed25519 -C "o.mazko@mail.ru" -N '' -f ~/github_deploy_key
+	~: cd mazko.github.io && travis encrypt-file ~/github_deploy_key
+
 [1]: https://travis-ci.org/mazko/mazko.github.io.svg?branch=src "Build Status"
 [2]: https://travis-ci.org/mazko/mazko.github.io
 [3]: http://docs.getpelican.com/
