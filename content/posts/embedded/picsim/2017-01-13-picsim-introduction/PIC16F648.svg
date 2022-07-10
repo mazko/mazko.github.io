@@ -1,0 +1,2735 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="201.22777mm"
+   height="205.62836mm"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.92.0 unknown"
+   sodipodi:docname="PIC16F648.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.1"
+   viewBox="0 0 713.01178 728.60442">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart"
+       style="overflow:visible">
+      <path
+         id="path3806"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleInS"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleInS"
+       style="overflow:visible">
+      <path
+         id="path3922"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;marker-start:none"
+         transform="scale(-0.2)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutS"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="TriangleOutS"
+       style="overflow:visible">
+      <path
+         id="path3931"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;marker-start:none"
+         transform="scale(0.2)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Send"
+       style="overflow:visible">
+      <path
+         id="path3815"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-0.3,0,0,-0.3,0.69,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Send"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Send"
+       style="overflow:visible">
+      <path
+         id="path3797"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;marker-start:none"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend"
+       style="overflow:visible">
+      <path
+         id="path3809"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 999.99999 : 0"
+       inkscape:vp_z="744.09447 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.7874 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective2428"
+       inkscape:persp3d-origin="372.04724 : 350.7874 : 1"
+       inkscape:vp_z="744.09447 : 526.18109 : 1"
+       inkscape:vp_y="0 : 999.99999 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mstart-3"
+       style="overflow:visible">
+      <path
+         id="path3806-6"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend-7"
+       style="overflow:visible">
+      <path
+         id="path3809-5"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3983"
+       style="overflow:visible">
+      <path
+         id="path3981"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3987"
+       style="overflow:visible">
+      <path
+         id="path3985"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3991"
+       style="overflow:visible">
+      <path
+         id="path3989"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3995"
+       style="overflow:visible">
+      <path
+         id="path3993"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3999"
+       style="overflow:visible">
+      <path
+         id="path3997"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4003"
+       style="overflow:visible">
+      <path
+         id="path4001"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4007"
+       style="overflow:visible">
+      <path
+         id="path4005"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4011"
+       style="overflow:visible">
+      <path
+         id="path4009"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4015"
+       style="overflow:visible">
+      <path
+         id="path4013"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4019"
+       style="overflow:visible">
+      <path
+         id="path4017"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4023"
+       style="overflow:visible">
+      <path
+         id="path4021"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4027"
+       style="overflow:visible">
+      <path
+         id="path4025"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4031"
+       style="overflow:visible">
+      <path
+         id="path4029"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4035"
+       style="overflow:visible">
+      <path
+         id="path4033"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0852235"
+     inkscape:cx="344.94223"
+     inkscape:cy="640.54701"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer2"
+     showgrid="false"
+     inkscape:window-width="1293"
+     inkscape:window-height="741"
+     inkscape:window-x="73"
+     inkscape:window-y="27"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-maximized="1"
+     objecttolerance="20"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     guidetolerance="20"
+     inkscape:snap-path-clip="false"
+     inkscape:snap-path-mask="false"
+     inkscape:snap-perpendicular="false"
+     inkscape:snap-tangential="false"
+     gridtolerance="10" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="dibujo"
+     style="display:inline"
+     transform="translate(-25.829065,-100.7026)">
+    <rect
+       id="rect2442"
+       width="69.285713"
+       height="83.571426"
+       x="156.0909"
+       y="142.08005"
+       style="fill:#ffaaaa;fill-opacity:1;stroke:#000000;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3775"
+       width="93.43911"
+       height="205.56602"
+       x="251.06157"
+       y="384.81372"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3773"
+       width="76.428566"
+       height="26.255259"
+       x="259.66229"
+       y="557.50098"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000024;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3771"
+       width="76.428566"
+       height="26.255259"
+       x="259.66229"
+       y="531.237"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000024;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3769"
+       width="76.428566"
+       height="26.255259"
+       x="259.66229"
+       y="504.97305"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000024;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3767"
+       width="76.428566"
+       height="25.750183"
+       x="259.66229"
+       y="479.22287"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3765"
+       width="76.428566"
+       height="29.285715"
+       x="259.66229"
+       y="449.93716"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3763"
+       width="76.428566"
+       height="29.285715"
+       x="259.66229"
+       y="422.08002"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       id="rect3316"
+       width="67.142853"
+       height="17.142857"
+       x="413.948"
+       y="339.22287"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g3220"
+       transform="translate(102.51946,-105.28214)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="371.64792"
+         x="40.714291"
+         height="15.714286"
+         width="91.428566"
+         id="rect3214" />
+      <text
+         id="text3216"
+         y="382.36218"
+         x="48.571419"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="382.36218"
+           x="48.571419"
+           id="tspan3218"
+           sodipodi:role="line">Instruction reg</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:12px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="121.42857"
+       y="431.64789"
+       id="text3234"><tspan
+         sodipodi:role="line"
+         id="tspan3236"
+         x="121.42857"
+         y="442.26508" /></text>
+    <g
+       id="g3244"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="228.79076"
+         x="280.71426"
+         height="16.428572"
+         width="96.428566"
+         id="rect3225" />
+      <text
+         id="text3238"
+         y="240.21931"
+         x="285.71429"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="240.21931"
+           x="285.71429"
+           id="tspan3240"
+           sodipodi:role="line">Program Counter</tspan></text>
+    </g>
+    <g
+       id="g3257"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="274.50504"
+         x="284.28568"
+         height="32.857143"
+         width="89.285706"
+         id="rect3255" />
+      <text
+         id="text3249"
+         y="287.36218"
+         x="327.85715"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="287.36218"
+           x="327.85715"
+           id="tspan3251"
+           sodipodi:role="line">8 Level Stack</tspan><tspan
+           id="tspan3253"
+           y="299.86218"
+           x="327.85715"
+           sodipodi:role="line">(13-bits)</tspan></text>
+    </g>
+    <rect
+       id="rect3275"
+       width="74.285713"
+       height="57.857143"
+       x="379.66232"
+       y="176.36577"
+       style="fill:#00ff00;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans Bold';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="416.09091"
+       y="193.50862"
+       id="text3267"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3269"
+         x="416.09091"
+         y="193.50862">RAM</tspan><tspan
+         sodipodi:role="line"
+         x="416.09091"
+         y="206.00862"
+         id="tspan3271">File</tspan><tspan
+         sodipodi:role="line"
+         x="416.09091"
+         y="218.50862"
+         id="tspan3273">Register</tspan></text>
+    <g
+       id="g3306"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         transform="translate(425,-47.857143)"
+         id="g3290">
+        <path
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           d="m -22.142856,407.36218 8.57143,-15 h 57.85714 l 9.28571,15 z"
+           id="path3284"
+           inkscape:connector-curvature="0" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="-6.4285736"
+           y="403.07648"
+           id="text3286"><tspan
+             sodipodi:role="line"
+             id="tspan3288"
+             x="-6.4285736"
+             y="403.07648">Addr Mux</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g3301"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="398.07651"
+         x="436.42856"
+         height="17.142859"
+         width="67.142853"
+         id="rect3299" />
+      <text
+         id="text3295"
+         y="410.21933"
+         x="447.85715"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="410.21933"
+           x="447.85715"
+           id="tspan3297"
+           sodipodi:role="line">FSR reg</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="418.23373"
+       y="351.36575"
+       id="text3312"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3314"
+         x="418.23373"
+         y="351.36575">STATUS reg</tspan></text>
+    <g
+       id="g3344"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         id="path3342"
+         d="m 427.85714,474.50504 h 80 l -10,16.42857 H 440 Z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3338"
+         y="485.93359"
+         x="455"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="485.93359"
+           x="455"
+           id="tspan3340"
+           sodipodi:role="line">MUX</tspan></text>
+    </g>
+    <g
+       id="g3355"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <path
+         sodipodi:nodetypes="ccccccccc"
+         id="path3349"
+         d="m 389.28571,513.79075 h 35 l 8.57143,9.28572 h 10.71428 l 8.57143,-10.71429 h 34.28572 L 470,538.79076 h -62.85715 z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <text
+         id="text3351"
+         y="534.505"
+         x="428.57144"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="534.505"
+           x="428.57144"
+           id="tspan3353"
+           sodipodi:role="line">ALU</tspan></text>
+    </g>
+    <rect
+       id="rect3364"
+       width="76.428566"
+       height="29.285715"
+       x="259.66229"
+       y="392.08002"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <g
+       id="g3380"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="567.36218"
+         x="402.85712"
+         height="17.857143"
+         width="75.714279"
+         id="rect3378" />
+      <text
+         id="text3374"
+         y="579.50507"
+         x="425"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="579.50507"
+           x="425"
+           id="tspan3376"
+           sodipodi:role="line">W reg</tspan></text>
+    </g>
+    <g
+       id="g3395"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="508.79074"
+         x="179.28571"
+         height="40"
+         width="65"
+         id="rect3393" />
+      <text
+         id="text3385"
+         y="520.2193"
+         x="212.85716"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="520.2193"
+           x="212.85716"
+           id="tspan3387"
+           sodipodi:role="line">Instruction</tspan><tspan
+           id="tspan3389"
+           y="532.7193"
+           x="212.85716"
+           sodipodi:role="line">Decode &amp;</tspan><tspan
+           id="tspan3391"
+           y="545.2193"
+           x="212.85716"
+           sodipodi:role="line">Control</tspan></text>
+    </g>
+    <g
+       id="g3408"
+       transform="translate(-23.194829,-86.710715)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="559.50507"
+         x="179.99995"
+         height="40.714287"
+         width="64.285706"
+         id="rect3362" />
+      <text
+         id="text3402"
+         y="574.50507"
+         x="212.85715"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="574.50507"
+           x="212.85715"
+           id="tspan3404"
+           sodipodi:role="line">Timing</tspan><tspan
+           id="tspan3406"
+           y="587.00507"
+           x="212.85715"
+           sodipodi:role="line">Generation</tspan></text>
+    </g>
+    <g
+       id="g3451"
+       transform="matrix(0.9622013,0,0,1.1172583,-2.0110335,-105.36636)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.96447343;stroke-opacity:1"
+         y="338.79077"
+         x="552.85712"
+         height="90.714287"
+         width="50.714279"
+         id="rect3425" />
+      <text
+         transform="rotate(-90)"
+         id="text3427"
+         y="580.95844"
+         x="-398.89749"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           id="tspan3444"
+           sodipodi:role="line"
+           x="-398.89749"
+           y="580.95844">PORTB</tspan></text>
+    </g>
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3497"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="272.95831"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,273.06474 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3499"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,285.02903 12.14286,-11.96429"
+       id="path3501"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3503"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="285.81546"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,285.92188 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3505"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,297.88617 12.14286,-11.96429"
+       id="path3507"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3509"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="298.67258"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,298.77902 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3511"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,310.74331 12.14286,-11.96429"
+       id="path3513"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3515"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="311.70828"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,311.81473 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3517"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,323.77902 12.14286,-11.96429"
+       id="path3519"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3521"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="324.74399"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,324.85044 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3523"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,336.81473 12.14286,-11.96429"
+       id="path3525"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3527"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="337.60114"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,337.70758 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3529"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,349.67187 12.14286,-11.96429"
+       id="path3531"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3533"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="350.45828"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,350.56473 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3535"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,362.52902 12.14286,-11.96429"
+       id="path3537"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3539"
+       width="12.448336"
+       height="12.239126"
+       x="597.0177"
+       y="363.31543"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,363.42187 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3541"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.11059,375.38616 12.14286,-11.96429"
+       id="path3543"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <g
+       id="g3649"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="732.14673"
+         x="74.040588"
+         height="41.682384"
+         width="91.3778"
+         id="rect3372" />
+      <text
+         id="text3593"
+         y="754.76654"
+         x="88.680496"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:12.5px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="754.76654"
+           x="88.680496"
+           id="tspan3595"
+           sodipodi:role="line">Comparator</tspan></text>
+    </g>
+    <g
+       id="g3654"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="732.14673"
+         x="191.21828"
+         height="41.682384"
+         width="91.3778"
+         id="rect3635" />
+      <text
+         id="text3597"
+         y="755.37732"
+         x="215.74069"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           id="tspan3601"
+           sodipodi:role="line"
+           x="215.74069"
+           y="755.37732">Timer0</tspan></text>
+    </g>
+    <g
+       id="g3659"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="732.14673"
+         x="307.38583"
+         height="41.682384"
+         width="91.3778"
+         id="rect3637" />
+      <text
+         id="text3603"
+         y="755.37732"
+         x="340.42139"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           id="tspan3607"
+           sodipodi:role="line"
+           x="340.42139"
+           y="755.37732">Timer1</tspan></text>
+    </g>
+    <g
+       id="g3664"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="732.14673"
+         x="427.59399"
+         height="41.682384"
+         width="91.3778"
+         id="rect3639" />
+      <text
+         id="text3609"
+         y="755.22461"
+         x="455.5676"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="755.22461"
+           x="455.5676"
+           id="tspan3611"
+           sodipodi:role="line">Timer2</tspan></text>
+    </g>
+    <g
+       id="g3685"
+       transform="translate(-33.620062,-38.374272)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="816.99957"
+         x="77.071083"
+         height="41.682384"
+         width="91.3778"
+         id="rect3647" />
+      <text
+         id="text3613"
+         y="840.66211"
+         x="107.4668"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="840.66211"
+           x="107.4668"
+           id="tspan3617"
+           sodipodi:role="line">Vref</tspan></text>
+    </g>
+    <g
+       id="g3680"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="819.01984"
+         x="191.21831"
+         height="41.682384"
+         width="91.3778"
+         id="rect3645" />
+      <text
+         id="text3619"
+         y="842.82867"
+         x="223.23685"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="842.82867"
+           x="223.23685"
+           id="tspan3623"
+           sodipodi:role="line">CCP1</tspan></text>
+    </g>
+    <g
+       id="g3674"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="819.01984"
+         x="308.396"
+         height="41.682384"
+         width="91.3778"
+         id="rect3643" />
+      <text
+         id="text3625"
+         y="842.81488"
+         x="339.52307"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           id="tspan3629"
+           y="842.81488"
+           x="339.52307"
+           sodipodi:role="line">USART</tspan></text>
+    </g>
+    <g
+       id="g3669"
+       transform="translate(-33.620062,-40.21721)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-opacity:1"
+         y="819.01984"
+         x="427.59399"
+         height="41.682384"
+         width="91.3778"
+         id="rect3641" />
+      <text
+         id="text3631"
+         y="842.39667"
+         x="441.25513"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="842.39667"
+           x="441.25513"
+           id="tspan3633"
+           sodipodi:role="line">Data EEPROM</tspan></text>
+    </g>
+    <g
+       style="display:inline"
+       id="g3697"
+       transform="translate(-506.05198,248.28929)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="238.8629"
+         x="619.90717"
+         height="12.239126"
+         width="12.448336"
+         id="rect3699"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         id="path3701"
+         d="m 620,238.96932 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3703"
+         d="m 620,250.93361 12.14286,-11.96429"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="display:inline"
+       id="g3705"
+       transform="translate(-349.62341,369.34161)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="238.8629"
+         x="619.90717"
+         height="12.239126"
+         width="12.448336"
+         id="rect3707"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         id="path3709"
+         d="m 620,238.96932 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3711"
+         d="m 620,250.93361 12.14286,-11.96429"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+    <g
+       style="display:inline"
+       id="g3713"
+       transform="translate(-300.3377,369.34161)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         y="238.8629"
+         x="619.90717"
+         height="12.239126"
+         width="12.448336"
+         id="rect3715"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         id="path3717"
+         d="m 620,238.96932 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+      <path
+         id="path3719"
+         d="m 620,250.93361 12.14286,-11.96429"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="300.37662"
+       y="402.79434"
+       id="text3721"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3723"
+         x="300.37662"
+         y="402.79434">Power-up</tspan><tspan
+         sodipodi:role="line"
+         x="300.37662"
+         y="415.29434"
+         id="tspan3725">Timer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="298.94803"
+       y="432.07999"
+       id="text3727"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3729"
+         x="298.94803"
+         y="432.07999">Oscillator</tspan><tspan
+         sodipodi:role="line"
+         x="298.94803"
+         y="444.57999"
+         id="tspan3731">Start-up Timer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="298.94803"
+       y="462.08005"
+       id="text3733"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3735"
+         x="298.94803"
+         y="462.08005">Power-on</tspan><tspan
+         sodipodi:role="line"
+         x="298.94803"
+         y="474.58005"
+         id="tspan3737">Reset</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="299.66232"
+       y="488.50858"
+       id="text3739"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3741"
+         x="299.66232"
+         y="488.50858">Watchdog</tspan><tspan
+         sodipodi:role="line"
+         x="299.66232"
+         y="501.00858"
+         id="tspan3743">Timer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="301.80518"
+       y="514.2229"
+       id="text3745"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3747"
+         x="301.80518"
+         y="514.2229">Brown-out</tspan><tspan
+         sodipodi:role="line"
+         x="301.80518"
+         y="526.7229"
+         id="tspan3749">Reset</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="276.50931"
+       y="541.06989"
+       id="text3751"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3753"
+         x="276.50931"
+         y="541.06989">In-Circuit</tspan><tspan
+         sodipodi:role="line"
+         x="276.50931"
+         y="553.56989"
+         id="tspan3755">Debugger</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="299.40234"
+       y="567.70764"
+       id="text3757"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan3759"
+         x="299.40234"
+         y="567.70764">Low-Voltage</tspan><tspan
+         sodipodi:role="line"
+         x="299.40234"
+         y="580.20764"
+         id="tspan3761">Programming</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 189.5506,227.28041 v 34.21732"
+       id="path6165"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 257.16215,150.38162 H 230.42416"
+       id="path6700"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 213.97923,282.14709 v 22.15362 h 179.1837 v -26.06308"
+       id="path7235"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="m 305.8516,163.61696 v 19.10777"
+       id="path7770"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 417.08394,257.91625 V 240.00733"
+       id="path9379"
+       inkscape:transform-center-y="12.755197"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 443.00026,310.90076 V 278.71652"
+       id="path9381"
+       inkscape:transform-center-y="24.164366"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 189.87087,283.45024 V 416.45901"
+       id="path9383"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4.00000048;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 189.87087,372.71633 H 422.4839 v 10.19885"
+       id="path9924"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 389.57925,367.82948 v -19.8731 h 19.1601"
+       id="path11008"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 389.57926,378.90629 v 47.56513"
+       id="path11549"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.74398398;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path11551"
+       sodipodi:cx="336.70245"
+       sodipodi:cy="434.50418"
+       sodipodi:rx="4.7239342"
+       sodipodi:ry="4.7239342"
+       d="m 337.28839,439.19164 a 4.7239342,4.7239342 0 0 1 -4.53755,-2.09896 4.7239342,4.7239342 0 0 1 -0.11147,-4.99825 4.7239342,4.7239342 0 0 1 4.43946,-2.29917"
+       sodipodi:start="1.4464413"
+       sodipodi:end="4.7921481"
+       sodipodi:open="true"
+       transform="matrix(1.3397534,0,0,1.5861052,-62.683073,-315.80128)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="m 87.174344,739.25495 v 33.409"
+       id="path11553"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="m 204.20093,739.29418 v 33.79125"
+       id="path11555"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="M 321.14157,739.26585 V 773.0571"
+       id="path11557"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="M 438.32907,739.26585 V 773.0571"
+       id="path11559"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 86.440824,754.02186 H 507.57141 V 150.35306 H 358.66199"
+       id="path11561"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 416.23202,150.79849 v 19.74896"
+       id="path12102"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="m 226.89708,441.48771 h 19.10777"
+       id="path12104"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="m 226.89708,492.31072 h 19.10777"
+       id="path12106"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#TriangleInS);marker-end:url(#TriangleOutS)"
+       d="m 132.4184,493.61387 h 19.10777"
+       id="path12108"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4.05932331;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 507.15812,319.88449 H 486.69315"
+       id="path12110"
+       inkscape:transform-center-x="-14.751494"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 507.15812,348.45003 H 487.28694"
+       id="path12112"
+       inkscape:transform-center-x="-14.323484"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 445.40375,405.10445 v 15.88838"
+       id="path12114"
+       inkscape:transform-center-y="-11.140336"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999928;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 508.49387,189.68977 h 15.13387"
+       id="path12116"
+       inkscape:transform-center-x="10.537299"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.86599851;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 509.53378,319.88449 h 14.13688"
+       id="path12118"
+       inkscape:transform-center-x="9.843121"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 506.53734,373.60499 h -40.39778 v 8.79703"
+       id="path12122"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3.99999952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="m 416.08278,452.01796 v 22.99737"
+       id="path12665"
+       inkscape:transform-center-y="-16.822052"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 415.96813,463.28553 h 91.22079"
+       id="path12667"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#TriangleOutS)"
+       d="M 415.96813,497.81911 V 509.5475 H 361.23565 V 409.20463 h 15.63785 v 12.37996"
+       id="path12669"
+       sodipodi:nodetypes="cccccc"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,281.00682 h 15.31206"
+       id="path14308"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,292.08363 h 15.31206"
+       id="path14310"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,304.46359 h 15.31206"
+       id="path14312"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,317.16934 h 15.31206"
+       id="path14314"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,330.52667 h 15.31206"
+       id="path14316"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,344.20979 h 15.31206"
+       id="path14318"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,355.93818 h 15.31206"
+       id="path14320"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="m 580.47099,368.64393 h 15.31206"
+       id="path14322"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="M 276.36773,606.46955 V 591.15749"
+       id="path14340"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:url(#Arrow2Mend)"
+       d="M 325.5618,606.46955 V 591.15749"
+       id="path14342"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="282.53702"
+       id="text14380"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14386"
+         x="615.68872"
+         y="282.53702">RB0/INT</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="294.97684"
+       id="text14388"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14416"
+         x="615.68872"
+         y="294.97684">RB1/RX/DT</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="308.33813"
+       id="text14392"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14418"
+         x="615.68872"
+         y="308.33813">RB2/TX/CK</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="320.77795"
+       id="text14396"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14420"
+         x="615.68872"
+         y="320.77795">RB3/CCP1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="334.13925"
+       id="text14400"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14422"
+         x="615.68872"
+         y="334.13925">RB4/PGM</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="346.57907"
+       id="text14404"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14424"
+         x="615.68872"
+         y="346.57907">RB5</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="359.47964"
+       id="text14408"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14426"
+         x="615.68872"
+         y="359.47964">RB6/T1OSO/T1CKI/PGC</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="615.68872"
+       y="373.3017"
+       id="text14412"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14428"
+         x="615.68872"
+         y="373.3017">RB7/T1OSI/PGD</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 182.05194,246.96191 14.66048,-14.66048"
+       id="path14478"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="196.38666"
+       y="245.00719"
+       id="text14480"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14482"
+         x="196.38666"
+         y="245.00719">14</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 238.71619,159.75024 13.17966,-16.00486"
+       id="path14484"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="240.61719"
+       y="141.80264"
+       id="text14486"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14490"
+         x="240.61719"
+         y="141.80264">13</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="134.3764"
+       y="243.21965"
+       id="text14492"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14494"
+         x="134.3764"
+         y="243.21965">Program</tspan><tspan
+         sodipodi:role="line"
+         x="134.3764"
+         y="255.71965"
+         id="tspan14496">Bus</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="390.54483"
+       y="143.70096"
+       id="text14498"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14500"
+         x="390.54483"
+         y="143.70096">Data Bus</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 454.80682,158.04013 469.4673,143.37965"
+       id="path14502"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="456.70169"
+       y="145.0278"
+       id="text14504"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14508"
+         x="456.70169"
+         y="145.0278">8</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 411.03703,256.1766 14.66048,-14.66048"
+       id="path14510"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="429.9791"
+       y="250.0753"
+       id="text14512"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14516"
+         x="429.9791"
+         y="250.0753">9</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="339.40329"
+       y="250.59138"
+       id="text14518"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14520"
+         x="339.40329"
+         y="250.59138">RAM Addr (1)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="262.92136"
+       y="297.12555"
+       id="text14522"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14524"
+         x="262.92136"
+         y="297.12555">Direct Addr</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 327.64407,312.38622 14.66048,-14.66048"
+       id="path14526"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="330.46042"
+       y="297.99167"
+       id="text14528"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14532"
+         x="330.46042"
+         y="297.99167">7</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 434.5345,306.39667 14.66048,-14.66048"
+       id="path14534"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="431.82202"
+       y="300.29535"
+       id="text14536"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14538"
+         x="431.82202"
+         y="300.29535">8</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="469.79117"
+       y="291.13602"
+       id="text14540"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14542"
+         x="469.79117"
+         y="291.13602">Indirect</tspan><tspan
+         sodipodi:role="line"
+         x="469.79117"
+         y="303.63602"
+         id="tspan14544">Addr</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 234.11495,380.1142 14.66048,-14.66048"
+       id="path14546"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="236.00983"
+       y="367.10187"
+       id="text14548"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14550"
+         x="236.00983"
+         y="367.10187">8</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 381.55002,400.84726 396.2105,386.18678"
+       id="path14552"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="378.3768"
+       y="394.28522"
+       id="text14554"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14558"
+         x="378.3768"
+         y="394.28522">3</tspan></text>
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 353.44521,476.86846 14.66048,-14.66048"
+       id="path14560"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="373.76947"
+       y="469.84567"
+       id="text14562"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14564"
+         x="373.76947"
+         y="469.84567">8</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="300.7016"
+       y="633.00104"
+       id="text14566"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14568"
+         x="300.7016"
+         y="633.00104">VDD, Vss</tspan></text>
+    <g
+       id="g14576"
+       transform="translate(146.35549,-40.637256)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <text
+         id="text14570"
+         y="674.55981"
+         x="114.26218"
+         style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="674.55981"
+           x="114.26218"
+           id="tspan14572"
+           sodipodi:role="line">MCLR</tspan></text>
+      <path
+         id="path14574"
+         d="m 115.64438,664.42366 h 26.26187"
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         inkscape:connector-curvature="0" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="79.754356"
+       y="514.76013"
+       id="text14581"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14583"
+         x="79.754356"
+         y="514.76013">OSC1/CLKIN</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="79.754349"
+       y="524.53375"
+       id="text14585"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14587"
+         x="79.754349"
+         y="524.53375">OSC2/CLKOUT</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="57.605389"
+       y="611.80731"
+       id="text14589"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan2774"
+         x="57.605389"
+         y="611.80731">(1) Higher order bits </tspan><tspan
+         sodipodi:role="line"
+         x="57.605389"
+         y="624.30731"
+         id="tspan3963">are from the Status register.</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.99999988;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.99999993, 1.99999993;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect14593"
+       width="465.85843"
+       height="523.86792"
+       x="26.329065"
+       y="119.54967"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 500.88028,538.6069 14.66048,-14.66048"
+       id="path14595"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="511.52908"
+       y="537.34326"
+       id="text14597"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14599"
+         x="511.52908"
+         y="537.34326">8</tspan></text>
+    <rect
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.00000003, 2.00000003;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect14601"
+       width="465.17755"
+       height="152.51585"
+       x="28.02001"
+       y="676.2912"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="display:inline;fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.9333955;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1.86679097, 1.86679097;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect14611"
+       width="218.01826"
+       height="281.8544"
+       x="520.3559"
+       y="119.59309"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;font-family:'Bitstream Vera Sans';fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="-436.55667"
+       y="622.32129"
+       id="text14615"><tspan
+         sodipodi:role="line"
+         id="tspan14617"
+         x="-436.55667"
+         y="631.16895" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="519.6123"
+       y="112.0707"
+       id="text14619"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14621"
+         x="519.6123"
+         y="112.0707">Input/output</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="27.051683"
+       y="667.93903"
+       id="text14623"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan14627"
+         x="27.051683"
+         y="667.93903">Peripheral Features</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="26.640551"
+       y="111.66779"
+       id="text14629"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         x="26.640551"
+         y="111.66779"
+         id="tspan418">PIC16F648A</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans Bold';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="167.88794"
+       y="170.23726"
+       id="text2434"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         sodipodi:role="line"
+         id="tspan2436"
+         x="167.88794"
+         y="170.23726">FLASH</tspan><tspan
+         sodipodi:role="line"
+         x="167.88794"
+         y="182.73726"
+         id="tspan2438">Program</tspan><tspan
+         sodipodi:role="line"
+         x="167.88794"
+         y="195.23726"
+         id="tspan2440">Memory</tspan></text>
+    <g
+       style="display:inline"
+       id="g3451-3"
+       transform="matrix(0.96220127,0,0,1.1172583,-1.6453268,-229.80033)"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.96447343;stroke-opacity:1"
+         y="338.79077"
+         x="552.85712"
+         height="90.714287"
+         width="50.714279"
+         id="rect3425-5" />
+      <text
+         transform="rotate(-90)"
+         id="text3427-6"
+         y="580.95844"
+         x="-398.89749"
+         style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           id="tspan3444-2"
+           sodipodi:role="line"
+           x="-398.89749"
+           y="580.95844">PORTA</tspan></text>
+    </g>
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3497-9"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="148.52434"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,148.63076 c 12.14286,11.96428 12.14286,11.96428 12.14286,11.96428"
+       id="path3499-1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,160.59504 12.14286,-11.96428"
+       id="path3501-2"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3503-7"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="161.38147"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,161.4879 c 12.14286,11.96428 12.14286,11.96428 12.14286,11.96428"
+       id="path3505-0"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 597.47626,173.45218 609.61912,161.4879"
+       id="path3507-9"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3509-3"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="174.23857"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,174.34503 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3511-6"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,186.30932 12.14286,-11.96429"
+       id="path3513-0"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3515-6"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="187.27429"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,187.38074 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3517-2"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,199.34503 12.14286,-11.96429"
+       id="path3519-6"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3521-1"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="200.30998"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,200.41645 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3523-8"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,212.38074 12.14286,-11.96429"
+       id="path3525-7"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3527-9"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="213.16714"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,213.27359 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3529-2"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,225.23788 12.14286,-11.96429"
+       id="path3531-0"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3533-2"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="226.02429"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,226.13074 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3535-3"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,238.09503 12.14286,-11.96429"
+       id="path3537-7"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.99999994;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3539-5"
+       width="12.448336"
+       height="12.239125"
+       x="597.38336"
+       y="238.88144"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,238.98788 c 12.14286,11.96429 12.14286,11.96429 12.14286,11.96429"
+       id="path3541-9"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 597.47626,250.95217 12.14286,-11.96429"
+       id="path3543-2"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,156.57283 h 15.31206"
+       id="path14308-2"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,167.64964 h 15.31206"
+       id="path14310-8"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,180.0296 h 15.31206"
+       id="path14312-9"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,192.73535 h 15.31206"
+       id="path14314-7"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,206.09268 h 15.31206"
+       id="path14316-3"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,219.7758 h 15.31206"
+       id="path14318-6"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,231.50419 h 15.31206"
+       id="path14320-1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <path
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart-3);marker-end:url(#Arrow2Mend-7)"
+       d="m 580.83666,244.20994 h 15.31206"
+       id="path14322-2"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"
+       inkscape:connector-curvature="0" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="158.10304"
+       id="text14380-9"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14386-3"
+         x="616.05438"
+         y="158.10304">RA0/AN0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="170.54285"
+       id="text14388-1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14416-9"
+         x="616.05438"
+         y="170.54285">RA1/AN1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="183.90413"
+       id="text14392-4"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14418-7"
+         x="616.05438"
+         y="183.90413">RA2/AN2/Vref</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="196.34396"
+       id="text14396-8"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14420-4"
+         x="616.05438"
+         y="196.34396">RA3/AN3/CMP1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="209.70526"
+       id="text14400-5"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14422-0"
+         x="616.05438"
+         y="209.70526">RA4/T0CK1/CMP2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="222.14508"
+       id="text14404-3"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14424-6"
+         x="616.05438"
+         y="222.14508">RA5/MCLR/Vpp</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="235.04565"
+       id="text14408-1"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14426-0"
+         x="616.05438"
+         y="235.04565">RA6/OSC2/CLKOUT</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10px;line-height:125%;font-family:'Bitstream Vera Sans';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="616.05438"
+       y="248.86771"
+       id="text14412-6"
+       inkscape:export-filename="/home/juan/desarrollo/curso-pic/pic16-dibujos/PIC16-diagrama-bloques.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="stroke-width:0.99999994px"
+         sodipodi:role="line"
+         id="tspan14428-3"
+         x="616.05438"
+         y="248.86771">RA7/OSC1/CLKIN</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.9375px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 640.26184,213.14649 c 24.18857,0.21598 24.18857,0.21598 24.18857,0.21598"
+       id="path4261"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

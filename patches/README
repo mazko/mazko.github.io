@@ -1,0 +1,7 @@
+~: cd `python -c "import pelican; print(pelican.__path__[0])"`/themes/notmyidea && git init . && git add . && git commit -m f && cd -
+
+~: AD_PATCH="`pwd`/patches/adsense.patch" && cd `python -c "import pelican; print(pelican.__path__[0])"`/themes/notmyidea && patch -p1 < "$AD_PATCH" && cd -
+
+# edit theme
+
+~: AD_PATCH="`pwd`/patches/adsense.patch" && cd `python -c "import pelican; print(pelican.__path__[0])"`/themes/notmyidea && git add . && git diff HEAD > "$AD_PATCH" && cd -
