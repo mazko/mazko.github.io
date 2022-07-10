@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - REST</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">Протоколы «Интернета вещей» - CoAP</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-10-17T00:00:00+03:00">
+                Вт 17 октября 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> </p>
+</footer><!-- /.post-info --><p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> развлекаться с сетевыми протоколам.</p>
+<p>CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">HTTP</a>, но с дополнительными фичами и улучшениями. В отличие от протокола HTTP, который является текстовым и использует <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">ТСР</a>, CoAP – это бинарный протокол, который работает поверх <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a>, что значительно уменьшает общий размер передаваемых данных и повышает гибкость взаимодействия.</p>
+<p>С точки зрения разработчика CoAP выглядит почти так же, как HTTP. В обоих случаях серверы предоставляют свои ресурсы по адресам URL, и клиенты обращаются к ним посредством стандартных методов, таких как GET, PUT, POST и DELETE. Архитектура REST (Representational State Transfer — «передача состояния представления»), получившая столь широкое распространение при разработке HTTP сервисов, также хорошо ложится и на CoAP сервисы. </p>
+<p>Коды состояний (ответ сервера) CoAP в большинстве случаев аналогичны с HTTP и представляют собой целое число из трёх десятичных цифр — 2.xx успешно, 4.xx ошибка клиента, 5.xx ошибка сервера.</p>
+<h2>ДЕМО</h2>
+<p>На картинке светильник (сервер) и выключатель (клиент), оба представляют из себя независимые устройства на микроконтроллерах c ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту, оба подключённы к сети. Передача данных между данными устройствами осуществляется посредством CoAP протокола. В текущей версии Contiki 3.0 по умолчанию используется Erbium (Er) REST Engine в качестве реализации CoAP.</p>
+<p><a href="http://localhost:9148/b793a136c4b05c9a9c29195f045b8482">coap.server.ipv6</a> | <a href="http://localhost:9148/e2e2bcf4782229c27ee28ce07c9698cf">coap.client.ipv6</a> | <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/conticki-coap.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/ui.gif" style="width:100%;"></p>
+<p>В примере с лампочками цвет задаётся / снимается методом PUT. В терминологии REST данный метод является <strong>идемпотентным</strong>, ага. Это умное слово пришло к нам из математики. Идемпотентность — свойство объекта или операции при повторном применении операции к объекту давать тот же результат, что и при первом. Операции сложения с нулём, умножения на единицу, возведения в степень ноль и пр. являются идемпотентными.</p>
+<p>С точки зрения REST сервиса метод является идемпотентным, если повторный идентичный запрос, сделанный один или несколько раз подряд, имеет один и тот же эффект, не изменяющий состояние сервера. Создание большого количества идемпотентных запросов имеет такой же эффект, как и один запрос. В нашем случае сколько бы раз мы ни задавали например красный цвет для лампочки, она изменит свой цвет (покраснеет) только один раз при первом запросе. Корректно реализованные методы GET, PUT и DELETE идемпотентны, но не метод POST. Вот если бы мы захотели, чтобы при каждом обращении к серверу состояние лампочек менялось на противоположное (XOR), то про правилам REST такой запрос стоит реализовать через метод POST.</p>
+<p>Если мы хотим просмотреть состояние лампочек на текущий момент, но при этом не хотим изменять из состояние, то стоит использовать запрос GET. С точки зрения REST подобные методы определены как <strong>безопасные</strong>, это означает, что они предназначены только для получения информации и не должны изменять состояние сервера. Другими словами, они не должны иметь побочных эффектов, за исключением безобидных эффектов, таких как логирование, кеширование и т.д.</p>
+<h2>COAP</h2>
+<p>Самое время запустить наш любимый Wireshark и посмотреть что там внутри CoAP пакета. На рисунке метод PUT, который включает красные лампочки. В данном конкретном примере если мы хотим выполнить какое-то действие с лампочки, то надо использовать относительный URL сервера <code>/actuators/leds</code>, а собственно цвет предполагается задавать параметром <code>color</code>. В теле запроса <code>mode=on</code> включает лампочку, а <code>mode=off</code> выключает. Такой пример идёт в исходниках Contiki, а насколько он следует принципам REST это уже другой вопрос.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/coap.png" style="width:100%;"></p>
+<p>Как видно, CoAP очень компактный протокол. Здесь наиболее интересно поле <code>Type: Confirmable</code>, с помощью которого разработчик приложения может контролировать надёжность доставки пакетов. Как мы знаем такая возможность изначально отсутствует у UDP протокола, но она реализована в CoAP как надстройка над UDP. Когда получателю приходит «Сonfirmable» сообщение, он всегда возвращает подтверждение. Передающая сторона, в свою очередь, повторно отправляет сообщение если подтверждение не возвращается в течение определенного периода времени, заданного по умолчанию и с каждым разом возрастающего экспоненциально, пока получатель не посылает сообщение подтверждения приема.</p>
+<p>Для данных, которые не требуют подтверждения, достаточно классического UDP. Тогда в качестве более легкой альтернативы сообщение может быть передано с меньшей надежностью, помеченное как «Non-confirmable». Данное сообщение всегда несет либо запрос, либо ответ и не должно быть пустым.</p>
+<p>Пожалуй отдельно стоит упомянуть симпатичное дополнение Copper для браузера Firefox, которое будет полезно при разработке CoAP приложений. С его помощью можно протестировать работу сервера отдельно от клиента. Для доступа к серверу из браузера нужно не забыть <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">назначить</a> дополнительный адрес <code>abcd::1</code> виртуальному сетевому интерфейсу симулятора.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/copper.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Тема безопасности для «Интернета вещей» является особенно актуальной. В CoAP поддерживается шифрование, но без TCP стандартный TLS (Transport Layer Security) не может быть использован для обеспечения безопасности связи. Поэтому в CoAP используется DTLS (Datagram Transport Layer Security), который позволяет приложениям, основанным на коммуникациях посредством датаграмм, сообщаться безопасным способом, предотвращающим перехват, прослушивание, вмешательство, не нарушая защиты целостности данных или подделку содержимого сообщения.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/">Далее</a> MQTT.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
+                           title="Permalink to ElasticSearch - практическое введение">ElasticSearch - практическое введение</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-06-25T00:00:00+03:00">
+                Сб 25 июня 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/elastic">Elastic</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/docker">Docker</a> </p>
+</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
+<a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку …</a></p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/" rel="bookmark"
+                           title="Permalink to Как соорудить удобный перевод текста всего за пару минут">Как соорудить удобный перевод текста всего за пару минут</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-03-03T00:00:00+02:00">
+                Чт 03 марта 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
+</footer><!-- /.post-info -->                <p>Стандартная ситуация: читаем какую-нибудь <em>e-book</em> на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:</p>
+<ul>
+<li>
+<p>Считывает текущий выделенный в операционной системе фрагмент текста</p>
+</li>
+<li>
+<p>Скармливает этот текст веб-сервису синтезатору речи, в ответ получает аудио файл и проигрывает. На слух как-то оно лучше запоминается :)</p>
+</li>
+<li>
+<p>Параллельно скармливает текст веб-сервису переводчику, целевой язык …</p></li></ul>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

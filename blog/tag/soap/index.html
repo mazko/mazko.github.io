@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - SOAP</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/">Умный Дом - автоматизация устройств с поддержкой UPnP/DLNA</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-08-12T00:00:00+03:00">
+                Пт 12 августа 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/m2m">m2m</a> <a href="http://proiot.ru/blog/tag/soap">SOAP</a> </p>
+</footer><!-- /.post-info --><p>Universal Plug and Play (<a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow">UPnP</a>) - это набор протоколов для обнаружения и последующего взаимодействия различных сетевых устройств. Девайсом может быть почти все что угодно: роутер, принтер, Smart TV, мобильный телефон - главное чтобы он был подключён к сети и поддерживал технологию UPnP/DLNA.</p>
+<p>Тут пожалуй стоит сделать риторическое отступление. Зачем нам <a href="http://2gusia.livejournal.com/37929.html" rel="nofollow">две</a> технологии UPnP и DLNA ? Так сложилось исторически. С точки зрения бытового использования - это почти одно и то же. Технически DLNA базируется на UPnP, накладывая на него некоторые ограничения.
+UPnP - набор открытых бесплатных сетевых протоколов, в то время как для сертификации  DLNA от производителя оборудования требуется заплатить <a href="http://www.dlna.org/certification/certification" rel="nofollow">денюшку</a>. Также DLNA привносит интересы правообладателя, стремясь допустить использование только "правильного" медиаконтента. Хороший пример - формат mkv, столь распространённый в сети и столь ненавистный многим правообладателям. В результате этот формат, вполне совместимый с UPnP, оказался за бортом спецификаций DLNA и множество DLNA устройств не могут с ним работать.</p>
+<p>На практике это означает, что и DLNA и UPnP устройства в подавляющем большинстве случаев могут работать вместе. Правда, не на любом контенте.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Наша цель - автоматизировать действия на картинке одной командой т.к. очень удобно включать/выключать музыку в комнате комбинацией клавиш на <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">ноуте</a>. </p>
+<p>Начнём с <a href="http://www.upnp-hacks.org/upnp.html" rel="nofollow">обнаружения</a> доступных UPnP устройств. Для этого нужно отправить M-SEARCH запрос на multicast-адрес 239.255.255.250 порт 1900 по UDP протоколу. Все устройства и программы, поддерживающие спецификацию UPnP обязаны ответить по UDP unicast:</p>
+<div class="highlight"><pre><span></span>~$ upnp-scan<span class="o">()</span> <span class="o">{</span>
+  python3 -c <span class="s1">&#39;</span>
+<span class="s1">import socket, sys</span>
+
+<span class="s1">SSDP_ADDR = &quot;239.255.255.250&quot;</span>
+<span class="s1">SSDP_PORT = 1900</span>
+<span class="s1"># seconds to delay response</span>
+<span class="s1">SSDP_MX = 3</span>
+<span class="s1"># search target</span>
+<span class="s1">SSDP_ST = sys.argv[1] # upnp-scan &quot;ssdp:all&quot;</span>
+
+<span class="s1">ssdpRequest = &quot;M-SEARCH * HTTP/1.1\r\n&quot; + \</span>
+<span class="s1">              &quot;HOST: %s:%d\r\n&quot; % (SSDP_ADDR, SSDP_PORT) + \</span>
+<span class="s1">              &quot;MAN: \&quot;ssdp:discover\&quot;\r\n&quot; + \</span>
+<span class="s1">              &quot;MX: %d\r\n&quot; % (SSDP_MX, ) + \</span>
+<span class="s1">              &quot;ST: %s\r\n&quot; % (SSDP_ST, ) + &quot;\r\n&quot;</span>
+
+<span class="s1">with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:</span>
+<span class="s1">  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))</span>
+<span class="s1">  sock.settimeout(SSDP_MX + 1)</span>
+<span class="s1">  while True:</span>
+<span class="s1">    try:</span>
+<span class="s1">      data = sock.recv(1024)</span>
+<span class="s1">      print(data.decode()) </span>
+<span class="s1">    except socket.timeout:</span>
+<span class="s1">      break</span>
+<span class="s1">  &#39;</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="p">|</span> <span class="se">\</span>
+  tr -d <span class="s1">&#39;\r&#39;</span> <span class="c1"># normalize new lines \r\n =&gt; \n</span>
+<span class="o">}</span>
+
+~$ upnp-scan <span class="s2">&quot;ssdp:all&quot;</span> <span class="p">|</span> <span class="se">\</span>
+    tee upnp.scan.dump <span class="p">|</span> <span class="se">\</span>
+    awk -v <span class="nv">RS</span><span class="o">=</span><span class="s1">&#39;\n\n\n&#39;</span> <span class="s1">&#39;/BubbleUPnP/ &amp;&amp; /[Ss][Tt]: uuid:/ {print $0 &quot;\n&quot;}&#39;</span>
+<span class="c1"># response</span>
+HTTP/1.1 <span class="m">200</span> OK
+Cache-control: max-age<span class="o">=</span><span class="m">1800</span>
+Usn: uuid:3ef89534-fb8e-c38f-0000-00007940d6d3
+Location: http://192.168.0.100:57916/dev/3ef89534-fb8e-c38f-0000-00007940d6d3/desc.xml
+Server: Linux/2.6.29 UPnP/1.0 BubbleUPnP/1.6.11.1
+Ext: 
+St: uuid:3ef89534-fb8e-c38f-0000-00007940d6d3
+</pre></div>
+
+
+<p>Мы просканировали сеть и <a href="http://awk.js.org/?gist=ebfc98b50d9b72b1f77df05a4db264a9">отфильтровали</a> устройства BubbleUPnP, которыми хотим управлять. Таковых может быть несколько, поэтому для автоматизации удобно работать с конкретным девайсом через uuid: </p>
+<div class="highlight"><pre><span></span>~$ upnp-scan <span class="s1">&#39;uuid:3ef89534-fb8e-c38f-0000-00007940d6d3&#39;</span> <span class="p">|</span> awk <span class="s1">&#39;/Location:/ {print $2}&#39;</span>
+<span class="c1"># response</span>
+http://192.168.0.100:57916/dev/3ef89534-fb8e-c38f-0000-00007940d6d3/desc.xml
+</pre></div>
+
+
+<p>В спецификации <a href="http://upnp.org/specs/arch/UPnP-arch-DeviceArchitecture-v1.1.pdf" rel="nofollow">UPnP</a> много букв. Можно упростить себе жизнь и перехватить SOAP запросы на 192.168.0.100, которые отправляет программа на картинке <code>sudo tcpdump -A dst 192.168.0.100</code> и сделать то же посредством curl:</p>
+<div class="highlight"><pre><span></span>~$ <span class="nv">BASE</span><span class="o">=</span>http://192.168.0.100:57916/ <span class="se">\</span>
+   <span class="nv">AV</span><span class="o">=</span>dev/3ef89534-fb8e-c38f-0000-00007940d6d3/svc/upnp-org/AVTransport/action
+~$ curl <span class="s2">&quot;</span><span class="nv">$BASE$AV</span><span class="s2">&quot;</span> <span class="se">\</span>
+-XPOST <span class="se">\</span>
+-H <span class="s1">&#39;SOAPAction: &quot;urn:schemas-upnp-org:service:AVTransport:1#Stop&quot;&#39;</span> <span class="se">\</span>
+-H <span class="s1">&#39;Content-Type: text/xml; charset=&quot;utf-8&quot;&#39;</span> <span class="se">\</span>
+-d <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s1">&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; </span>
+<span class="s1">s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span>
+<span class="s1">  &lt;s:Body&gt;</span>
+<span class="s1">    &lt;u:Stop xmlns:u=&quot;urn:schemas-upnp-org:service:AVTransport:1&quot;&gt;</span>
+<span class="s1">      &lt;InstanceID&gt;0&lt;/InstanceID&gt;</span>
+<span class="s1">    &lt;/u:Stop&gt;</span>
+<span class="s1">  &lt;/s:Body&gt;</span>
+<span class="s1">&lt;/s:Envelope&gt;&#39;</span>
+
+~$ curl <span class="s2">&quot;</span><span class="nv">$BASE$AV</span><span class="s2">&quot;</span> <span class="se">\</span>
+-XPOST <span class="se">\</span>
+-H <span class="s1">&#39;SOAPAction: &quot;urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI&quot;&#39;</span> <span class="se">\</span>
+-H <span class="s1">&#39;Content-Type: text/xml; charset=&quot;utf-8&quot;&#39;</span> <span class="se">\</span>
+-d <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s1">&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span>
+<span class="s1">s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span>
+<span class="s1">  &lt;s:Body&gt;</span>
+<span class="s1">    &lt;u:SetAVTransportURI xmlns:u=&quot;urn:schemas-upnp-org:service:AVTransport:1&quot;&gt;</span>
+<span class="s1">      &lt;CurrentURIMetaData&gt;NOT_IMPLEMENTED&lt;/CurrentURIMetaData&gt;</span>
+<span class="s1">      &lt;CurrentURI&gt;http://online.radioroks.com.ua:8000/RadioROKS&lt;/CurrentURI&gt;</span>
+<span class="s1">      &lt;InstanceID&gt;0&lt;/InstanceID&gt;</span>
+<span class="s1">    &lt;/u:SetAVTransportURI&gt;</span>
+<span class="s1">  &lt;/s:Body&gt;</span>
+<span class="s1">&lt;/s:Envelope&gt;&#39;</span>
+
+~$ curl <span class="s2">&quot;</span><span class="nv">$BASE$AV</span><span class="s2">&quot;</span> <span class="se">\</span>
+-XPOST <span class="se">\</span>
+-H <span class="s1">&#39;SOAPAction: &quot;urn:schemas-upnp-org:service:AVTransport:1#Play&quot;&#39;</span> <span class="se">\</span>
+-H <span class="s1">&#39;Content-Type: text/xml; charset=&quot;utf-8&quot;&#39;</span> <span class="se">\</span>
+-d <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s1">&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span>
+<span class="s1">s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span>
+<span class="s1">  &lt;s:Body&gt;</span>
+<span class="s1">    &lt;u:Play xmlns:u=&quot;urn:schemas-upnp-org:service:AVTransport:1&quot;&gt;</span>
+<span class="s1">      &lt;Speed&gt;1&lt;/Speed&gt;</span>
+<span class="s1">      &lt;InstanceID&gt;0&lt;/InstanceID&gt;</span>
+<span class="s1">    &lt;/u:Play&gt;</span>
+<span class="s1">  &lt;/s:Body&gt;</span>
+<span class="s1">&lt;/s:Envelope&gt;&#39;</span>
+</pre></div>
+
+
+<p>Конечный результат:</p>
+<p><em>upnp-cp.sh</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># chmod +x upnp-cp.sh &amp;&amp; sudo ln -s &quot;`pwd`/upnp-cp.sh&quot; /usr/local/bin/play-to-upnp</span>
+
+<span class="c1"># usage stop/play:</span>
+<span class="c1"># play-to-upnp</span>
+<span class="c1"># play-to-upnp http://online.radioroks.com.ua:8000/RadioROKS</span>
+
+<span class="nb">set</span> -e
+
+upnp-scan<span class="o">()</span> <span class="o">{</span>
+  python3 -c <span class="s1">&#39;</span>
+<span class="s1">import socket, sys</span>
+
+<span class="s1">SSDP_ADDR = &quot;239.255.255.250&quot;</span>
+<span class="s1">SSDP_PORT = 1900</span>
+<span class="s1"># seconds to delay response</span>
+<span class="s1">SSDP_MX = 3</span>
+<span class="s1"># search target</span>
+<span class="s1">SSDP_ST = sys.argv[1] # upnp-scan &quot;ssdp:all&quot;</span>
+
+<span class="s1">ssdpRequest = &quot;M-SEARCH * HTTP/1.1\r\n&quot; + \</span>
+<span class="s1">              &quot;HOST: %s:%d\r\n&quot; % (SSDP_ADDR, SSDP_PORT) + \</span>
+<span class="s1">              &quot;MAN: \&quot;ssdp:discover\&quot;\r\n&quot; + \</span>
+<span class="s1">              &quot;MX: %d\r\n&quot; % (SSDP_MX, ) + \</span>
+<span class="s1">              &quot;ST: %s\r\n&quot; % (SSDP_ST, ) + &quot;\r\n&quot;</span>
+
+<span class="s1">with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:</span>
+<span class="s1">  sock.sendto(ssdpRequest.encode(), (SSDP_ADDR, SSDP_PORT))</span>
+<span class="s1">  sock.settimeout(SSDP_MX + 1)</span>
+<span class="s1">  while True:</span>
+<span class="s1">    try:</span>
+<span class="s1">      data = sock.recv(1024)</span>
+<span class="s1">      print(data.decode()) </span>
+<span class="s1">    except socket.timeout:</span>
+<span class="s1">      break</span>
+<span class="s1">  &#39;</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="p">|</span> <span class="se">\</span>
+  tr -d <span class="s1">&#39;\r&#39;</span> <span class="c1"># normalize new lines \r\n =&gt; \n</span>
+<span class="o">}</span>
+
+<span class="nv">URL</span><span class="o">=</span><span class="sb">`</span>upnp-scan <span class="s2">&quot;uuid:3ef89534-fb8e-c38f-0000-00007940d6d3&quot;</span> <span class="p">|</span> <span class="se">\</span>
+awk <span class="s1">&#39;/Location:/ {print $2}&#39;</span><span class="sb">`</span>
+
+<span class="nb">echo</span> Divice found: <span class="nv">$URL</span>
+
+<span class="nv">URL_AV</span><span class="o">=</span><span class="sb">`</span>curl -s <span class="s2">&quot;</span><span class="nv">$URL</span><span class="s2">&quot;</span> <span class="p">|</span> <span class="se">\</span>
+python3 -c <span class="s1">&#39;</span>
+<span class="s1">import sys, xml.dom.minidom</span>
+<span class="s1">dom = xml.dom.minidom.parse(sys.stdin)</span>
+<span class="s1">for srv in dom.getElementsByTagName(&quot;service&quot;):</span>
+<span class="s1">  ids = [e.firstChild.nodeValue for e in srv.getElementsByTagName(&quot;serviceId&quot;)]</span>
+<span class="s1">  if (&quot;urn:upnp-org:serviceId:AVTransport&quot; in ids):</span>
+<span class="s1">    for url in srv.getElementsByTagName(&quot;controlURL&quot;):</span>
+<span class="s1">      print(url.firstChild.nodeValue)</span>
+<span class="s1">&#39;</span><span class="sb">`</span>
+
+<span class="nv">URL_AV</span><span class="o">=</span><span class="s2">&quot;`echo </span><span class="nv">$URL</span><span class="s2"> | cut -d &#39;/&#39; -f1`//`echo </span><span class="nv">$URL</span><span class="s2"> | cut -d &#39;/&#39; -f3`</span><span class="nv">$URL_AV</span><span class="s2">&quot;</span>
+
+<span class="nb">echo</span> AVTransport found: <span class="nv">$URL_AV</span>
+
+curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
+  -XPOST <span class="se">\</span>
+  -H <span class="s1">&#39;SOAPAction: &quot;urn:schemas-upnp-org:service:AVTransport:1#Stop&quot;&#39;</span> <span class="se">\</span>
+  -H <span class="s1">&#39;Content-Type: text/xml; charset=&quot;utf-8&quot;&#39;</span> <span class="se">\</span>
+  -d <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s1">  &lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot; </span>
+<span class="s1">  s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span>
+<span class="s1">    &lt;s:Body&gt;</span>
+<span class="s1">      &lt;u:Stop xmlns:u=&quot;urn:schemas-upnp-org:service:AVTransport:1&quot;&gt;</span>
+<span class="s1">        &lt;InstanceID&gt;0&lt;/InstanceID&gt;</span>
+<span class="s1">      &lt;/u:Stop&gt;</span>
+<span class="s1">    &lt;/s:Body&gt;</span>
+<span class="s1">  &lt;/s:Envelope&gt;&#39;</span>
+
+<span class="c1"># $# variable will tell you the number of input arguments the script was passed</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c1"># play url $@</span>
+  curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
+    -XPOST <span class="se">\</span>
+    -H <span class="s1">&#39;SOAPAction: &quot;urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI&quot;&#39;</span> <span class="se">\</span>
+    -H <span class="s1">&#39;Content-Type: text/xml; charset=&quot;utf-8&quot;&#39;</span> <span class="se">\</span>
+    -d <span class="s2">&quot;&lt;?xml version=&#39;1.0&#39;?&gt;</span>
+<span class="s2">    &lt;s:Envelope xmlns:s=&#39;http://schemas.xmlsoap.org/soap/envelope/&#39;</span>
+<span class="s2">    s:encodingStyle=&#39;http://schemas.xmlsoap.org/soap/encoding/&#39;&gt;</span>
+<span class="s2">      &lt;s:Body&gt;</span>
+<span class="s2">        &lt;u:SetAVTransportURI xmlns:u=&#39;urn:schemas-upnp-org:service:AVTransport:1&#39;&gt;</span>
+<span class="s2">          &lt;CurrentURIMetaData&gt;NOT_IMPLEMENTED&lt;/CurrentURIMetaData&gt;</span>
+<span class="s2">          &lt;CurrentURI&gt;</span><span class="nv">$@</span><span class="s2">&lt;/CurrentURI&gt;</span>
+<span class="s2">          &lt;InstanceID&gt;0&lt;/InstanceID&gt;</span>
+<span class="s2">        &lt;/u:SetAVTransportURI&gt;</span>
+<span class="s2">      &lt;/s:Body&gt;</span>
+<span class="s2">    &lt;/s:Envelope&gt;&quot;</span>
+
+  curl -vsf <span class="nv">$URL_AV</span> <span class="se">\</span>
+    -XPOST <span class="se">\</span>
+    -H <span class="s1">&#39;SOAPAction: &quot;urn:schemas-upnp-org:service:AVTransport:1#Play&quot;&#39;</span> <span class="se">\</span>
+    -H <span class="s1">&#39;Content-Type: text/xml; charset=&quot;utf-8&quot;&#39;</span> <span class="se">\</span>
+    -d <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="s1">    &lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;</span>
+<span class="s1">    s:encodingStyle=&quot;http://schemas.xmlsoap.org/soap/encoding/&quot;&gt;</span>
+<span class="s1">      &lt;s:Body&gt;</span>
+<span class="s1">        &lt;u:Play xmlns:u=&quot;urn:schemas-upnp-org:service:AVTransport:1&quot;&gt;</span>
+<span class="s1">          &lt;Speed&gt;1&lt;/Speed&gt;</span>
+<span class="s1">          &lt;InstanceID&gt;0&lt;/InstanceID&gt;</span>
+<span class="s1">        &lt;/u:Play&gt;</span>
+<span class="s1">      &lt;/s:Body&gt;</span>
+<span class="s1">    &lt;/s:Envelope&gt;&#39;</span>
+<span class="k">fi</span>
+</pre></div><p>There are <a href="http://proiot.ru/blog/posts/2016/08/12/umnyi-dom-avtomatizatsiia-ustroistv-s-podderzhkoi-upnpdlna/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Монохромный OLED дисплей на контроллере SSD1306</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="bookmark"
+           title="Permalink to Монохромный OLED дисплей на контроллере SSD1306">Монохромный OLED дисплей на контроллере SSD1306</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-25T00:00:00+03:00">
+                Вт 25 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> </p>
+</footer><!-- /.post-info -->      <p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один бит для синхронизации этой парочки итого минимум 10 ног микроконтроллера. Последовательные интерфейсы позволяют обойтись меньшим количеством соединений, но теоретически уступают в скорости обмена данными. У микроконтроллера msp430f1611 предостаточно выводов и в данном обучающем материале рассматривается параллельный интерфейс для которого не требуется дополнительно настраивать периферию I2C/SPI, что позволяет сосредоточиться непосредственно на особенностях SSD1306. При переходе на последовательный интерфейс достаточно будет изменить только две функции - <code>ssd1306_write_data</code> и <code>ssd1306_write_instruction</code>.</p>
+<p><a href="http://mazko.github.io/MSP430.js/4a1dee2b02e6d149594b10d03b7925c8">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/img.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Управление SSD1306 ограничивается двумя функциями - запись данных и запись команд. Карта памяти GDDRAM организована 8-ю страницами по 128 байт. Система координат имеет начало в левом верхнем углу. Для записи произвольного отображаемого байта страницы по заданному адресу используется функция <code>ssd1306_write_byte</code>. Организация памяти SSD1306 не даёт возможность задавать отдельную точку на дисплее, только байт. Если потребуется прорисовывать отдельные пиксели вместо байт нужно держать все пиксели в памяти микроконтроллера (буфер 128x8) и периодически скидывать их на дисплей побайтово. При записи последовательности байт достаточно задать начальный адрес т.к. каждое обращение к GDDRAM приводит к автоматическому инкременту адреса столбца, по достижении конечного значения (128) счётчик адреса столбца сбрасывается в начальное значение (0), а счётчик адреса страницы увеличивается на единицу. После достижения счётчиком адреса страницы конечного значения (8) оба счётчика сбросятся в начальные значения и процесс пойдёт по второму кругу.</p>
+<p><em>ssd1306.c</em></p>
+<div class="highlight"><pre><span></span><span class="c1">// Address setting commands</span>
+<span class="cp">#define SSD1306_SET_COL_LO_NIBBLE    0x00</span>
+<span class="cp">#define SSD1306_SET_COL_HI_NIBBLE    0x10</span>
+<span class="cp">#define SSD1306_SET_PAGE_START_ADDR  0xB0</span>
+
+<span class="c1">// pins</span>
+<span class="cp">#define SSD1306_DATA_INST            0</span>
+<span class="cp">#define SSD1306_DATA_E               1</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">strobe</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">P3OUT</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_E</span><span class="p">);</span>
+  <span class="n">P3OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_E</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span>
+<span class="nf">ssd1306_write_data</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">P2OUT</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
+  <span class="n">P3OUT</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_INST</span><span class="p">);</span>
+  <span class="n">strobe</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span>
+<span class="nf">ssd1306_write_instruction</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">P2OUT</span> <span class="o">=</span> <span class="n">byte</span><span class="p">;</span>
+  <span class="n">P3OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SSD1306_DATA_INST</span><span class="p">);</span>
+  <span class="n">strobe</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span>
+<span class="nf">ssd1306_write_byte</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">page</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">ssd1306_write_instruction</span> <span class="p">(</span><span class="n">SSD1306_SET_PAGE_START_ADDR</span> <span class="o">|</span> <span class="n">page</span><span class="p">);</span>
+  <span class="n">ssd1306_write_instruction</span> <span class="p">(</span><span class="n">SSD1306_SET_COL_LO_NIBBLE</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">));</span>
+  <span class="n">ssd1306_write_instruction</span> <span class="p">(</span><span class="n">SSD1306_SET_COL_HI_NIBBLE</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">));</span>
+  <span class="n">ssd1306_write_data</span><span class="p">(</span><span class="n">byte</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Любая картинка или текст это всего-лишь набор пикселей. В случае SSD1306 цвета всего два один из них чёрный. Для преобразования любого файла изображения в Си массив послужит следующий скрипт на питоне + ImageMagick:</p>
+<div class="highlight"><pre><span></span><span class="c1"># http://grep.js.org/?gist=96caa480d220062b18a693f1b2e9f275</span>
+~$ <span class="nb">alias</span> <span class="nv">c128x64</span><span class="o">=</span><span class="s1">&#39;convert -resize 128x64!&#39;</span>
+~$ c128x64 eyes.eps xbm:- <span class="p">|</span> grep -o <span class="s1">&#39;0[xX][0-9a-fA-F]\+&#39;</span> <span class="p">|</span> python3 -c <span class="s1">&#39;</span>
+
+<span class="s1">import sys</span>
+
+<span class="s1"># parse stdin image</span>
+<span class="s1">xbm = [int(line, 16) for line in sys.stdin]</span>
+
+<span class="s1"># convert</span>
+<span class="s1">out = [[0]*128 for i in range(8)]</span>
+<span class="s1">for y in range(64):</span>
+<span class="s1">  for x in range(128):</span>
+<span class="s1">    if x &amp; 7:</span>
+<span class="s1">      byte &gt;&gt;= 1</span>
+<span class="s1">    else:</span>
+<span class="s1">      # 128 / 8 = 16 bytes in one xbm row</span>
+<span class="s1">      byte = xbm[y * 16 + x // 8]</span>
+<span class="s1">    if not byte &amp; 1:</span>
+<span class="s1">      out[y // 8][x] |= (1 &lt;&lt; y % 8)</span>
+
+<span class="s1"># print array</span>
+<span class="s1">for p in out:</span>
+<span class="s1">  print(&quot;{&quot; + &quot;,&quot;.join(hex(x) for x in p) + &quot;},&quot;)</span>
+<span class="s1">&#39;</span>
+</pre></div>
+
+
+<p>Для отображения текста тоже понадобится набор готовых изображений для каждого символа. Наиболее простой случай - моноширинный шрифт все знаки (площадки знаков) которого имеют одинаковую ширину. Например <a href="https://github.com/adafruit/Adafruit-GFX-Library/blob/master/glcdfont.c" rel="nofollow">шрифт</a> для ASCII символов 5x7.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><a href="http://mazko.github.io/MSP430.js/56a600e7efa1f648c5305d652d14be6a">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.zip">исходники</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+
+<span class="cm">reset &amp;&amp; (export GCC_DIR=~/ti/msp430_gcc ; </span>
+<span class="cm">    $GCC_DIR/bin/msp430-elf-gcc \</span>
+<span class="cm">    -I $GCC_DIR/include -L $GCC_DIR/include \</span>
+<span class="cm">    -Werror -Wall -mmcu=msp430f1611 -O2 test.c ssd1306.c)</span>
+
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;ssd1306.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;font.c&quot;</span><span class="cp"></span>
+
+<span class="cp">#define STATIC_ASSERT(cond) typedef int foo[(cond) ? 1 : -1]</span>
+<span class="n">STATIC_ASSERT</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">font</span><span class="p">)</span> <span class="o">==</span> <span class="mi">256</span> <span class="o">*</span> <span class="mi">5</span> <span class="cm">/* uint8_t values 0..255 == 256 */</span><span class="p">);</span>
+<span class="cp">#undef STATIC_ASSERT</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">drawchar</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">page</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="n">ssd1306_write_byte</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">font</span><span class="o">+</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span><span class="o">+</span><span class="n">i</span><span class="p">));</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">drawstr</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">x</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">page</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">s</span> <span class="o">&amp;&amp;</span> <span class="o">*</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">drawchar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="o">++</span><span class="p">);</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="mi">6</span><span class="p">;</span>     <span class="c1">// 6 pixels wide</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">&gt;=</span> <span class="n">SSD1306_X_PIXELS</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>    <span class="c1">// ran out of this page</span>
+      <span class="n">page</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">page</span> <span class="o">&gt;=</span> <span class="n">SSD1306_PIXEL_PAGES</span><span class="p">)</span>
+      <span class="k">break</span><span class="p">;</span>    <span class="c1">// ran out of space :(</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">WDTCTL</span> <span class="o">=</span> <span class="n">WDTPW</span> <span class="o">|</span> <span class="n">WDTHOLD</span><span class="p">;</span>     <span class="c1">// Stop watchdog timer</span>
+
+    <span class="c1">// DCO = 3, RSEL = 0, f = 0.13 MHz</span>
+    <span class="n">DCOCTL</span> <span class="o">=</span> <span class="cm">/* DCO2 + */</span> <span class="n">DCO1</span> <span class="o">+</span> <span class="n">DCO0</span><span class="p">;</span> 
+    <span class="n">BCSCTL1</span> <span class="o">=</span> <span class="n">XT2OFF</span> <span class="cm">/* + RSEL1 + RSEL0 + RSEL2 */</span><span class="p">;</span>
+
+    <span class="n">P2OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">P3OUT</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">P2DIR</span> <span class="o">=</span> <span class="n">P3DIR</span> <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+
+    <span class="n">ssd1306_init_display</span><span class="p">();</span>
+
+    <span class="k">for</span><span class="p">(;;)</span> <span class="p">{</span>
+      <span class="n">drawstr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;!</span><span class="se">\&quot;</span><span class="s">#$%&amp;&#39;()*+,-./0123456789:;&lt;=&gt;?@&quot;</span>
+                    <span class="s">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ[</span><span class="se">\\</span><span class="s">]^_`&quot;</span>
+                    <span class="s">&quot;abcdefghijklmnopqrstuvwxyz{|}~&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Здесь <code>STATIC_ASSERT</code> это <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиома</a> Си, проверка на этапе компиляции будет полезна в случае смены шрифта - на ту же кириллицу например. Текущая реализация конечно простейшая, смещение по горизонтали задаётся в пикселях, но накладывается ограничение на смещение по вертикали - максимум 8 строк. В более сложных случаях можно задействовать какую-нибудь готовую графическую библиотеку для графического дисплея наподобие <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/">uGFX</a>.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Далее</a> операционная система реального времени FreeRTOS.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

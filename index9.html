@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="4">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - двухтактные усилители мощности">NGSPICE.js - двухтактные усилители мощности</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-28T00:00:00+02:00">
+                Пн 28 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>Из школьного курса по физике хорошо известна формула мощности <code>P = U*I = U*U/R = I*I*R</code>, где последние две формулы элементарно выводятся из закона Ома, а R - не что иное, как сопротивление нагрузки. Таким образом, если взять усилитель по схеме …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/28/ngspicejs-dvukhtaktnye-usiliteli-moshchnosti/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - компаратор и триггер Шмитта на ОУ">NGSPICE.js - компаратор и триггер Шмитта на ОУ</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-24T00:00:00+02:00">
+                Чт 24 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>Компаратор сравнивает два <em>аналоговых</em> сигнала и выдаёт двоичный результат в виде 0 или 1 на выходе. Простейшую схему компаратора на <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> мы уже построили ранее - на один из входов операционного усилителя подается известное опорное напряжение, на другой - сравниваемый аналоговый сигнал, например сигнал …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - сумматоры напряжений на ОУ">NGSPICE.js - сумматоры напряжений на ОУ</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-23T00:00:00+02:00">
+                Ср 23 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>Наличие виртуальной земли в <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">инвертирующем</a> усилителе позволяет просто и элегантно решить задачу сложения напряжений входных сигналов от разных источников таким образом, чтобы они не оказывали взаимного влияния друг на друга. При этом для каждого из входных напряжений можно добавить свой коэффициент или …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/23/ngspicejs-summatory-napriazhenii-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - инвертирующий усилитель на ОУ">NGSPICE.js - инвертирующий усилитель на ОУ</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-22T00:00:00+02:00">
+                Вт 22 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>В инвертирующем усилителе входной сигнал подаётся на инвертирующий вход ОУ, туда же заведена ООС, при этом неинвертирующий вход заземлён. Отличительными особенностями данной схемы для идеального ОУ являются:</p>
+<ul>
+<li>
+<p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a> эквивалентно величине резистора Rg</p>
+</li>
+<li>
+<p>фаза сигнала на выходе сдвинута на 180° по отношению …</p></li></ul>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/22/ngspicejs-invertiruiushchii-usilitel-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - неинвертирующий усилитель на ОУ">NGSPICE.js - неинвертирующий усилитель на ОУ</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-21T00:00:00+02:00">
+                Пн 21 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>В неинвертирующем усилителе входной сигнал подаётся на неинвертирующий вход ОУ, а ООС заведена с выхода на инвертирующий вход. Отличительными особенностями данной схемы для идеального ОУ являются:</p>
+<ul>
+<li>
+<p>бесконечно большое <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">входное сопротивление</a></p>
+</li>
+<li>
+<p>фаза сигнала на входе и на выходе совпадает</p>
+</li>
+<li>
+<p>коэффициент усиления по напряжению …</p></li></ul>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/11/21/ngspicejs-neinvertiruiushchii-usilitel-na-ou/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="http://proiot.ru/index8.html">&laquo;</a>
+    Page 9 / 17
+        <a href="http://proiot.ru/index10.html">&raquo;</a>
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

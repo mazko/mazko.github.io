@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>NGSPICE.js - каскодный усилитель</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/" rel="bookmark"
+           title="Permalink to NGSPICE.js - каскодный усилитель">NGSPICE.js - каскодный усилитель</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-11T00:00:00+02:00">
+                Пт 11 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>Основным недостатком усилительного каскада с общей базой (ОБ) является то что <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/">выходное</a> сопротивление на порядок больше входного. Этого недостатка лишена <em>каскодная схема</em> или <em>каскод</em>, которая изображена на рисунке ниже. В такой схеме транзисторы соединены последовательно, при этом входной транзистор включен по схеме с общим эмиттером <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>, а другой - по схеме с общей базой <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a>. Каскодная схема обеспечивает примерно такое же усиление по току и напряжению, что и схема с общим эмиттером. </p>
+<p>Как известно на характеристиках каскада с общим эмиттером <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>
+негативно сказывается эффект Миллера, при котором из-за сдвига фазы выходного напряжения на 180° по отношению к входному емкость коллектор-база создаёт отрицательную обратную связь по переменному току на высоких частотах. Такая паразитная обратная связь эквивалентна включению на входе усилителя шунтирующей емкости, величина которой пропорциональна коэффициенту усиления по напряжению каскада. </p>
+<p>В каскодной схеме коэффициент усиления по напряжению каскада с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a> невелик - это обусловлено малым входным сопротивления каскада с общей базой <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a>. Небольшой коэффициент усиления по напряжению каскада с ОЭ значительно ослабляет эффект Миллера. Что касается каскада с <a href="http://proiot.ru/blog/posts/2016/11/10/ngspicejs-usilitelnyi-kaskad-s-obshchei-bazoi/">ОБ</a> то в нём эффект Миллера отсутствует как таковой. В итоге получаем усиление по току в ОЭ + усиление по напряжению в ОБ но без негативного влияния эффекта Миллера.</p>
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/2N2222.LIB"></a>
+-->
+
+<p>В следующих схемах для симуляции использовалась SPICE модель популярного n-p-n транзистора 2N2222:</p>
+<div class="highlight"><pre><span></span>~$ wget -nc http://www.centralsemi.com/docs/csm/2N2222.LIB
+</pre></div>
+
+
+<p><a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode.sch">каскодная схема(справа от IN)</a> | <a href="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode.net">netlist</a> | <a href="https://ngspice.js.org/?gist=add2c348f915252851fa41fbd3afe97d">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/show-img-cascode.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source cascode.net
+ngspice 2 -&gt; ac dec 100 1k 50Meg
+ngspice 3 -&gt; plot db(out/in) db(x_out/in)
+ngspice 4 -&gt; op
+ngspice 5 -&gt; print out cp1 cp2 cp3 cp4
+</pre></div>
+
+
+<p>Статическое напряжение, фиксируемое командой <code>op</code> в контрольных точках <code>out = 10.96302</code> | <code>cp1 = 5.215810</code> | <code>cp2 = 1.202128</code> | <code>cp3 = 5.903849</code> | <code>cp4 = 1.890720</code>. Попробуем посчитать:</p>
+<ul>
+<li>
+<p>Зная амплитуду входного сигнала 50 мВ <a href="https://bc.js.org/">найдём</a> максимальный ток базы Q1 <code>Ib(max) ≈ 0.05/10k ≈ 5*10^-6 A</code>. Ток покоя каскада с двойным запасом <code>Ic = Ib(max)*β ≈ 200*5*10^-6 = 1 мА</code> при токе смещения 5 мкА</p>
+</li>
+<li>
+<p>Напряжение на стабилизирующем сопротивлении 10-20% от напряжения питания и тогда его величина <code>Re = 0.1*V1/Ie = 0.1*15/(10^-3) ≈ 1.5 кОм</code> и падение напряжения на нём <code>Ue = I*R = 1.5 В</code></p>
+</li>
+<li>
+<p>Для каскада Q1 напряжение смещения <code>Ubias = Ue + Ube = 1.5 + 0.7 = 2.2 В</code>. Для того, чтобы транзистор не влиял на выходное напряжение делителя R2 и R3 ток через эти резисторы выбирается в десять раз больше тока базы транзистора <code>Id = 10*Ib = 50 мкА</code>. Тогда <code>R3 = Ubias/Id = 2.2/(5*10^-5) ≈ 43 кОм</code></p>
+</li>
+<li>
+<p>Будем исходить из напряжения на коллекторе Q2 <code>Uc = V1*2/3 = 10 В</code> тогда <code>Rc = V1/(3*Ic) = 15/(3*10^-3) ≈ 5.1 кОм</code>. Суммарное напряжение на обоих переходах коллектор-эмиттер Q1 и Q2 <code>Us = Uc - Ue = 10 - 1.5 = 8.5 В</code> и если для упрощения расчётов предположить что эти напряжения равны тогда напряжение смещения для каскада Q2 <code>Ubias = (Uc - Us/2) + Ube = (10-8.5/2)+0.7 = 6.45 В</code>. Тогда <code>R1 = (V1-Ubias)/Id = (15-6.45)/(5*10^-5) ≈ 169 кОм</code> и зная разность напряжений Ubias <code>R2 = ΔUbias/Id = (6.45-2.5)/(5*10^-5) ≈ 82 кОм</code></p>
+</li>
+</ul>
+<p>Для снятия <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">АЧХ</a> амплитуда входного выбрана сигнала Vin 50мВ, на который мы рассчитали ранее схему с <a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">ОЭ</a>.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Тогда как согласно графику АЧХ у каскодного усилителя коэффициент усиления только начинает заваливаться на частоте 1МГц/30дБ, каскад с ОЭ на этой частоте уже чувствует себя очень плохо &lt; 10 дБ.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/cascode-canvas-tran.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source cascode.net
+ngspice 2 -&gt; alter @vin[sin] [ 0 50m 1meg ]
+ngspice 3 -&gt; tran 10n 5u
+ngspice 4 -&gt; plot v(out) v(x_out)
+</pre></div>
+
+
+<p>Контрольная <a href="https://ngspice.js.org/?gist=764af0bb80c15e3de059ec33b65471fe">проверка</a> - даже визуально видно что нижняя полуволна несимметрична по отношению к верхней, т.е. сигнал немного но искажен. Зачастую для высокочастотного тракта это не столь критично, поскольку важна не столько форма сигнала сколько его производная - например амплитуды (амплитудная модуляция) или частоты (частотная модуляция). При расчёте рабочей точки мы исходили из равных напряжений на Q2 и Q1, стоит попробовать отдать Q2 больше напряжения и снова проверить на наличие искажений. </p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/13/ngspicejs-generatory-kolebanii-na-tranzistorakh/">Далее</a> генераторы колебаний на транзисторах.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2016/11/11/ngspicejs-kaskodnyi-usilitel/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

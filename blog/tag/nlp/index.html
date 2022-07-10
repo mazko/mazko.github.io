@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - NLP</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">Как соорудить удобный перевод текста всего за пару минут</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-03-03T00:00:00+02:00">
+                Чт 03 марта 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
+</footer><!-- /.post-info --><p>Стандартная ситуация: читаем какую-нибудь <em>e-book</em> на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:</p>
+<ul>
+<li>
+<p>Считывает текущий выделенный в операционной системе фрагмент текста</p>
+</li>
+<li>
+<p>Скармливает этот текст веб-сервису синтезатору речи, в ответ получает аудио файл и проигрывает. На слух как-то оно лучше запоминается :)</p>
+</li>
+<li>
+<p>Параллельно скармливает текст веб-сервису переводчику, целевой язык как в системе, парсит ответ и вытаскивает оттуда собственно сам перевод</p>
+</li>
+<li>
+<p>Выводит приятное всплывающее окошко с переведённым содержимым, даже картинка присутствует под катом</p>
+</li>
+</ul>
+<p>Привожу две версии скрипта <em>xsel-tr-notify.sh</em>, первая для перевода текста использует из командной строки готовое приложение <em>translate-shell</em>, тогда как вторая работает напрямую c REST API.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/translate-ubuntu.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p><em>xsel-tr-notify.sh</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="c1"># chmod +x xsel-tr-notify.sh &amp;&amp; sudo ln -s `pwd`/$_ /usr/local/bin/xsel-translate-notify</span>
+<span class="c1"># apt-get install libnotify-bin xsel</span>
+<span class="c1"># git clone https://github.com/soimort/translate-shell &amp;&amp; cd translate-shell/ &amp;&amp; make</span>
+
+<span class="c1"># Exit immediately if a command exits with a non-zero status.</span>
+<span class="nb">set</span> -e
+
+<span class="c1"># capture current OS selection into variable</span>
+<span class="nv">text</span><span class="o">=</span><span class="sb">`</span>xsel -o<span class="sb">`</span>
+
+<span class="k">if</span> <span class="o">[[</span> ! -z <span class="nv">$text</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c1"># Absolute path to this script, e.g. /home/user/bin/foo.sh</span>
+  <span class="nv">SCRIPT</span><span class="o">=</span><span class="sb">`</span>readlink -f <span class="s2">&quot;</span><span class="nv">$0</span><span class="s2">&quot;</span><span class="sb">`</span>
+
+  <span class="c1"># Absolute path this script is in, thus /home/user/bin</span>
+  <span class="nv">SCRIPTPATH</span><span class="o">=</span><span class="sb">`</span>dirname <span class="s2">&quot;</span><span class="nv">$SCRIPT</span><span class="s2">&quot;</span><span class="sb">`</span>
+
+  <span class="nv">translate</span><span class="o">=</span><span class="sb">`</span><span class="nv">$SCRIPTPATH</span>/translate-shell/build/trans -sp -brief :<span class="si">${</span><span class="nv">LANGUAGE</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">2</span><span class="si">}</span> <span class="s2">&quot;</span><span class="nv">$text</span><span class="s2">&quot;</span><span class="sb">`</span>
+
+  <span class="c1"># UI notify</span>
+  notify-send -u critical <span class="s2">&quot;</span><span class="nv">$text</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$translate</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+</pre></div>
+
+
+<p>Как это работает ? В качестве примера нижне показан скрипт, который используют REST API Яндекса. Аналогичное API есть и у других поисковиков — Google, Bing и т.д и приложение <em>translate-shell</em> тоже его использует для перевода текста.</p>
+<p><em>xsel-tr-notify.sh</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="c1"># chmod +x xsel-tr-notify.sh &amp;&amp; sudo ln -s `pwd`/$_ /usr/local/bin/xsel-translate-notify</span>
+<span class="c1"># apt-get install mpg123 libnotify-bin xsel curl</span>
+
+<span class="c1"># Exit immediately if a command exits with a non-zero status.</span>
+<span class="nb">set</span> -e
+
+<span class="nb">echo</span> <span class="s2">&quot;Powered by Yandex api&quot;</span>
+
+<span class="c1"># https://tech.yandex.ru/translate/</span>
+<span class="nv">YA_TRNSL_KEY</span><span class="o">=</span>your_trnsl_key_here
+<span class="c1"># https://tech.yandex.ru/speechkit/cloud/doc/dg/concepts/speechkit-dg-tts-docpage/</span>
+<span class="nv">YA_TTS_KEY</span><span class="o">=</span>your_tts_key_here
+
+<span class="c1"># capture current OS selection into variable</span>
+<span class="nv">text</span><span class="o">=</span><span class="sb">`</span>xsel -o<span class="sb">`</span>
+
+<span class="c1"># text to speech in background, non-blocking</span>
+curl -sf <span class="s1">&#39;https://tts.voicetech.yandex.net/generate&#39;</span> <span class="se">\</span>
+  -d <span class="s2">&quot;text=</span><span class="nv">$text</span><span class="s2">&quot;</span>       <span class="se">\</span>
+  -d <span class="s1">&#39;format=mp3&#39;</span>       <span class="se">\</span>
+  -d <span class="s1">&#39;lang=en-EN&#39;</span>       <span class="se">\</span>
+  -d <span class="s1">&#39;speaker=zahar&#39;</span>    <span class="se">\</span>
+  -d <span class="s1">&#39;emotion=good&#39;</span>     <span class="se">\</span>
+  -d <span class="s2">&quot;key=</span><span class="nv">$YA_TTS_KEY</span><span class="s2">&quot;</span>  <span class="se">\</span>
+  <span class="p">|</span> mpg123 --stereo - <span class="p">&amp;</span>
+
+<span class="c1"># translate text &amp; parse json response</span>
+<span class="nv">translate</span><span class="o">=</span><span class="sb">`</span>curl -sf <span class="s1">&#39;https://translate.yandex.net/api/v1.5/tr.json/translate&#39;</span> <span class="se">\</span>
+  -d <span class="s2">&quot;key=</span><span class="nv">$YA_TRNSL_KEY</span><span class="s2">&quot;</span>    <span class="se">\</span>
+  -d <span class="s2">&quot;text=</span><span class="nv">$text</span><span class="s2">&quot;</span>           <span class="se">\</span>
+  -d <span class="s2">&quot;lang=</span><span class="si">${</span><span class="nv">LANGUAGE</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
+  <span class="p">|</span> sed <span class="s1">&#39;s/.*\[\&quot;\(.*\)\&quot;\].*/\1/&#39;</span><span class="sb">`</span>
+
+<span class="c1"># UI notify</span>
+notify-send -u critical <span class="s2">&quot;</span><span class="nv">$text</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$translate</span><span class="s2">&quot;</span>
+</pre></div>
+
+
+<p>Ключи <strong>Яндекс</strong> даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить <code>xsel-translate-notify</code>, но куда удобней выполнять это действие комбинацией клавиш.</p><p>There are <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="bookmark"
+                           title="Permalink to Как перестать беспокоиться и начать портировать">Как перестать беспокоиться и начать портировать</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-10-21T00:00:00+03:00">
+                Ср 21 октября 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/es6">ES6</a> </p>
+</footer><!-- /.post-info -->                <p>Пример портирования <strong>Java</strong> =&gt; <strong>JavaScript</strong> на примере токенизаторов из <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. </p>
+<p><a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6">lucene-tokenizers.es6</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js">lucene-tokenizers.babel.js</a> | <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html">Тесты</a> | <a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src">Исходники</a></p>
+<h2>TL;DR</h2>
+<p>Процесс можно условно разделить на несколько этапов:</p>
+<ul>
+<li>
+<p>Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше …</p></li></ul>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="bookmark"
+                           title="Permalink to Автоматический определь языка в Apache Tika">Автоматический определь языка в Apache Tika</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-01-21T00:00:00+02:00">
+                Пн 21 января 2013
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/tika">Tika</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

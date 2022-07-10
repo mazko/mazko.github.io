@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - IoT</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/">Как работает «Smart Config»</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2018-09-09T00:00:00+03:00">
+                Вс 09 сентября 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/wi-fi">Wi-Fi</a> </p>
+</footer><!-- /.post-info --><p>Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет никакого пользовательского интерфейса. Таким устройствам нужны другие способы получения имени сети и пароля от пользователя.</p>
+<p>Режим точки доступа (Access Point, AP) — наиболее изученный сегодня способ подключения устройств, не имеющих пользовательского интерфейса. После того как пользователь подключит свой смартфон к AP неинициализированного устройства, он открывает веб-браузер смартфона и входит на веб-сайт устройства, используя заданный локальный URL или IP-адрес. На встроенном веб-сайте пользователь выбирает имя Wi-Fi сети и пароль. Устройство сохраняет сетевые реквизиты в энергонезависимой памяти, а затем переходит из режима AP в режим станции, чтобы подключиться к домашней сети с использованием сохраненных сетевых реквизитов. Недостаток режима AP заключается в том, что при подключении к конфигурационной сети AP неинициализированного устройства телефон отключается от домашней сети. Это может вызвать перерывы в передаче данных и привести к появлению сообщений об ошибках. Также не все производители телефонов предоставляют API для программного переключения Wi-Fi сетей, пользователь вынужден это делать вручную.</p>
+<p>Технология «Smart Config» лишена данных недостатков. Она предполагает использование ПК, телефона или планшета в качестве интерфейса пользователя, который позволяет ввести информацию о сети с помощью дисплея и клавиатуры ПК, телефона или планшета с последующей передачей введённой информации IoT-устройствам. Из известных реализаций на текущий момент стоит упомянуть CC3200 SmartConfig и ESP-Touch.</p>
+<h2>КАК РАБОТАЕТ</h2>
+<p>Итак у нас есть два устройства — одно (телефон) уже подключено к Wi-Fi сети, и другое (IoT), которое нужно подключить к Wi-Fi сети. IoT устройство непрерывно сканирует Wi-Fi эфир. Для эксперимента понадобится два  Wi-Fi адаптера, можно даже на одном компьютере:</p>
+<div class="highlight"><pre><span></span>~$ iwconfig <span class="m">2</span>&gt; /dev/null
+</pre></div>
+
+
+<p>Вывод:</p>
+<div class="highlight"><pre><span></span>wlo1      IEEE 802.11  ESSID:&quot;Dumer&quot;  
+          Mode:Managed  Frequency:2.447 GHz  Access Point: XX:XX:XX:XX:XX:XX   
+          Bit Rate=121.5 Mb/s   Tx-Power=15 dBm   
+          Retry short limit:7   RTS thr:off   Fragment thr:off
+          Power Management:off
+          Link Quality=61/70  Signal level=-49 dBm  
+          Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+          Tx excessive retries:27  Invalid misc:3493   Missed beacon:0
+
+wlxbcf68565bc38  IEEE 802.11  ESSID:off/any  
+          Mode:Managed  Access Point: Not-Associated   Tx-Power=20 dBm   
+          Retry short  long limit:2   RTS thr:off   Fragment thr:off
+          Power Management:off
+</pre></div>
+
+
+<p>Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">14 каналов</a>, для простоты будем слушать только тот (8), к которому подключён wlo1.</p>
+<div class="highlight"><pre><span></span>~$ iwlist wlo1 channel
+</pre></div>
+
+
+<p>Вывод:</p>
+<div class="highlight"><pre><span></span>wlo1      14 channels in total; available frequencies :
+          Channel 01 : 2.412 GHz
+          Channel 02 : 2.417 GHz
+          Channel 03 : 2.422 GHz
+          Channel 04 : 2.427 GHz
+          Channel 05 : 2.432 GHz
+          Channel 06 : 2.437 GHz
+          Channel 07 : 2.442 GHz
+          Channel 08 : 2.447 GHz
+          Channel 09 : 2.452 GHz
+          Channel 10 : 2.457 GHz
+          Channel 11 : 2.462 GHz
+          Channel 12 : 2.467 GHz
+          Channel 13 : 2.472 GHz
+          Channel 14 : 2.484 GHz
+          Current Frequency=2.447 GHz (Channel 8)
+</pre></div>
+
+
+<p>Переведём адаптер в режим сканирования:</p>
+<div class="highlight"><pre><span></span>~$ ifconfig wlxbcf68565bc38 down
+~$ iwconfig wlxbcf68565bc38 mode monitor
+~$ ifconfig wlxbcf68565bc38 up
+~$ iwconfig wlxbcf68565bc38 channel <span class="m">8</span>
+~$ iwlist wlxbcf68565bc38 channel
+</pre></div>
+
+
+<p>Примерно так выглядит эфир Wi-Fi в WireShark:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/wirshark.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>MAC адреса и кое-какая другая информация в Wi-Fi фреймах идёт в открытом виде без шифрования. Полезные данные внутри Wi-Fi фрейма зашифрованы, но мы видим их длину. Если предположить, что шифрование изменяет длину передаваемых данных на какую-то константу, почему бы не попробовать передавать данные меняя длину пакета по принципу один пакет == один байт. Для передачи 42 байт нужно отправить 42 пакета где длина каждого пакета зависит от значения передаваемого байта. Содержимое пакета нас не интересует т.к. расшифровать его могут только участники Wi-Fi сети, подключённые к роутеру. Все скрипты проверялись на <strong>python3</strong>:</p>
+<p><em>transmitter.py</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="n">MCAST_GRP</span> <span class="o">=</span> <span class="s1">&#39;234.42.42.42&#39;</span>
+<span class="n">MCAST_PORT</span> <span class="o">=</span> <span class="mi">7001</span>
+
+<span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_UDP</span><span class="p">)</span>
+<span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">IPPROTO_IP</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">IP_MULTICAST_TTL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">crc8</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+
+<span class="k">def</span> <span class="nf">transmit_one_byte</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+  <span class="k">assert</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">)</span>
+  <span class="k">assert</span><span class="p">(</span><span class="n">b</span> <span class="o">&lt;=</span> <span class="mi">548</span><span class="p">)</span> <span class="c1"># 576(MTU) - 20(IP) - 8(UDP)</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+  <span class="n">sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">MCAST_GRP</span><span class="p">,</span> <span class="n">MCAST_PORT</span><span class="p">))</span>
+
+<span class="n">preamble</span> <span class="o">=</span> <span class="p">[</span><span class="mi">515</span><span class="p">,</span> <span class="mi">514</span><span class="p">,</span> <span class="mi">513</span><span class="p">,</span> <span class="mi">512</span><span class="p">]</span>
+<span class="n">payload</span>  <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;hello world!&#39;</span>
+
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+  <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">preamble</span><span class="p">:</span>
+    <span class="n">transmit_one_byte</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+  <span class="n">transmit_one_byte</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+  <span class="n">transmit_one_byte</span><span class="p">(</span><span class="n">crc8</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+    <span class="n">transmit_one_byte</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+
+
+<p>В текущем примере данные передаются на мультикаст адрес 234.xx.xx.xx по <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a>. Вначале идёт фиксированная посылка синхронизации preamble. Содержимое preamble также известно приёмнику, сравнивая принятые пакеты с preamble он может высчитать константу, добавляемую при шифровании. Затем передаём общую длину полезных данных, их контрольную сумму и сами данные.</p>
+<p><em>receiver.py</em></p>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="n">preamble</span> <span class="o">=</span> <span class="p">[</span><span class="mi">515</span><span class="p">,</span> <span class="mi">514</span><span class="p">,</span> <span class="mi">513</span><span class="p">,</span> <span class="mi">512</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">crc8</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+
+<span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">crc</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">crc</span> <span class="o">==</span> <span class="n">crc8</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+      <span class="k">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">preamble</span><span class="p">):</span>
+      <span class="n">diff</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">preamble</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">preamble</span><span class="p">):</span><span class="n">idx</span><span class="p">]))</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">-</span><span class="n">c</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="mi">2</span><span class="o">+</span><span class="n">l</span><span class="p">]]</span>
+        <span class="n">decode</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">payload</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">received</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">:</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">received</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">42</span><span class="p">:</span>
+    <span class="n">received</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+    <span class="n">received</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+    <span class="n">parse</span><span class="p">(</span><span class="n">received</span><span class="p">)</span>
+</pre></div>
+
+
+<p>У Wireshark есть консольный аналог tshark. Заодно отфильтруем точно не нужные пакеты, оставив только data:</p>
+<div class="highlight"><pre><span></span>~$ tshark -i wlxbcf68565bc38 -I -T fields -e data.len subtype data <span class="p">|</span> <span class="se">\</span>
+   python3 receiver.py
+</pre></div>
+
+
+<p>В зависимости от зашумлённости эфира часть передаваемых пакетов теряется и это неизбежно. Для увеличения надёжности можно добавить Код Хемминга, но это уже удел производителя чипов и SDK со «Smart Config» на борту.</p>
+<p>Ключевые преимущества «Smart Config» — простота использования и возможность беспрепятственной интеграции в телефонное приложение устройства. Кроме того, если несколько устройств Wi-Fi одновременно находятся в режиме «Smart Config», одно телефонное приложение может обеспечить подключение их всех одновременно.</p>
+<p>Основной недостаток этой технологии заключается в том, что телефон должен подключаться к сети, используя ту полосу частот и ту скорость передачи данных, которые поддерживаются неподключенным устройством. Что если неподключенное устройство поддерживает диапазон 2,4 ГГц, а телефон использует для связи с двухдиапазонной сетью диапазон 5 ГГц ?</p>
+<p><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip">Исходники</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/" rel="bookmark"
+                           title="Permalink to Безопасность «Интернета вещей» - TLS / DTLS">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2018-01-05T00:00:00+02:00">
+                Пт 05 января 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
+<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT и др.) работать без изменений. Исторически …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/" rel="bookmark"
+                           title="Permalink to Протоколы «Интернета вещей» - MQTT">Протоколы «Интернета вещей» - MQTT</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-10-20T00:00:00+03:00">
+                Пт 20 октября 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
+<p>MQTT (Message Queue Telemetry Transport) – протокол прикладного уровня для организации межмашинной коммуникации (M2M, Machine to Machine), который работает по принципу «издатель-подписчик». Два главных компонента MQTT – клиент и брокер. MQTT-клиенты публикуют сообщения на определённую тему (topic), или подписываются на сообщения и прослушивают их. Тема – это произвольная строка …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/" rel="bookmark"
+                           title="Permalink to Протоколы «Интернета вещей» - CoAP">Протоколы «Интернета вещей» - CoAP</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-10-17T00:00:00+03:00">
+                Вт 17 октября 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/m2m">m2m</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> развлекаться с сетевыми протоколам.</p>
+<p>CoAP (Constrained Application Protocol) — протокол прикладного уровня, предназначенный для т.н. межмашинного взаимодействия (Machine-to-Machine, M2M). Хорошо подходит для устройств с ограниченными ресурсами таких как микроконтроллеры и др. CoAP разрабатывался по образу и подобию своего предшественника, протокола <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">HTTP</a>, но с дополнительными фичами и улучшениями. В отличие …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
+                           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-10-09T00:00:00+03:00">
+                Пн 09 октября 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
+<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 2
+        <a href="http://proiot.ru/blog/category/iot/index2.html">&raquo;</a>
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

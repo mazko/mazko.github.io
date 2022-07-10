@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>FreeRTOS - обмен данными между задачами</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/" rel="bookmark"
+           title="Permalink to FreeRTOS - обмен данными между задачами">FreeRTOS - обмен данными между задачами</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-29T00:00:00+03:00">
+                Сб 29 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->      <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативной</a> многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарности</a> и поэтому во FreeRTOS для передачи информации между задачами придумали <em>очереди</em>. Очереди представляют собой фундаментальный механизм FreeRTOS, который лежит в основе различного рода взаимодействий задач друг с другом. Очереди могут быть использованы для передачи информации как между задачами, так и между прерываниями и задачами. Если сравнивать с глобальными переменными, то помимо решения проблем с атомарностью очередь обладает рядом дополнительных возможностей — блокировка на чтение/запись, позволяющая задаче не расходовать процессорное время на периодически опрос глобальной переменной, размер очереди не ограничен 1, данные можно класть либо в начало либо в конец очереди. </p>
+<p>В рассматриваемом примере одна задача будет сканировать кнопки и передавать данные о нажатии двум другим задачам светодиодных анимаций с помощью двух очередей. </p>
+<p><a href="http://mazko.github.io/MSP430.js/4dba761b9452073c41acde20a040de6b">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/event.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Очередь может хранить в себе конечное число элементов фиксированного размера.
+Максимальное число элементов, которое может хранить очередь, называется размером очереди. Как размер элемента, так и размер очереди задаются при создании очереди и остаются неизменными до ее удаления. В нашем случае перед запуском планировщика в файле main.c создаются две очереди <code>xQueueBtnsL = xQueueCreate(1, sizeof(char));</code> для левых и правых кнопок соответственно. Поскольку у задачи, которая кладёт данные в очередь, приоритет ниже, чем у забирающей эти данные, то размера очереди в 1 элемент оказывается достаточно. При других раскладах приоритетов размер очереди возможно потребуется увеличить — в противном случае возможна ситуация, когда данные о нажатой кнопке не успели дойти до адресата, а кнопочку нажали заново и тогда сработает <code>configASSERT</code> т.к. в очереди закончилось место:</p>
+<p><em>task_btn_scan.h</em></p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">vTaskScanBtns</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">);</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;queue.h&gt;</span><span class="cp"></span>
+
+<span class="k">extern</span> <span class="k">volatile</span> <span class="n">QueueHandle_t</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="n">xQueueBtnsR</span><span class="p">;</span>
+</pre></div>
+
+
+<p><em>task_btn_scan.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_btn_scan.h&quot;</span><span class="cp"></span>
+
+<span class="k">volatile</span> <span class="n">QueueHandle_t</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="n">xQueueBtnsR</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">vTaskScanBtns</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">P1IN</span><span class="p">);</span> <span class="c1">// button pushed</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">P1IN</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">b1111</span><span class="p">)</span> <span class="p">{</span>
+
+      <span class="cm">/* Send a char to the queue. Don&#39;t block if the queue is already full </span>
+<span class="cm">        (the third parameter is zero, so not block time is specified). */</span>
+      <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSend</span><span class="p">(</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSend</span><span class="p">(</span> <span class="n">xQueueBtnsR</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">P1IN</span><span class="p">);</span>  <span class="c1">// button released</span>
+  <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Для записи элемента в конец очереди используется API-функция <code>xQueueSend()</code>. В нашем случае на момент записи очередь всегда пуста, т.к. у задачи-получателя более высокий приоритет, поэтому таймаут (третий параметр) логично задать «0». Может возвращать 2 значения:</p>
+<ul>
+<li>
+<p>pdPASS — означает, что данные успешно записаны в очередь. Если таймаут не равен «0», то возврат значения pdPASS говорит о том, что свободное место в очереди появилось до истечения таймаута и элемент был помещен в очередь</p>
+</li>
+<li>
+<p>errQUEUE_FULL — означает, что данные не записаны в очередь, так как
+очередь заполнена. Если таймаут не равен «0», то возврат значения errQUEUE_FULL говорит о том, что таймаут завершен, а место в очереди так и не освободилось</p>
+</li>
+</ul>
+<p>Задача-получатель информации о нажатии кнопки, которая заправляет анимациями левых светодиодов принимает следующий вид:</p>
+<p><em>task_l_leds.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;task_l_leds.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;task_btn_scan.h&quot; // queues</span><span class="cp"></span>
+
+<span class="k">volatile</span> <span class="n">xSemaphoreHandle</span> <span class="n">xP4P5P6Mutex</span><span class="p">;</span>
+
+<span class="c1">// C99</span>
+<span class="c1">// an object that has static storage duration is not initialized explicitly, then:</span>
+<span class="c1">// — if it has pointer type, it is initialized to a null pointer;</span>
+<span class="k">static</span> <span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">port</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">vTaskLedsL</span><span class="p">(</span> <span class="kt">void</span> <span class="o">*</span><span class="n">pvParameters</span> <span class="p">)</span> <span class="p">{</span>
+
+   <span class="k">for</span><span class="p">(</span> <span class="p">;;</span> <span class="p">)</span> <span class="p">{</span>
+
+      <span class="kt">uint8_t</span> <span class="n">button</span><span class="p">;</span>
+
+      <span class="c1">// portMAX_DELAY will cause the task to wait indefinitely</span>
+      <span class="c1">// (without timing out) provided INCLUDE_vTaskSuspend is set to 1</span>
+      <span class="n">portBASE_TYPE</span> <span class="n">xStatus</span> <span class="o">=</span> <span class="n">xQueueReceive</span><span class="p">(</span> 
+                <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">button</span><span class="p">,</span> <span class="n">port</span> <span class="o">?</span> <span class="mi">10</span> <span class="o">:</span> <span class="n">portMAX_DELAY</span> <span class="p">);</span>
+
+      <span class="cm">/* Attempt to take the mutex, blocking indefinitely to wait for the mutex */</span>
+      <span class="n">xSemaphoreTake</span><span class="p">(</span> <span class="n">xP4P5P6Mutex</span><span class="p">,</span> <span class="n">portMAX_DELAY</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="n">xStatus</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// set leds color</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">button</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b10</span><span class="p">:</span>   <span class="cm">/* red blink */</span>
+            <span class="n">P5OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">P4OUT</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b100</span><span class="p">:</span>  <span class="cm">/* green blink */</span>
+            <span class="n">P4OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">P5OUT</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b1000</span><span class="p">:</span> <span class="cm">/* blue blink */</span>
+            <span class="n">P4OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P5OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">P6OUT</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="k">case</span> <span class="mi">0</span><span class="nl">b1</span><span class="p">:</span>    <span class="cm">/* off blink */</span>
+            <span class="n">P4OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P5OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">P6OUT</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">;</span> <span class="n">port</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>  
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span><span class="n">port</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">*</span><span class="n">port</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">port</span> <span class="o">&amp;</span> <span class="o">~</span><span class="mi">0</span><span class="n">b11111</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="o">*</span><span class="n">port</span> <span class="o">^</span> <span class="mi">0</span><span class="n">b11111</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">b11111</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="cm">/* The mutex MUST be given back! */</span>
+      <span class="n">xSemaphoreGive</span><span class="p">(</span> <span class="n">xP4P5P6Mutex</span> <span class="p">);</span>
+   <span class="p">}</span>
+
+   <span class="n">vTaskDelete</span><span class="p">(</span> <span class="nb">NULL</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Для считывания элемента с удалением его из очереди используется API-функция <code>xQueueReceive()</code>. Таймаут <code>portMAX_DELAY</code> в <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">паре</a> с <code>INCLUDE_vTaskSuspend</code> задаёт бесконечное время ожидания. Также может возвращать 2 значения:</p>
+<ul>
+<li>
+<p>pdPASS — означает, что данные успешно прочитаны из очереди. Если таймаут не равен «0», то возврат значения pdPASS говорит о том, что элемент в очереди появился (или уже был там) до истечения тайм-аута и был успешно прочитан</p>
+</li>
+<li>
+<p>errQUEUE_EMPTY — означает, что элемент не прочитан из очереди, так как очередь пуста. Если таймаут не равен «0», то возврат значения errQUEUE_FULL говорит о том, что таймаут завершен, а никакая другая задача или прерывание так и не записали элемент в очередь</p>
+</li>
+</ul>
+<p>Всё бы хорошо, оно работает но есть одно но — зачем нам вообще отдельная задача для считывания кнопок ? Ведь она постоянно крутится в памяти микроконтроллера и потребляет ресурсы даже когда не происходит никакой активности со стороны пользователя. Куда более оптимальным решением было бы использовать для подобных целей <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">прерывание</a>, вызываемое при нажатии на кнопку.</p>
+<p><a href="http://mazko.github.io/MSP430.js/abb4216611a94d97da323920d61175b6">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/event_isr.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/isr.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><em>btn_scan.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;btn_scan.h&quot;</span><span class="cp"></span>
+
+<span class="k">volatile</span> <span class="n">QueueHandle_t</span> <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="n">xQueueBtnsR</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">btn_scan_init</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// clear the interrupt flag</span>
+  <span class="n">P1IFG</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="c1">// enable interrupt on BIT 0..7</span>
+  <span class="n">P1IE</span>  <span class="o">=</span> <span class="mh">0xFF</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">__attribute__</span> <span class="p">((</span><span class="n">interrupt</span><span class="p">(</span><span class="n">PORT1_VECTOR</span><span class="p">)))</span> <span class="n">Port1_ISR</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">__attribute__</span> <span class="p">((</span><span class="n">interrupt</span><span class="p">(</span><span class="n">PORT1_VECTOR</span><span class="p">)))</span> <span class="n">Port1_ISR</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">P1IFG</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>  <span class="c1">// clear the interrupt flag</span>
+
+  <span class="n">BaseType_t</span> <span class="n">xHigherPriorityTaskWoken</span><span class="p">;</span>
+
+  <span class="cm">/* xHigherPriorityTaskWoken must be initialised to pdFALSE. */</span>
+  <span class="n">xHigherPriorityTaskWoken</span> <span class="o">=</span> <span class="n">pdFALSE</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">P1IN</span> <span class="o">&amp;</span> <span class="mi">0</span><span class="n">b1111</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="cm">/* xHigherPriorityTaskWoken will get set to pdTRUE if writing to the </span>
+<span class="cm">       queue causes a task to leave the Blocked state, and the task </span>
+<span class="cm">       leaving the Blocked state has a priority higher than the currently </span>
+<span class="cm">       executing task (the task that was interrupted). */</span>
+
+    <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSendFromISR</span><span class="p">(</span> 
+        <span class="n">xQueueBtnsL</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">xHigherPriorityTaskWoken</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">configASSERT</span><span class="p">(</span> <span class="n">xQueueSendFromISR</span><span class="p">(</span> 
+        <span class="n">xQueueBtnsR</span><span class="p">,</span> <span class="p">(</span> <span class="kt">void</span> <span class="o">*</span> <span class="p">)</span> <span class="o">&amp;</span><span class="n">P1IN</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">xHigherPriorityTaskWoken</span> <span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* If xHigherPriorityTaskWoken is now set to pdTRUE then a context</span>
+<span class="cm">     switch should be requested. */</span>
+  <span class="n">portYIELD_FROM_ISR</span><span class="p">(</span> <span class="n">xHigherPriorityTaskWoken</span> <span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>После оптимизации количество задач сократилось с 5 до 4 и соответственно освободилась RAM. Функцию <code>xQueueSend()</code> нельзя использовать в прерываниях — для этого есть <code>xQueueSendFromISR()</code>.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Гибридная</a> многозадачность во FreeRTOS является комбинацией вытесняющей и кооперативной. В нашем случае происходит прерывание по нажатию на кнопку, но по окончании работы обработчика прерывания выполнение возвращается не к текущей низкоприоритетной задаче, а к более высокоприоритетной путём немедленного переключения контекста <code>portYIELD_FROM_ISR</code> не дожидаясь окончания текущего кванта времени планировщика. Гибридная подход позволяет сократить время реакции системы на прерывание.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - Elastic</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">ElasticSearch - практическое введение</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2016-06-25T00:00:00+03:00">
+                Сб 25 июня 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/elastic">Elastic</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/docker">Docker</a> </p>
+</footer><!-- /.post-info --><p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
+<a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку</a> вхождений в результатах выдачи и <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">агрегацию данных</a> в Elastic и всё это только лишь с помощью REST API без необходимости наличия каких-либо глубоких познаний как в самом Lucene так и в программировании в целом !</p>
+<!-- cd ./dist/ && find . -type f | sort | xargs -I{} -n1 echo -e '<a href="\x7Battach\x7Ddist/{}"></a>' | xclip -selection clipboard && cd - -->
+
+<!-- 
+<a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/bundle.js"></a>
+<a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/bundle.js.map"></a>
+<a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/favicon.ico"></a>
+<a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/index.html"></a>
+-->
+
+<h2>UI ДЕМО</h2>
+<p>Для лучшего понимания изложенного материала набросал простенький UI (<a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/react-elastic-example.zip">исходники</a>) на <a href="https://facebook.github.io/react/" rel="nofollow">ReactJS</a>. Для работы <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/dist/index.html">демо</a> из браузера нужно на сервере ElasticSearch, который мы сейчас настроим, разрешить <code>http.cors</code> например <code>allow-origin: /https?:\/\/proiot\.ru/</code>, либо просто звёздочка  <code>*</code> - разрешить отовсюду.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<h2>TL;DR</h2>
+<p>Предполагается что ElasticSearch уже установлен и настроен:</p>
+<div class="highlight"><pre><span></span>~$ curl -XGET localhost:9200
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;name&quot;</span> : <span class="s2">&quot;J2&quot;</span>,
+  <span class="s2">&quot;cluster_name&quot;</span> : <span class="s2">&quot;docker-cluster&quot;</span>,
+  <span class="s2">&quot;version&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;number&quot;</span> : <span class="s2">&quot;2.3.3&quot;</span>,
+    <span class="s2">&quot;build_hash&quot;</span> : <span class="s2">&quot;218bdf10790eef486ff2c41a3df5cfa32dadcfde&quot;</span>,
+    <span class="s2">&quot;build_timestamp&quot;</span> : <span class="s2">&quot;2016-05-17T15:40:04Z&quot;</span>,
+    <span class="s2">&quot;build_snapshot&quot;</span> : false,
+    <span class="s2">&quot;lucene_version&quot;</span> : <span class="s2">&quot;5.5.0&quot;</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;tagline&quot;</span> : <span class="s2">&quot;You Know, for Search&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Достаточно просто проиндексировать содержимое дампа <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/Top.bulk.json.xz">Top.bulk.json.xz</a>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># field mapping for suggest, aggregation</span>
+<span class="c1"># curl -XDELETE &#39;localhost:9200/kinopoisk?pretty&#39;</span>
+~$ curl -XPUT <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span> -d <span class="s1">&#39;{</span>
+<span class="s1">  &quot;mappings&quot;: {</span>
+<span class="s1">    &quot;film&quot; : {</span>
+<span class="s1">      &quot;properties&quot; : {</span>
+<span class="s1">        &quot;suggest&quot; : { </span>
+<span class="s1">          &quot;type&quot; : &quot;completion&quot;,</span>
+<span class="s1">          &quot;analyzer&quot;: &quot;standard&quot;</span>
+<span class="s1">        },</span>
+<span class="s1">        &quot;category&quot;: {</span>
+<span class="s1">          &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">          &quot;fields&quot;: {</span>
+<span class="s1">              &quot;raw&quot;: {</span>
+<span class="s1">                  &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">                  &quot;index&quot;: &quot;not_analyzed&quot;</span>
+<span class="s1">              }</span>
+<span class="s1">          }</span>
+<span class="s1">        },</span>
+<span class="s1">        &quot;directed&quot;: {</span>
+<span class="s1">          &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">          &quot;fields&quot;: {</span>
+<span class="s1">              &quot;raw&quot;: {</span>
+<span class="s1">                  &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">                  &quot;index&quot;: &quot;not_analyzed&quot;</span>
+<span class="s1">              }</span>
+<span class="s1">          }</span>
+<span class="s1">        },</span>
+<span class="s1">        &quot;starring&quot;: {</span>
+<span class="s1">          &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">          &quot;fields&quot;: {</span>
+<span class="s1">              &quot;raw&quot;: {</span>
+<span class="s1">                  &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">                  &quot;index&quot;: &quot;not_analyzed&quot;</span>
+<span class="s1">              }</span>
+<span class="s1">          }</span>
+<span class="s1">        }</span>
+<span class="s1">      }</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+
+<span class="c1"># index 14992 docs(verify: echo `xzcat Top.bulk.json.xz | wc -l` / 2 | bc -l)</span>
+~$ xzcat Top.bulk.json.xz <span class="p">|</span> curl -XPOST localhost:9200/_bulk --data-binary @-
+</pre></div>
+
+
+<p>Поля <em>category</em>, <em>directed</em>, <em>starring</em> в терминологии Elastic являются <a href="http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/_multi_fields.html" rel="nofollow">multi-field</a>, в нашем случае они дополнительно хранят оригинальные значения что позволит агрегировать и фильтровать выдачу по строгому совпадению - например режиссёр "Игорь Масленников" вместо "Игорь" и "Масленников" по отдельности. После индексации собственно можно осуществлять поиск с подсветкой, сортировкой, агрегацией и фильтрацией, к осознанию которого было бы здорово подойти по окончании данного материала:</p>
+<div class="highlight"><pre><span></span>~$ curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/film/_search?pretty&#39;</span> -d <span class="s1">&#39; {</span>
+<span class="s1">  &quot;fields&quot; : [&quot;rate&quot;],</span>
+<span class="s1">  &quot;query&quot; : {</span>
+<span class="s1">    &quot;bool&quot;: {</span>
+<span class="s1">      &quot;must&quot;: [</span>
+<span class="s1">        {</span>
+<span class="s1">          &quot;query_string&quot; : {</span>
+<span class="s1">            &quot;query&quot;:    &quot;шерлок&quot;, </span>
+<span class="s1">            &quot;fields&quot;: [ &quot;name&quot;, &quot;description&quot; ],</span>
+<span class="s1">            &quot;default_operator&quot;: &quot;and&quot;</span>
+<span class="s1">          }</span>
+<span class="s1">        }</span>
+<span class="s1">      ],</span>
+<span class="s1">      &quot;filter&quot;: [</span>
+<span class="s1">        {</span>
+<span class="s1">          &quot;match&quot;: {</span>
+<span class="s1">            &quot;directed.raw&quot;: &quot;Игорь Масленников&quot;</span>
+<span class="s1">          }</span>
+<span class="s1">        },</span>
+<span class="s1">        {</span>
+<span class="s1">          &quot;bool&quot;: {</span>
+<span class="s1">            &quot;must&quot;: [</span>
+<span class="s1">              {</span>
+<span class="s1">                &quot;match&quot;: {</span>
+<span class="s1">                  &quot;category.raw&quot;: &quot;детектив&quot;</span>
+<span class="s1">                }</span>
+<span class="s1">              },</span>
+<span class="s1">              {</span>
+<span class="s1">                &quot;match&quot;: {</span>
+<span class="s1">                  &quot;category.raw&quot;: &quot;криминал&quot;</span>
+<span class="s1">                }</span>
+<span class="s1">              }</span>
+<span class="s1">            ]</span>
+<span class="s1">          }</span>
+<span class="s1">        },</span>
+<span class="s1">        {</span>
+<span class="s1">          &quot;range&quot; : {</span>
+<span class="s1">            &quot;date&quot; : {</span>
+<span class="s1">              &quot;gte&quot; : &quot;1980&quot;,</span>
+<span class="s1">              &quot;lt&quot; : &quot;1980||+1y&quot;,</span>
+<span class="s1">              &quot;format&quot;: &quot;yyyy-MM||yyyy&quot;</span>
+<span class="s1">            }</span>
+<span class="s1">          }</span>
+<span class="s1">        }</span>
+<span class="s1">      ]</span>
+<span class="s1">    }</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;highlight&quot; : {</span>
+<span class="s1">    &quot;pre_tags&quot; : [&quot;[mazko.github.io]&quot;],</span>
+<span class="s1">    &quot;post_tags&quot; : [&quot;[/mazko.github.io]&quot;],</span>
+<span class="s1">    &quot;fields&quot; : {</span>
+<span class="s1">      &quot;name&quot; : {&quot;fragment_size&quot; : 22, &quot;number_of_fragments&quot; : 1},</span>
+<span class="s1">      &quot;description&quot; : {&quot;fragment_size&quot; : 22, &quot;number_of_fragments&quot; : 1}</span>
+<span class="s1">    }</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;sort&quot; : [</span>
+<span class="s1">      {&quot;rate&quot; : {&quot;order&quot; : &quot;desc&quot;} }</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;aggs&quot;: {</span>
+<span class="s1">    &quot;years&quot;: {</span>
+<span class="s1">      &quot;date_histogram&quot;: {</span>
+<span class="s1">        &quot;field&quot;: &quot;date&quot;,</span>
+<span class="s1">        &quot;interval&quot;: &quot;year&quot;,</span>
+<span class="s1">        &quot;min_doc_count&quot;: 1,</span>
+<span class="s1">        &quot;order&quot; : { &quot;_count&quot; : &quot;desc&quot; }</span>
+<span class="s1">      },</span>
+<span class="s1">      &quot;aggs&quot;: {</span>
+<span class="s1">        &quot;months&quot;: {</span>
+<span class="s1">          &quot;date_histogram&quot;: {</span>
+<span class="s1">            &quot;field&quot;: &quot;date&quot;,</span>
+<span class="s1">            &quot;interval&quot;: &quot;month&quot;,</span>
+<span class="s1">            &quot;min_doc_count&quot;: 1,</span>
+<span class="s1">            &quot;order&quot; : { &quot;_count&quot; : &quot;desc&quot; }</span>
+<span class="s1">          }</span>
+<span class="s1">        }</span>
+<span class="s1">      }</span>
+<span class="s1">    },</span>
+<span class="s1">    &quot;categories&quot; : {</span>
+<span class="s1">      &quot;terms&quot; : { &quot;field&quot; : &quot;category.raw&quot;, &quot;size&quot;: 0 }</span>
+<span class="s1">    },</span>
+<span class="s1">    &quot;directors&quot; : {</span>
+<span class="s1">      &quot;terms&quot; : { &quot;field&quot; : &quot;directed.raw&quot;, &quot;size&quot;: 0 }</span>
+<span class="s1">    },</span>
+<span class="s1">    &quot;stars&quot; : {</span>
+<span class="s1">      &quot;terms&quot; : { &quot;field&quot; : &quot;starring.raw&quot;, &quot;size&quot;: 0 }</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;took&quot;</span> : <span class="m">3117</span>,
+  <span class="s2">&quot;timed_out&quot;</span> : false,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;hits&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;max_score&quot;</span> : null,
+    <span class="s2">&quot;hits&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;77269&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : null,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">8</span>.415 <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;highlight&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;name&quot;</span> : <span class="o">[</span> <span class="s2">&quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&quot;</span> <span class="o">]</span>,
+        <span class="s2">&quot;description&quot;</span> : <span class="o">[</span> <span class="s2">&quot; [mazko.github.io]Шерлок[/mazko.github.io] Холмс. Это&quot;</span> <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;sort&quot;</span> : <span class="o">[</span> <span class="m">8</span>.415 <span class="o">]</span>
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;354799&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : null,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">8</span>.313 <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;highlight&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;name&quot;</span> : <span class="o">[</span> <span class="s2">&quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&quot;</span> <span class="o">]</span>,
+        <span class="s2">&quot;description&quot;</span> : <span class="o">[</span> <span class="s2">&quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс вступил&quot;</span> <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;sort&quot;</span> : <span class="o">[</span> <span class="m">8</span>.313 <span class="o">]</span>
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;77265&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : null,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">8</span>.297 <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;highlight&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;name&quot;</span> : <span class="o">[</span> <span class="s2">&quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&quot;</span> <span class="o">]</span>,
+        <span class="s2">&quot;description&quot;</span> : <span class="o">[</span> <span class="s2">&quot;. Во второй — [mazko.github.io]Шерлок[/mazko.github.io]&quot;</span> <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;sort&quot;</span> : <span class="o">[</span> <span class="m">8</span>.297 <span class="o">]</span>
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;368937&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : null,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">8</span>.269 <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;highlight&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span> : <span class="o">[</span> <span class="s2">&quot; водопада. [mazko.github.io]Шерлок[/mazko.github.io] Холмс&quot;</span> <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;sort&quot;</span> : <span class="o">[</span> <span class="m">8</span>.269 <span class="o">]</span>
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;368936&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : null,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">8</span>.248 <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;highlight&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;name&quot;</span> : <span class="o">[</span> <span class="s2">&quot;[mazko.github.io]Шерлок[/mazko.github.io] Холмс и доктор&quot;</span> <span class="o">]</span>,
+        <span class="s2">&quot;description&quot;</span> : <span class="o">[</span> <span class="s2">&quot; угрозой. [mazko.github.io]Шерлок[/mazko.github.io] Холмс&quot;</span> <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;sort&quot;</span> : <span class="o">[</span> <span class="m">8</span>.248 <span class="o">]</span>
+    <span class="o">}</span> <span class="o">]</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;aggregations&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;directors&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;doc_count_error_upper_bound&quot;</span> : <span class="m">0</span>,
+      <span class="s2">&quot;sum_other_doc_count&quot;</span> : <span class="m">0</span>,
+      <span class="s2">&quot;buckets&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Игорь Масленников&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>
+      <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="s2">&quot;categories&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;doc_count_error_upper_bound&quot;</span> : <span class="m">0</span>,
+      <span class="s2">&quot;sum_other_doc_count&quot;</span> : <span class="m">0</span>,
+      <span class="s2">&quot;buckets&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;детектив&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;криминал&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>
+      <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="s2">&quot;stars&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;doc_count_error_upper_bound&quot;</span> : <span class="m">0</span>,
+      <span class="s2">&quot;sum_other_doc_count&quot;</span> : <span class="m">0</span>,
+      <span class="s2">&quot;buckets&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Василий Ливанов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Виталий Соломин&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Рина Зеленая&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Борислав Брондуков&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">4</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Борис Клюев&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">3</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Александр Захаров&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Алексей Кожевников&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Валентина Панина&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Виктор Евграфов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Игорь Дмитриев&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Игорь Ефимов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Николай Крюков&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Адольф Ильин&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Анатолий Подшивалов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Борис Рыжухин&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Виктор Аристов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Виталий Баганов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Геннадий Богачёв&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Игнат Лейрер&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Катерина Шелл&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Мария Соломина&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Николай Караченцов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Светлана Крючкова&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Федор Одиноков&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">1</span>
+      <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="s2">&quot;years&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;buckets&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+        <span class="s2">&quot;key_as_string&quot;</span> : <span class="s2">&quot;1980-01-01T00:00:00.000Z&quot;</span>,
+        <span class="s2">&quot;key&quot;</span> : <span class="m">315532800000</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">5</span>,
+        <span class="s2">&quot;months&quot;</span> : <span class="o">{</span>
+          <span class="s2">&quot;buckets&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+            <span class="s2">&quot;key_as_string&quot;</span> : <span class="s2">&quot;1980-01-01T00:00:00.000Z&quot;</span>,
+            <span class="s2">&quot;key&quot;</span> : <span class="m">315532800000</span>,
+            <span class="s2">&quot;doc_count&quot;</span> : <span class="m">3</span>
+          <span class="o">}</span>, <span class="o">{</span>
+            <span class="s2">&quot;key_as_string&quot;</span> : <span class="s2">&quot;1980-03-01T00:00:00.000Z&quot;</span>,
+            <span class="s2">&quot;key&quot;</span> : <span class="m">320716800000</span>,
+            <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+          <span class="o">}</span> <span class="o">]</span>
+        <span class="o">}</span>
+      <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>В запросе мы искали строку <em>шерлок</em> по полям <em>name</em> и <em>description</em>, исключили все фильмы кроме режиссёра "Игорь Масленников", жанры дожны быть только и <em>детектив</em> и <em>криминал</em>, только 1980 год. Сортировка найденных результатов по полю <em>rate</em>. Простая агрегация по полям <em>category</em>, <em>directed</em> и <em>starring</em>. Вложенная агрегация по дате - годы и в них месяцы. Но обо всём по порядку :)</p>
+<h2>УСТАНОВКА И НАСТРОЙКА ELASTICSEARCH</h2>
+<p>Предполагается что в системе уже установлен <a href="https://docs.docker.com/engine/installation/" rel="nofollow">Docker</a>:</p>
+<div class="highlight"><pre><span></span>~$ docker -v
+Docker version <span class="m">1</span>.11.2, build b9f10c9
+
+~$ docker pull ubuntu <span class="o">&amp;&amp;</span> docker run -it ubuntu
+
+root@d1b1c0c6bddc:/# cat /etc/lsb-release
+<span class="nv">DISTRIB_ID</span><span class="o">=</span>Ubuntu
+<span class="nv">DISTRIB_RELEASE</span><span class="o">=</span><span class="m">16</span>.04
+<span class="nv">DISTRIB_CODENAME</span><span class="o">=</span>xenial
+<span class="nv">DISTRIB_DESCRIPTION</span><span class="o">=</span><span class="s2">&quot;Ubuntu 16.04 LTS&quot;</span>
+
+root@d1b1c0c6bddc:/# apt update <span class="o">&amp;&amp;</span> apt -y upgrade <span class="o">&amp;&amp;</span> <span class="se">\</span>
+  apt -y install software-properties-common command-not-found <span class="se">\</span>
+  man-db openjdk-8-jdk wget curl net-tools
+
+root@d1b1c0c6bddc:/# wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch <span class="p">|</span> apt-key add -
+
+root@d1b1c0c6bddc:/# <span class="nb">echo</span> <span class="s2">&quot;deb https://packages.elastic.co/elasticsearch/2.x/debian stable main&quot;</span> <span class="p">|</span><span class="se">\</span>
+  tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
+
+root@d1b1c0c6bddc:/# apt -y install apt-transport-https <span class="o">&amp;&amp;</span> apt update <span class="o">&amp;&amp;</span> apt install -y elasticsearch
+
+root@d1b1c0c6bddc:/# <span class="nb">cd</span> /usr/share/elasticsearch/
+root@d1b1c0c6bddc:/# mkdir config/ <span class="o">&amp;&amp;</span> chown elasticsearch:elasticsearch config/
+root@d1b1c0c6bddc:/# mkdir logs/ <span class="o">&amp;&amp;</span> chown elasticsearch:elasticsearch logs/
+root@d1b1c0c6bddc:/# mkdir data/ <span class="o">&amp;&amp;</span> chown elasticsearch:elasticsearch data/
+
+root@d1b1c0c6bddc:/# cat <span class="s">&lt;&lt;EOT &gt; /usr/share/elasticsearch/config/logging.yml</span>
+<span class="s">rootLogger: TRACE,console</span>
+<span class="s">appender:</span>
+<span class="s">  console:</span>
+<span class="s">    type: console</span>
+<span class="s">    layout:</span>
+<span class="s">      type: consolePattern</span>
+<span class="s">      conversionPattern: &quot;[%d{ISO8601}][%-5p][%-25c] %m%n&quot;</span>
+<span class="s">EOT</span>
+
+root@d1b1c0c6bddc:/# cat <span class="s">&lt;&lt;EOT &gt; /usr/share/elasticsearch/config/elasticsearch.yml</span>
+<span class="s">cluster.name: &quot;docker-cluster&quot;</span>
+<span class="s">network.host: 0.0.0.0</span>
+<span class="s">http.max_content_length: 333mb</span>
+<span class="s">http.cors:</span>
+<span class="s">  enabled: true </span>
+<span class="s">  allow-origin: /https?:\/\/localhost(:[0-9]+)?/</span>
+<span class="s">  allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE</span>
+<span class="s">  allow-headers: X-Requested-With,X-Auth-Token,Content-Type, Content-Length</span>
+<span class="s">EOT</span>
+
+root@d1b1c0c6bddc:/# <span class="nb">exit</span>
+</pre></div>
+
+
+<p>В <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-http.html#_settings_2" rel="nofollow">настройках</a> мы добавили поддержку <code>http.cors</code> чтобы с elastic можно было работать напрямую из браузера. На этом установка и настройка завершена - осталось зафиксировать изменения и запустить образ:</p>
+<div class="highlight"><pre><span></span>~$ docker commit d1b1c0c6bddc elastic
+~$ docker rm d1b1c0c6bddc
+
+~$ docker run --rm -it -u elasticsearch -p <span class="m">9200</span>:9200 elastic <span class="se">\</span>
+  /usr/share/elasticsearch/bin/elasticsearch
+</pre></div>
+
+
+<p>Проверка <code>http.cors</code>:</p>
+<div class="highlight"><pre><span></span>~$ curl -I -H <span class="s1">&#39;Origin: http://localhost:8080&#39;</span> <span class="s1">&#39;http://localhost:9200/&#39;</span>
+<span class="c1"># response</span>
+HTTP/1.1 <span class="m">200</span> OK
+Access-Control-Allow-Origin: http://localhost:8080
+Content-Type: text/plain<span class="p">;</span> <span class="nv">charset</span><span class="o">=</span>UTF-8
+Content-Length: <span class="m">0</span>
+
+~$ curl -I -H <span class="s1">&#39;Origin: http://some.hacker.com&#39;</span> <span class="s1">&#39;http://localhost:9200/&#39;</span>
+<span class="c1"># response</span>
+HTTP/1.1 <span class="m">403</span> Forbidden
+</pre></div>
+
+
+<p>В настойках <code>http.cors</code> нет упоминаний о some.hacker.com поэтому справедливо 403. Наконец если мы хотим чтобы данные работы образа elastic сохранялись после его перезапуска:</p>
+<div class="highlight"><pre><span></span>~$ docker volume create --name elastic-data
+
+<span class="c1"># user: elasticsearch, port forward 9200, image: elastic, volume: elastic-data</span>
+~$ docker run --rm -it -u elasticsearch -p <span class="m">9200</span>:9200 <span class="se">\</span>
+  -v elastic-data:/usr/share/elasticsearch/data elastic <span class="se">\</span>
+  /usr/share/elasticsearch/bin/elasticsearch
+</pre></div>
+
+
+<p>С Docker всё.</p>
+<h2>REST API</h2>
+<p>Индексация:</p>
+<div class="highlight"><pre><span></span>~$ curl -XPOST <span class="s1">&#39;localhost:9200/kinopoisk/film?pretty&#39;</span> -d <span class="o">{</span><span class="s1">&#39;</span>
+<span class="s1">  &quot;id&quot;: 409640,</span>
+<span class="s1">  &quot;name&quot;: &quot;Касл (сериал 2009 – ...)&quot;,</span>
+<span class="s1">  &quot;description&quot;: &quot;Знакомьтесь, Ричард Касл — успешный писатель детективного жанра...&quot;,</span>
+<span class="s1">  &quot;date&quot;: &quot;2009-03-08T22:00:00.000Z&quot;,</span>
+<span class="s1">  &quot;rate&quot;: 8.042,</span>
+<span class="s1">  &quot;starring&quot;: [</span>
+<span class="s1">    &quot;Нэйтан Филлион&quot;,</span>
+<span class="s1">    &quot;Стана Катик&quot;,</span>
+<span class="s1">    &quot;Сьюзэн Салливан&quot;,</span>
+<span class="s1">    &quot;Джон Уэртас&quot;,</span>
+<span class="s1">    &quot;Шеймус Девер&quot;,</span>
+<span class="s1">    &quot;Молли К. Куинн&quot;,</span>
+<span class="s1">    &quot;Тамала Джонс&quot;,</span>
+<span class="s1">    &quot;Пенни Джонсон&quot;,</span>
+<span class="s1">    &quot;Рубен Сантьяго-Хадсон&quot;,</span>
+<span class="s1">    &quot;Майя Стоян&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;category&quot;: [</span>
+<span class="s1">    &quot;драма&quot;,</span>
+<span class="s1">    &quot;мелодрама&quot;,</span>
+<span class="s1">    &quot;комедия&quot;,</span>
+<span class="s1">    &quot;криминал&quot;,</span>
+<span class="s1">    &quot;детектив&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;directed&quot;: [</span>
+<span class="s1">    &quot;Роб Боумен&quot;,</span>
+<span class="s1">    &quot;Джон Терлески&quot;,</span>
+<span class="s1">    &quot;Билл Роу&quot;</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+  <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+  <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;AVWHlznJTgOouHAvlXph&quot;</span>,
+  <span class="s2">&quot;_version&quot;</span> : <span class="m">1</span>,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">2</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">1</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;created&quot;</span> : <span class="nb">true</span>
+<span class="o">}</span>
+
+~$ curl -XPOST <span class="s1">&#39;localhost:9200/kinopoisk/film?pretty&#39;</span> -d <span class="o">{</span><span class="s1">&#39;</span>
+<span class="s1">  &quot;id&quot;: 153013,</span>
+<span class="s1">  &quot;name&quot;: &quot;Звездный крейсер Галактика (сериал 2004 – 2009)&quot;,</span>
+<span class="s1">  &quot;description&quot;: &quot;Чудом уцелев после нападения Сайлонов...&quot;,</span>
+<span class="s1">  &quot;date&quot;: &quot;2004-10-17T21:00:00.000Z&quot;,</span>
+<span class="s1">  &quot;rate&quot;: 7.943,</span>
+<span class="s1">  &quot;starring&quot;: [</span>
+<span class="s1">    &quot;Эдвард Джеймс Олмос&quot;,</span>
+<span class="s1">    &quot;Мэри МакДоннелл&quot;,</span>
+<span class="s1">    &quot;Джейми Бамбер&quot;,</span>
+<span class="s1">    &quot;Джеймс Кэллис&quot;,</span>
+<span class="s1">    &quot;Триша Хелфер&quot;,</span>
+<span class="s1">    &quot;Грейс Пак&quot;,</span>
+<span class="s1">    &quot;Кэти Сакхофф&quot;,</span>
+<span class="s1">    &quot;Майкл Хоган&quot;,</span>
+<span class="s1">    &quot;Аарон Дуглас&quot;,</span>
+<span class="s1">    &quot;Тамо Пеникетт&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;category&quot;: [</span>
+<span class="s1">    &quot;фантастика&quot;,</span>
+<span class="s1">    &quot;боевик&quot;,</span>
+<span class="s1">    &quot;драма&quot;,</span>
+<span class="s1">    &quot;приключения&quot;</span>
+<span class="s1">  ],</span>
+<span class="s1">  &quot;directed&quot;: [</span>
+<span class="s1">    &quot;Майкл Раймер&quot;,</span>
+<span class="s1">    &quot;Майкл Нанкин&quot;,</span>
+<span class="s1">    &quot;Род Харди&quot;</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+  <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+  <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;AVWHnN7ATgOouHAvlXpl&quot;</span>,
+  <span class="s2">&quot;_version&quot;</span> : <span class="m">1</span>,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">2</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">1</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;created&quot;</span> : <span class="nb">true</span>
+<span class="o">}</span>
+
+~$ curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/_mapping?pretty&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;kinopoisk&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;mappings&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;film&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;properties&quot;</span> : <span class="o">{</span>
+          <span class="s2">&quot;category&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;string&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;date&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;date&quot;</span>,
+            <span class="s2">&quot;format&quot;</span> : <span class="s2">&quot;strict_date_optional_time||epoch_millis&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;description&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;string&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;directed&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;string&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;id&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;long&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;name&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;string&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;rate&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;double&quot;</span>
+          <span class="o">}</span>,
+          <span class="s2">&quot;starring&quot;</span> : <span class="o">{</span>
+            <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;string&quot;</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>ElasticSearch автоматически и даже правильно распознал типы данных для всех полей в индексе ! Простой <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-from-size.html" rel="nofollow">постраничный</a> поиск по двум полям <em>name</em> и <em>description</em>, в результатах поиска выводить только значения полей <em>id</em>, <em>rate</em>:</p>
+<div class="highlight"><pre><span></span>~$ curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/film/_search?pretty&#39;</span> -d <span class="o">{</span><span class="s1">&#39;</span>
+<span class="s1">    &quot;fields&quot; : [&quot;id&quot;, &quot;rate&quot;],</span>
+<span class="s1">    &quot;query&quot; : {</span>
+<span class="s1">      &quot;query_string&quot; : {</span>
+<span class="s1">        &quot;query&quot;:    &quot;Касл&quot;, </span>
+<span class="s1">        &quot;fields&quot;: [ &quot;name&quot;, &quot;description&quot; ],</span>
+<span class="s1">        &quot;default_operator&quot;: &quot;and&quot;</span>
+<span class="s1">      }</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;took&quot;</span> : <span class="m">8</span>,
+  <span class="s2">&quot;timed_out&quot;</span> : false,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;hits&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">1</span>,
+    <span class="s2">&quot;max_score&quot;</span> : <span class="m">0</span>.15342641,
+    <span class="s2">&quot;hits&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;AVWHmwbSTgOouHAvlXpi&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : <span class="m">0</span>.15342641,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">8</span>.042 <span class="o">]</span>,
+        <span class="s2">&quot;id&quot;</span> : <span class="o">[</span> <span class="m">409640</span> <span class="o">]</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="o">]</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Поиск с подсветкой:</p>
+<div class="highlight"><pre><span></span>~$ curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/film/_search?pretty&#39;</span> -d <span class="o">{</span><span class="s1">&#39;</span>
+<span class="s1">    &quot;fields&quot; : [&quot;id&quot;, &quot;rate&quot;],</span>
+<span class="s1">    &quot;query&quot; : {</span>
+<span class="s1">      &quot;query_string&quot; : {</span>
+<span class="s1">        &quot;query&quot;:    &quot;сайлон*&quot;, </span>
+<span class="s1">        &quot;fields&quot;: [ &quot;name&quot;, &quot;description&quot; ],</span>
+<span class="s1">        &quot;default_operator&quot;: &quot;and&quot;</span>
+<span class="s1">      }</span>
+<span class="s1">    },</span>
+<span class="s1">    &quot;highlight&quot; : {</span>
+<span class="s1">      &quot;pre_tags&quot; : [&quot;[mazko.github.io]&quot;],</span>
+<span class="s1">      &quot;post_tags&quot; : [&quot;[/mazko.github.io]&quot;],</span>
+<span class="s1">      &quot;fields&quot; : {</span>
+<span class="s1">        &quot;name&quot; : {&quot;fragment_size&quot; : 22, &quot;number_of_fragments&quot; : 1},</span>
+<span class="s1">        &quot;description&quot; : {&quot;fragment_size&quot; : 22, &quot;number_of_fragments&quot; : 1}</span>
+<span class="s1">      }</span>
+<span class="s1">    }</span>
+<span class="s1">}&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;took&quot;</span> : <span class="m">218</span>,
+  <span class="s2">&quot;timed_out&quot;</span> : false,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;hits&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">1</span>,
+    <span class="s2">&quot;max_score&quot;</span> : <span class="m">1</span>.0,
+    <span class="s2">&quot;hits&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+      <span class="s2">&quot;_index&quot;</span> : <span class="s2">&quot;kinopoisk&quot;</span>,
+      <span class="s2">&quot;_type&quot;</span> : <span class="s2">&quot;film&quot;</span>,
+      <span class="s2">&quot;_id&quot;</span> : <span class="s2">&quot;AVWHnN7ATgOouHAvlXpl&quot;</span>,
+      <span class="s2">&quot;_score&quot;</span> : <span class="m">1</span>.0,
+      <span class="s2">&quot;fields&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;rate&quot;</span> : <span class="o">[</span> <span class="m">7</span>.943 <span class="o">]</span>,
+        <span class="s2">&quot;id&quot;</span> : <span class="o">[</span> <span class="m">153013</span> <span class="o">]</span>
+      <span class="o">}</span>,
+      <span class="s2">&quot;highlight&quot;</span> : <span class="o">{</span>
+        <span class="s2">&quot;description&quot;</span> : <span class="o">[</span> <span class="s2">&quot; нападения [mazko.github.io]Сайлонов[/mazko.github.io]...&quot;</span> <span class="o">]</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="o">]</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Самое время для реальных <a href="http://proiot.ru/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/">данных</a>:</p>
+<div class="highlight"><pre><span></span>~: curl -XDELETE <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span>
+
+~: <span class="nb">time</span> python3 -c <span class="se">\</span>
+  <span class="s1">&#39;import sys, json; [print(json.dumps(i, ensure_ascii=False)) for i in json.load(sys.stdin)]&#39;</span> <span class="se">\</span>
+  &lt; Top.json <span class="p">|</span> xargs -d <span class="s1">&#39;\n&#39;</span> -n1 curl -XPOST <span class="s1">&#39;localhost:9200/kinopoisk/film/&#39;</span> -d
+
+<span class="c1"># time</span>
+real  18m52.728s
+user  1m36.896s
+sys   0m36.216s
+</pre></div>
+
+
+<p>Процесс индексации можно значительно ускорить используя <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html" rel="nofollow">Bulk API</a>:</p>
+<div class="highlight"><pre><span></span>~: curl -XDELETE <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span>
+
+~: <span class="nb">time</span> python3 -c <span class="se">\</span>
+  <span class="s1">&#39;import sys, json; [print(json.dumps({ &quot;index&quot; : { &quot;_index&quot; : &quot;kinopoisk&quot;, &quot;_type&quot; : &quot;film&quot; } }),</span>
+<span class="s1">  &quot;\n&quot;, json.dumps(i, ensure_ascii=False)) for i in json.load(sys.stdin)]&#39;</span> <span class="se">\</span>
+   &lt; Top.json <span class="p">|</span> curl -XPOST localhost:9200/_bulk --data-binary @-
+
+<span class="c1"># time</span>
+real  0m14.450s
+user  0m1.044s
+sys   0m0.196s
+</pre></div>
+
+
+<p>Немного полезной статистики об индексе:</p>
+<div class="highlight"><pre><span></span>~: curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/_count?pretty&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;count&quot;</span> : <span class="m">14999</span>,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+~: curl -XGET <span class="s1">&#39;localhost:9200/_cat/indices&#39;</span>
+<span class="c1"># response</span>
+yellow open kinopoisk <span class="m">5</span> <span class="m">1</span> <span class="m">14999</span> <span class="m">0</span> <span class="m">39</span>.1mb <span class="m">39</span>.1mb
+</pre></div>
+
+
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters-completion.html" rel="nofollow">Suggest</a> в ElasticSearch довольно странный либо плохо описанный:</p>
+<div class="highlight"><pre><span></span>~: curl -XDELETE <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span>
+
+~: curl -XPUT <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span> -d <span class="s1">&#39;{</span>
+<span class="s1">  &quot;settings&quot;: {</span>
+<span class="s1">    &quot;analysis&quot;: {</span>
+<span class="s1">      &quot;filter&quot;: {</span>
+<span class="s1">        &quot;shingle_filter&quot;: {</span>
+<span class="s1">          &quot;type&quot;: &quot;shingle&quot;,</span>
+<span class="s1">          &quot;max_shingle_size&quot;: &quot;5&quot;,</span>
+<span class="s1">          &quot;min_shingle_size&quot;: &quot;2&quot;,</span>
+<span class="s1">          &quot;output_unigrams&quot;:&quot;true&quot;</span>
+<span class="s1">        }</span>
+<span class="s1">      },</span>
+<span class="s1">      &quot;analyzer&quot;: {</span>
+<span class="s1">        &quot;pre_suggest_analyzer&quot;: {</span>
+<span class="s1">          &quot;type&quot;: &quot;custom&quot;,</span>
+<span class="s1">          &quot;tokenizer&quot;: &quot;standard&quot;,</span>
+<span class="s1">          &quot;filter&quot;: [</span>
+<span class="s1">            &quot;lowercase&quot;,</span>
+<span class="s1">            &quot;shingle_filter&quot;</span>
+<span class="s1">          ]</span>
+<span class="s1">        }</span>
+<span class="s1">      }</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+
+~: curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/_analyze?pretty&#39;</span> -d <span class="s1">&#39;{</span>
+<span class="s1">  &quot;analyzer&quot;: &quot;pre_suggest_analyzer&quot;,</span>
+<span class="s1">  &quot;text&quot;: [&quot;раз два&quot;, &quot;раз&quot;]</span>
+<span class="s1">}&#39;</span>
+<span class="c1">#response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;tokens&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+    <span class="s2">&quot;token&quot;</span> : <span class="s2">&quot;раз&quot;</span>,
+    <span class="s2">&quot;start_offset&quot;</span> : <span class="m">0</span>,
+    <span class="s2">&quot;end_offset&quot;</span> : <span class="m">3</span>,
+    <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;&lt;ALPHANUM&gt;&quot;</span>,
+    <span class="s2">&quot;position&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>, <span class="o">{</span>
+    <span class="s2">&quot;token&quot;</span> : <span class="s2">&quot;раз два&quot;</span>,
+    <span class="s2">&quot;start_offset&quot;</span> : <span class="m">0</span>,
+    <span class="s2">&quot;end_offset&quot;</span> : <span class="m">7</span>,
+    <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;shingle&quot;</span>,
+    <span class="s2">&quot;position&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>, <span class="o">{</span>
+    <span class="s2">&quot;token&quot;</span> : <span class="s2">&quot;два&quot;</span>,
+    <span class="s2">&quot;start_offset&quot;</span> : <span class="m">4</span>,
+    <span class="s2">&quot;end_offset&quot;</span> : <span class="m">7</span>,
+    <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;&lt;ALPHANUM&gt;&quot;</span>,
+    <span class="s2">&quot;position&quot;</span> : <span class="m">1</span>
+  <span class="o">}</span>, <span class="o">{</span>
+    <span class="s2">&quot;token&quot;</span> : <span class="s2">&quot;раз&quot;</span>,
+    <span class="s2">&quot;start_offset&quot;</span> : <span class="m">8</span>,
+    <span class="s2">&quot;end_offset&quot;</span> : <span class="m">11</span>,
+    <span class="s2">&quot;type&quot;</span> : <span class="s2">&quot;&lt;ALPHANUM&gt;&quot;</span>,
+    <span class="s2">&quot;position&quot;</span> : <span class="m">102</span>
+  <span class="o">}</span> <span class="o">]</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Исходя из документации несовсем понятно как в процессе индексации сделать такую штуку автоматической без избыточных HTTP запросов к <em>localhost:9200/kinopoisk/_analyze</em>:</p>
+<div class="highlight"><pre><span></span>~: python3 -c <span class="s1">&#39;</span>
+<span class="s1">import sys, json</span>
+<span class="s1">from urllib.request import urlopen</span>
+
+<span class="s1">def get_shingles(*args):</span>
+<span class="s1">  data = { &quot;analyzer&quot;: &quot;pre_suggest_analyzer&quot;, &quot;text&quot;: args }</span>
+<span class="s1">  data = json.dumps(data).encode(&quot;utf8&quot;)</span>
+<span class="s1">  with urlopen(&quot;http://localhost:9200/kinopoisk/_analyze&quot;, data=data) as r:</span>
+<span class="s1">    data = json.loads(r.read().decode(r.info().get_param(&quot;charset&quot;) or &quot;utf-8&quot;))</span>
+<span class="s1">    tokens = map(lambda v: v[&quot;token&quot;], data[&quot;tokens&quot;])</span>
+<span class="s1">    tokens = filter(lambda v: len(v) &gt; 1, tokens)</span>
+<span class="s1">    return list(set(tokens))</span>
+
+<span class="s1">for film in { obj[&quot;id&quot;]: obj for obj in json.load(sys.stdin) }.values():</span>
+<span class="s1">  film[&quot;rate&quot;] = float(film[&quot;rate&quot;])</span>
+<span class="s1">  film[&quot;suggest&quot;] = { &quot;input&quot;: get_shingles(film[&quot;name&quot;], film[&quot;description&quot;]) }</span>
+<span class="s1">  print(json.dumps({ &quot;index&quot; : { &quot;_index&quot; : &quot;kinopoisk&quot;, &quot;_type&quot; : &quot;film&quot;, &quot;_id&quot; : film[&quot;id&quot;]} })) </span>
+<span class="s1">  print(json.dumps(film, ensure_ascii=False))</span>
+<span class="s1">&#39;</span> &lt; Top.json <span class="p">|</span> xz --extreme -9 &gt; Top.bulk.json.xz
+</pre></div>
+
+
+<p>Индекс уже с Suggest:</p>
+<div class="highlight"><pre><span></span>~: curl -XDELETE <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span>
+
+~: curl -XPUT <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span> -d <span class="s1">&#39;{</span>
+<span class="s1">  &quot;mappings&quot;: {</span>
+<span class="s1">    &quot;film&quot; : {</span>
+<span class="s1">      &quot;properties&quot; : {</span>
+<span class="s1">        &quot;suggest&quot; : { </span>
+<span class="s1">          &quot;type&quot; : &quot;completion&quot;,</span>
+<span class="s1">          &quot;analyzer&quot;: &quot;standard&quot;</span>
+<span class="s1">          }</span>
+<span class="s1">        }</span>
+<span class="s1">      }</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+
+~: xzcat Top.bulk.json.xz <span class="p">|</span> curl -XPOST localhost:9200/_bulk --data-binary @-
+
+~: curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/_suggest?pretty&#39;</span> -d <span class="s1">&#39;{</span>
+<span class="s1">  &quot;film-suggest&quot; : {</span>
+<span class="s1">    &quot;text&quot; : &quot;шерлок &quot;,</span>
+<span class="s1">    &quot;completion&quot; : {</span>
+<span class="s1">        &quot;field&quot; : &quot;suggest&quot;,</span>
+<span class="s1">        &quot;size&quot;: 5</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+<span class="c1">#response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;film-suggest&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+    <span class="s2">&quot;text&quot;</span> : <span class="s2">&quot;шерлок &quot;</span>,
+    <span class="s2">&quot;offset&quot;</span> : <span class="m">0</span>,
+    <span class="s2">&quot;length&quot;</span> : <span class="m">7</span>,
+    <span class="s2">&quot;options&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+      <span class="s2">&quot;text&quot;</span> : <span class="s2">&quot;шерлок холмс&quot;</span>,
+      <span class="s2">&quot;score&quot;</span> : <span class="m">3</span>.0
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;text&quot;</span> : <span class="s2">&quot;шерлок холмс и&quot;</span>,
+      <span class="s2">&quot;score&quot;</span> : <span class="m">2</span>.0
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;text&quot;</span> : <span class="s2">&quot;шерлок холмс и доктор&quot;</span>,
+      <span class="s2">&quot;score&quot;</span> : <span class="m">2</span>.0
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;text&quot;</span> : <span class="s2">&quot;шерлок холмс и доктор ватсон&quot;</span>,
+      <span class="s2">&quot;score&quot;</span> : <span class="m">2</span>.0
+    <span class="o">}</span>, <span class="o">{</span>
+      <span class="s2">&quot;text&quot;</span> : <span class="s2">&quot;шерлок младший&quot;</span>,
+      <span class="s2">&quot;score&quot;</span> : <span class="m">1</span>.0
+    <span class="o">}</span> <span class="o">]</span>
+  <span class="o">}</span> <span class="o">]</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Поиск с <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html" rel="nofollow">агрегацией</a> по полю <em>starring</em>:</p>
+<div class="highlight"><pre><span></span>~$ curl -XDELETE <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span>
+
+~$ curl -XPUT <span class="s1">&#39;localhost:9200/kinopoisk?pretty&#39;</span> -d <span class="s1">&#39;{</span>
+<span class="s1">  &quot;mappings&quot;: {</span>
+<span class="s1">    &quot;film&quot; : {</span>
+<span class="s1">      &quot;properties&quot; : {</span>
+<span class="s1">        &quot;starring&quot;: {</span>
+<span class="s1">          &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">          &quot;fields&quot;: {</span>
+<span class="s1">              &quot;raw&quot;: {</span>
+<span class="s1">                  &quot;type&quot;: &quot;string&quot;,</span>
+<span class="s1">                  &quot;index&quot;: &quot;not_analyzed&quot;</span>
+<span class="s1">              }</span>
+<span class="s1">          }</span>
+<span class="s1">        }</span>
+<span class="s1">      }</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+
+~$ xzcat Top.bulk.json.xz <span class="p">|</span> curl -XPOST localhost:9200/_bulk --data-binary @-
+
+~$ curl -XGET <span class="s1">&#39;localhost:9200/kinopoisk/film/_search?pretty&#39;</span> -d <span class="o">{</span><span class="s1">&#39;</span>
+<span class="s1">  &quot;size&quot;: 0,</span>
+<span class="s1">  &quot;query&quot; : {</span>
+<span class="s1">    &quot;query_string&quot; : {</span>
+<span class="s1">      &quot;query&quot;:    &quot;шерлок&quot;, </span>
+<span class="s1">      &quot;fields&quot;: [ &quot;name&quot;, &quot;description&quot; ],</span>
+<span class="s1">      &quot;default_operator&quot;: &quot;and&quot;</span>
+<span class="s1">    }</span>
+<span class="s1">  },</span>
+<span class="s1">  &quot;aggs&quot;: {</span>
+<span class="s1">    &quot;stars&quot; : {</span>
+<span class="s1">      &quot;terms&quot; : { &quot;field&quot; : &quot;starring.raw&quot;, &quot;size&quot;: 10 }</span>
+<span class="s1">    }</span>
+<span class="s1">  }</span>
+<span class="s1">}&#39;</span>
+<span class="c1"># response</span>
+<span class="o">{</span>
+  <span class="s2">&quot;took&quot;</span> : <span class="m">1103</span>,
+  <span class="s2">&quot;timed_out&quot;</span> : false,
+  <span class="s2">&quot;_shards&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;successful&quot;</span> : <span class="m">5</span>,
+    <span class="s2">&quot;failed&quot;</span> : <span class="m">0</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;hits&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;total&quot;</span> : <span class="m">16</span>,
+    <span class="s2">&quot;max_score&quot;</span> : <span class="m">0</span>.0,
+    <span class="s2">&quot;hits&quot;</span> : <span class="o">[</span> <span class="o">]</span>
+  <span class="o">}</span>,
+  <span class="s2">&quot;aggregations&quot;</span> : <span class="o">{</span>
+    <span class="s2">&quot;stars&quot;</span> : <span class="o">{</span>
+      <span class="s2">&quot;doc_count_error_upper_bound&quot;</span> : <span class="m">1</span>,
+      <span class="s2">&quot;sum_other_doc_count&quot;</span> : <span class="m">122</span>,
+      <span class="s2">&quot;buckets&quot;</span> : <span class="o">[</span> <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Василий Ливанов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">7</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Виталий Соломин&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">7</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Рина Зеленая&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">7</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Борислав Брондуков&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">6</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Борис Клюев&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">4</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Александр Захаров&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Алексей Кожевников&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Валентина Панина&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Виктор Евграфов&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span>, <span class="o">{</span>
+        <span class="s2">&quot;key&quot;</span> : <span class="s2">&quot;Джеральдин Джеймс&quot;</span>,
+        <span class="s2">&quot;doc_count&quot;</span> : <span class="m">2</span>
+      <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div><p>There are <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

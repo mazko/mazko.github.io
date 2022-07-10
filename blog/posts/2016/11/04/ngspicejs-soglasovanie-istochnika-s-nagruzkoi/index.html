@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>NGSPICE.js - согласование источника с нагрузкой</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/" rel="bookmark"
+           title="Permalink to NGSPICE.js - согласование источника с нагрузкой">NGSPICE.js - согласование источника с нагрузкой</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-11-04T00:00:00+02:00">
+                Пт 04 ноября 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>Согласование источника и нагрузки - это выбор соотношения сопротивления нагрузки и внутреннего сопротивления источника с целью достижения заданных свойств полученной системы. Наиболее часто используются следующие типы согласования:</p>
+<ul>
+<li>
+<p>Согласование по мощности - оптимальное (с минимальными потерями) согласование по мощности источника сигнала и нагрузки. При условии <strong>Ri = Rn</strong> коэффициент передачи по напряжению Ku равен <code>Un/Vi(max) = I*Rn/(I*Ri+I*Rn) = Rn/(Ri+Rn) = 0.5</code>, коэффициент передачи тока Ki равен <code>In/Ii(max) = (Vi/(Ri+Rn))/(Vi/Ri) = Ri/(Ri+Rn)</code>, коэффициент передачи по мощности Kp равен <code>Kp = Pn/Pi(max) = Ku*Ki = Ri*Rн/(Ri + Rn)^2 = 0.25</code></p>
+</li>
+<li>
+<p>Согласование по напряжению - получение максимального коэффициента передачи напряжения в нагрузку. Это имеет место при выполнении условия <strong>Rn &gt;&gt; Ri</strong> (или Rn -&gt; ∞). При этом Ku стремится к единице</p>
+</li>
+<li>
+<p>Согласование по току заключается в получении максимального коэффициента передачи тока Ki в нагрузку. При выполнении условия <strong>Ri &gt;&gt; Rn</strong> (или Rn -&gt; 0) Ki стремится к единице</p>
+</li>
+</ul>
+<p><a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io.sch">схема источника и нагрузки</a> | <a href="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io.net">netlist</a> | <a href="https://ngspice.js.org/?gist=a6fae4b564d851c5f1759643dc279823">ngspice.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/show-img-io.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source io.net
+ngspice 2 -&gt; alter ri 3k
+ngspice 3 -&gt; dc rn 1 10k 10
+ngspice 4 -&gt; plot v(n)^2/&quot;res-sweep&quot;
+</pre></div>
+
+
+<p>На картинке максимальная рассеиваемая мощность на нагрузке <code>Pn = Un*In = Un^2/Rn</code> наблюдается при <strong>Rn = Ri</strong>, пример <a href="https://bc.js.org/">расчёта</a>: <code>Pmax = Un*In = Vi^2*Rn/(Rn+Ri)^2 = Vi^2/(4*Rn) = 42^2/(4*3000) = 0.147</code>:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas-u2.png" style="width:100%; border:1px solid #ddd;"></p>
+<div class="highlight"><pre><span></span>ngspice 1 -&gt; source io.net
+ngspice 2 -&gt; alter ri 5
+ngspice 3 -&gt; dc rn 0 25 50m
+ngspice 4 -&gt; plot 5*&quot;res-sweep&quot;/(5 + &quot;res-sweep&quot;)^2 &quot;res-sweep&quot;/(&quot;res-sweep&quot; + 5) 5/(&quot;res-sweep&quot; + 5)
+</pre></div>
+
+
+<p>Коэффициент <a href="https://ngspice.js.org/?gist=02707f2545ae01e6202d6ed48ff10493">передачи</a> по мощности Kp на максимуме равен 0.25 при <strong>Rn = Ri</strong> и <strong>Ku = Ki = 0.5</strong>:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/io-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="http://proiot.ru/blog/posts/2016/11/07/ngspicejs-usilitelnyi-kaskad-s-obshchim-emitterom/">Далее</a> усилительный каскад с общим эмиттером.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2016/11/04/ngspicejs-soglasovanie-istochnika-s-nagruzkoi/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

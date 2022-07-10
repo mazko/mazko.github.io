@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - ШИМ</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">PICSim.js - широтно-импульсная модуляция</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-14T00:00:00+02:00">
+                Сб 14 января 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
+</footer><!-- /.post-info --><p>В <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">предыдущем</a> примере светодиод либо горит либо нет т.е. работает в т.н. ключевом (цифровом) режиме. 
+Широтно-импульсная <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">модуляция</a> (ШИМ) в микроконтроллерах - очень простой и эффективный способ преобразования цифрового сигнала в аналоговый с очень высоким КПД. Задавая скважность программно можно менять среднее напряжение на выходе ШИМ и тем самым формировать аналоговый сигнал любой формы. Высокий КПД ШИМ также позволяет эффективно управлять и мощной нагрузкой - моторами, нагревательными элементами. К недостаткам ШИМ стоит в первую очередь высокий уровень помех, для устранения которых можно использовать даже самую простую интегрирующую <a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">RC-цепочку</a>.</p>
+<p>Наиболее простой реализацией ШИМ на микроконтроллере является <em>программная</em> реализация, однако также программный метод получения ШИМ сигнала очень требователен к частоте работы микроконтроллера и занимает достаточно много процессорного времени. В связи с этим большинство современных микроконтроллеров имеет на борту отдельный периферийных модуль аппаратного ШИМ, работающего параллельно с основной программой, но обо всём по порядку.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/soft-pwm.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/99041ddce996943a1f04ec2c88b65ecd">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=16f648A pwm.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="cp">#define DUTY_MAX 12</span>
+
+<span class="cp">#define _DUTY_CYCLE_RB0(value)                      \</span>
+<span class="cp">  do {                                              \</span>
+<span class="cp">    for (unsigned char i = 0; i &lt; DUTY_MAX; i++) {  \</span>
+<span class="cp">      RB0 = i &lt; value;                              \</span>
+<span class="cp">    }                                               \</span>
+<span class="cp">  } while(0)</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">/</span><span class="mi">4</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE_RB0</span><span class="p">(</span><span class="n">DUTY_MAX</span><span class="o">*</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// Do something useful</span>
+    <span class="c1">// for (unsigned char i=0; --i;);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Каждая кнопка RA1-RA4 при нажатии устанавливает свою яркость светодиода RB0. Поскольку частота переключения RB0 достаточно большая, человеческий глаз видит среднее значение яркости. Точно расчитать частоту переключения RB0 затруднительно т.к. тут многое зависит от компилятора - нужно смотреть в ассемблерный листинг. Также очевидно что любая дополнительная логика в <code>// Do something useful</code> окажет <a href="http://mazko.github.io/picsim.js/dab4ea8ec9d49164ac8630482e9b84ec">сильное</a> влияние на итоговую скважность импульсов на выходе RB0. Аппаратный ШИМ лишен всех этих недостатков.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Для работы модуля ШИМ требуется один <a href="http://proiot.ru/blog/posts/2016/12/22/ngspicejs-schetchiki-i-deliteli-chastoty/">таймер</a> и модуль CCP1. На <a href="http://proiot.ru/blog/posts/2017/01/13/simuliatsiia-mikrokontrollerov-picsimjs/">блок-схеме</a>  PIC16f648 аппаратный модуль CCP1 на ноге RB3 поэтому там и будет гореть светодиод. </p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/hw-pwm.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/27d4e6ff0c8004700dc62985d6f8be93">picsim.js</a></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=16f648A pwm.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="c1">// ignore two least significant bits PWMxDCL </span>
+<span class="cp">#define _DUTY_CYCLE(value) \</span>
+<span class="cp">  CCPR1L = (4*(249+1)*value)&gt;&gt;2</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">// http://microchip.wikidot.com/8bit:10bitpwm</span>
+
+  <span class="c1">// 0b01 Prescaler is 4; 0b1xx TMR2 on</span>
+  <span class="n">T2CON</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b00000101</span><span class="p">;</span>
+
+  <span class="c1">// Desired PWM frequency 250Hz</span>
+  <span class="c1">// PR2=[(Fosc)/(4∗TMR2Prescale∗PWMFrequency)]−1</span>
+  <span class="c1">// PR2=(1Mhz/(4*4*250Hz))-1=249</span>
+  <span class="n">PR2</span> <span class="o">=</span> <span class="mi">249</span><span class="p">;</span>
+
+  <span class="c1">// 0b11xx - PWM mode;</span>
+  <span class="c1">// assert log(1e6/249)/log(2) &gt; 8 bit</span>
+
+  <span class="n">CCP1CON</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b00001100</span><span class="p">;</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">_DUTY_CYCLE</span><span class="p">(</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// Do something useful</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="n">i</span><span class="p">;);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Аппаратный ШИМ не расходует ресурсы процессора и логика <code>// Do something useful</code> никак не влияет на яркость свечения светодиодов. Для уменьшения энергопотребления можно спокойно уменьшить тактовую частоту микроконтроллера, просто пересчитав значения регистров ШИМ.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/ui-hw.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>К тому же частоту аппаратного ШИМ в отличие от программного можно совершенно точно рассчитать на этапе проектирования системы. </p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/">Далее</a> прерывания.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - импульсные преобразователи напряжения">NGSPICE.js - импульсные преобразователи напряжения</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-12-07T00:00:00+02:00">
+                Ср 07 декабря 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE.</p>
+<p>В импульсных преобразователях входное напряжение нарезается порциями - импульсами c заданной <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">скважностью</a> и чем меньше скважность тем большая часть энергии попадёт на выход. Если импульсы прямоугольной формы, то силовая часть схемы работает в ключевом режиме т.е. находится либо в режиме отсечки, когда сопротивление максимально, либо в режиме …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/12/07/ngspicejs-impulsnye-preobrazovateli-napriazheniia/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/" rel="bookmark"
+                           title="Permalink to NGSPICE.js - скважность управляемая напряжением">NGSPICE.js - скважность управляемая напряжением</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-12-05T00:00:00+02:00">
+                Пн 05 декабря 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
+</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Сетевое программирование - TCP | HTTP сервер</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/" rel="bookmark"
+           title="Permalink to Сетевое программирование - TCP | HTTP сервер">Сетевое программирование - TCP | HTTP сервер</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-10-09T00:00:00+03:00">
+                Пн 09 октября 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> путешествие по сетевым протоколам.</p>
+<p>TCP и UDP — оба протоколы транспортного уровня. UDP — это протокол без установления соединения и с негарантированной доставкой пакетов. TCP (Transmission Control Protocol) — это протокол с установлением соединения и с гарантированной доставкой пакетов. Сначала происходит рукопожатие (Привет. | Привет. | Поболтаем? | Давай.), после чего соединение считается установленным. Далее по этому соединению туда и обратно посылаются пакеты (идет беседа), причем с проверкой, дошел ли пакет до получателя. Если пакет потерялся, или дошел, но с битой контрольной суммой, то он посылается повторно («повтори, не расслышал»). Таким образом TCP более надёжен, но он сложнее с точки зрения реализации и соответственно требует больше тактов / памяти, что имеет не самое последнее значение для микроконтроллеров. В качестве примеров прикладных протоколов, использующих TCP, можно назвать FTP, HTTP, SMTP и многие другие.</p>
+<h2>TL;DR</h2>
+<p>HTTP (Hypertext Transfer Protocol) — прикладной протокол, с помощью которого сервер отдаёт странички нашему браузеру. HTTP в настоящее время повсеместно используется во Всемирной паутине для получения информации с веб-сайтов. На картинке светильник на микроконтроллере с ОС <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Contiki</a> на борту, в котором цвета задаются через браузер.</p>
+<p><a href="http://localhost:9148/54734ef58963a68a9d79d74d53e115f7">IPv6</a> | <a href="http://localhost:9148/f681567307f7470e3bcb0e17de6c1710">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/conticki-http-leds.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/ui.gif" style="width:100%;"></p>
+<p>HTTP протокол текстовый и достаточно простой. Собственно вот так выглядит метод GET, посылаемый утилитой netcat на локальный IPv6 адрес сервера с лампочками:</p>
+<div class="highlight"><pre><span></span>~$ nc fe80::200:e2ff:fe58:b66b%mazko 80 &lt;&lt;EOF
+GET /b HTTP/1.0
+
+EOF
+</pre></div>
+
+
+<p>Метод HTTP (англ. HTTP Method) обычно представляет собой короткое английское слово, записанное заглавными буквами, чувствительно к регистру. Каждый сервер обязан поддерживать как минимум методы GET и HEAD. Кроме методов GET и HEAD, часто применяется методы POST, PUT и DELETE. Метод GET используется для запроса содержимого указанного ресурса, в нашем случае тут <code>GET /b HTTP/1.0</code> где путь /b отвечает за цвет (синий). Ответ сервера:</p>
+<div class="highlight"><pre><span></span>HTTP/1.0 200 OK
+Server: Contiki/2.4 http://www.sics.se/contiki/
+Connection: close
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Content-type: text/html
+
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Contiki RGB&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+&lt;p style=&#39;color:red;&#39;&gt;Red is &lt;a href=&#39;/r&#39;&gt;OFF&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&#39;color:green;&#39;&gt;Green is &lt;a href=&#39;/g&#39;&gt;OFF&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&#39;color:blue;&#39;&gt;Blue is &lt;a href=&#39;/b&#39;&gt;ON&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+</pre></div>
+
+
+<p>Код состояния (у нас 200) является частью первой строки ответа сервера. Он представляет собой целое число из трёх цифр. Первая цифра указывает на класс состояния. За кодом ответа обычно следует отделённая пробелом поясняющая фраза на английском языке, которая разъясняет человеку причину именно такого ответа. В нашем случае сервер отработал без ошибок, всё пучком (ОК).</p>
+<p>Как запрос, так и ответ содержат заголовки (каждая строка — отдельное поле заголовка, пара имя-значение разделена двоеточием). Заканчиваются заголовки пустой строкой, после чего могут идти данные.</p>
+<p>Мой браузер отказывается открывать локальный IPv6-адрес, поэтому в прошивке микроконтроллера прописан дополнительный адрес и такой же префикс также нужно назначить виртуальному сетевому интерфейсу симулятора:</p>
+<div class="highlight"><pre><span></span>~$ sudo ip addr add abcd::1/64 dev mazko          # linux
+~$ netsh interface ipv6 set address mazko abcd::1 # windows
+~$ curl http://[abcd::200:e2ff:fe58:b66b]
+</pre></div>
+
+
+<p>Если curl отработал без ошибок, то ссылку можно спокойно открывать в браузере.</p>
+<h2>TCP</h2>
+<p>Здесь мы научим наш <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">игрушечный</a> TCP/IP стек понимать TCP протокол. Итак организация соединения по протоколу TCP начинается с т.н. трехстороннего квитирования (рукопожатия). Как всегда разобраться с сетью поможет Wireshark.</p>
+<p>Когда требуется установить соединение с удалённым сервером, ему отправляется пакет с установленным флагом SYN, что означает инициализацию сессии. Тут есть поле Sequence Number (на картинке 1039510418), начальное значение этого поля выбирается случайным образом инициатором соединения.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake1.png" style="width:100%;"></p>
+<p>Сервер, в ответ на этот пакет, отвечает пакетом с битами SYN, ACK. Своё значение Sequence Number (на картинке 16770109) он тоже генерирует случайным образом. Также он должен заполнить поле Acknowledgment Number, которые будет равно сумме принятого Sequence Number плюс 1 т.е. 1039510419.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake2.png" style="width:100%;"></p>
+<p>Теперь инициатору подключения не остается ничего другого, как ответить ACK. Здесь Acknowledgment Number аналогично будет равно сумме принятого Sequence Number плюс 1 т.е. 16770110.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/handshake3.png" style="width:100%;"></p>
+<p>С этого момента соединение считается установленным. Дальнейшие пакеты будут передавать уже полезную нагрузку – данные протоколов вышестоящих уровней. В отличие от UDP, тут на каждый пакет нужно отправлять подтверждение (флаг ACK), дабы удалённый узел знал, что отправленные им данные были успешно приняты. При этом так же происходит взаимное увеличение Sequence Number у сервера и у клиента, но только уже не на 1, а на размер отправляемых данных.</p>
+<p>Для закрытия соединение удалённому узлу посылается пакет с установленным флагом FIN.</p>
+<p>С точки зрения реализации TCP это классический <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/">конечный автомат</a>. На картинке показаны как состояния сервера, так и клиента (разные цвета стрелок), на стрелках отображено <strong>событие/действие</strong> – например переход сервера (синяя стрелка) из состояния LISTEN в состояние SYN RECEIVED происходит по событию SYN, реакция на это событие отправить клиенту SYN+ACK в ответ:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/Tcp_state_diagram_fixed.svg" style="width:100%; border:1px solid #ddd;"></p>
+<p>Теперь немного кода. Приведенный ниже пример очень сильно упрощён, тут нет состояний и реализована только минианимальная логика, достаточная для обмена данными утилитой netcat.</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tcp_packet</span> <span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">from_port</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">to_port</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">seq_num</span><span class="p">;</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_num</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">data_offset</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">flags</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">window</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">cksum</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">urgent_ptr</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[];</span>
+<span class="p">}</span> <span class="n">tcp_packet_t</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_reply</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">temp</span><span class="p">;</span>
+
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+  <span class="c1">// swap src/dst, fill tcp hdr?</span>
+  <span class="n">temp</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">from_port</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">from_port</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">to_port</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">to_port</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">window</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">TCP_WINDOW_SIZE</span><span class="p">);</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">urgent_ptr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// SYN packet?</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">TCP_FLAG_SYN</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// add MSS option</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data_offset</span> <span class="o">=</span> <span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// MSS option</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// MSS option length = 4 bytes</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCP_SYN_MSS</span><span class="o">&gt;&gt;</span><span class="mi">8</span><span class="p">;</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">TCP_SYN_MSS</span><span class="o">&amp;</span><span class="mh">0xff</span><span class="p">;</span>
+    <span class="n">len</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// not syn packet - no options</span>
+    <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data_offset</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// calculate chksum</span>
+  <span class="n">len</span> <span class="o">+=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">cksum</span> <span class="o">=</span> <span class="n">ip_cksum</span><span class="p">(</span><span class="n">len</span> <span class="o">+</span> <span class="n">IP_PROTOCOL_TCP</span><span class="p">,</span>
+      <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="n">my_ip</span><span class="p">));</span>
+
+  <span class="n">ip</span><span class="o">-&gt;</span><span class="n">payload_len</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">len</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">dest</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+  <span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_ip</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">ip</span><span class="o">-&gt;</span><span class="n">src</span><span class="p">);</span>
+  <span class="n">eth_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span> <span class="o">+</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ip_packet_t</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_step</span><span class="p">(</span><span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">num</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">ack_num</span><span class="p">;</span>
+  <span class="n">ack_num</span> <span class="o">=</span> <span class="n">ntohl</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span><span class="p">)</span> <span class="o">+</span> <span class="n">num</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span> <span class="o">=</span> <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">ack_num</span><span class="p">;</span>
+  <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">ack_num</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">ack_num</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">tcp_filter</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+
+  <span class="k">switch</span><span class="p">(</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nl">TCP_FLAG_SYN</span><span class="p">:</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">TCP_FLAG_SYN</span> <span class="o">|</span> <span class="n">TCP_FLAG_ACK</span><span class="p">;</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">seq_num</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">gettc</span><span class="p">());</span> <span class="c1">// random number</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">TCP_FLAG_PSH</span> <span class="o">|</span> <span class="nl">TCP_FLAG_ACK</span><span class="p">:</span>
+      <span class="n">len</span> <span class="o">-=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">tcp_packet_t</span><span class="p">);</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+      <span class="n">tcp</span><span class="o">-&gt;</span><span class="n">flags</span> <span class="o">=</span> <span class="n">TCP_FLAG_ACK</span><span class="p">;</span>
+      <span class="c1">// feed/read data to/from app</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">tcp_data</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">len</span><span class="p">));</span>
+      <span class="k">break</span><span class="p">;</span>
+
+    <span class="k">case</span> <span class="n">TCP_FLAG_FIN</span> <span class="o">|</span> <span class="nl">TCP_FLAG_ACK</span><span class="p">:</span>
+      <span class="n">tcp_step</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">tcp_reply</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Обработка полезных данных — выводим на экран, печатаем в UART: </p>
+<div class="highlight"><pre><span></span><span class="kt">uint16_t</span> <span class="nf">tcp_data</span><span class="p">(</span><span class="n">eth_frame_t</span> <span class="o">*</span><span class="n">frame</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">ip_packet_t</span> <span class="o">*</span><span class="n">ip</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="n">tcp_packet_t</span> <span class="o">*</span><span class="n">tcp</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)(</span><span class="n">ip</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span><span class="n">tcp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+
+  <span class="n">draw_clr</span><span class="p">();</span>
+  <span class="n">data</span><span class="p">[</span><span class="n">len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">draw_str</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;&gt;&gt; %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+
+  <span class="c1">// piggyback</span>
+  <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">response</span> <span class="o">=</span> <span class="s">&quot;!!! OK !!!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+  <span class="n">strcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">strlen</span><span class="p">(</span><span class="n">response</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><a href="http://localhost:9148/f0925cc954111f5cb6f47c6b1dffc0ac">IPv6</a> | <a href="http://localhost:9148/ce2f76817817a8bea5d539aa0df45f8f">IPv4</a> | <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/eth_tcp.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/tcp.png" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Чтобы вывести данные в дисплей, отправляем девайсу TCP-пакет на любой порт помощью netcat:</p>
+<div class="highlight"><pre><span></span>~$ cat &lt;(echo &#39;hello TCP !&#39;) - | nc -6 fe80::0:ff:fe00:42%mazko 12345
+</pre></div>
+
+
+<p>Будучи однажды создан, канал TCP может существовать «вечно». А что будет, если некорректно разорвать соединение т.е. без флага FIN ? Такая ситуация возможна, если например выдернуть какой-нибудь кабель. Оба и клиент и сервер в этом случае будут безуспешно долго ждать данных друг от друга. Для отслеживания и отключения таких «мертвых» соединений часто используют механизм keep-alive – некое служебное сообщение, которое отсылается периодически. Если ответ на него не получен, то соединение разрывается.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/">Далее</a> CoAP.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - АЦП</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/">PICSim.js - аналого-цифровой преобразователь</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-01-28T00:00:00+02:00">
+                Сб 28 января 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/atsp">АЦП</a> </p>
+</footer><!-- /.post-info --><p>Как мы уже <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">знаем</a>, цифро-аналоговые преобразователи (ЦАП, DAC) преобразуют дискретный (двоичный) код в аналоговый сигнал - как правило напряжение. Не менее востребованным в цифровой электронике является обратное преобразование - аналого-цифровой преобразователь (АЦП, англ. Analog-to-digital converter, ADC). Наиболее важными характеристиками АЦП являются разрядность/разрешение - минимальное изменение величины аналогового сигнала, которое может быть зафиксировано, а также частота дискретизации (Sampling rate) - частота выборки цифровых значений из аналогового сигнала.</p>
+<p>Микроконтроллер PIC18F4620 имеет на борту один аппаратный АЦП разрядностью 10 <a href="https://bc.js.org/">бит</a> <code>2^10=1024</code> с максимальной частотой дискретизации (если верить производителю) 100 тысяч выборок в секунду. Также в микроконтроллере предусмотрен мультиплексор, позволяющий в нужный момент времени программно переключать на вход АЦП 13 различных ног. В качестве опорного напряжения для АЦП может служить как источник питания Vdd/Vss (обычная практика), так и внешний источник на ногах 4 и 5 (AN2/AN3). Напряжение на входе АЦП не должно выходить за пределы опорного.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/b1bb487dc063ae1128e98372a7983519">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Работа с символьным дисплеем описывалась в предыдущем <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">материале</a>. Тут мы реализовали функцию <code>putch</code>, что позволяет работать с LCD через стандартную функцию С <code>printf</code>. Поскольку в нашем случае длина выводимой на дисплей строки всегда постоянна, нет необходимости его очищать - достаточно просто переводить курсор домой перед каждым новым вызовом <code>printf</code>.</p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 5e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;liquid-crystal.c&quot;</span><span class="cp"></span>
+
+<span class="c1">// http://microchip.wikidot.com/faq:29</span>
+<span class="kt">void</span> <span class="nf">putch</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">lcd_dat</span><span class="p">(</span><span class="n">byte</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kt">uint32_t</span> <span class="n">adc_samples_counter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// ADC input RE0</span>
+
+  <span class="c1">// ADC analog input RE0</span>
+  <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS3</span> <span class="o">=</span> <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS2</span> <span class="o">=</span> <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">CHS0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">ADON</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+  <span class="n">lcd_no_cursor</span><span class="p">();</span>
+  <span class="n">lcd_no_blink</span><span class="p">();</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ADCON0bits</span><span class="p">.</span><span class="n">GO</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c1">// start ADC conversion</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">ADCON0bits</span><span class="p">.</span><span class="n">GO</span> <span class="o">==</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// wait untill conversion finish</span>
+    <span class="n">lcd_home</span><span class="p">();</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%4d:0x%04x&quot;</span><span class="p">,</span>
+      <span class="p">(((</span><span class="kt">uint16_t</span><span class="p">)</span><span class="n">ADRESH</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">2</span><span class="p">)</span><span class="o">|</span><span class="p">(</span><span class="n">ADRESL</span><span class="o">&gt;&gt;</span><span class="mi">6</span><span class="p">),</span>
+      <span class="o">++</span><span class="n">adc_samples_counter</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Как нетрудно догадаться по картинке у данной симуляции опорное напряжение 5 Вольт. С помощью битов CHS3-CHS0 выбирается с какого вывода микроконтроллера аналоговый сигнал поступает на вход АЦП - в данном случае это RE0. Бит ADON включает АЦП, для старта преобразования необходимо программно выставить флаг GO, по окончании преобразования этот флаг будет сброшен аппаратно (автоматически). Так как разрядность микроконтроллера 8 бит, что меньше разрядности АЦП, то результат преобразования размещается одновременно в двух регистрах - ADRESH и ADRESL. Выравнивание 10 битного числа в этих двух регистров задаётся битом ADFM, хотя надобность знать о его существовании возникает редко.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">Далее</a> матричная клавиатура.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/01/28/picsimjs-analogo-tsifrovoi-preobrazovatel/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+                <section id="content" class="body">
+                    <ol id="posts-list" class="hfeed" start="4">
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/" rel="bookmark"
+                           title="Permalink to FreeRTOS - обмен данными между задачами">FreeRTOS - обмен данными между задачами</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-29T00:00:00+03:00">
+                Сб 29 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Самый простой и интуитивно понятный способ организовать обмен информацией между задачами — использовать общие глобальные переменные и для <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативной</a> многозадачности такой подход вполне уместен. Однако в случае с вытесняющий многозадачностью при совместном доступе нескольких задач к общей переменной возникают проблемы <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">атомарности</a> и поэтому во FreeRTOS для передачи информации …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/29/freertos-obmen-dannymi-mezhdu-zadachami/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/" rel="bookmark"
+                           title="Permalink to FreeRTOS - совместный доступ к общим ресурсам">FreeRTOS - совместный доступ к общим ресурсам</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-28T00:00:00+03:00">
+                Пт 28 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->                <p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Потенциальная причина ошибок в RTOS — это неправильно организованный общий (совместный) доступ к ресурсам из нескольких задач и/или прерываний. Одна задача получает доступ к ресурсу, начинает выполнять некоторые действия с ним, но не успевает завершить операции с этим ресурсом до конца как в этот момент может произойти …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/" rel="bookmark"
+                           title="Permalink to FreeRTOS - диагностика ошибок и хуки">FreeRTOS - диагностика ошибок и хуки</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-27T00:00:00+03:00">
+                Чт 27 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->                <blockquote>
+<p>Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz</p>
+</blockquote>
+<p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/" rel="bookmark"
+                           title="Permalink to FreeRTOS - операционная система для микроконтроллеров">FreeRTOS - операционная система для микроконтроллеров</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-26T00:00:00+03:00">
+                Ср 26 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+</footer><!-- /.post-info -->                <p>FreeRTOS — многозадачная, мультиплатформенная операционная система жесткого реального времени (<a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">RTOS</a>) для встраиваемых систем. Написана на языке Си с ассемблерными вставками для конкретной аппаратной платформы. Планировщик FreeRTOS поддерживает три типа многозадачности: вытесняющую с приоритетами, <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">кооперативную</a> и гибридную. Какая из них лучше ? В большинстве случаев вытесняющая многозадачность является более предпочтительной т.к. в …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="bookmark"
+                           title="Permalink to Монохромный OLED дисплей на контроллере SSD1306">Монохромный OLED дисплей на контроллере SSD1306</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-04-25T00:00:00+03:00">
+                Вт 25 апреля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> </p>
+</footer><!-- /.post-info -->                <p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+<p class="paginator">
+        <a href="http://proiot.ru/index3.html">&laquo;</a>
+    Page 4 / 17
+        <a href="http://proiot.ru/index5.html">&raquo;</a>
+</p>
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

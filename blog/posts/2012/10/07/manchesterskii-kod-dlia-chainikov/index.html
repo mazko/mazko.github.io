@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Манчестерский код для чайников</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/" rel="bookmark"
+           title="Permalink to Манчестерский код для чайников">Манчестерский код для чайников</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2012-10-07T00:00:00+03:00">
+                Вс 07 октября 2012
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/tdd">TDD</a> <a href="http://proiot.ru/blog/tag/manchesterskii-kod">Манчестерский код</a> <a href="http://proiot.ru/blog/tag/gtest">gtest</a> <a href="http://proiot.ru/blog/tag/gmock">gmock</a> </p>
+</footer><!-- /.post-info -->      <p><em>Манчестерский Код</em> - это самосинхронизирующийся двоичный код без постоянной составляющей, в котором значение каждого передаваемого бита определяется направлением смены логического уровня в середине обусловленного заранее временного интервала. Поскольку логических уровней у самой маленькой единицы информации (бит) на данный момент известно всего два (1 и 0),  вариантов тут немного: либо смена 1 =&gt; 0 либо 0 =&gt; 1. Согласно общепринятым стандартам для <em>Манчестерского кода</em> переход от нуля к единице считается 1, а если наоборот, то 0. На самом деле последнее утверждение - это просто формальность - вопрос в том, с какой стороны посмотреть ;-) Главное, чтобы и приёмник и передатчик смотрели на жизнь одинаково.</p>
+<p><img alt="Код Манчестер" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/man_diagram.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Введите число и нажмите "<strong>Encode Manchester!</strong>":</p>
+<script type="text/javascript" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/manchester.js"> </script>
+
+<p>
+<input maxlength="25" size="10" id="manchester_query" value="0x623" style="text-align: right; padding:.3em;" type="text"/>
+<button type="button" style="padding:.2em;" onclick="manchester_encode_and_print();"><noscript><span style="color:red;">Включите JavaScript ! </span></noscript>Encode Manchester!</button>
+</p>
+
+<p id="manchester_result">
+</p>
+
+<p>Теперь давайте внимательно посмотрим на картинку и попробуем проанализировать и перечислить основные преимущества и недостатки преобразования данных в <em>Манчестерский Код</em>:</p>
+<ul>
+<li>
+<p>Pазмер данных увеличивается вдвое - это негативно сказывается на скорости передачи</p>
+</li>
+<li>
+<p>Kоличество логических нулей всегда равно количеству логических единиц, соответственно у такого сигнала не будет постоянной составляющей - это крайне важно для электрических цепей и радиоволн</p>
+</li>
+<li>
+<p>Комбинация логических уровней 11 однозначно говорит о последнем принятом 0, а комбинация 00, соответственно, говорит о 1. Таким образом после одной из них приёмник синхронизируется</p>
+</li>
+<li>
+<p>Не может идти последовательно более двух одинаковых логических уровней, т.е. комбинация типа 111 или 000 невозможна</p>
+</li>
+<li>
+<p>В начале данных и в конце не может быть двух одинаковых логических уровней - только 10 или 01</p>
+</li>
+</ul>
+<h3>Сначала пишем тест</h3>
+<p>О пользе тестов можно почитать <a href="https://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D0%B4%D1%83%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5_%D1%82%D0%B5%D1%81%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5" rel="nofollow">тут</a>. В контексте решения текущей задачи будет использоваться техника <strong>Mock</strong>-объектов, поэтому для тестирования используется связка <strong>gtest</strong> (<a href="http://code.google.com/p/googletest-translations/w/list" rel="nofollow">Google Test</a>) + <strong>gmock</strong> (<a href="http://code.google.com/p/googletest-translations/w/list" rel="nofollow">Google Mocking Framework</a>). Всё это добро поставляются в исходниках, поэтому единственное требование к системе - совместимый <strong>C</strong> / <strong>C++</strong> компилятор, например <strong>gcc g++</strong> для <strong>Linux</strong> или <strong>Visual Studio C++</strong> для <strong>Windows</strong>. Так выглядит простое консольное приложение, которое будет собираться вместе с тестами и запускать их:</p>
+<p><em>/manchester/tests/gtest/main.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;gtest/gtest.h&quot;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span><span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InitGoogleTest</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">RUN_ALL_TESTS</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Теперь сами тесты. Более простой задачей является преобразование данных в <em>Манчестерский Код</em> (<strong>encode</strong>), поэтому с неё, пожалуй, и начнём:</p>
+<p><em>/manchester/tests/gtest/src/manchester/Man_Encode.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;gtest/gtest.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;gmock/gmock.h&gt;</span><span class="cp"></span>
+
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span>
+<span class="p">{</span>
+    <span class="cp">#include</span> <span class="cpf">&quot;../../../../manchester/src/tx/Man_Encode.c&quot;</span><span class="cp"></span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">IManEncode</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">Man_Encode_One</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">Man_Encode_Zero</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/* Mock implementation */</span>
+
+<span class="n">ACTION_P2</span><span class="p">(</span><span class="n">Act_Inc_1</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ON_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="n">Man_Encode_One</span><span class="p">())</span>
+        <span class="p">.</span><span class="n">WillByDefault</span><span class="p">(</span><span class="n">Act_Inc_1</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">testing</span><span class="o">::</span><span class="n">ByRef</span><span class="p">(</span><span class="o">++</span><span class="n">V</span><span class="p">)));</span>
+<span class="p">}</span>
+
+<span class="n">ACTION_P2</span><span class="p">(</span><span class="n">Act_Inc_0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">ON_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="n">Man_Encode_Zero</span><span class="p">())</span>
+        <span class="p">.</span><span class="n">WillByDefault</span><span class="p">(</span><span class="n">Act_Inc_0</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">testing</span><span class="o">::</span><span class="n">ByRef</span><span class="p">(</span><span class="o">++</span><span class="n">V</span><span class="p">)));</span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">ManEncodeMock</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IManEncode</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="n">MOCK_METHOD0</span><span class="p">(</span><span class="n">Man_Encode_One</span><span class="p">,</span><span class="kt">void</span><span class="p">());</span>
+        <span class="n">MOCK_METHOD0</span><span class="p">(</span><span class="n">Man_Encode_Zero</span><span class="p">,</span><span class="kt">void</span><span class="p">());</span>
+
+        <span class="n">ManEncodeMock</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">_total_1</span> <span class="o">=</span> <span class="n">_total_0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">ON_CALL</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">,</span> <span class="n">Man_Encode_One</span><span class="p">())</span>
+                <span class="p">.</span><span class="n">WillByDefault</span><span class="p">(</span><span class="n">Act_Inc_1</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">testing</span><span class="o">::</span><span class="n">ByRef</span><span class="p">(</span><span class="n">_total_1</span><span class="p">)));</span>
+            <span class="n">ON_CALL</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">,</span> <span class="n">Man_Encode_Zero</span><span class="p">())</span>
+                <span class="p">.</span><span class="n">WillByDefault</span><span class="p">(</span><span class="n">Act_Inc_0</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="n">testing</span><span class="o">::</span><span class="n">ByRef</span><span class="p">(</span><span class="n">_total_0</span><span class="p">)));</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="kt">int</span> <span class="n">total</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">_total_1</span><span class="p">,</span> <span class="n">total</span><span class="p">);</span>
+            <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">_total_0</span><span class="p">,</span> <span class="n">total</span><span class="p">);</span>
+        <span class="p">}</span>
+
+    <span class="k">private</span><span class="o">:</span>
+        <span class="kt">int</span> <span class="n">_total_1</span><span class="p">,</span> <span class="n">_total_0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/* Fixture class for each test */</span>
+
+<span class="k">class</span> <span class="nc">ManEncodeTest_F</span> <span class="o">:</span> <span class="k">public</span> <span class="n">testing</span><span class="o">::</span><span class="n">Test</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="k">static</span> <span class="n">ManEncodeMock</span><span class="o">*</span> <span class="n">getMock</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_ManEncodePtr</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="k">protected</span><span class="o">:</span>
+        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">SetUp</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">_ManEncodePtr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_ManEncode</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="k">private</span><span class="o">:</span>
+        <span class="n">ManEncodeMock</span> <span class="n">_ManEncode</span><span class="p">;</span>
+        <span class="k">static</span> <span class="n">ManEncodeMock</span><span class="o">*</span> <span class="n">_ManEncodePtr</span><span class="p">;</span>    
+<span class="p">};</span>
+
+<span class="n">ManEncodeMock</span><span class="o">*</span> <span class="n">ManEncodeTest_F</span><span class="o">::</span><span class="n">_ManEncodePtr</span><span class="p">;</span>
+
+<span class="cm">/* Man_Encode externs (events) */</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Encode_One</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ManEncodeTest_F</span><span class="o">::</span><span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Man_Encode_One</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Encode_Zero</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ManEncodeTest_F</span><span class="o">::</span><span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Man_Encode_Zero</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="cm">/* 0 =&gt; 1010101010101010(manchester) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManEncodeTest_F</span><span class="p">,</span> <span class="n">Send_0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">());</span> <span class="c1">// MSB</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">());</span>
+    <span class="p">}</span>
+
+    <span class="n">Man_Encode</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* 255(dec) =&gt; 11111111(bin) =&gt; 0101010101010101(manchester) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManEncodeTest_F</span><span class="p">,</span> <span class="n">Send_255</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">());</span> <span class="c1">// MSB</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">());</span>
+    <span class="p">}</span>
+
+    <span class="n">Man_Encode</span><span class="p">(</span><span class="mi">255</span><span class="p">);</span>
+
+    <span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* 170(dec) =&gt; 10101010(bin) =&gt; 0110011001100110(manchester) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManEncodeTest_F</span><span class="p">,</span> <span class="n">Send_170</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">());</span> <span class="c1">// MSB</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">());</span>
+
+    <span class="n">Man_Encode</span><span class="p">(</span><span class="mi">170</span><span class="p">);</span>
+
+    <span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* 85(dec) =&gt; 01010101(bin) =&gt; 1001100110011001(manchester) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManEncodeTest_F</span><span class="p">,</span> <span class="n">Send_85</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">());</span> <span class="c1">// MSB</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">());</span>
+
+    <span class="n">Man_Encode</span><span class="p">(</span><span class="mi">85</span><span class="p">);</span>
+
+    <span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="cm">/* 84(dec) =&gt; 01010100(bin) =&gt; 1001100110011010(manchester) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManEncodeTest_F</span><span class="p">,</span> <span class="n">Send_84</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">());</span> <span class="c1">// MSB</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">());</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_One</span><span class="p">());</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Encode_Zero</span><span class="p">());</span>
+
+    <span class="n">Man_Encode</span><span class="p">(</span><span class="mi">84</span><span class="p">);</span>
+
+    <span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Все тесты помещены в макрос <code>TEST_F()</code>. В начале теста с помощью <code>EXPECT_CALL()</code> необходимо установить ожидаемое поведение. В процессе преобразования <em>0 =&gt; 1010101010101010</em> и при условии, что старший бит идёт первым (<em>MSB</em>), ожидается последовательный вызов методов <code>On_Man_Encode_One()</code>  и <code>On_Man_Encode_Zero()</code> и так восемь раз. После того, как ожидаемое поведение описано, необходимо вызвать проверяемый метод <code>Man_Encode()</code>. Если реальное поведение отличается от ожидаемого, в процессе выполнения тестов будет сообщено об ошибке. В конце каждого теста также выполняется проверка условия, что количество нулей равно количеству единиц.</p>
+<p>Преобразовать данные в <em>Манчестерский Код</em> очень легко:</p>
+<p><em>/manchester/src/tx/Man_Encode.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;Man_Encode.h&quot;</span><span class="cp"></span>
+
+<span class="cm">/********************************************************************</span>
+<span class="cm"> *      Function Name:  Man_Encode                                  *</span>
+<span class="cm"> *      Return Value:   no                                          *</span>
+<span class="cm"> *      Parameters:     character to transmit                       *</span>
+<span class="cm"> *      Description:    Convert char to Manchester Code (2 chars)   *</span>
+<span class="cm"> *                      MSB is first to convert                     *</span>
+<span class="cm"> ********************************************************************/</span>
+
+<span class="kt">void</span> <span class="nf">Man_Encode</span><span class="p">(</span><span class="k">register</span> <span class="kt">char</span> <span class="n">character</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">register</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">bitcount</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">bitcount</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">character</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">On_Man_Encode_Zero</span><span class="p">();</span>
+            <span class="n">On_Man_Encode_One</span><span class="p">();</span>
+
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">On_Man_Encode_One</span><span class="p">();</span>
+            <span class="n">On_Man_Encode_Zero</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="n">character</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Реализация обратной задачи - декодирования данных из <em>Манчестерского Кода</em> в оригинальный несколько сложнее. Перед началом передачи данных необходимо синхронизироваться с приёмником сиигнала. В реализации тестов нас особо не интересует как именно приёмник синхронизируется и в какой последовательности будут вызваны(если вообще будут) <code>On_Man_Decode_Add_1()</code> и <code>On_Man_Decode_Add_0()</code> - для этой цели обозначим предварительные ожидания как <code>testing::AtMost(1)</code>. После синхронизации процесс декодирования можно точно спрогнозировать и описать соответствующие ожидания с помощью <code>EXPECT_CALL()</code>. Также как и в предыдущем случае в конце каждого теста проверяется отсутствие постоянной составляющей (количество нулей и единиц должно совпадать).</p>
+<p><em>/manchester/tests/gtest/src/manchester/Man_Decode.cpp</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;gtest/gtest.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;gmock/gmock.h&gt;</span><span class="cp"></span>
+
+<span class="k">extern</span> <span class="s">&quot;C&quot;</span>
+<span class="p">{</span>
+    <span class="cp">#include</span> <span class="cpf">&quot;../../../../manchester/src/rx/Man_Decode.c&quot;</span><span class="cp"></span>
+<span class="p">}</span>
+
+<span class="k">class</span> <span class="nc">IManDecode</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">Man_Dec_Add_1</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">virtual</span> <span class="kt">void</span> <span class="nf">Man_Dec_Add_0</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cm">/* Mock implementation */</span>
+
+<span class="k">class</span> <span class="nc">ManDecodeMock</span> <span class="o">:</span> <span class="k">public</span> <span class="n">IManDecode</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="n">MOCK_METHOD0</span><span class="p">(</span><span class="n">Man_Dec_Add_1</span><span class="p">,</span><span class="kt">void</span><span class="p">());</span>
+        <span class="n">MOCK_METHOD0</span><span class="p">(</span><span class="n">Man_Dec_Add_0</span><span class="p">,</span><span class="kt">void</span><span class="p">());</span>
+<span class="p">};</span>
+
+<span class="cm">/* Fixture class for each test */</span>
+
+<span class="k">class</span> <span class="nc">ManDecodeTest_F</span> <span class="o">:</span> <span class="k">public</span> <span class="n">testing</span><span class="o">::</span><span class="n">Test</span> <span class="p">{</span>
+    <span class="k">public</span><span class="o">:</span>
+        <span class="k">static</span> <span class="n">ManDecodeMock</span><span class="o">*</span> <span class="n">getMock</span><span class="p">()</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">_ManDecodePtr</span><span class="p">;</span>
+        <span class="p">}</span>
+
+    <span class="k">protected</span><span class="o">:</span>
+        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">SetUp</span><span class="p">()</span> <span class="p">{</span>
+            <span class="n">_total_1</span> <span class="o">=</span> <span class="n">_total_0</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">_ManDecodePtr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">_ManDecode</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="kt">int</span> <span class="n">total</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">_total_1</span><span class="p">,</span> <span class="n">total</span><span class="p">);</span>
+            <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">_total_0</span><span class="p">,</span> <span class="n">total</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">periods</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">_total_0</span> <span class="o">+=</span> <span class="n">periods</span><span class="p">;</span>
+            <span class="n">Man_Decode_Stable_Zero</span><span class="p">(</span><span class="n">periods</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">periods</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">_total_1</span> <span class="o">+=</span> <span class="n">periods</span><span class="p">;</span>
+            <span class="n">Man_Decode_Stable_One</span><span class="p">(</span><span class="n">periods</span><span class="p">);</span>
+        <span class="p">}</span>
+
+    <span class="k">private</span><span class="o">:</span>
+        <span class="n">ManDecodeMock</span> <span class="n">_ManDecode</span><span class="p">;</span>
+        <span class="k">static</span> <span class="n">ManDecodeMock</span><span class="o">*</span> <span class="n">_ManDecodePtr</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">_total_1</span><span class="p">,</span> <span class="n">_total_0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">ManDecodeMock</span><span class="o">*</span> <span class="n">ManDecodeTest_F</span><span class="o">::</span><span class="n">_ManDecodePtr</span><span class="p">;</span>
+
+<span class="cm">/* Man_Decode externs (events) */</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Decode_Add_1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ManDecodeTest_F</span><span class="o">::</span><span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Man_Dec_Add_1</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">On_Man_Decode_Add_0</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">ManDecodeTest_F</span><span class="o">::</span><span class="n">getMock</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">Man_Dec_Add_0</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="cm">/* Helpers for TEST_F */</span>
+
+<span class="cp">#define EXPECT_MAN_SYNCH(x,y)                               \</span>
+<span class="cp">    EXPECT_CALL(*getMock(), Man_Dec_Add_##x())              \</span>
+<span class="cp">        .Times(testing::AtMost(1)); </span><span class="cm">/* Clay? */</span><span class="cp">             \</span>
+<span class="cp">    EXPECT_CALL(*getMock(), Man_Dec_Add_##y())              \</span>
+<span class="cp">        .Times(testing::AtMost(1)); </span><span class="cm">/* Clay? */</span><span class="cp">             \</span>
+<span class="cp">    EXPECT_CALL(*getMock(), Man_Dec_Add_##x()); </span><span class="cm">/* Sync  */</span><span class="cp"> \</span>
+<span class="cp">    EXPECT_CALL(*getMock(), Man_Dec_Add_##y())  </span><span class="cm">/* Sync  */</span><span class="cp"> \</span>
+
+<span class="cp">#define PERFORM_MAN_SYNCH(x,y)                               \</span>
+<span class="cp">    Perform_Stable_##x(1);  </span><span class="cm">/* Clay balance (1 - 1 = 0) */</span><span class="cp">   \</span>
+<span class="cp">    Perform_Stable_##y(2);  </span><span class="cm">/* Sync balance (2 - 2 = 0) */</span><span class="cp">   \</span>
+<span class="cp">    Perform_Stable_##x(2);  </span><span class="cm">/* Sync */</span><span class="cp">                       \</span>
+<span class="cp">    Perform_Stable_##y(1)   </span><span class="cm">/* Clay */</span><span class="cp">                       \</span>
+
+<span class="cm">/* 1010101010101010(manchester) =&gt; 0 */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManDecodeTest_F</span><span class="p">,</span> <span class="n">Decode_0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_MAN_SYNCH</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_0</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+
+    <span class="n">PERFORM_MAN_SYNCH</span><span class="p">(</span><span class="n">One</span><span class="p">,</span> <span class="n">Zero</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span> <span class="c1">// Sync(3) + Byte(8)</span>
+<span class="p">}</span>
+
+<span class="cm">/* 0101010101010101(manchester) =&gt; 11111111(bin) =&gt; 255(dec) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManDecodeTest_F</span><span class="p">,</span> <span class="n">Decode_255</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_MAN_SYNCH</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_1</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+
+    <span class="n">PERFORM_MAN_SYNCH</span><span class="p">(</span><span class="n">Zero</span><span class="p">,</span> <span class="n">One</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span> <span class="c1">// Sync(3) + Byte(8)</span>
+<span class="p">}</span>
+
+<span class="cm">/* 0110011001100110(manchester) =&gt; 10101010(bin) =&gt; 170(dec) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManDecodeTest_F</span><span class="p">,</span> <span class="n">Decode_170</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_MAN_SYNCH</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_1</span><span class="p">());</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_0</span><span class="p">());</span>
+    <span class="p">}</span>
+
+    <span class="n">PERFORM_MAN_SYNCH</span><span class="p">(</span><span class="n">Zero</span><span class="p">,</span> <span class="n">One</span><span class="p">);</span>
+    <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span> <span class="c1">// Sync(3) + Byte(8)</span>
+<span class="p">}</span>
+
+<span class="cm">/* 1001100110011001(manchester) =&gt; 01010101(bin) =&gt; 85(dec) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManDecodeTest_F</span><span class="p">,</span> <span class="n">Decode_85</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_MAN_SYNCH</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_0</span><span class="p">());</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_1</span><span class="p">());</span>
+    <span class="p">}</span>
+
+    <span class="n">PERFORM_MAN_SYNCH</span><span class="p">(</span><span class="n">One</span><span class="p">,</span> <span class="n">Zero</span><span class="p">);</span>
+    <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span> <span class="c1">// Sync(3) + Byte(8)</span>
+<span class="p">}</span>
+
+<span class="cm">/* 1001100110011010(manchester) =&gt; 84(dec) =&gt; 01010100(bin) */</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">ManDecodeTest_F</span><span class="p">,</span> <span class="n">Decode_84</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">testing</span><span class="o">::</span><span class="n">InSequence</span> <span class="n">s</span><span class="p">;</span>
+    <span class="n">EXPECT_MAN_SYNCH</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_0</span><span class="p">());</span>
+        <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_1</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">getMock</span><span class="p">(),</span> <span class="n">Man_Dec_Add_0</span><span class="p">()).</span><span class="n">Times</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+    <span class="n">PERFORM_MAN_SYNCH</span><span class="p">(</span><span class="n">One</span><span class="p">,</span> <span class="n">Zero</span><span class="p">);</span>
+    <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+        <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">Perform_Stable_One</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">Perform_Stable_Zero</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="n">Expect_Total_1_And_0_Eq</span><span class="p">(</span><span class="mi">11</span><span class="p">);</span> <span class="c1">// Sync(3) + Byte(8)</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Предположительная реализация процесса декодирования <em>Манчестерского кода</em>:</p>
+<p><em>/manchester/src/rx/Man_Decode.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;Man_Decode.h&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">bool</span> <span class="n">ds_LB</span><span class="p">;</span>
+
+<span class="cm">/********************************************************************</span>
+<span class="cm"> *      Function Name:  Man_Decode_Stable_Zero                      *</span>
+<span class="cm"> *      Return Value:   no                                          *</span>
+<span class="cm"> *      Parameters:     Stable digital input periods. Ideal 1 or 2  *</span>
+<span class="cm"> *      Description:    Convert signal from Manchester Code.        *</span>
+<span class="cm"> *                      Fire according On_Man_Decode_Add_1()        *</span>
+<span class="cm"> *                      callback event.                             *</span>
+<span class="cm"> ********************************************************************/</span>
+
+<span class="kt">void</span> <span class="nf">Man_Decode_Stable_Zero</span><span class="p">(</span><span class="k">register</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">periods</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">periods</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!--</span><span class="n">periods</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="n">ds_LB</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="n">On_Man_Decode_Add_1</span><span class="p">();</span>
+                <span class="n">ds_LB</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!--</span><span class="n">periods</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="n">On_Man_Decode_Add_1</span><span class="p">();</span>
+            <span class="n">ds_LB</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/********************************************************************</span>
+<span class="cm"> *      Function Name:  Man_Decode_Stable_One                       *</span>
+<span class="cm"> *      Return Value:   no                                          *</span>
+<span class="cm"> *      Parameters:     Stable digital input periods. Ideal 1 or 2  *</span>
+<span class="cm"> *      Description:    Convert signal from Manchester Code.        *</span>
+<span class="cm"> *                      Fire according On_Man_Decode_Add_0()        *</span>
+<span class="cm"> *                      callback event.                             *</span>
+<span class="cm"> ********************************************************************/</span>
+
+<span class="kt">void</span> <span class="nf">Man_Decode_Stable_One</span><span class="p">(</span><span class="k">register</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">periods</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">periods</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!--</span><span class="n">periods</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">ds_LB</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="n">On_Man_Decode_Add_0</span><span class="p">();</span>
+                <span class="n">ds_LB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!--</span><span class="n">periods</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="n">On_Man_Decode_Add_0</span><span class="p">();</span>
+            <span class="n">ds_LB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3>Сборка и запуск тестов</h3>
+<p>Если Вы работаете в связке <strong>Windows</strong> + <strong>Visual Studio</strong>, необходимо выполнить следующее:</p>
+<div class="highlight"><pre><span></span><span class="p">@</span><span class="k">set</span> <span class="nv">GTEST_HOME</span><span class="p">=</span>gtest-1.6.0 
+<span class="p">@</span><span class="k">set</span> <span class="nv">GMOCK_HOME</span><span class="p">=</span>gmock-1.6.0
+
+cl /EHsc /I<span class="nv">%GTEST_HOME%</span> /I<span class="nv">%GTEST_HOME%</span>/include -I<span class="nv">%GMOCK_HOME%</span> <span class="se">^</span>
+<span class="se">-</span>I<span class="nv">%GMOCK_HOME%</span>/include main.cpp src/manchester/Man_Encode.cpp <span class="se">^</span>
+<span class="se">s</span>rc/manchester/Man_Decode.cpp <span class="nv">%GTEST_HOME%</span>/src/gtest-all.cc <span class="se">^</span>
+<span class="se">%</span>GMOCK_HOME%/src/gmock-all.cc
+
+main.exe
+</pre></div>
+
+
+<p><img alt="Windows Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/win-gtest-gmock-run.png" style="width:100%; border:1px solid grey;"></p>
+<p>При использовании <strong>Linux</strong> + <strong>gcc g++</strong>:</p>
+<div class="highlight"><pre><span></span><span class="nv">GTEST_HOME</span><span class="o">=</span>gtest-1.6.0
+<span class="nv">GMOCK_HOME</span><span class="o">=</span>gmock-1.6.0
+
+g++ -g -I<span class="nv">$GTEST_HOME</span> -I<span class="nv">$GTEST_HOME</span>/include -I<span class="nv">$GMOCK_HOME</span> <span class="se">\</span>
+-I<span class="nv">$GMOCK_HOME</span>/include -pthread main.cpp src/manchester/Man_Encode.cpp <span class="se">\</span>
+src/manchester/Man_Decode.cpp <span class="nv">$GTEST_HOME</span>/src/gtest-all.cc <span class="se">\</span>
+<span class="nv">$GMOCK_HOME</span>/src/gmock-all.cc
+
+./a.out
+</pre></div>
+
+
+<p><img alt="Linux Скриншот" src="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/suse_tests_run.png" style="width:100%; border:1px solid grey;"></p>
+<p>Тестов много не бывает. Например, было бы неплохо добавить проверку для последовательности из двух байт и более, или проверку условия отсутствия невозможных для Манчестерского Кода комбинаций - например 111 или 000. Чем больше терпения и выдержки на этом этапе разработки - тем крепче будет сон после её сдачи в эксплуатацию.</p>
+<h3>Практика</h3>
+<p>Тесты это хорошо, но пока что всё это больше похоже на теорию - а теория без практики, как известно, скучна. Поэтому, если Вы дочитали до этого момента, милости прошу посетить <a href="http://proiot.ru/blog/posts/2012/10/07/ispolzovanie-manchesterskogo-koda-na-primere/">следующий</a> пост, в котором в качестве приёмника и передатчика используются два микроконтроллера, а сам процесс эмулируется в виртуальной среде, которая умеет моделировать поведение электрических цепей.</p>
+<p>Исходники к текущему посту на <a href="https://github.com/mazko/Manchester-Code" rel="nofollow">GitHub</a>.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

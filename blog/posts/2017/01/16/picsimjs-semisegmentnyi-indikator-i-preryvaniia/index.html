@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>PICSim.js - семисегментный индикатор и прерывания</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/" rel="bookmark"
+           title="Permalink to PICSim.js - семисегментный индикатор и прерывания">PICSim.js - семисегментный индикатор и прерывания</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2017-01-16T00:00:00+02:00">
+                Пн 16 января 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> </p>
+</footer><!-- /.post-info -->      <p>Семисегментные индикаторы - наиболее простой способ для представления цифровой информации в виде арабских цифр и даже некоторых букв (для полноценного отображения букв используются более сложные многосегментные и матричные индикаторы). Светодиодные семисегментные индикаторы имеют высокую яркость, широкий диапазон рабочих температур, низкую стоимость и очень просты в управлении. Главными недостатками светодиодных индикаторов являются относительно высокое энергопотребление и слабая видимость при ярком освещении, хотя на нашем модном цветном мобильном телефоне тоже ничего не видно на солнышке днём :)</p>
+<p>Конструктивно светодиодный семисегментный индикатор представляет собой группу из семи светодиодов, расположенных в определенном порядке. Включая их в различных комбинациях можно составить упрощённые изображения цифр 0..9. Индикаторы различаются по размеру, типу соединения светодиодов - общий анод, общий катод, по количеству отображаемых разрядов - одноразрядные, двухразрядные и более, по яркости свечения и по цвету - красные, желтые, зеленые и т.д. </p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/7.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/69cc6064062b774abdb3734521cf01a8">picsim.js</a></p>
+<p><em>display7.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">uint8_t</span> <span class="nf">display7</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xEE</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x28</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xCD</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x6D</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x2B</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x67</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">6</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xE7</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">7</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x2C</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">8</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xEF</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">9</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x6F</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xAF</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">11</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xE3</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">12</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xC6</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">13</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xE9</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">14</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0xC7</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">15</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mh">0x87</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=16f648A main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;display7.c&quot;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">porta_btn_mask</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b11110</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="kt">uint8_t</span> <span class="n">display_data</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="n">last_buttons</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">buttons</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">&amp;</span> <span class="n">porta_btn_mask</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">last_buttons</span> <span class="o">!=</span> <span class="n">buttons</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">last_buttons</span> <span class="o">=</span> <span class="n">buttons</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">PORTB</span> <span class="o">=</span> <span class="n">display7</span><span class="p">(</span><span class="n">display_data</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>В данном примере используется наиболее простой вид индикации - <em>статическая индикация</em>, в таком режиме каждый сегмент индикатора постоянно находится в одном из двух состояний - включен или выключен. Функция <code>display7</code> приводит двоичное число в код семисегментного индикатора и позволяет отображать шестнадцатиричное число 0..F.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Для одновременной работы нескольких разрядов семисегментного индикаторов часто используют <em>динамическую индикацию</em> (динамическое управление), которое подразумевает поочередное переключение разрядов с частотой, не воспринимаемой человеческим глазом. Для динамической индикации требуется меньшее количество ног микроконтроллера и меньшее количество внешних элементов. На исследуемой плате нога RB4 как раз и занимается поочерёдным переключением двух разрядов - при нуле на RB4 данные с PORTB попадают на левый индикатор, при единице соответственно на правый.</p>
+<p>Задача переключения разрядов семисегментных довольно критична ко времени - при его неравномерном распределении один разряд будет ярче другого, что приведёт к неприятным для человеческого глаза эффектам, мерцаниям. Для задач, критичных ко времени реакции на возникшие события в микроконтроллерах предусмотрены прерывания - основной цикл <code>main()</code> приостанавливается (прерывается), сохраняя свой контекст выполнения, отрабатывает логика обработчика прерывания, после чего управление снова передаётся <code>main()</code>, при этом сохранённый ранее контекст выполнения восстанавливается.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/d7c032cf6e1c90c841d5f42e9130b22f">picsim.js</a></p>
+<p><em>isr.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;display7.c&quot;</span><span class="cp"></span>
+
+<span class="c1">// C89, section 6.5.7 Initialization.</span>
+<span class="c1">// If an object that has static storage duration is not initialized explicitly, then:</span>
+<span class="c1">// - if it has arithmetic type, it is initialized to (positive or unsigned) zero;</span>
+
+<span class="c1">// interface</span>
+<span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="n">display_data</span><span class="p">;</span>
+
+<span class="c1">// http://microchip.wikidot.com/faq:31</span>
+
+<span class="kt">void</span> <span class="n">interrupt</span> <span class="nf">_int_7</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>   <span class="c1">// interrupt function </span>
+<span class="p">{</span>
+  <span class="k">static</span> <span class="kt">bool</span> <span class="n">current_7</span><span class="p">;</span>
+
+  <span class="k">if</span><span class="p">(</span><span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">&amp;&amp;</span> <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span><span class="p">)</span> 
+  <span class="p">{</span>                           <span class="c1">// if timer flag is set &amp; interrupt enabled</span>
+    <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IF</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// clear the interrupt flag </span>
+    <span class="kt">uint8_t</span> <span class="n">data</span> <span class="o">=</span> <span class="n">display7</span><span class="p">(</span><span class="n">current_7</span> <span class="o">?</span> <span class="n">display_data</span> <span class="o">&amp;</span> <span class="mh">0xF</span> <span class="o">:</span> <span class="n">display_data</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="n">PORTB</span> <span class="o">=</span> <span class="n">current_7</span> <span class="o">?</span> <span class="n">data</span> <span class="o">|</span> <span class="mi">0</span><span class="n">b10000</span> <span class="cm">/* RB4 */</span> <span class="o">:</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">current_7</span> <span class="o">=</span> <span class="o">!</span><span class="n">current_7</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=16f648A main.c isr.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#pragma config WDTE = OFF</span>
+
+<span class="k">extern</span> <span class="kt">uint8_t</span> <span class="n">display_data</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">porta_btn_mask</span> <span class="o">=</span> <span class="mi">0</span><span class="n">b11110</span><span class="p">;</span>
+
+  <span class="kt">uint8_t</span> <span class="n">last_buttons</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">T0CS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>     <span class="c1">// Timer0 increments on instruction clock</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PSA</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// Prescaler is assigned to the Timer0 module</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS0</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">OPTION_REGbits</span><span class="p">.</span><span class="n">PS2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// Prescaler 1:4; T0IF each 256*4 cycle</span>
+  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">T0IE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>         <span class="c1">// Enable interrupt on TMR0 overflow</span>
+  <span class="n">INTCONbits</span><span class="p">.</span><span class="n">GIE</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>          <span class="c1">// Global interrupt enable</span>
+
+  <span class="n">PORTB</span> <span class="o">=</span> <span class="n">TRISB</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">buttons</span> <span class="o">=</span> <span class="n">PORTA</span> <span class="o">&amp;</span> <span class="n">porta_btn_mask</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">last_buttons</span> <span class="o">!=</span> <span class="n">buttons</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">last_buttons</span> <span class="o">=</span> <span class="n">buttons</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">10</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RA4</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">display_data</span> <span class="o">-=</span> <span class="mi">10</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>В файле <code>isr.c</code> реализована логика, отвечающая за отображение информации на семисегментном дисплее. Интерфейс взаимодействия <code>isr.c</code> с другими программными модулями, такими как <em>main.c</em>, только через переменную <code>display_data</code>. Функция <code>display7</code> не входит в этот интерфейс и поэтому объявлена как <code>static</code>, т.е. доступна только в пределах своего модуля. Грамотное проектирование интерфейсов позволяет распределить для модулей зоны ответственности и инкапсулировать их реализацию. 
+Модули, полученные на этапе проектирования системы, должны быть минимально связанны друг с другом (Слабая Связанность, Low Coupling). При таком проектировании в случае изменения одного модуля не придется править другие или эти изменения будут минимальными. Чем слабее связанность, тем легче писать/понимать/расширять/чинить любую программу на любом языке программирования.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/ui-int.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Так как <a href="http://proiot.ru/blog/posts/2017/01/14/picsimjs-shirotno-impulsnaia-moduliatsiia/">скважность</a> импульсов на RB4 равна двум яркость свечения каждого из разрядов семисегментного распределяется поровну от максимальной.</p>
+<p>И напоследок одно замечание по коду <code>extern uint8_t display_data;</code>, который указывает на переменную в другом файле. К сожалению в данном случае Си компилятор тут не проверяет типы и поэтому оставит без внимания какую-нибудь ерунду типа <code>extern uint16_t display_data;</code> при том что реальная переменная <code>uint8_t</code>. Поэтому для лучшего контроля типов декларации extern переменных / функций принято описывать в отдельных файлах.</p>
+<p><em>display_data.h</em></p>
+<div class="highlight"><pre><span></span><span class="k">extern</span> <span class="k">volatile</span> <span class="kt">uint8_t</span> <span class="n">display_data</span><span class="p">;</span>
+</pre></div>
+
+
+<p>Этот файл нужно включить <code>#include "display_data.h"</code> в main.c и isr.c.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/01/17/picsimjs-storozhevoi-taimer-i-spiashchii-rezhim/">Далее</a> сторожевой таймер.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2017/01/16/picsimjs-semisegmentnyi-indikator-i-preryvaniia/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

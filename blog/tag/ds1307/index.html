@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>🏠 Интернет Всего 🚗 - DS1307</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/">PICSim.js - часы реального времени DS1307</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2017-02-02T00:00:00+02:00">
+                Чт 02 февраля 2017
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/ds1307">DS1307</a> <a href="http://proiot.ru/blog/tag/i2c">I2C</a> </p>
+</footer><!-- /.post-info --><p>Микросхема DS1307 представляет из себя часики с календарем. Всё :) Минимальная схема подключения состоит из кварца с частотой 32768 Гц и автономного источника питания. Если верить производителю, батарейки 48мАч должно хватить на 10 лет непрерывной работы часов. Обмен данными между DS1307 и внешним миром происходит по последовательному интерфейсу I2C, который как известно использует всего две двунаправленные линии связи (SDA и SCL), при этом на одной I2C шине может находиться до 127 различных устройств. Микросхема DS1307 в терминах I2C всегда является ведомой (Slave), т.е. не может инициировать обмен данными. Ведущим (Master) в нашем случае будет микроконтроллер PIC18F4620, у которого на борту имеется аппаратный I2C.</p>
+<p>К ознакомлению настоятельно рекомендуется <a href="https://www.sparkfun.com/datasheets/Components/DS1307.pdf" rel="nofollow">официальная</a> документация на DS1307. В случае с шиной I2C в первую очередь важны следующие характеристики - максимальная частота тактирования SCL (от этого зависит максимальная скорость передачи данных), физический адрес микросхемы (из 127 возможных) на шине и внутренняя карта памяти (адреса регистров). Так как I2C является <em>синхронным</em> интерфейсом, то имеет значение именно верхняя граница частоты, тогда как фактическая скорость обмена задаётся мастером и может быть любой и даже необязательно постоянной - микроконтроллер может спокойно переключаться на более важные задачи без потери данных на шине. Это серьёзное преимущество синхронных интерфейсов переда асинхронными.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/config-4620.h">config.h</a> | <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c">i2c-hw.c</a> | <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">liquid-crystal.c</a> | <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/1bcc58df4b0494fada5bfdc2638e8034">picsim.js</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p>Работа с символьным дисплеем описывалась в предыдущем <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">материале</a>. Специфические делали реализации работы с аппаратным I2C для данного микроконтроллера помещены в отдельный файл <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/i2c-hw.c">i2c-hw.c</a>. Чтение данных из DS1307 происходит в функции rtc_r. По спецификации I2C ведомому разрешается придерживать (выставлять в 0) линию SCL, тем самым сигнализируя о неготовности к обмену данными - поэтому функция <code>i2c_idle</code> ждёт пока не отпустят SCL. С каждым чтением очередного байта <code>i2c_rb</code> внутренний адрес карты памяти DS1307 инкриминируется, что позволяет последовательно считывать минуты...год без явного указывания их адресов - нужен только начальный адрес секунд. В сети достаточно материала с подробным описанием интерфейса I2C, из которых назначение функций <code>i2c_open</code>, <code>i2c_start</code> и т.д. должно быть предельно ясным.</p>
+<p><em>rtc_r.c</em></p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;i2c-hw.c&quot;</span><span class="cp"></span>
+
+<span class="k">static</span> <span class="kt">uint8_t</span> <span class="nf">bcd2dec</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">bcd</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">((</span><span class="n">bcd</span> <span class="o">/</span> <span class="mi">16</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">bcd</span> <span class="o">%</span> <span class="mi">16</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// http://microchip.wikidot.com/i2c:sequential-read</span>
+
+<span class="kt">void</span> <span class="nf">rtc_r</span><span class="p">(</span><span class="k">struct</span> <span class="n">tm</span> <span class="o">*</span> <span class="k">const</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">i2c_open</span><span class="p">();</span>              <span class="c1">// Open I2C module as master, low speed</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">i2c_start</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>        <span class="c1">// I2C Start condition</span>
+  <span class="n">i2c_wb</span><span class="p">(</span><span class="mh">0xD0</span><span class="p">);</span>            <span class="c1">// DS1307 slave I2C address + I2C write flag</span>
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">i2c_wb</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>               <span class="c1">// Sequential read start address</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">i2c_start</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>         <span class="c1">// Restart condition</span>
+  <span class="n">i2c_wb</span><span class="p">(</span><span class="mh">0xD1</span><span class="p">);</span>            <span class="c1">// DS1307 slave I2C address + I2C read flag</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_sec</span> <span class="o">=</span> <span class="n">bcd2dec</span><span class="p">(</span><span class="n">i2c_rb</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span> <span class="c1">// secs, I2C ACK condition</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_min</span> <span class="o">=</span> <span class="n">bcd2dec</span><span class="p">(</span><span class="n">i2c_rb</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span> <span class="c1">// minutes, I2C ACK condition</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_hour</span> <span class="o">=</span> <span class="n">bcd2dec</span><span class="p">(</span><span class="n">i2c_rb</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span> <span class="c1">// hours, I2C ACK condition</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_wday</span> <span class="o">=</span> <span class="n">i2c_rb</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span> <span class="c1">// Day of Week, I2C ACK condition</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_mday</span> <span class="o">=</span> <span class="n">bcd2dec</span><span class="p">(</span><span class="n">i2c_rb</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span> <span class="c1">// Day of Month, I2C ACK condition</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_mon</span> <span class="o">=</span> <span class="n">bcd2dec</span><span class="p">(</span><span class="n">i2c_rb</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span> <span class="c1">// month, I2C ACK condition</span>
+
+  <span class="n">i2c_idle</span><span class="p">();</span>              <span class="c1">// Ensure I2C is idle</span>
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_year</span> <span class="o">=</span> <span class="n">bcd2dec</span><span class="p">(</span><span class="n">i2c_rb</span><span class="p">(</span><span class="nb">false</span><span class="p">));</span> <span class="c1">// year, I2C NACK condition (end of sequential read)</span>
+
+  <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_yday</span> <span class="o">=</span> <span class="n">t</span><span class="o">-&gt;</span><span class="n">tm_isdst</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// less than zero if the information is not available</span>
+
+  <span class="n">i2c_stop_and_close</span><span class="p">();</span>    <span class="c1">// I2C Stop condition, then close I2C module</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><em>main.c</em></p>
+<div class="highlight"><pre><span></span><span class="cm">/*</span>
+<span class="cm">  xc8 --chip=18f4620 main.c</span>
+<span class="cm">*/</span>
+
+<span class="cp">#define _XTAL_FREQ 25e4</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;xc.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;config-4620.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;liquid-crystal.c&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;rtc_r.c&quot;</span><span class="cp"></span>
+
+<span class="c1">// http://microchip.wikidot.com/faq:29</span>
+<span class="kt">void</span> <span class="nf">putch</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">byte</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">lcd_dat</span><span class="p">(</span><span class="n">byte</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// lcd</span>
+  <span class="n">PORTD</span> <span class="o">=</span> <span class="n">TRISD</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">PORTE</span> <span class="o">=</span> <span class="n">TRISE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="c1">// i2c</span>
+  <span class="n">TRISC3</span> <span class="o">=</span> <span class="n">TRISC4</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+  <span class="n">lcd_init</span><span class="p">();</span>
+  <span class="n">lcd_no_cursor</span><span class="p">();</span>
+  <span class="n">lcd_no_blink</span><span class="p">();</span>
+
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="n">daysOfWeek</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s">&quot;Sun.&quot;</span><span class="p">,</span> <span class="s">&quot;Mon.&quot;</span><span class="p">,</span> <span class="s">&quot;Tues.&quot;</span><span class="p">,</span> <span class="s">&quot;Wed.&quot;</span><span class="p">,</span> <span class="s">&quot;Thurs.&quot;</span><span class="p">,</span> <span class="s">&quot;Fri.&quot;</span><span class="p">,</span> <span class="s">&quot;Sat.&quot;</span>
+    <span class="p">};</span>
+    <span class="k">struct</span> <span class="n">tm</span> <span class="n">t</span><span class="p">;</span>
+
+    <span class="n">lcd_home</span><span class="p">();</span>
+    <span class="n">rtc_r</span><span class="p">(</span><span class="o">&amp;</span><span class="n">t</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%02d:%02d:%02d  %s&quot;</span><span class="p">,</span>
+      <span class="n">t</span><span class="p">.</span><span class="n">tm_hour</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">tm_min</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">tm_sec</span><span class="p">,</span>
+      <span class="n">t</span><span class="p">.</span><span class="n">tm_wday</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">t</span><span class="p">.</span><span class="n">tm_wday</span> <span class="o">&lt;</span> <span class="mi">7</span> <span class="o">?</span> <span class="n">daysOfWeek</span><span class="p">[</span><span class="n">t</span><span class="p">.</span><span class="n">tm_wday</span><span class="p">]</span> <span class="o">:</span> <span class="s">&quot;:(&quot;</span><span class="p">);</span>
+    <span class="n">lcd_set_cursor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%02d/%02d/%02d&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">tm_mday</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">tm_mon</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">tm_year</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Текущую время и дату можно конечно же выставлять - адреса внутренней карты памяти DS1307 для записи такие же как и на чтение. Если скорость обмена данными не имеет особого значения, то ничто не мешает заменить аппаратный I2C (файл i2c-hw.c) программной реализацией (программно считывать/выставлять ноги микроконтроллера SCL/SDA) - это также проверялось и даже будет работать в симуляции PICSim.js.</p>
+<p><a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">Далее</a> сопрограммы.</p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/02/picsimjs-chasy-realnogo-vremeni-ds1307/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

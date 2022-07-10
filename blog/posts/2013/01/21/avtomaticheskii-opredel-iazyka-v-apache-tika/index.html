@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+        <meta charset="utf-8" />
+        <title>Автоматический определь языка в Apache Tika</title>
+        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
+        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
+
+        <script>
+            (function(){
+                var loc = window.location.href+'';
+                if (loc.indexOf('https://')==0){
+                    window.location.href = loc.replace('https://','http://');
+                }
+            })();
+        </script>
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+<a rel="nofollow" href="http://github.com/mazko">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
+</a>
+        <header id="banner" class="body">
+                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <nav><ul>
+                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
+                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
+                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="bookmark"
+           title="Permalink to Автоматический определь языка в Apache Tika">Автоматический определь языка в Apache Tika</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2013-01-21T00:00:00+02:00">
+                Пн 21 января 2013
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/tika">Tika</a> </p>
+</footer><!-- /.post-info -->      <p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не поддерживаемых Tika из коробки, чтобы с их помощью можно было автоматически определять языки для текстов.
+Для начала было бы неплохо скачать и попробовать запустить само приложение <a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow">tika-app-1.2.jar</a> ~ 27 МБ. Как и любое другое <code>Java</code> приложение <a href="http://tika.apache.org/" rel="nofollow">Tika</a> можно запустить универсальным способом <code>java -jar tika-app-1.2.jar --help</code>, хотя в <em>Linux</em> можно ещё проще:</p>
+<div class="highlight"><pre><span></span>~$ java -version
+~$ chmod +x tika-app-1.2.jar
+~$ ./tika-app-1.2.jar --help
+</pre></div>
+
+
+<p>Если на машине стоит <code>Java</code>, после выполнения следует ожидать перечисление списка поддерживаемых команд. Предположим мы хотим посмотреть список поддерживаемых форматов входных файлов:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar --list-supported-types
+</pre></div>
+
+
+<p>В результате будет выведен форматированный список, в котором выводится приблизительно такое содержимое, только намного больше:</p>
+<div class="highlight"><pre><span></span>application/pdf
+  alias:     application/x-pdf
+  supertype: application/octet-stream
+  parser:    org.apache.tika.parser.DefaultParser
+application/msword
+  alias:     application/vnd.ms-word
+  supertype: application/x-tika-msoffice
+  parser:    org.apache.tika.parser.DefaultParser
+</pre></div>
+
+
+<p>Давайте уберём все строчки, которые начинаются с пробела, а затем посчитаем сколько их осталось:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar --list-supported-types <span class="p">|</span> sed <span class="s1">&#39;/^ /d&#39;</span>
+~$ ./tika-app-1.2.jar --list-supported-types <span class="p">|</span> sed <span class="s1">&#39;/^ /d&#39;</span> <span class="p">|</span> wc -l
+</pre></div>
+
+
+<p>Таким образом <a href="http://tika.apache.org/" rel="nofollow">Tika</a> версия 1.2 из коробки поддерживает 1372 различных формата. </p>
+<p>В текущей версии <a href="http://tika.apache.org/" rel="nofollow">Tika</a> поддерживается ~27 языков среди которых например точно нет турецкого - поставим себе задачу это поправить. Для выделения <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a> нам понадобится связный текст - чем больше тем лучше, и уверенность в том что мы заранее знаем язык этого текста. Для экспериментов вот нашелся в Гугле довольно большой <a href="http://www.ittihad.com.tr/ipa.pdf" rel="nofollow">ipa.pdf</a> файл на турецком языке. Предлагаю проверить с помощью <a href="http://tika.apache.org/" rel="nofollow">Tika</a> действительно ли формат соответствует указанному расширению:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -d ipa.pdf
+</pre></div>
+
+
+<p>Вывод: <code>application/pdf</code>. Ради интереса попросим вывести более подробно метаинформацию из файла:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -m ipa.pdf 
+ERROR - Error: Could not parse predefined CMAP file <span class="k">for</span> <span class="s1">&#39;Adobe-Ide-UCS2&#39;</span>
+Content-Length: <span class="m">9055059</span>
+Content-Type: application/pdf
+Creation-Date: <span class="m">2008</span>-01-26T23:40:04Z
+created: Sun Jan <span class="m">27</span> <span class="m">01</span>:40:04 EET <span class="m">2008</span>
+date: <span class="m">2008</span>-01-26T23:40:04Z
+dcterms:created: <span class="m">2008</span>-01-26T23:40:04Z
+meta:creation-date: <span class="m">2008</span>-01-26T23:40:04Z
+producer: PDF Creator Plus <span class="m">4</span>.0 - http://www.peernet.com
+resourceName: ipa.pdf
+xmp:CreatorTool: PDF Creator Plus <span class="m">4</span>.0 - http://www.peernet.com
+xmpTPg:NPages: <span class="m">2351</span>
+</pre></div>
+
+
+<p>Ошибка <code>Adobe-Ide-UCS2</code> связана скорее всего не с <a href="http://tika.apache.org/" rel="nofollow">Tika</a>, а с <a href="http://pdfbox.apache.org/" rel="nofollow">pdfbox</a> - но в любом случае мы увидели что хотели, поэтому далее предлагаю эту ошибку просто игнорировать. Теперь извлечем из нашего <em>pdf</em> полезный текст:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -t ipa.pdf &gt; trout
+~$ ./tika-app-1.2.jar -T ipa.pdf &gt; trout
+~$ file -bi trout
+</pre></div>
+
+
+<p>Вывод последней команды: <code>text/plain; charset=utf-8</code>. В случае <code>-T</code> текст будет немного <em>плотнее</em> за счёт удаления лишних пробелов, отступов и т.д. В результате размер файла с полезным текстом ~5,6 МБ в сравнении с 9 МБ оригинального <em>pdf</em>. Ну и наконец попробуем автоматически определить язык документа:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -l ipa.pdf
+</pre></div>
+
+
+<p>Вывод: <code>et</code>. Тут удивляться нечему - для корректного определения турецкого языка в <a href="http://tika.apache.org/" rel="nofollow">Tika</a> должен быть список <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>, характерный для этого языка. Сгенерировать небходимый файл можно на основе имеющегося текста, где в следующей команде <em>tr</em> - это идентификатор турецкого языка в формате <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" rel="nofollow">ISO 639-2</a>.</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar --create-profile<span class="o">=</span>tr -eUTF-8 trout
+</pre></div>
+
+
+<p>В результате появится файл <em>tr.ngp</em>. <a href="http://tika.apache.org/" rel="nofollow">Tika</a> считывает список <em>.ngp</em> профайлов из специального файла <code>tika.language.properties</code>. Этот файл скрывается в недрах <a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow">tika-app-1.2.jar</a>, но его можно подменить - создать копию <code>tika.language.override.properties</code> и сообщить об этом через <code>java classpath</code>. После чего в <code>tika.language.override.properties</code> необходимо расширить ключ <code>languages</code> турецким языком (через запятую) и добавить новый ключ <code>name.tr</code> со значением <em>Turkish</em>. Пробуем:</p>
+<div class="highlight"><pre><span></span>~$ mkdir -p org/apache/tika/language
+~$ cp tr.ngp org/apache/tika/language
+<span class="c1">#cp tika.language.override.properties org/apache/tika/language</span>
+<span class="c1">#tika.language.override.properties languages &lt;&lt; tr</span>
+<span class="c1">#tika.language.override.properties name.tr=Turkish</span>
+~$ java -cp .:tika-app-1.2.jar org.apache.tika.cli.TikaCLI -l <span class="se">\</span>
+http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
+</pre></div>
+
+
+<p>Вывод: <code>tr</code>. Ура ! Мы с Вами только что обучили <a href="http://tika.apache.org/" rel="nofollow">Tika</a> новому языку ! Теперь ещё одна дача - преобразовать <em>tr.ngp</em> в <a href="http://mazko.github.io/jsli/" rel="nofollow">javascript</a>:</p>
+<div class="highlight"><pre><span></span><span class="nv">LNG</span><span class="o">=</span><span class="sb">`</span>basename <span class="nv">$1</span> .ngp<span class="sb">`</span>
+<span class="nv">SUM</span><span class="o">=</span><span class="m">0</span>
+<span class="k">for</span> COUNT in <span class="k">$(</span>sed <span class="s1">&#39;/^#/d;s/^\S\+\s\+\([0-9]\+\)$/\1/&#39;</span> <span class="nv">$LNG</span>.ngp<span class="k">)</span>
+<span class="k">do</span>
+<span class="nv">SUM</span><span class="o">=</span><span class="sb">`</span>expr <span class="nv">$SUM</span> + <span class="nv">$COUNT</span><span class="sb">`</span><span class="p">;</span>
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;(function() {&quot;</span> &gt; <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;var ngrams = {&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+perl -CSD -p -e <span class="s1">&#39;s{([^\t\n\x20-\x7E])}{sprintf &quot;\\u%04x&quot;, ord $1}eg&#39;</span> <span class="se">\</span>
+-f <span class="nv">$LNG</span>.ngp <span class="p">|</span> sed <span class="s1">&#39;/^#/d;s/^\(\S\+\)\s\+\([0-9]\+\)$/&quot;\1&quot;:\2,/&#39;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;};&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;LanguageIdentifier.addProfile(&#39;</span><span class="nv">$LNG</span><span class="s2">&#39;, ngrams, </span><span class="nv">$SUM</span><span class="s2">);&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;}());&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+</pre></div>
+
+
+<p>Сохраним как <code>ngp2js</code>, затем <code>chmod +x ngp2js</code> и запускаем: <code>./ngp2js tr.ngp</code>. В результате будет сгенерирован <code>tr.js</code> размером ~13 КБ.
+Если очень коротко резюмировать - для генерации качественных <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a> файлов нужно много хорошего связного текста заранее известного языка. Сам процесс создания <em>.ngp</em> профайлов очень прост и требует минимум усилий.</p>
+    </div><!-- /.entry-content -->
+  </article>
+</section>
+
+<div class="body" style="margin-bottom: 2em">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- proiot-index -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6247427373315098"
+     data-ad-slot="2711782349"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div class="body" id="proiot-comments">
+  <div class="comments">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'mazko';
+      var disqus_identifier = 'blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/';
+      var disqus_url = 'http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/';
+      (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//mazko.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the comments.</noscript>
+  </div>
+</div>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a rel="nofollow" href="http://getpelican.com/">Pelican</a></li>
+                            <li><a rel="nofollow" href="http://python.org/">Python.org</a></li>
+                            <li><a rel="nofollow" href="http://jinja.pocoo.org/">Jinja2</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+
+                            <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
+                            <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
+                            <li><a rel="nofollow" href="http://stackoverflow.com/users/281102/oleg-mazko">stackoverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a rel="nofollow" href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a rel="nofollow" href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a rel="nofollow" href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'mazko';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'https://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
