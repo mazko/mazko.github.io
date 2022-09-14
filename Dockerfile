@@ -7,9 +7,9 @@ WORKDIR /home/ci
 COPY requirements.txt /patches/adsense.patch ./
 
 RUN apt-get -qq update && \
-	apt-get -qq install -y python python-pip git && \
-	apt-get --reinstall install -qq language-pack-en language-pack-ru && \
-	pip install -r requirements.txt
+    apt-get -qq install -y python python-pip git && \
+    apt-get --reinstall install -qq language-pack-en language-pack-ru && \
+    pip install -r requirements.txt
 
 WORKDIR /usr/local/lib/python2.7/dist-packages/pelican/themes/notmyidea
 RUN patch -p1 < /home/ci/adsense.patch
