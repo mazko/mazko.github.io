@@ -39,237 +39,206 @@
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/">Нейросети для микроконтроллеров - «Перцептрон»</a></h1>
+                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/">Обучение с подкреплением для микроконтроллеров</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2021-03-28T00:00:00+02:00">
-                Вс 28 марта 2021
+        <abbr class="published" title="2022-09-01T00:00:00+03:00">
+                Чт 01 сентября 2022
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
 <p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ai">ai</a> </p>
-</footer><!-- /.post-info --><p>Искусственные нейронные сети (ИНС) — это упрощенные математические модели организации реальных биологических нейронных сетей (БНС). Пока что ИНС еще очень далеки от возможностей человеческого мозга и мышления, однако уже сейчас нейросети успешно применяются во многих сферах деятельности человека таких как распознавание, а также синтез речи и изображений, роботы-курьеры, беспилотный транспорт, прогнозирование временных рядов и др.</p>
-<p>Базовый элемент нейросети — нейрон. Как мы видим на рисунке ниже, структуру биологического нейрона можно упростить до следующей: дендриты, тело нейрона и аксон. Дендриты — ветвящиеся отростки, собирающие информацию со входа в нейрон (это может быть внешняя информация с рецепторов, или внутренняя информация от другого нейрона). В том случае, если входящая информация активировала нейрон (в биологическом случае — потенциал стал выше какого-то порога), рождается волна возбуждения, которая распространяется по мембране тела нейрона, а затем через аксон, посредством выброса нейромедиатора, передает сигнал другим нервным клетками или тканям.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/neuron.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
-<p>Сначала будет немного математики, потом собственно код.</p>
-<h2>ТЕОРИЯ</h2>
-<p>Уоррен Мак-Каллок и Уолтер Питтс в 1943 году предложили модель математического нейрона. А в 1958 году Френк Розенблатт на основе нейрона Мак-Каллока-Питтса создал компьютерную программу, а затем и физическое устройство — <strong>перцептрон</strong>. С этого и началась история искусственных нейронных сетей. Теперь рассмотрим математическую модель нейрона, с которым мы будем иметь дело дальше. На вход подаются числа (сигналы), после они умножаются на веса (каждый сигнал – на свой вес) и суммируются. К результату суммирования иногда еще добавляют какую-то константу смещения (для упрощения на рисунке смещение отсутствует). Затем функция активации высчитывает выходной сигнал и подает его на выход.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/perceptron.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
-<p>Идея функции активации также взята из биологии. Функция активации позволяет проходить или не проходить сигналам от нейрона к нейронам в зависимости от информации, которую они передают. Т.е. если информация является важной, то функция пропускает ее, а если информации мало или она недостоверна, то функция активации не позволяет ей пройти дальше.</p>
-<p>Функции активации бывают очень разные, выбор обуславливается областью применения ИНС и является важной исследовательской задачей для специалиста по машинному обучению. Вот так например выглядят некоторые из них:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/activation.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
-<p>Очевидно, что в самом простом случае вся нейросеть может быть представлена одним единственным нейроном. При этом даже один нейрон хорошо справляется с задачей  распознавания класса объекта в пространстве, в котором объекты этих классов являются линейно сепарабельными. Простым примером линейной сепарабельности являются булевы функции OR и AND, для таких функций всегда можно провести прямую (или гиперплоскость в многомерном пространстве), отделяющую 0 значения от 1. А вот с функцией XOR дела обстоят немного сложнее и сеть из одного нейрона с такой задачей увы не справится.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/or_xor.png" style="width:100%; display:block; border:1px solid #ddd;"></p>
-<p>Невозможно провести одну прямую таким образом, чтобы разделить значения исключающего ИЛИ. К счастью, решение достаточно простое. Для этого существуют более сложные архитектуры нейронных сетей, состоящие из множества таких нейронов, объединенных в слои. Такие многослойные сети еще называют глубокими. Им под силу решать сложные задачи, с которыми не может справиться перцептрон. В частности, линейно неразделимые задачи. Графически <strong>многослойный перцептрон</strong> с одним скрытым слоем выглядит вот так:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/dog_cat.gif" style="width:100%; display:block; border:1px solid #ddd;"></p>
-<p>Перед тем как приступить к практике пару слов о том как обучить нейросеть. Как правильно подобрать веса для нейронов так, чтобы ошибка на выходе была минимальной ? Обычно веса инициализируются случайным образом. В процессе обучения значения весов меняются. На практике сейчас наиболее часто применяют метод градиентного спуска и обратного распространения ошибки. Множество библиотек машинного обучения например Tensorflow, Pytorch и др. дают возможность с легкостью реализовать обучение этим методом, не вдаваясь в подробности его реализации. Градиентный спуск — метод нахождения минимального значения функции ошибки (существует множество видов этой функции). Минимизация любой функции означает поиск самой глубокой впадины в этой функции.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/gradient.gif" style="width:100%; display:block; border:1px solid #ddd; padding: 10px 0;"></p>
-<p>Итак у нас есть исходные матрицы весов, мы хотим внести в них изменения, которые делают нашу модель лучше, уменьшают ошибку. Еще у нас есть набор данных для обучения, который состоит из входных данных, и того что мы хотим получать на выходе нейронной сети. Также есть некая фиксированная функция для численной оценки ошибки на выходе. Если будет известно, насколько влияют веса на эту функцию, то будет известно, насколько их нужно изменить. Тут нам поможет частная <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">производная функции</a> ошибки — градиент. Производная позволяет определить крутизну и направление функции при заданном аргументе. Если частная производная известна, можно приступать к обучению сети, которое состоит из двух шагов:</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ai">ai</a> <a href="http://proiot.ru/blog/tag/rl">rl</a> </p>
+</footer><!-- /.post-info --><p>Тут мы обучим и развернем <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/">перцептрон</a>, который умеет играть в игру «змейка» на <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">микроконтроллере</a>.</p>
+<p>Давайте пофантазируем. Робот получил задание достать предметы из одной коробки и переложить их в другую. В течение ночи магический суперсекретный алгоритм будет сам пытаться понять, как выполнить поставленную задачу. К утру, пока инженеры спали, манипулятор уже освоит выполнение данной операции, как если бы он был запрограммирован толковым специалистом. Звучит интригующе, не так ли?</p>
+<p>Один из возможных путей для решения таких задач это <strong>обучение с подкреплением</strong>. В чем его суть? Такой метод позволяет испытуемой системе (агенту) обучаться через взаимодействие с окружающей средой. Самое главное – робот сможет самостоятельно выяснить, как выполнять поставленные перед ним задачи. А специальные механизмы позволят технологическому решению каждый раз фиксировать успешность своих действий. Современные алгоритмы глубокого обучения с подкреплением способны решать задачи искусственного интеллекта методом проб и ошибок без использования каких-либо априорных знаний о решаемой задаче.</p>
+<p>Бросаем бедного робота в реальную жизнь, будем штрафовать его за ошибки и награждать за правильные поступки. На людях работает, почему бы на и роботах не попробовать? Выживание в среде и есть идея обучения с подкреплением. Умные модели роботов-пылесосов и самоуправляемые автомобили обучаются именно так: им создают виртуальный город (часто на основе карт настоящих городов), населяют случайными пешеходами и отправляют учиться выживать. Когда робот начинает хорошо себя чувствовать в виртуальной среде, его выпускают тестировать на реальные улицы.</p>
+<p>В качестве демки микроконтроллер сам игрет в игру <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">змейка</a>. С помощью алгоритма <code>Q-learning</code> змейка выбирает правильное действий из таблицы состояний. Что это за алгоритм такой и какие у него альтернативы расписано чуть ниже.</p>
+<p><a href="http://mazko.github.io/MSP430.js/d2f5d234671ecf00dc58f6612087d33c">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/Q_Snake_msp430.html">ноутбук</a> | <a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/snake.msp430.js.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/ui-msp430.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Перед тем как погружаться в алгоритмы обучения с подкреплением, пожалуй стоит немного пробежаться по терминологии. Всего существует три основные категории машинного обучения. С одной мы уже сталкивались <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/">ранее</a>, когда обучали перцептрон выполнять операцию XOR:</p>
 <ul>
 <li>
-<p>прямое распространение — обучающие данные подаются на вход сети, проходят через все веса, результаты сравниваются с желаемыми целевыми значеними и таким образом вычисляется текущая ошибка сети</p>
+<p><strong>Supervised learning</strong> (обучение с учителем): Машина учится по обучающей выборке, в которой есть входные и выходные данные. Это наиболее распространенный и изученный тип машинного обучения. Например задачи <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/">регрессии</a> / классификации котиков и собачек входят в данную категорию</p>
 </li>
 <li>
-<p>обратное распространение — зная величину ошибки сети и частную производную, которая  вычисляется по каждому весу, веса корректируются с учетом некоего небольшого коэффициента начиная с весов выходных нейронов</p>
+<p><strong>Unsupervised learning</strong> (обучение без учителя): Есть набор входных данных, но нет выходных, т.е. среди данных нет «правильного» ответа, машина должна сама найти зависимость между объектами в процессе обучения. Например задача кластеризации или автоэнкодеры для подавления шумов / сжатия данных с потерями</p>
+</li>
+<li>
+<p><strong>Reinforcement learning</strong> (обучение с подкреплением): Машина учится, не имея полных сведений о системе, но имея возможность наблюдать какие-то признаки и производить какие-либо действия в ней. Действия переводят систему в новое состояние и модель получает от системы некоторое вознаграждение / штраф. Обучение с подкреплением используют там, где задачей стоит не анализ данных, а выживание в реальной среде и получение максимального вознаграждения (кумулятивная награда – сумма наград за каждое принятое решение)</p>
 </li>
 </ul>
-<p>Повторять эти шаги нужно итеративно, до тех пор пока ошибка не перестанет уменьшаться. Двигаясь по направлению градиента мы будем плавно скатываться в низину, а динамика обучения нейронной сети напоминает шарик, постепенно скатывающийся в локальный минимум.</p>
-<h2>ПРАКТИКА</h2>
-<p>Тут мы обучим многослойный перцептрон выполнять функцию XOR. Обучать будем в Tensorflow (не принципиально, можно использовать любую другую библиотеку машинного обучения). Обученную модель развернем на микроконтроллере с <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++</a> компилятором.</p>
-<p><a href="http://mazko.github.io/MSP430.js/2ccb68b454f4da854ee5ed23df03dee6">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/uxor.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
-<p>Чтобы обучить нейронную сеть, нам понадобится исходный набор данных, в нашем случае это таблица истинности исключающего или:</p>
-<div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/RL_Environment.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<ul>
+<li>
+<p><strong>Агентом</strong> мы будем называть наш алгоритм, который умеет анализировать состояние среды и совершать в ней какие-то действия</p>
+</li>
+<li>
+<p><strong>Среда</strong> – мир в котором существует наш Агент и своими действиями может менять состояние</p>
+</li>
+<li>
+<p><strong>Награда</strong> – обратная связь от Среды к Агенту как ответ на его действия</p>
+</li>
+</ul>
+<p>В каждый момент времени <code>t</code> наш агент наблюдает состояние среды – <code>S(t)</code>, выполняет действие – <code>a(t)</code>, за что получает от среды награду – <code>r(t)</code>, поле чего среда переходит в состояние <code>S(t+1)</code>. Затем агент опять выполняет действие – <code>a(t+1)</code>, за что получает от среды награду – <code>r(t+1)</code> и таких состояний t у нас может быть множество <code>n</code> до тех пор пока эпизод (игра) не закончится. Также для простоты далее будем считать синонимами состояние и наблюдение, хотя формально это разные вещи так как агент может наблюдать не все отстояние среды а только ее часть.</p>
+<p>В нашем случае с игрой «змейка» награда <code>+1</code> если змейка скушала яблоко, <code>-1</code> если игра окончена. В остальных случаях награда <code>0</code>.</p>
+<h2>REINFORCE</h2>
+<p>Начнем с самого простого алгоритма обучения с подкреплением – <code>Reinforce</code>, который принадлежит к семейству <code>Policy Gradient</code> (градиент политики). Здесь будут использоваться нейросети, поэтому для понимания данного алгоритма нужно уже иметь представление что это и как их обучать.</p>
+<p><a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/R_Snake.html">ноутбук</a> | <a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/snake_reinfirce.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/ui_reinforce.gif" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
+<p>Алгоритм <code>Reinforce</code> был предложен Рональдом Дж. Вильямсом в 1992 году. Способен обрабатывать как непрерывное пространство с бесконечным количеством состояний, так и дискретное. Алгоритм строит параметризированную стратегию, которая получает <strong>вероятности действий</strong> по состояниям среды. Агенты непосредственно используют эту стратегию, чтобы действовать в среде. Основной смысл заключается в том, что во время обучения действия, которые приводят к хорошим результатам, должны иметь большую вероятность – они положительно подкрепляются. В противовес этому действия, приводящие к плохим результатам, должны иметь меньшую вероятность. Если обучение успешно, то за несколько итераций распределение полученных стратегией вероятностей действий станет таким, которое приводит к повышению производительности в среде.</p>
+<p>Оптимальна та стратегия, которая максимизирует суммарное вознаграждение. Основной смысл алгоритма – настроить хорошую стратегию, а это подразумевает аппроксимацию функции. Нейронные сети – эффективный и гибкий метод аппроксимации функций, так что стратегия может быть представлена как глубокая нейронная сеть.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/reinforce_nn.png" style="width:75%; margin: 0 auto; display:block;"></p>
+<p>На вход нейронной сети будем подавать наблюдения <code>S(t)</code>, а выход нейросети сконструируем таким образом, чтобы в выходным слое количество выходов было равным количеству действий возможных для агента в нашей среде. Таким образом пропустив через слои нейросети наблюдение <code>S(t)</code> на выходе мы получим некое распределение для действий агента – <strong>Policy Function</strong>. Она показывает нам насколько действие <code>a(t)</code> при состоянии / наблюдении <code>S(t)</code> оптимально. Если прогнать последний слой нейросети через активация <code>Softmax</code> активацию, то получится вероятностное распределение <code>p(a|s)</code> – функция вероятности оптимальности действия <code>a(t)</code> в зависимости от состояния среды.</p>
+<p>Алгоритм <code>Reinforce</code> в сочетании с нейронными сетями позволяет оптимизировать <code>Policy Function</code> через алгоритм обратного распространения ошибки, обучая нашу нейросеть итеративно. Все очень похоже на обычное обучение с учителем. Нужен набор данных, нейросеть, функция потерь (Loss) и метод градиентного спуска для обучения.</p>
+<h3>Loss</h3>
+<p>Как обучают нейросети отличать кошечек от собачек? Последний слой нейросети имеет вероятностное распределение <code>SoftMax</code>, для обучения сети применяют <code>Categorical Cross Entropy Loss</code>:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/reinforce_cross_enropy_loss.png" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
+<p><em>На картинке: y слева истинные метки, y справа предсказанные метки</em></p>
+<p>Однако в случае обучения с подкреплением у нас нет истинных меток для действий агента в состояниях <code>S(0..n)</code>, как же нам обучать нейросеть в этом случае? Можем ли мы вместо правильных (истинных) меток использовать награду, которую агент получил от среды выполнив действие которое ему предсказала нейросеть? Функцию потерь, адаптированную под обучение с подкреплением, можно представить так:</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/reinforce_loss.png" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
+<p>Имеем право так сделать потому, что <code>yj</code> для <code>Categorical Cross Entropy Loss</code> – это истинные метки вероятности и для правильного класса они равны единице, а <code>rj</code> для <code>Policy Function Loss</code> – награда которую среда начислила агенту за действие которое он совершил. То есть <code>rj</code> служит как бы весом для градиентов при обратном распространении ошибки когда мы обучаем нейросеть. Награды становятся обучающими данными. Если получена положительная награда, имеет смысл считать все предпринятые действия более-менее правильными – а значит, можно посчитать градиенты точно таким же методом, каким мы считали бы их в обучении с учителем. То же самое верно в случае, если получена отрицательная награда – только вместо увеличения вероятности совершенных действий в будущем, ее следует уменьшать. Градиентный спуск и обновление градиентов происходит таким образом, чтобы действия, обеспечивающие высокую награду в состоянии, имели высокую вероятность, а действия с низкой наградой – низкую.</p>
+<h3>Rollout</h3>
+<p>Создаем змейку <code>env = SnakeGame()</code>, прогоняем эпизоды, собирем датасет. Прогон одного эпизода в обучении с подкреплением часто называют <code>Rollout</code>. Датасет состоит из наблюдений, действий и полученных наград.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">play_game</span><span class="p">():</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+  <span class="n">game_data</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">done</span> <span class="o">=</span> <span class="bp">False</span>
+  <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">extract_features</span><span class="p">()</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">training</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">game_data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">features</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="o">-</span><span class="mf">1e-2</span> <span class="k">if</span> <span class="n">reward</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">reward</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">game_data</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">score</span>
 </pre></div>
 
 
-<p>Также нужно создать модель нейронной сети. Пусть это будет перцептрон с одним скрытым слоем из трех нейронов. Функция активации скрытого слоя Relu. Выходной слой состоит из одного нейрона с функцией активации Sigmoid. Два входа:</p>
-<div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">x_in</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span>
-                       <span class="n">kernel_regularizer</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">,</span>
-                       <span class="n">bias_regularizer</span><span class="o">=</span><span class="s1">&#39;l2&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">x_in</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
+<p>Для простоты и скорости обучения наблюдение <code>features</code> состоит только из координат головы змейки и координат еды, т.е. геометрию тела змейки пока не учитываем. Также в наблюдение попадает информация о препятствиях по отношении к голове змейки – есть ли препятствие слева, справа, сверху или снизу.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="n">game</span><span class="o">=</span><span class="n">env</span><span class="p">):</span>
+  <span class="n">obsticle</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">game</span><span class="p">)</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">done</span>
+  <span class="n">snake</span><span class="p">,</span> <span class="n">food</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
+  <span class="n">head</span><span class="p">,</span>  <span class="n">food</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="n">game</span><span class="o">.</span><span class="n">board_height</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="p">(</span><span class="n">snake</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="n">food</span><span class="p">)]</span>
+  <span class="n">obs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obsticle</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">ACTION</span><span class="p">))</span>
+  <span class="nb">max</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">board_height</span> <span class="o">*</span> <span class="n">game</span><span class="o">.</span><span class="n">board_width</span> <span class="o">-</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="n">obs</span> <span class="o">/</span> <span class="mb">0b1111</span><span class="p">,</span> <span class="n">head</span> <span class="o">/</span> <span class="nb">max</span><span class="p">,</span> <span class="n">food</span> <span class="o">/</span> <span class="nb">max</span>
 </pre></div>
 
 
-<p>Теперь нужно скомпилировать нашу модель, то есть, по существу, настроить ее для обучения. Будем использовать оптимизатор Adam. Оптимизатор — это алгоритм, который изменяет веса и смещения во время обучения. В качестве функции ошибки используем среднеквадратическую ошибку MSE(mean squared error). В нейронный сетях функцию ошибки часто называют функцией потерь:</p>
-<div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">)</span>
+<p>Такие же ограничения накладываются и на признаки <code>Q-learning</code>, которое будет описано ниже. Это позволит равноценно сравнивать качество обоих алгоритмов <code>Reinforce</code> и <code>Q-learning</code> на примере змейки.</p>
+<h3>Exploration vs Exploitation</h3>
+<p>Очевидно что пространство возможных состояний среды надо исследовать (разведать), чтобы иметь понятие о том, какой вариант реакции на текущее состояние самый лучший. Если мы сначала обнаружили этот самый оптимальный вариант, а потом все время его используем – мы максимизируем суммарную награду, которая нам доступна из окружающей среды? С другой стороны, мы также хотим исследовать другие возможные варианты – вдруг они в будущем окажутся лучше, а мы просто этого пока не знаем? В процессе обучения нужен компромисс между исследованием и эксплуатацией (Exploration vs Exploitation).</p>
+<p>На начальном этапе нейросеть ничего не знает о среде, она даёт на выходе случайные, хоть и детерминированные действия. В нашем случае она на любые данные будет выдавать примерно одинаковую вероятность для всех возможных действий змейки, т.е. мы будем максимально исследовать среду. По мере обучения вероятность одного действия будет преобладать над другими. Если вероятность одного действия достигнет <code>1</code>, значит нейросеть абсолютно уверена в своем действии и для данного состояния исследовать уже нечего. За баланс исследования и эксплуатации в процессе обучения нейросети отвечает функция <code>tf.random.categorical</code>.</p>
+<h3>Discount</h3>
+<p>Положительная или отрицательная награда у агента может случается крайне редко, в основном же награда вне зависимости от его действий равна нулю. Как же обучать Агента кода основное время он не получает отклика от среды на свои действия? Ведь если награда от среды равна нулю, то и градиенты при обратном распространении ошибки через нейросеть в этом случае равна нулю, весам нейросети меняться будет некуда, значит и наш агент ничему не будет учиться. Как же решить проблему с нулевой наградой в большей части датасета который собирается для обучения агента?</p>
+<p>Обычно вводится дисконтированная награда за действие с убыванием по мере удаления действия от финала эпизода. Тем самым мы даем Агенту понять, что последние действия которые он предпринимал, более важны для результат эпизода игры, чем те действия которые он предпринимал вначале.</p>
+<h3>Train</h3>
+<p>Создадим простую нейронную сеть – классический многослойный перцептрон вполне подойдет. Обучать будем на <strong>Keras / Tensorflow</strong>:</p>
+<div class="highlight"><pre><span></span><span class="n">x_in</span> <span class="o">=</span> <span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">ACTION</span><span class="p">))(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+              <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;Nadam&#39;</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Теперь можно обучить нашу модель. Обучение занимает какое-то время, которое зависит от сложности сети и количестве обучающих данных. В нашем случае сеть крошечная, можно обучать на любом компьютере. Более сложные сети целесообразней обучать на хороших видеокартах. Метод fit в качестве аргумента принимает количество эпох. Эпоха — это один проход всех элементов датасета. С каждой эпохой обучения ошибка должна падать вплоть до какого-то разумного предела.</p>
-<div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<p>Единственное отличие от привычного нам обучения с учителем это параметр <code>sample_weight</code>, в который передаются дисконтированные награды.</p>
+<div class="highlight"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">episodes_to_play</span><span class="p">:</span>
+  <span class="n">data</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">play_game</span><span class="p">()</span>
+  <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)]</span>
+  <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">train_on_batch</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">disc</span><span class="p">(</span><span class="n">R</span><span class="p">)),</span> <span class="n">score</span><span class="p">))</span>
 </pre></div>
 
 
-<p>После обучения сетью уже можно пользоваться. Так как по-умолчанию в процессе создания нейронной сети её веса инициализируются случайным образом, результаты после каждого нового обучения будут немного отличаться от приведенных ниже:</p>
-<div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<p>Дисконтированные награды высчитываются по окончании эпизода и только после этого можно обновлять веса нейростети. Это один из недостатков алгоритма <code>Reinforce</code> так как эпизод может быть очень растянутым во времени, а время как известно стоит денег.</p>
+<div class="highlight"><pre><span></span><span class="n">disc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">scan</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="o">.</span><span class="mi">9</span> <span class="o">*</span> <span class="n">a</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Результат:</p>
-<div class="highlight"><pre><span></span>array(
-  [[0.01152042],
-   [0.98572624],
-   [0.99311346],
-   [0.00970006]], dtype=float32)
+<p>Змейка определенно обладает признаками интеллекта, но явно им не блещет. Она не всегда выбирает наиболее короткий путь, иногда перестает кушать. В общем много денег на такой змейке мы не заработаем, но для погружения в обучение с подкреплением метод <code>Reinforce</code> точно годится, тем более что есть различные модификации данного алгоритма и сочетания с другими.</p>
+<h2>Q-LEARNING</h2>
+<p>Алгоритм <code>Reinforce</code>  относится к <code>policy-based</code> методам обучения с подкреплением. Есть и другой подход к решению задачи, <code>value-based</code>, в котором алгоритм ищет не саму стратегию, а некоторую оптимальную функцию полезности действия <code>Q-function</code>. Говоря математическим языком, существует некая функция <code>Q</code>, которая в зависимости от состояния <code>s</code> и действия <code>a</code> возвращает кумулятивное вознаграждение <code>R</code> и обозначается <code>Q(s|a)</code>. Здесь надо обратить внимание, что <code>Q-функция</code> не предсказывает полученное вознаграждение, т.е. <code>R != r(t)</code>. Она лишь возвращает ожидаемое (кумулятивное) вознаграждение на основании прошлого опыта взаимодействия агента со средой в случае, если мы будем действовать оптимальным образом. Изначально агенту неизвестна эта функция, но если она существует, то в процессе взаимодействия со средой, повторяя действия достаточное количество раз, мы можем её аппроксимировать с приемлемой погрешностью.</p>
+<p><a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/Q_Snake.html">ноутбук</a> | <a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/snake_qtable.zip">исходники</a></p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/ui_q_learning.gif" style="width:55%; margin: 0 auto; display:block; border:1px solid #ddd;"></p>
+<p>Цель обучения нашего агента – максимизация совокупной награды. На рисунке ниже  агенту предстоит перейти из клетки <code>Start</code> в клетку <code>Finish</code>. Награду агент получает одноразово при попадании в клетку <code>Finish</code>. Во всех остальных состояниях награда нулевая.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/bellman_discount.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Очевидно, что оранжевый путь короче и более предпочтителен. Но с точки зрения максимизация награды они равнозначны. Для решения проблемы вводится фактор дисконтирования <code>ɣ</code>, который будет уменьшать ценность будущих наград.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/reward_cum.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Фактор дисконтирования <code>ɣ</code> выбирается в диапазоне от <code>0</code> до <code>1</code>. В таком случае в состоянии <code>Start</code> кумулятивная награда для действия <code>вверх</code> будет меньше чем для действия <code>вправо</code>. Мы предпринимаем действия, которые имеют наибольшую ценность в каждом состоянии. Когда мы делаем это, мы используем наши <code>Q-values</code> для создания политики. Это будет <strong>жадная политика</strong>, потому что мы всегда предпринимаем действия, которые, по нашему мнению, лучше всего в каждом состоянии, поэтому говорится, что мы действуем жадно. Выбирая на каждом шаге действие с максимальным вознаграждением мы получим максимальную кумулятивную награду.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/bellman.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Данное уравнение, которое называют уравнением Беллмана, утверждает что значение <code>Q</code> для определенной пары состояние-действие должно быть наградой <code>r</code>, полученной при переходе в новое состояние (путем выполнения этого действия), добавленной к значению <code>Q</code> наилучшего действия в следующем состоянии с каким-то дисконтом.</p>
+<p>Суть <code>Q-learning</code> сводится к тому, то мы можем итеративно аппроксимировать <code>Q-функцию</code> используя уравнение Беллмана. Другими словами, мы распространяем информацию о значениях действий по одному шагу за раз.</p>
+<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/bellman_update.png" style="width:100%; margin: 0 auto; display:block;"></p>
+<p>Теперь, когда у нас есть интуитивное представление о том, как работает <code>Q-learning</code>, мы можем начать думать о реализации всего этого. Мы создадим таблицу для всех возможных состояний и действий для змейки <code>env = SnakeGame()</code>. Проинициализировать таблицу можно любыми значениями, которые нам нравятся – они могут быть случайными, они могут быть какими-то постоянными. Мы создадим таблицу, заполненную случайными действиями, т.е. изначально всех четырех действий там примерно поровну, что в свою очередь позволит избежать проблемы дисбаланса классов в случае, если нам потребуется сжать таблицу с помощью нейросети.</p>
+<div class="highlight"><pre><span></span><span class="n">action_space_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">ACTION</span><span class="p">)</span>
+<span class="n">qtable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span>
+  <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">action_space_size</span><span class="p">,</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">board_height</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">board_width</span><span class="p">,</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">board_height</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">board_width</span><span class="p">,</span>
+  <span class="n">action_space_size</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Теперь немножко линейной алгебры. В частности неплохо бы вспомнить что там нам в институте рассказывали про матрицы. Для начала выведем все значения найденных весов на экран.</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
-  <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">get_weights</span><span class="p">():</span>
-    <span class="n">arr2str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%0.9g</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">w</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;W{} = {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr2str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">w</span><span class="p">)))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;B{} = {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">arr2str</span><span class="p">(</span><span class="n">b</span><span class="p">)))</span>
+<p>Состояние змейки в какой-либо момент берется упрощенное – координаты головы, яблока, наличие препятствий слева, справа, сверху, снизу. Состояние тела не учитывается.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_features</span><span class="p">(</span><span class="n">game</span><span class="o">=</span><span class="n">env</span><span class="p">):</span>
+  <span class="n">snake</span><span class="p">,</span> <span class="n">food</span> <span class="o">=</span> <span class="n">game</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span>
+  <span class="n">obsticle</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">game</span><span class="p">)</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">done</span>
+  <span class="n">obs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obsticle</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">game</span><span class="o">.</span><span class="n">ACTION</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">obs</span><span class="p">,</span> <span class="n">snake</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">snake</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">food</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">food</span><span class="o">.</span><span class="n">w</span>
 </pre></div>
 
 
-<p>Результат:</p>
-<div class="highlight"><pre><span></span>W1 = [[-0.100219101, 0.0986418799, 0.0540673025], [-0.101571321, 0.055912815, -0.0540193357]]
-B1 = [0.101785883, -0.0555998087, -7.84907461e-05]
-W2 = [[-85.8035507], [-90.0149384], [87.0291138]]
-B2 = [4.28154087]
+<p>Если бы мы захотели учитывать координаты частей тела змейки, тогда, размер таблицы резко возрастет. Даже если исходить из относительных координат частей тела относительно предыдущих, то координаты каждой из них умножают размер таблицы на 5 (отсутствует, слева, справа, сверху, снизу). Частей тела может быть <code>32 * 16 - 2 = 510</code>. Получаем <code>5**510</code> это очень большое число галактических масштабов, ни один компьютер в мире не обладает таким размером памяти.</p>
+<p>Важной особенностью <code>Q-learning</code> является то, что обучение происходит не дожидаясь окончания эпизода в отличие от <code>Reinforce</code> алгоритма. Гиперпараметры <code>ALPHA</code>, <code>GAMMA</code> и <code>epsilon</code> влияют на скорость и качество обучения. Так же как и в случае с <code>Reinforce</code> нужен компромисс между разведкой и эксплуатацией. За это отвечает переменная <code>epsilon</code>. На начальном этапе большинство действий агента являются случайными. В процессе обучения баланс меняется в обратную сторну.</p>
+<div class="highlight"><pre><span></span><span class="c1"># Until learning is stopped</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">total_episodes</span><span class="p">:</span>
+
+  <span class="c1"># Reset the environment</span>
+  <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+  <span class="n">state</span> <span class="o">=</span> <span class="n">extract_features</span><span class="p">()</span>
+  <span class="n">done</span> <span class="o">=</span> <span class="bp">False</span>
+
+  <span class="c1"># Reduce epsilon (because we need less and less exploration)</span>
+  <span class="n">epsilon</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_epsilon</span> <span class="o">-</span> <span class="n">min_epsilon</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">epsilon_decay</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">))</span>
+  <span class="n">epsilon</span> <span class="o">+=</span> <span class="n">min_epsilon</span>
+
+  <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+
+    <span class="c1"># Choose an action a in the current world state (s)</span>
+    <span class="c1"># First we randomize a number</span>
+    <span class="n">exp_exp_tradeoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+
+    <span class="c1"># If this number &gt; greater than epsilon --&gt;</span>
+    <span class="c1"># exploitation (taking the biggest Q value for this state)</span>
+    <span class="k">if</span> <span class="n">exp_exp_tradeoff</span> <span class="o">&gt;</span> <span class="n">epsilon</span><span class="p">:</span>
+      <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">qtable</span><span class="p">[</span><span class="n">state</span><span class="p">])</span>
+
+    <span class="c1"># Else doing a random choice --&gt; exploration</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">random_action</span><span class="p">()</span>
+
+    <span class="c1"># Take the action (a) and observe the outcome state(s&#39;) and reward (r)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">extract_features</span><span class="p">()</span>
+
+    <span class="c1"># Update Q(s,a):= Q(s,a) + lr * [R(s,a) + GAMMA * max Q(s&#39;,a&#39;) - Q(s,a)]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">state</span> <span class="o">+</span> <span class="p">(</span><span class="n">action</span><span class="p">,)</span>
+    <span class="n">qtable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ALPHA</span> <span class="o">*</span> <span class="p">(</span><span class="n">reward</span> <span class="o">+</span> <span class="n">GAMMA</span> <span class="o">*</span> <span class="n">qtable</span><span class="p">[</span><span class="n">new_state</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">qtable</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="c1"># Our new state is state</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">new_state</span>
+
+  <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
 </pre></div>
 
 
-<p>У нас два слоя с соответствующими весами для каждого из них плюс смещение. Чтобы лучше понимать математику внутри перцептрона давайте отвяжемся от Tensorflow и вычислим все то же самое исходя из уже имеющихся у нас весов:</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
-  <span class="c1"># First layer calculation</span>
-  <span class="n">L1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">W1</span><span class="p">)</span> <span class="o">+</span> <span class="n">B1</span>
-  <span class="c1"># Relu activation function</span>
-  <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">L1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-  <span class="c1"># Second layer calculation</span>
-  <span class="n">L2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">W2</span><span class="p">)</span> <span class="o">+</span> <span class="n">B2</span>
-  <span class="c1"># Sigmoid</span>
-  <span class="n">output</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">L2</span><span class="p">))</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Результат:</p>
-<div class="highlight"><pre><span></span><span class="k">[0.01152039]</span>
-<span class="k">[0.98572624]</span>
-<span class="k">[0.99311345]</span>
-<span class="k">[0.00970005]</span>
-</pre></div>
-
-
-<p>Как видим результат полностью совпал с тем, что выдает метод predict в натренированной нами сети. Вычисление выхода слоя заключается в умножении входного вектора на соответствующую весовую матрицу, к результату прибавляется смещение. Затем идет активационная функция. Результирующий вектор умножается на вторую весовую матрицу и т.д.</p>
-<p>Думаю математика ясна :) Теперь провернем то же самое, но для микроконтроллера:</p>
-<p><em>nn.h</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;array&gt;</span><span class="cp"></span>
-
-<span class="k">namespace</span> <span class="n">nn</span> <span class="p">{</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
-  <span class="k">using</span> <span class="n">o</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span><span class="p">;</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
-  <span class="k">using</span> <span class="n">i</span> <span class="o">=</span> <span class="k">const</span> <span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span><span class="p">;</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">K</span><span class="o">&gt;</span>
-  <span class="k">using</span> <span class="n">m</span> <span class="o">=</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span><span class="p">;</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">K</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">dot</span><span class="p">(</span><span class="n">m</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">K</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">,</span> <span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">o</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">;</span> <span class="n">c</span><span class="o">++</span><span class="p">)</span>
-      <span class="k">for</span> <span class="p">(</span><span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">o</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">r</span><span class="o">++</span><span class="p">)</span>
-        <span class="n">o</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+=</span> <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">r</span><span class="p">).</span><span class="n">at</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">relu</span><span class="p">(</span><span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">const</span> <span class="n">T</span> <span class="n">zero</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-      <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">zero</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">y</span><span class="p">,</span> <span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-      <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
-  <span class="kt">void</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">o</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="k">const</span> <span class="n">T</span> <span class="n">one</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-      <span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="n">one</span> <span class="o">/</span> <span class="p">(</span><span class="n">one</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">i</span><span class="p">)));</span>
-  <span class="p">}</span>
-
-<span class="p">}</span> <span class="c1">// namespace</span>
-</pre></div>
-
-
-<p><em>app.cpp</em></p>
-<div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;float32.hpp&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;nn.h&quot;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&quot;draw.h&quot;</span><span class="cp"></span>
-
-<span class="k">using</span> <span class="n">flt</span> <span class="o">=</span> <span class="n">float32</span><span class="p">;</span>
-
-<span class="k">static</span> <span class="kt">float</span> <span class="nf">inference</span><span class="p">(</span><span class="k">const</span> <span class="n">flt</span><span class="o">&amp;</span> <span class="n">x1</span><span class="p">,</span> <span class="k">const</span> <span class="n">flt</span><span class="o">&amp;</span> <span class="n">x2</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">m</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span> <span class="n">W1</span>
-  <span class="p">{</span>
-    <span class="o">-</span><span class="mf">0.100219101</span><span class="p">,</span> <span class="mf">0.0986418799</span><span class="p">,</span> <span class="mf">0.0540673025</span><span class="p">,</span>
-    <span class="o">-</span><span class="mf">0.101571321</span><span class="p">,</span> <span class="mf">0.055912815</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0540193357</span>
-  <span class="p">};</span>
-  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">i</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span> <span class="n">B1</span>
-  <span class="p">{</span>
-    <span class="mf">0.101785883</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0555998087</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.84907461e-05</span>
-  <span class="p">};</span>
-  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">m</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="n">W2</span>
-  <span class="p">{</span>
-    <span class="o">-</span><span class="mf">85.8035507</span><span class="p">,</span> <span class="o">-</span><span class="mf">90.0149384</span><span class="p">,</span> <span class="mf">87.0291138</span>
-  <span class="p">};</span>
-  <span class="k">const</span> <span class="n">nn</span><span class="o">::</span><span class="n">i</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="n">B2</span>
-  <span class="p">{</span>
-    <span class="mf">4.28154087</span>
-  <span class="p">};</span>
-
-  <span class="c1">// Inputs</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">i</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">x</span><span class="p">{</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">};</span>
-
-  <span class="c1">// First layer has 3 units</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">o</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">3</span><span class="o">&gt;</span> <span class="n">L1</span><span class="p">;</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">dot</span><span class="p">(</span><span class="n">W1</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">L1</span><span class="p">);</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">add</span><span class="p">(</span><span class="n">B1</span><span class="p">,</span> <span class="n">L1</span><span class="p">);</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">relu</span><span class="p">(</span><span class="n">L1</span><span class="p">);</span>
-
-  <span class="c1">// Second layer has 1 unit</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">o</span><span class="o">&lt;</span><span class="n">flt</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="n">L2</span><span class="p">;</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">dot</span><span class="p">(</span><span class="n">W2</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">);</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">add</span><span class="p">(</span><span class="n">B2</span><span class="p">,</span> <span class="n">L2</span><span class="p">);</span>
-  <span class="n">nn</span><span class="o">::</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">L2</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">L2</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="k">namespace</span> <span class="n">app</span> <span class="p">{</span>
-
-  <span class="kt">int</span> <span class="n">run</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_0</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
-    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_2</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
-    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_4</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
-    <span class="n">draw</span><span class="o">::</span><span class="n">flt</span><span class="p">(</span><span class="n">draw</span><span class="o">::</span><span class="n">PAGE_6</span><span class="p">,</span> <span class="n">inference</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>Тренировка сложных нейронных сетей может потребовать больших вычислительных мощностей. Здесь на помощь приходят готовые библиотеки для машинного обучения такие как Tensorflow. С их помощью можно обучать нейронные сети на видеокартах, в облаке, и даже в специальных кластерах, состоящих из нескольких вычислительных единиц. Использовать обученную модель можно на где-угодно, даже на очень слабых микроконтроллерах.</p><p>There are <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/#disqus_thread">comments</a>.</p>                </article>
+<p>Алгоритм <code>Q-learning</code> часто используют в сочетании с нейронными сетями. В самом простейшем случае таблицу <code>Q-table</code> можно сначала обучить, а затем сжать используя ее данные как готовый датасет для обучения с учителем. Однако часто среда имеет слишком много состояний и действий, поэтому составить таблицу в явном виде невозможно. Для решения этой проблемы также используют нейронные сети, чтобы не хранить значения полезности, а предсказывать их. На вход нейросети поступает текущее состояние среды, а на выход она дает прогнозируемую награду для всех действий. Для изменения <code>Q-value</code> мы обновляем параметры нейронной сети, чтобы предсказывать более точные значения. Такие нейронные сети называют DQN (Deep Q Networks).</p><p>There are <a href="http://proiot.ru/blog/posts/2022/09/01/obuchenie-s-podkrepleniem-dlia-mikrokontrollerov/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
 <div class="body" style="margin-bottom: 2em">
@@ -289,6 +258,28 @@ B2 = [4.28154087]
                     <h1>Other articles</h1>
                     <hr />
                     <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/" rel="bookmark"
+                           title="Permalink to Нейросети для микроконтроллеров - «Перцептрон»">Нейросети для микроконтроллеров - «Перцептрон»</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2021-03-28T00:00:00+02:00">
+                Вс 28 марта 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+        </address>
+<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ai">ai</a> </p>
+</footer><!-- /.post-info -->                <p>Искусственные нейронные сети (ИНС) — это упрощенные математические модели организации реальных биологических нейронных сетей (БНС). Пока что ИНС еще очень далеки от возможностей человеческого мозга и мышления, однако уже сейчас нейросети успешно применяются во многих сферах деятельности человека таких как распознавание, а также синтез речи и изображений, роботы-курьеры, беспилотный транспорт, прогнозирование …</p>
+                <a class="readmore" href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/">read more</a>
+<p>There are <a href="http://proiot.ru/blog/posts/2021/03/28/neiroseti-dlia-mikrokontrollerov-pertseptron/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+            </article></li>
 
             <li><article class="hentry">
                 <header>
@@ -356,29 +347,6 @@ B2 = [4.28154087]
 <p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/">GoF</a> даёт следующее классическое определение …</p>
                 <a class="readmore" href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">read more</a>
 <p>There are <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/" rel="bookmark"
-                           title="Permalink to Безопасность «Интернета вещей» - TLS / DTLS">Безопасность «Интернета вещей» - TLS / DTLS</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2018-01-05T00:00:00+02:00">
-                Пт 05 января 2018
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/contiki">contiki</a> <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/tls">TLS</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">Продолжаем</a> исследовать сетевые протоколы.</p>
-<p>TLS (Transport Layer Security) – криптографический протокол, обеспечивающий защищённую от прослушивания и подмены передачу данных между узлами в сети интернет. С технической точки зрения TLS располагается непосредственно над <a href="http://proiot.ru/blog/posts/2017/10/09/setevoe-programmirovanie-tcp-http-server/">TCP</a> (Transmission Control Protocol), что позволяет более высокоуровневым протоколам (таким как HTTP, MQTT и др.) работать без изменений. Исторически …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2018/01/05/bezopasnost-interneta-veshchei-tls-dtls/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
