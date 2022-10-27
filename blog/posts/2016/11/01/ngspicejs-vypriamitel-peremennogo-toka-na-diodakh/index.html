@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>NGSPICE.js - выпрямитель переменного тока на диодах</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/" rel="bookmark"
            title="Permalink to NGSPICE.js - выпрямитель переменного тока на диодах">NGSPICE.js - выпрямитель переменного тока на диодах</a></h1>
     </header>
 
@@ -51,24 +40,24 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
-</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE и конкретное применение <a href="http://proiot.ru/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">полупроводниковых диодов</a> в частности.</p>
+<p>In <a href="https://mazko.github.io/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/geda">gEDA</a> <a href="https://mazko.github.io/blog/tag/ngspice">ngspice</a> </p>
+</footer><!-- /.post-info -->      <p><a href="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE и конкретное применение <a href="https://mazko.github.io/blog/posts/2016/10/31/ngspicejs-poluprovodnikovyi-diod/">полупроводниковых диодов</a> в частности.</p>
 <p>Выпрямитель электрического тока - преобразователь электрической энергии предназначенный для преобразования входного электрического тока переменного направления в ток постоянного направления. Выпрямители используются в большинстве современных электроприборах - от зарядки для мобильного телефона до телевизоров и ноутбуков. В следующих схемах для симуляции использовалась SPICE модель диода 1n4007.</p>
 <!-- 
-<a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/1n4007.txt"></a>
+<a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/1n4007.txt"></a>
 -->
 
 <div class="highlight"><pre><span></span>~$ wget -nc http://www.vishay.com/docs/88000/1n4007.txt
 </pre></div>
 
 
-<p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.sch">схема однополупериодного выпрямителя</a> | <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fd2a88aab52c56f971179c9a1bd9a502">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-half-wave.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.sch">схема однополупериодного выпрямителя</a> | <a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave.net">netlist</a> | <a href="https://ngspice.js.org/?gist=fd2a88aab52c56f971179c9a1bd9a502">ngspice.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-half-wave.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>У однополупериодных выпрямителей используется только одна полуволна постоянного тока на выходе при каждом полном цикле переменного тока на входе.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/half-wave-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source half-wave.net
 ngspice 2 -&gt; tran 0.5m 150m
 ngspice 3 -&gt; alter r1 1
@@ -78,8 +67,8 @@ ngspice 5 -&gt; plot tran1.v(n1) tran2.v(n1)
 
 
 <p>Куда более эффективными являются двухполупериодные выпрямители. </p>
-<p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.sch">схема диодный мост</a> | <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2cf3ee433d7f6ab178d903d7f1c8ecef">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-bridge.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.sch">схема диодный мост</a> | <a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge.net">netlist</a> | <a href="https://ngspice.js.org/?gist=2cf3ee433d7f6ab178d903d7f1c8ecef">ngspice.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-bridge.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source bridge.net
 ngspice 2 -&gt; tran 0.5m 150m
 ngspice 3 -&gt; alter r1 1
@@ -89,10 +78,10 @@ ngspice 5 -&gt; plot tran1.v(n3) tran2.v(n3)
 
 
 <p>Диодный мост использует оба полупериода входного сигнала и поэтому имеем меньшую пульсацию напряжения на выходе и это есть очень хорошо:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/bridge-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Ещё одной интересной схемой выпрямителя является умножитель напряжения:</p>
-<p><a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul.sch">схема умножитель напряжения</a> | <a href="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul.net">netlist</a> | <a href="https://ngspice.js.org/?gist=b390ade98165e3b89c957c865dff87d2">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-mul.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul.sch">схема умножитель напряжения</a> | <a href="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul.net">netlist</a> | <a href="https://ngspice.js.org/?gist=b390ade98165e3b89c957c865dff87d2">ngspice.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/show-img-mul.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source mul.net
 ngspice 2 -&gt; tran 1m 500m
 ngspice 3 -&gt; plot n2 n4
@@ -100,24 +89,12 @@ ngspice 3 -&gt; plot n2 n4
 
 
 <p>Входное напряжение после каждой пары диодов умножается на ~2x (часть напряжения теряется на диодах). Величина выходного напряжения, достигнутая с помощью данной схемы, может быть весьма велика - например у люстры Чижевского это десятки тысяч вольт.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><a href="http://proiot.ru/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">Далее</a> биполярный транзистор.</p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/mul-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/11/02/ngspicejs-bipoliarnyi-tranzistor/">Далее</a> биполярный транзистор.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -125,7 +102,7 @@ ngspice 3 -&gt; plot n2 n4
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2016/11/01/ngspicejs-vypriamitel-peremennogo-toka-na-diodakh/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -147,7 +124,7 @@ ngspice 3 -&gt; plot n2 n4
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

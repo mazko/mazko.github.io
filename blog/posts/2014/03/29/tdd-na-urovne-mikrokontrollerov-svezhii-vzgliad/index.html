@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>TDD на уровне микроконтроллеров - свежий взгляд</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/" rel="bookmark"
            title="Permalink to TDD на уровне микроконтроллеров - свежий взгляд">TDD на уровне микроконтроллеров - свежий взгляд</a></h1>
     </header>
 
@@ -51,11 +40,11 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/tdd">TDD</a> <a href="http://proiot.ru/blog/tag/cmock">CMock</a> <a href="http://proiot.ru/blog/tag/unity">Unity</a> </p>
-</footer><!-- /.post-info -->      <p>Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже <a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">поднималась</a>. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой <em>наивный</em> подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки особенно на стыке софта перефирии:</p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/tdd">TDD</a> <a href="https://mazko.github.io/blog/tag/cmock">CMock</a> <a href="https://mazko.github.io/blog/tag/unity">Unity</a> </p>
+</footer><!-- /.post-info -->      <p>Тема профессиональной разработки ПО для микроконтроллеров с использованием современных методик уже <a href="https://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">поднималась</a>. Собственно если вкратце, то было предложено максимально разделять исходный код на отдельные модули и тестировать их логику на ПК независимо от железа. Такой <em>наивный</em> подход способен значительно упростить жизнь разработчику, но в то же время имеет серьёзные недостатки особенно на стыке софта перефирии:</p>
 <ul>
 <li>
 <p>увеличивается объём кода за счёт дополнительных функций или <code>#ifdef</code> на стыке с периферией (всякие <em>UART</em>, <em>I2C</em>, порты ввода-вывода и т.д.). Например логику по установке битов портов можно завернуть в функцию <code>set_flag()</code> и при написании тестов задействовать соотв. ей <em>mock</em> - однако это увеличит общий объём кода</p>
@@ -434,7 +423,7 @@ quit
 </pre></div>
 
 
-<p>Очевидно, что такой <em>TDD</em> подход на порядок удобнее <a href="http://proiot.ru/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">предыдущих</a>. Тут очень многое зависит от возможностей эмулятора и иногда функционала <em>sim30</em> бывает недостаточно. Типичный пример - логика обработка прерываний:</p>
+<p>Очевидно, что такой <em>TDD</em> подход на порядок удобнее <a href="https://mazko.github.io/blog/posts/2012/10/07/manchesterskii-kod-dlia-chainikov/">предыдущих</a>. Тут очень многое зависит от возможностей эмулятора и иногда функционала <em>sim30</em> бывает недостаточно. Типичный пример - логика обработка прерываний:</p>
 <p><em>src/gpio_button.h</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#ifndef gpio_button_H</span>
 <span class="cp">#define gpio_button_H</span>
@@ -541,23 +530,11 @@ Quit
 </pre></div>
 
 
-<p>Исходники <a href="http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/PIC_Demo.zip">тут</a>.</p>
+<p>Исходники <a href="https://mazko.github.io/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/PIC_Demo.zip">тут</a>.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -565,7 +542,7 @@ Quit
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2014/03/29/tdd-na-urovne-mikrokontrollerov-svezhii-vzgliad/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -587,7 +564,7 @@ Quit
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

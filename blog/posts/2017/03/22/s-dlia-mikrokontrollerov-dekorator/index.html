@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>С++ для микроконтроллеров - «Декоратор»</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/" rel="bookmark"
            title="Permalink to С++ для микроконтроллеров - «Декоратор»">С++ для микроконтроллеров - «Декоратор»</a></h1>
     </header>
 
@@ -51,20 +40,20 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/pattern">Паттерн</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/msp430">msp430</a> <a href="https://mazko.github.io/blog/tag/pattern">Паттерн</a> </p>
 </footer><!-- /.post-info -->      <blockquote>
 <p>Есть два способа создания дизайна программы. Один из них, это сделать его настолько простым, что в нем, очевидно, не будет недостатков. Другой способ — сделать его настолько запутанным, что в нем не будет очевидных недостатков. — C.A. R. Hoare</p>
 </blockquote>
 <p>«Приемы объектно-ориентированного проектирования. Паттерны проектирования» — эпохальная книга 1994 года об инженерии программного обеспечения, описывающая решения некоторых частых проблем в проектировании ПО. Коллектив авторов Э. Гамма, Р. Хелм, Р. Джонсон, Дж. Влиссидес также известен как «Банда четырёх», Gang of Four, GoF.</p>
 <p>GoF даёт следующее классическое определение: декоратор (англ. Decorator) — паттерн, структурирующий объекты. Динамически добавляет объекту новые обязанности. Является гибкой альтернативой порождению подклассов с целью расширения функциональности.</p>
-<p>Объект, который предполагается использовать (в нашем случае <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">слой</a> для лампочек), выполняет основные функции. Однако может потребоваться добавить к нему некоторую дополнительную функциональность (<a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">анимации</a>), которая будет выполняться до, после или даже вместо основной функциональности объекта.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
-<p>Поскольку анимации и их последовательность заранее известны на этапе компиляции, декоратор легко реализуется на С++ шаблонах. Такая реализация позволяет не использовать виртуальные функции и будет занимать больше памяти ROM (code bloat), но работать должна шустрее - хотя для мигающих лампочек это не критично. Ещё использование шаблонов даёт удобную возможность делать простые проверки <code>static_assert()</code> на этапе компиляции. Нечто подобное <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">можно</a> конечно же соорудить и на Си с помощью макросов, но в С++ <code>static_assert()</code> это уже встроенный и весьма полезный механизм так что не приходится заново изобретать велосипед.</p>
+<p>Объект, который предполагается использовать (в нашем случае <a href="https://mazko.github.io/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">слой</a> для лампочек), выполняет основные функции. Однако может потребоваться добавить к нему некоторую дополнительную функциональность (<a href="https://mazko.github.io/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">анимации</a>), которая будет выполняться до, после или даже вместо основной функциональности объекта.</p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/ui.gif" style="width:50%; margin: 0 auto; display:block;"></p>
+<p>Поскольку анимации и их последовательность заранее известны на этапе компиляции, декоратор легко реализуется на С++ шаблонах. Такая реализация позволяет не использовать виртуальные функции и будет занимать больше памяти ROM (code bloat), но работать должна шустрее - хотя для мигающих лампочек это не критично. Ещё использование шаблонов даёт удобную возможность делать простые проверки <code>static_assert()</code> на этапе компиляции. Нечто подобное <a href="https://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/">можно</a> конечно же соорудить и на Си с помощью макросов, но в С++ <code>static_assert()</code> это уже встроенный и весьма полезный механизм так что не приходится заново изобретать велосипед.</p>
 <p>Все классы для создания анимаций реализуют интерфейс Декоратора - методы <code>void draw(RgbStripLayer&amp; layer);</code> и <code>void set_color(const auto&amp; co)</code>. Работая в цепочке каждый последовательно добавляет (декорирует) к слою <code>RgbStripLayer</code> новые свойства. Эти классы взаимозаменяемы, их последовательность определяет конкретную анимацию. В прилагаемых исходниках добавлено больше анимаций плюс пример использования стандартной библиотекой шаблонов (STL) в С++ - алгоритм <code>std::rotate</code> для массивов.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/a.out">elf</a> | <a href="http://mazko.github.io/MSP430.js/3523e01e3e6c96088d0ac6a4c335609b">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/src.zip">исходники</a></p>
+<p><a href="https://mazko.github.io/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/a.out">elf</a> | <a href="http://mazko.github.io/MSP430.js/3523e01e3e6c96088d0ac6a4c335609b">MSP430.js</a> | <a href="https://mazko.github.io/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/src.zip">исходники</a></p>
 <p><em>app.cpp</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;animation.h&quot;</span><span class="cp"></span>
 
@@ -201,23 +190,11 @@
 
 
 <p>Применение паттернов и ООП в микроконтроллерах имеет свою специфику, накладываемую в основном моделью управления памятью. Неважно на чём писать — Си или С++ для встраиваемых систем предпочтительней использовать память в стеке т.к. она проверяется компилятором. В свою очередь динамическое выделение памяти на куче <strong>не проверяется компилятором</strong> и как следствие её наличие в нужный момент времени выполнения программы не гарантируется. ООП же больше любит динамическое выделение памяти — операторы <code>new</code>, <code>malloc</code>, умные указатели. Не стоит этого всего использовать в микроконтроллерах без ясного понимания возможных последствий.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">Далее</a> игра «Змейка» где работа с памятью будет описана более подробно.</p>
+<p><a href="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">Далее</a> игра «Змейка» где работа с памятью будет описана более подробно.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -225,7 +202,7 @@
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2017/03/22/s-dlia-mikrokontrollerov-dekorator/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -247,7 +224,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

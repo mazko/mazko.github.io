@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Lucene - курс молодого бойца</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/" rel="bookmark"
            title="Permalink to Lucene - курс молодого бойца">Lucene - курс молодого бойца</a></h1>
     </header>
 
@@ -51,10 +40,10 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/jetty">Jetty</a> <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/jetty">Jetty</a> <a href="https://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="https://mazko.github.io/blog/tag/maven">Maven</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://lucene.apache.org/" rel="nofollow">Lucene</a> - это библиотека для реализации высокоскоростного полнотекстового поиска с открытым исходным кодом, написанная полностью на <strong>Java</strong>. Вопреки некоторым ожиданиям и заблуждениям <em>Lucene</em> не является законченным приложением - это просто библиотека, которую можно (нужно) использовать для реализации поиска в приложениях, а каких именно -  <em>web</em>, <em>desktop</em> и т.д. не имеет значения. Проект активно развивается и поддерживается, кроме того, есть хорошие порты на другие языки программирования - а это уже о многом говорит в пользу проекта вцелом.</p>
 <p>В этом цикле статей мы поэтапно рассмотрим основные возможности <em>Lucene</em> на примере реализации законченного <strong>web-приложения</strong> - системы поиска для реального и уже давно существующего сайта. Поскольку, как уже было упомянуто ранее, <em>Lucene</em> написана на <em>Java</em>, то наше приложение будет тоже написано на <em>Java</em> и реализовано в виде <strong>Servlet</strong>, хостится всё это добро будет на <a href="https://ru.wikipedia.org/wiki/Jetty" rel="nofollow">Jetty</a>.</p>
 <p>В проекте будет несколько подпроектов, поэтому предлагаю сразу воспользоваться мульти-модульностью <a href="https://books.sonatype.com/mvnex-book/reference/multimodule.html" rel="nofollow">Maven</a>, где в корне намечается общая зависимость от Lucene. Начнём с сервера:</p>
@@ -216,26 +205,14 @@ Java version: <span class="m">1</span>.8.0_03-Ubuntu, vendor: Oracle Corporation
 </pre></div>
 
 
-<p><img alt="Linux Site" src="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><img alt="Linux Site Search" src="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site_slash_search.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Теперь у нас в системе есть подопытный сайт <strong>http://localhost:8080/</strong> с которым мы и будем работать <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">далее</a>, где первым делом проиндексируем содержимое нашего сайта.</p>
-<p><a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/lucene-tutorial.zip">Исходники</a></p>
+<p><img alt="Linux Site" src="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="Linux Site Search" src="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/Linux_ff_site_slash_search.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Теперь у нас в системе есть подопытный сайт <strong>http://localhost:8080/</strong> с которым мы и будем работать <a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">далее</a>, где первым делом проиндексируем содержимое нашего сайта.</p>
+<p><a href="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/lucene-tutorial.zip">Исходники</a></p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -243,7 +220,7 @@ Java version: <span class="m">1</span>.8.0_03-Ubuntu, vendor: Oracle Corporation
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -265,7 +242,7 @@ Java version: <span class="m">1</span>.8.0_03-Ubuntu, vendor: Oracle Corporation
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

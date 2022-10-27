@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>🏠 Интернет Всего 🚗 - re2c</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,31 +16,29 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">PICSim.js - калькулятор и обратная польская запись</a></h1>
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/">PICSim.js - калькулятор и обратная польская запись</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2017-02-14T00:00:00+02:00">
                 Вт 14 февраля 2017
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/picsim">picsim</a> <a href="http://proiot.ru/blog/tag/re2c">re2c</a> <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/picsim">picsim</a> <a href="https://mazko.github.io/blog/tag/re2c">re2c</a> <a href="https://mazko.github.io/blog/tag/regex">regex</a> </p>
 </footer><!-- /.post-info --><p>Обратная Польская Запись англ. (Reverse Polish Notation, RPN) позволяет избавиться от скобок в арифметических выражениях. Сначала следуют два операнда арифметической операции, а затем знак операции. Например <code>4 2 + = 4 + 2 = 6</code> или <code>4 2 * 3 5 / - = (4 * 2) - (3 / 5) = 7.4</code>. Программа-транслятор RPN-выражений основывается на стеке - каждый операнд посылается в стек, а если встречается оператор, то из стека извлекаются два последних операнда и выполняется
 операция, после чего результат посылается обратно в стек. Классическая реализация калькулятора на базе обратной польской записи подробно расписана в книге «Язык программирования Си» Брайана Кернигана и Денниса Ритчи (последний один из непосредственных авторов и разработчиков языка Си). В общем случае алгоритм решения подобных задач сводится к двум этапам:</p>
 <ul>
@@ -61,8 +50,8 @@
 </li>
 </ul>
 <p>Ошибки при выполнении программы могут происходить на обоих этапах - за вводом недопустимых символов (например букв) должен следить лексической анализатор, а вот обработка деления на ноль или неправильное количество элементов в стеке это уже зона ответственности синтаксического анализа.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> | <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495">picsim.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> | <a href="https://mazko.github.io/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/main.hex">hex</a> | <a href="http://mazko.github.io/picsim.js/da43c25591f9e336ec3229d51fbdb495">picsim.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>При выборе инструментария для генерации лексического / синтаксического анализатора стоит учитывать ограниченные возможности микроконтроллеров. Анализатор не должен зависеть от системы и сторонних библиотек, поэтому Flex/Bison отпадают сразу т.к. завязаны на POSIX, а у нас тут голое железо. Также компиляторы для PIC18 и ниже официально не поддерживают рекурсивные функции (да да). Вобщем особо не развернуться. Но всё же нашелся один очень достойный кандидат - <a href="http://re2c.org/" rel="nofollow">re2c</a>. Генератор лексических анализаторов re2c очень похож на Flex - правила задаются в виде регулярных выражений слева, код соответствующих обработчиков справа. Сгенерированный код похож на человеческий и без проблем собирается даже под bare metal. Функция <code>lex_flt</code> это облегчённая версия <code>atof</code>/<code>strtod</code>, достаточная для RPN калькулятора.</p>
 <p><em>stack.c</em></p>
 <div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
@@ -185,9 +174,9 @@
 </pre></div>
 
 
-<p>Работа с символьным <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">дисплеем</a> и <a href="http://proiot.ru/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">матричной</a> клавиатурой описывались в предыдущем материале.</p>
+<p>Работа с символьным <a href="https://mazko.github.io/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">дисплеем</a> и <a href="https://mazko.github.io/blog/posts/2017/01/30/picsimjs-matrichnaia-klaviatura/">матричной</a> клавиатурой описывались в предыдущем материале.</p>
 <p>Для преобразования выражений из обычной (например <code>3 + 4 * (2 - 1)</code>) инфиксной нотации в постфиксную (RPN) существует алгоритм «сортировочная станция», который так же как и RPN основан на стеке и легко может быть адаптирован под микроконтроллеры. Таким образом несложно разработать калькулятор для обычный людей.</p>
-<p>Ещё раз ссылка на <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> RPN-калькулятора. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </article>
+<p>Ещё раз ссылка на <a href="https://mazko.github.io/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/rpn.zip">исходники</a> RPN-калькулятора. </p><p>There are <a href="https://mazko.github.io/blog/posts/2017/02/14/picsimjs-kalkuliator-i-obratnaia-polskaia-zapis/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -201,7 +190,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

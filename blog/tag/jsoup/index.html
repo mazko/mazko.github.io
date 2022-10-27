@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>🏠 Интернет Всего 🚗 - JSoup</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,33 +16,31 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">Lucene - процесс индексации</a></h1>
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">Lucene - процесс индексации</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2012-10-17T00:00:00+03:00">
                 Ср 17 октября 2012
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/jsoup">JSoup</a> <a href="http://proiot.ru/blog/tag/maven">Maven</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="https://mazko.github.io/blog/tag/jsoup">JSoup</a> <a href="https://mazko.github.io/blog/tag/maven">Maven</a> </p>
 </footer><!-- /.post-info --><p>Среди множества документов, количество и размер которых могут быть очень большими,  необходимо отобрать только те из них, которые отвечают какому-либо условию - например содержат ту или иную фразу. Как решать подобную задачу ? Можно обойти последовательно все документы и проверить наличие искомой фразы в каждом из них. Но сколько времени и ресурсов может уйти на поиск фразы в документе размером скажем 1000000 слов и более ? Умножаем это число на количество документов... Предложенное решение слишком прямолинейно - пока мы будем что-то искать, пользователь может уже подзабыть что же именно он хотел и зачем это было надо.</p>
-<p>Чтобы иметь возможность осуществлять поиск текста максимально быстро, предварительно необходимо его проиндексировать - преобразовать в какой-то другой <a href="https://en.wikipedia.org/wiki/Inverted_index" rel="nofollow">формат</a>, который позволит избежать вышеупомянутых проблем. В нашем случае источником информации является <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">сайт</a>, а документы это не что иное как текстовое содержимое его отдельных HTML-страниц. Для обхода всех страниц сайта нам понадобится <em>crawler</em>. Это будет ещё один подпроект в мультимодульном Maven проекте наряду с Server. Ещё у них будет общая зависимость Common для совместно используемых констант:</p>
+<p>Чтобы иметь возможность осуществлять поиск текста максимально быстро, предварительно необходимо его проиндексировать - преобразовать в какой-то другой <a href="https://en.wikipedia.org/wiki/Inverted_index" rel="nofollow">формат</a>, который позволит избежать вышеупомянутых проблем. В нашем случае источником информации является <a href="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">сайт</a>, а документы это не что иное как текстовое содержимое его отдельных HTML-страниц. Для обхода всех страниц сайта нам понадобится <em>crawler</em>. Это будет ещё один подпроект в мультимодульном Maven проекте наряду с Server. Ещё у них будет общая зависимость Common для совместно используемых констант:</p>
 <div class="highlight"><pre><span></span>~$ <span class="nb">cd</span> lucene-tutorial/
 ~$ tree
 .
@@ -507,8 +496,8 @@ Ctrl+C
 </pre></div>
 
 
-<p><a href="http://proiot.ru/blog/posts/2012/10/21/lucene-proverka-indeksa/">Далее</a> мы бегло заглянем в индекс, после чего реализуем простой поиск.</p>
-<p><a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/#disqus_thread">comments</a>.</p>                </article>
+<p><a href="https://mazko.github.io/blog/posts/2012/10/21/lucene-proverka-indeksa/">Далее</a> мы бегло заглянем в индекс, после чего реализуем простой поиск.</p>
+<p><a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/lucene-tutorial.zip">Исходники</a></p><p>There are <a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -522,7 +511,7 @@ Ctrl+C
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

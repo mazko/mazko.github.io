@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>🏠 Интернет Всего 🚗 - UML</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,37 +16,35 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">С++ для микроконтроллеров - управление памятью</a></h1>
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/">С++ для микроконтроллеров - управление памятью</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2017-06-22T00:00:00+03:00">
                 Чт 22 июня 2017
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> </p>
-</footer><!-- /.post-info --><p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a> механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение <code>std::bad_alloc</code>, оператор <code>new</code> вызывает специальную функцию-обработчик. Эту функцию можно переопределять <code>std::set_new_handler</code>, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».</p>
-<p><a href="http://mazko.github.io/MSP430.js/efadb63e855ca5799cc873ca38ebc2ad">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/snake-qv-msp430-js.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/msp430">msp430</a> <a href="https://mazko.github.io/blog/tag/qp">QP</a> <a href="https://mazko.github.io/blog/tag/uml">UML</a> </p>
+</footer><!-- /.post-info --><p>Как известно, в языке Си для динамического выделения и освобождения памяти на куче используются функции <code>malloc()</code> и <code>free()</code>. В С++ для этих целей предусмотрены операторы <code>new</code> и <code>delete</code>. Когда оператор <code>new</code> не может удовлетворить запрос на выделение памяти, он возбуждает исключение <code>std::bad_alloc</code>, сигнализируя тем самым об ошибке. В <a href="https://mazko.github.io/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">C++ для микроконтроллеров</a> механизм обработки исключений обычно отключён для экономии ресурсов, однако согласно спецификации С++, прежде чем возбудить исключение <code>std::bad_alloc</code>, оператор <code>new</code> вызывает специальную функцию-обработчик. Эту функцию можно переопределять <code>std::set_new_handler</code>, что позволяет хоть как-то контролировать / фиксировать ошибки выделения памяти на куче в процессе выполнения программы. Но это только верхушка айсберга, а ниже описаны более эффективные и надёжные приёмы. Чтобы было нескучно, в качестве тестового материала взята игра «Змейка».</p>
+<p><a href="http://mazko.github.io/MSP430.js/efadb63e855ca5799cc873ca38ebc2ad">MSP430.js</a> | <a href="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/snake-qv-msp430-js.zip">исходники</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
 <ul>
 <li>
-<p>операторы <code>new</code> и <code>delete</code> в С++ можно перегружать, а в контексте микроконтроллеров может оказаться весьма полезным вообще сломать компиляцию при попытке динамического выделения памяти на куче <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/no-new.h">no-new.h</a>. Для того, чтобы проверка происходила во всех исходных файлах проекта автоматически в gcc подобных компиляторах достаточно просто указать в командной строке опцию <code>-include no-new.h</code>, в случае со «Змейкой» используется IDE <a href="http://www.ti.com/tool/ccstudio-msp" rel="nofollow">Code Composer Studio</a>, там есть настройка <em>--preinclude</em>. Что касается наследия Си — функций динамического выделения памяти <code>malloc</code>, <code>calloc</code>, <code>realloc</code> — то красиво отцепить их увы не получится. У gcc компиляторов есть волшебный флаг компоновщика <code>-Wl,--wrap=malloc</code>, который даёт возможность ставить обёртки на функции. Как это сделать на примере покажу чуть <a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">позже</a></p>
+<p>операторы <code>new</code> и <code>delete</code> в С++ можно перегружать, а в контексте микроконтроллеров может оказаться весьма полезным вообще сломать компиляцию при попытке динамического выделения памяти на куче <a href="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/no-new.h">no-new.h</a>. Для того, чтобы проверка происходила во всех исходных файлах проекта автоматически в gcc подобных компиляторах достаточно просто указать в командной строке опцию <code>-include no-new.h</code>, в случае со «Змейкой» используется IDE <a href="http://www.ti.com/tool/ccstudio-msp" rel="nofollow">Code Composer Studio</a>, там есть настройка <em>--preinclude</em>. Что касается наследия Си — функций динамического выделения памяти <code>malloc</code>, <code>calloc</code>, <code>realloc</code> — то красиво отцепить их увы не получится. У gcc компиляторов есть волшебный флаг компоновщика <code>-Wl,--wrap=malloc</code>, который даёт возможность ставить обёртки на функции. Как это сделать на примере покажу чуть <a href="https://mazko.github.io/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">позже</a></p>
 </li>
 <li>
 <p>«Змейка» кушает и растёт, т.е. представляет из себя динамический массив. Для STL контейнеров в С++ можно задавать альтернативные аллокаторы памяти. В большинстве случаев разработчик знает, сколько элементов контейнера может потребоваться для его алгоритма и тогда хорошей идеей выглядит аллокатор, использующий стек вместо кучи. Для древнего C++98 найти рабочий аллокатор затруднительно, поэтому для игры «Змейка» был взят этот <a href="https://github.com/esrlabs/estl-teaser" rel="nofollow">контейнер</a>, также использующий стек вместо кучи </p>
@@ -64,25 +53,13 @@
 <p>существует особая форма оператора <code>new</code>, называемая <em>Placement new</em>. Данный оператор не выделяет память, а получает своим аргументом адрес на уже выделенную каким-либо образом память. Например память под объект «Змейка» выделяется в стеке на этапе компиляции, а  размещение (инициализация) объекта в ней путём вызова конструктора происходит в процессе выполнения программы, таким образом можно пересоздавать «Змейку» при перезапуске игры</p>
 </li>
 </ul>
-<p>Под капотом «Змейки» <a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Под капотом «Змейки» <a href="https://mazko.github.io/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">QP/C++</a> и соответствущая диаграмма состояний UML:</p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/SMofSnakeAO.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>На картинке иерархический конечный автомат <em>Play</em> где отсчитываются временные интервалы для движения «Змейки» и обрабатывается нажатие от кнопок. Если метод <code>eat_or_move()</code> вернёт <code>false</code> переход в состояние <em>GameOver</em> где отображается количество набранных очков. При нажатии любой кнопки снова <em>Play</em>.</p>
 <p>«Змейка» представляет из себя динамический массив сегментов (квадратиков), для её передвижения в заданном направлении достаточно добавить новый сегмент головы в один конец массива и удалить сегмент хвоста — последний элемент с другого конца. На экране аналогично достаточно очистить хвост и дорисовать голову. При поедании пищи добавляется сегмент головы, а сегмент хвоста не удаляется.</p>
-<p><a href="http://proiot.ru/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">Далее</a> паттерн «Наблюдатель».</p><p>There are <a href="http://proiot.ru/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </article>
+<p><a href="https://mazko.github.io/blog/posts/2018/03/18/s-dlia-mikrokontrollerov-nabliudatel/">Далее</a> паттерн «Наблюдатель».</p><p>There are <a href="https://mazko.github.io/blog/posts/2017/06/22/s-dlia-mikrokontrollerov-upravlenie-pamiatiu/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -91,7 +68,7 @@
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/" rel="bookmark"
+                    <h1><a href="https://mazko.github.io/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/" rel="bookmark"
                            title="Permalink to Жизнь после RTOS - модель акторов QP/C++ | UML">Жизнь после RTOS - модель акторов QP/C++ | UML</a></h1>
                 </header>
 
@@ -102,16 +79,16 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/qp">QP</a> <a href="http://proiot.ru/blog/tag/uml">UML</a> <a href="http://proiot.ru/blog/tag/fsm">FSM</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/msp430">msp430</a> <a href="https://mazko.github.io/blog/tag/qp">QP</a> <a href="https://mazko.github.io/blog/tag/uml">UML</a> <a href="https://mazko.github.io/blog/tag/fsm">FSM</a> <a href="https://mazko.github.io/blog/tag/rtos">RTOS</a> </p>
 </footer><!-- /.post-info -->                <blockquote>
 <p>Компьютер — это конечный автомат. Потоковое программирование нужно тем, кто не умеет программировать конечные автоматы. — Алан Кокс </p>
 </blockquote>
-<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="http://proiot.ru/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p><a href="https://www.state-machine.com/" rel="nofollow">Quantum Platform</a> (QP) — это семейство программных продуктов для разработки встраиваемого ПО, в том числе и для микроконтроллеров. QP предлагает реализацию как на <a href="https://mazko.github.io/blog/posts/2017/03/20/s-18-dlia-mikrokontrollerov-razvedka-boem/">«плюсах»</a> (QP/C++), так и на Си (QP/C и QP-nano), что …</p>
+                <a class="readmore" href="https://mazko.github.io/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">read more</a>
+<p>There are <a href="https://mazko.github.io/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
@@ -127,7 +104,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

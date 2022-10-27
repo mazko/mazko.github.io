@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Автоматический определь языка в Apache Tika</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="bookmark"
            title="Permalink to Автоматический определь языка в Apache Tika">Автоматический определь языка в Apache Tika</a></h1>
     </header>
 
@@ -51,10 +40,10 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/tika">Tika</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> <a href="https://mazko.github.io/blog/tag/tika">Tika</a> </p>
 </footer><!-- /.post-info -->      <p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не поддерживаемых Tika из коробки, чтобы с их помощью можно было автоматически определять языки для текстов.
 Для начала было бы неплохо скачать и попробовать запустить само приложение <a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow">tika-app-1.2.jar</a> ~ 27 МБ. Как и любое другое <code>Java</code> приложение <a href="http://tika.apache.org/" rel="nofollow">Tika</a> можно запустить универсальным способом <code>java -jar tika-app-1.2.jar --help</code>, хотя в <em>Linux</em> можно ещё проще:</p>
 <div class="highlight"><pre><span></span>~$ java -version
@@ -162,18 +151,6 @@ sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -181,7 +158,7 @@ sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -203,7 +180,7 @@ sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>🏠 Интернет Всего 🚗 - Wi-Fi</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,31 +16,29 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/">Как работает «Smart Config»</a></h1>
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2018/09/09/kak-rabotaet-smart-config/">Как работает «Smart Config»</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2018-09-09T00:00:00+03:00">
                 Вс 09 сентября 2018
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/wi-fi">Wi-Fi</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/wi-fi">Wi-Fi</a> </p>
 </footer><!-- /.post-info --><p>Обычно процедура подключения устройства (например телефона) к Wi-Fi выглядит следующим образом: телефон выполняет поиск сетей Wi-Fi, предоставляет пользователю список доступных, пользователь выбирает сеть, вводит пароль. Если же говорить об устройствах IoT, трудность заключается в том, что многие из них не имеют дисплея и клавиатуры, а зачастую у них вообще нет никакого пользовательского интерфейса. Таким устройствам нужны другие способы получения имени сети и пароля от пользователя.</p>
 <p>Режим точки доступа (Access Point, AP) — наиболее изученный сегодня способ подключения устройств, не имеющих пользовательского интерфейса. После того как пользователь подключит свой смартфон к AP неинициализированного устройства, он открывает веб-браузер смартфона и входит на веб-сайт устройства, используя заданный локальный URL или IP-адрес. На встроенном веб-сайте пользователь выбирает имя Wi-Fi сети и пароль. Устройство сохраняет сетевые реквизиты в энергонезависимой памяти, а затем переходит из режима AP в режим станции, чтобы подключиться к домашней сети с использованием сохраненных сетевых реквизитов. Недостаток режима AP заключается в том, что при подключении к конфигурационной сети AP неинициализированного устройства телефон отключается от домашней сети. Это может вызвать перерывы в передаче данных и привести к появлению сообщений об ошибках. Также не все производители телефонов предоставляют API для программного переключения Wi-Fi сетей, пользователь вынужден это делать вручную.</p>
 <p>Технология «Smart Config» лишена данных недостатков. Она предполагает использование ПК, телефона или планшета в качестве интерфейса пользователя, который позволяет ввести информацию о сети с помощью дисплея и клавиатуры ПК, телефона или планшета с последующей передачей введённой информации IoT-устройствам. Из известных реализаций на текущий момент стоит упомянуть CC3200 SmartConfig и ESP-Touch.</p>
@@ -76,7 +65,7 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 </pre></div>
 
 
-<p>Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">14 каналов</a>, для простоты будем слушать только тот (8), к которому подключён wlo1.</p>
+<p>Адаптер wlo1 подключён к сети Dumer, wlxbcf68565bc38 будет сканировать эфир. Как известно сетка частот Wi-Fi состоит из <a href="https://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">14 каналов</a>, для простоты будем слушать только тот (8), к которому подключён wlo1.</p>
 <div class="highlight"><pre><span></span>~$ iwlist wlo1 channel
 </pre></div>
 
@@ -111,7 +100,7 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 
 
 <p>Примерно так выглядит эфир Wi-Fi в WireShark:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/wirshark.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2018/09/09/kak-rabotaet-smart-config/wirshark.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>MAC адреса и кое-какая другая информация в Wi-Fi фреймах идёт в открытом виде без шифрования. Полезные данные внутри Wi-Fi фрейма зашифрованы, но мы видим их длину. Если предположить, что шифрование изменяет длину передаваемых данных на какую-то константу, почему бы не попробовать передавать данные меняя длину пакета по принципу один пакет == один байт. Для передачи 42 байт нужно отправить 42 пакета где длина каждого пакета зависит от значения передаваемого байта. Содержимое пакета нас не интересует т.к. расшифровать его могут только участники Wi-Fi сети, подключённые к роутеру. Все скрипты проверялись на <strong>python3</strong>:</p>
 <p><em>transmitter.py</em></p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
@@ -147,7 +136,7 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 </pre></div>
 
 
-<p>В текущем примере данные передаются на мультикаст адрес 234.xx.xx.xx по <a href="http://proiot.ru/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a>. Вначале идёт фиксированная посылка синхронизации preamble. Содержимое preamble также известно приёмнику, сравнивая принятые пакеты с preamble он может высчитать константу, добавляемую при шифровании. Затем передаём общую длину полезных данных, их контрольную сумму и сами данные.</p>
+<p>В текущем примере данные передаются на мультикаст адрес 234.xx.xx.xx по <a href="https://mazko.github.io/blog/posts/2017/10/03/setevoe-programmirovanie-udp-ntp-chasy/">UDP</a>. Вначале идёт фиксированная посылка синхронизации preamble. Содержимое preamble также известно приёмнику, сравнивая принятые пакеты с preamble он может высчитать константу, добавляемую при шифровании. Затем передаём общую длину полезных данных, их контрольную сумму и сами данные.</p>
 <p><em>receiver.py</em></p>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
 
@@ -198,21 +187,9 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 <p>В зависимости от зашумлённости эфира часть передаваемых пакетов теряется и это неизбежно. Для увеличения надёжности можно добавить Код Хемминга, но это уже удел производителя чипов и SDK со «Smart Config» на борту.</p>
 <p>Ключевые преимущества «Smart Config» — простота использования и возможность беспрепятственной интеграции в телефонное приложение устройства. Кроме того, если несколько устройств Wi-Fi одновременно находятся в режиме «Smart Config», одно телефонное приложение может обеспечить подключение их всех одновременно.</p>
 <p>Основной недостаток этой технологии заключается в том, что телефон должен подключаться к сети, используя ту полосу частот и ту скорость передачи данных, которые поддерживаются неподключенным устройством. Что если неподключенное устройство поддерживает диапазон 2,4 ГГц, а телефон использует для связи с двухдиапазонной сетью диапазон 5 ГГц ?</p>
-<p><a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip">Исходники</a>.</p><p>There are <a href="http://proiot.ru/blog/posts/2018/09/09/kak-rabotaet-smart-config/#disqus_thread">comments</a>.</p>                </article>
+<p><a href="https://mazko.github.io/blog/posts/2018/09/09/kak-rabotaet-smart-config/smartconfig.zip">Исходники</a>.</p><p>There are <a href="https://mazko.github.io/blog/posts/2018/09/09/kak-rabotaet-smart-config/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -221,7 +198,7 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/" rel="bookmark"
+                    <h1><a href="https://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/" rel="bookmark"
                            title="Permalink to Ищем свободные Wi-Fi каналы с помощью GnuPlot">Ищем свободные Wi-Fi каналы с помощью GnuPlot</a></h1>
                 </header>
 
@@ -232,13 +209,13 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/iot/">IoT</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/gnuplot">GnuPlot</a> <a href="http://proiot.ru/blog/tag/wi-fi">Wi-Fi</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/iot/">IoT</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/gnuplot">GnuPlot</a> <a href="https://mazko.github.io/blog/tag/wi-fi">Wi-Fi</a> </p>
 </footer><!-- /.post-info -->                <p>В эпоху интернета беспроводные Wi-Fi маршрутизаторы уже давно стали незаменимой частью нашего бытия. Wi-Fi сети работают в диапазоне 2,4 GHz либо 5 GHz и могут взаимно мешать работе друг друга например в ситуации, когда у вашего соседа тоже стоит роутер и работает на такой же частоте что и ваш …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="https://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/">read more</a>
+<p>There are <a href="https://mazko.github.io/blog/posts/2016/07/17/ishchem-svobodnye-wi-fi-kanaly-s-pomoshchiu-gnuplot/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
                 </section><!-- /#content -->
@@ -254,7 +231,7 @@ wlxbcf68565bc38  IEEE 802.11  ESSID:off/any
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

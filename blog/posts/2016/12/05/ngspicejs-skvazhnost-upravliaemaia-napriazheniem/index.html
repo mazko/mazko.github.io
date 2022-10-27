@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>NGSPICE.js - скважность управляемая напряжением</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/" rel="bookmark"
            title="Permalink to NGSPICE.js - скважность управляемая напряжением">NGSPICE.js - скважность управляемая напряжением</a></h1>
     </header>
 
@@ -51,14 +40,14 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> <a href="http://proiot.ru/blog/tag/ou">ОУ</a> <a href="http://proiot.ru/blog/tag/shim">ШИМ</a> </p>
-</footer><!-- /.post-info -->      <p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="http://proiot.ru/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
+<p>In <a href="https://mazko.github.io/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/geda">gEDA</a> <a href="https://mazko.github.io/blog/tag/ngspice">ngspice</a> <a href="https://mazko.github.io/blog/tag/ou">ОУ</a> <a href="https://mazko.github.io/blog/tag/shim">ШИМ</a> </p>
+</footer><!-- /.post-info -->      <p><a href="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/">Продолжаем</a> осваивать NGSPICE вообще и <a href="https://mazko.github.io/blog/posts/2016/11/18/ngspicejs-idealnyi-operatsionnyi-usilitel/">ОУ</a> в частности.</p>
 <p>Для периодических прямоугольных импульсов можно выделить три главных параметра: амплитуда, частота и т.н. <strong>коэффициент заполнения</strong> (duty cycle) - некая безразмерная физическая величина равная отношению длительности импульса к его периоду. <strong>Скважность</strong> характеризует то же самое свойство, что и коэффициент заполнения, просто это обратная величина <code>S = 1/D</code>, где S - скважность, D - коэффициент заполнения от 0 до 100%. Если длина импульса равна половине периода, то такой симметричный сигнал называется меандром. Чем больше коэффициент заполнения, тем большая <em>средняя</em> мощность передаётся от источника к нагрузке и так вплоть до 100% (постоянное напряжение на нагрузке). Поскольку цепь работает по принципу включён/выключен, то отсутствуют потери при передаче энергии и в результате управляя скважностью можно регулировать мощность на нагрузке от 0 до 100% с очень высоким коэффициентом  полезного действия (КПД). Говоря более формальным языком мы имеем дело с широтно-импульсной модуляцией (ШИМ, англ. pulse-width modulation (PWM)) - процессом управления мощностью, подводимой к нагрузке, путём изменения скважности импульсов при постоянной частоте.</p>
 <!-- 
-<a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/LT1007CS.txt"></a>
+<a href="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/LT1007CS.txt"></a>
 -->
 
 <p>В следующих схемах использовалась SPICE модель операционного усилителя LT1007:</p>
@@ -66,21 +55,21 @@
 </pre></div>
 
 
-<p><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single.sch">линейный преобразователь напряжение - скважность</a> | <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=9a661744aef8b6f491f7664f18f79a51">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single.sch">линейный преобразователь напряжение - скважность</a> | <a href="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single.net">netlist</a> | <a href="https://ngspice.js.org/?gist=9a661744aef8b6f491f7664f18f79a51">ngspice.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/show-img-comparator-single.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source comparator-single.net
 ngspice 2 -&gt; tran 10m 4
 ngspice 3 -&gt; plot v(out) v(triangle)
 </pre></div>
 
 
-<p>В основе лежет очень простая идея - сигнал с генератора треугольных импульсов поступает на вход <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компаратора</a>. Задавая опорное напряжение компаратора нарезаются <em>подобные треугольники</em> (углы равны). Как мы знаем (да да) из школьного курса по геометрии подобные треугольники характеризуются <em>коэффициентом подобия</em>  k, равным отношению сходственных сторон. При этом отношение длин  высот также равно коэффициенту подобия. В нашем случае высота это опорное напряжение компаратора, она опущена на сторону треугольника, которая является периодом следования треугольных импульсов. В итоге имеем <em>линейную зависимость</em> скважности от опорного напряжения на компараторе !</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>В основе лежет очень простая идея - сигнал с генератора треугольных импульсов поступает на вход <a href="https://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">компаратора</a>. Задавая опорное напряжение компаратора нарезаются <em>подобные треугольники</em> (углы равны). Как мы знаем (да да) из школьного курса по геометрии подобные треугольники характеризуются <em>коэффициентом подобия</em>  k, равным отношению сходственных сторон. При этом отношение длин  высот также равно коэффициенту подобия. В нашем случае высота это опорное напряжение компаратора, она опущена на сторону треугольника, которая является периодом следования треугольных импульсов. В итоге имеем <em>линейную зависимость</em> скважности от опорного напряжения на компараторе !</p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>На картинке сверху получился меандр т.к. скважность 0.5. Треугольник может быть с любыми углами. Для проверки <a href="https://ngspice.js.org/?gist=86f37ddc1a91384f8a7e88988986c8d8">поднимем</a> опорное напряжение с 5 до 7.5 командой <code>alter v2 7.5</code>, чтобы скважность <a href="https://bc.js.org/">была</a> <code>(3.75-1.5)/(3.75-0.75) = 0.75</code>:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single-canvas-75.png" style="width:100%; border:1px solid #ddd;"></p>
-<p>Осталось научиться генерировать треугольные импульсы и дело в шляпе. Один из вариантов использовать два ОУ - первый работает как триггер <a href="http://proiot.ru/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">Шмитта</a>, а второй - как <a href="http://proiot.ru/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегратор</a>.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/triangle-generator.sch">генератор треугольных импульсов на ОУ</a> | <a href="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/triangle-generator.net">netlist</a> | <a href="https://ngspice.js.org/?gist=7eb81126c9ae10683180e8213c3e0099">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/show-img-triangle-generator.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/comparator-single-canvas-75.png" style="width:100%; border:1px solid #ddd;"></p>
+<p>Осталось научиться генерировать треугольные импульсы и дело в шляпе. Один из вариантов использовать два ОУ - первый работает как триггер <a href="https://mazko.github.io/blog/posts/2016/11/24/ngspicejs-komparator-i-trigger-shmitta-na-ou/">Шмитта</a>, а второй - как <a href="https://mazko.github.io/blog/posts/2016/11/30/ngspicejs-analogovye-integrator-i-differentsiator/">интегратор</a>.</p>
+<p><a href="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/triangle-generator.sch">генератор треугольных импульсов на ОУ</a> | <a href="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/triangle-generator.net">netlist</a> | <a href="https://ngspice.js.org/?gist=7eb81126c9ae10683180e8213c3e0099">ngspice.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/show-img-triangle-generator.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source triangle-generator.net
 ngspice 2 -&gt; tran 10u 5m
 ngspice 3 -&gt; plot v(out)
@@ -88,24 +77,12 @@ ngspice 3 -&gt; plot v(out)
 
 
 <p>Частота треугольных импульсов <a href="https://bc.js.org/">рассчитывается</a> по формуле <code>1/(2*R5*C1) = 1/(2*10^5*10^-8) = 500 Гц</code></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/triangle-generator-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><a href="http://proiot.ru/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">Далее</a> стабилизаторы напряжения</p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/triangle-generator-canvas.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/12/06/ngspicejs-lineinye-stabilizatory-napriazheniia/">Далее</a> стабилизаторы напряжения</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -113,7 +90,7 @@ ngspice 3 -&gt; plot v(out)
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2016/12/05/ngspicejs-skvazhnost-upravliaemaia-napriazheniem/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -135,7 +112,7 @@ ngspice 3 -&gt; plot v(out)
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

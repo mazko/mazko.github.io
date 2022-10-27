@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>🏠 Интернет Всего 🚗 - Tika</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,31 +16,29 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/">Автоматический определь языка в Apache Tika</a></h1>
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/">Автоматический определь языка в Apache Tika</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2013-01-21T00:00:00+02:00">
                 Пн 21 января 2013
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/nlp">NLP</a> <a href="http://proiot.ru/blog/tag/tika">Tika</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> <a href="https://mazko.github.io/blog/tag/tika">Tika</a> </p>
 </footer><!-- /.post-info --><p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не поддерживаемых Tika из коробки, чтобы с их помощью можно было автоматически определять языки для текстов.
 Для начала было бы неплохо скачать и попробовать запустить само приложение <a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow">tika-app-1.2.jar</a> ~ 27 МБ. Как и любое другое <code>Java</code> приложение <a href="http://tika.apache.org/" rel="nofollow">Tika</a> можно запустить универсальным способом <code>java -jar tika-app-1.2.jar --help</code>, хотя в <em>Linux</em> можно ещё проще:</p>
 <div class="highlight"><pre><span></span>~$ java -version
@@ -152,7 +141,7 @@ sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
 
 
 <p>Сохраним как <code>ngp2js</code>, затем <code>chmod +x ngp2js</code> и запускаем: <code>./ngp2js tr.ngp</code>. В результате будет сгенерирован <code>tr.js</code> размером ~13 КБ.
-Если очень коротко резюмировать - для генерации качественных <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a> файлов нужно много хорошего связного текста заранее известного языка. Сам процесс создания <em>.ngp</em> профайлов очень прост и требует минимум усилий.</p><p>There are <a href="http://proiot.ru/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/#disqus_thread">comments</a>.</p>                </article>
+Если очень коротко резюмировать - для генерации качественных <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a> файлов нужно много хорошего связного текста заранее известного языка. Сам процесс создания <em>.ngp</em> профайлов очень прост и требует минимум усилий.</p><p>There are <a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
@@ -166,7 +155,7 @@ sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

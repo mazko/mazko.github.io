@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Введение в симуляцию электрических схем с помощью NGSPICE.js</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/" rel="bookmark"
            title="Permalink to Введение в симуляцию электрических схем с помощью NGSPICE.js">Введение в симуляцию электрических схем с помощью NGSPICE.js</a></h1>
     </header>
 
@@ -51,10 +40,10 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/electronics/">Electronics</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/geda">gEDA</a> <a href="http://proiot.ru/blog/tag/ngspice">ngspice</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/electronics/">Electronics</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/geda">gEDA</a> <a href="https://mazko.github.io/blog/tag/ngspice">ngspice</a> </p>
 </footer><!-- /.post-info -->      <p>SPICE (<strong>S</strong>imulation <strong>P</strong>rogram with <strong>I</strong>ntegrated <strong>C</strong>ircuit <strong>E</strong>mphasis) - алгоритм моделирования процессов, протекающих в электрических схемах, разработанный в конце 70-х годов в университете Беркли (Калифорния). NGSPICE является расширением оригинального Spice3f5 с открытым кодом.</p>
 <p>Наиболее часто используются 5 видов анализа электронных схем:</p>
 <ul>
@@ -75,14 +64,14 @@
 </li>
 </ul>
 <p>Начнём с проверки законов Кирхгофа с помощью простого OP анализа.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/ui.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>На вход ngspice приходит схема в формате <a href="https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D1%81%D0%BE%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B9" rel="nofollow">netlist</a>. В данном материале для редактирования электрических схем используется <a href="http://wiki.geda-project.org/geda:ngspice_and_gschem" rel="nofollow">gschem</a> + gnetlist.</p>
 <div class="highlight"><pre><span></span>~$ gnetlist -g spice-sdb -o kirghof.net kirghof.sch
 </pre></div>
 
 
-<p><a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch">схема</a> | <a href="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net">netlist</a> | <a href="https://ngspice.js.org/?gist=f416efb827fa91fd7badacc588c55bd8">ngspice.js</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/show-img-kirghof.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.sch">схема</a> | <a href="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/kirghof.net">netlist</a> | <a href="https://ngspice.js.org/?gist=f416efb827fa91fd7badacc588c55bd8">ngspice.js</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/show-img-kirghof.png" style="width:100%; border:1px solid #ddd;"></p>
 <div class="highlight"><pre><span></span>ngspice 1 -&gt; source kirghof.net
 ngspice 2 -&gt; op
 ngspice 3 -&gt; show v1 v2 v3
@@ -93,23 +82,11 @@ ngspice 4 -&gt; print i(v1) i(v2) i(v3)
 <p>Результат: i(v1) = -2.54545 | i(v2) = -1.18182 | i(v3) = -3.72727</p>
 <p><strong>Первый закон Кирхгофа</strong>: <em>алгебраическая сумма токов, сходящихся в любом узле, равна нулю</em> ( <code>-2.54545 -1.18182 = -3.72727</code> )</p>
 <p><strong>Второй закон Кирхгофа</strong>: <em>алгебраическая сумма падений напряжений на отдельных участках замкнутого контура, произвольно выделенного в сложной разветвленной цепи, равна алгебраической сумме ЭДС в этом контуре</em> ( <code>2.54545*10 - 1.18182*30 = 40-50</code> )</p>
-<p><a href="http://proiot.ru/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">Далее</a> RC - цепочка.</p>
+<p><a href="https://mazko.github.io/blog/posts/2016/10/29/ngspicejs-rc-filtr-nizhnikh-chastot/">Далее</a> RC - цепочка.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -117,7 +94,7 @@ ngspice 4 -&gt; print i(v1) i(v2) i(v3)
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2016/10/28/vvedenie-v-simuliatsiiu-elektricheskikh-skhem-s-pomoshchiu-ngspicejs/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -139,7 +116,7 @@ ngspice 4 -&gt; print i(v1) i(v2) i(v3)
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

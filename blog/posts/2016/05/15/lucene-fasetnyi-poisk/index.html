@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Lucene - фасетный поиск</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/" rel="bookmark"
            title="Permalink to Lucene - фасетный поиск">Lucene - фасетный поиск</a></h1>
     </header>
 
@@ -51,13 +40,13 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> <a href="http://proiot.ru/blog/tag/maven">maven</a> <a href="http://proiot.ru/blog/tag/jstl">JSTL</a> </p>
-</footer><!-- /.post-info -->      <p>После того, как пользователь получает первые результаты <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый последующий запрос пользователя сужает выборку до тех пор пока цель поиска не будет достигнута.</p>
+<p>In <a href="https://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="https://mazko.github.io/blog/tag/maven">maven</a> <a href="https://mazko.github.io/blog/tag/jstl">JSTL</a> </p>
+</footer><!-- /.post-info -->      <p>После того, как пользователь получает первые результаты <a href="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поиска</a> он наверняка захочет ещё дополнительно отфильтровывать результаты выдачи. Фасетный поиск на этапе <a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">индексации</a> сохраняет дополнительную информацию для вычисления всех возможный уточняющих вариантов последующей фильтрации поисковой выдачи, которые как бы <em>подсказывают</em> пользователю что можно ещё уточнить. Таким образом с помощью фасетной фильтрации каждый последующий запрос пользователя сужает выборку до тех пор пока цель поиска не будет достигнута.</p>
 <p>В файле <code>Top.json</code> хранится ~15k дамп фильмов с кинопоиска на май 2016, на котором будем тестировать качество фасетного поиска. В дампе хранится оценка, название, id, актёры, режиссёры, композиторы, жанр, дата выхода, страна производитель, слоган и краткое описание для каждого фильма.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/facet.gif" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/facet.gif" style="width:100%; border:1px solid #ddd;"></p>
 <p>Структура мульти-модульного <strong>maven</strong> проекта, где в корневом <code>pom.xml</code> обозначена общая зависимость от Lucene, а также указана минимальная версия Java 1.8 и выше:</p>
 <div class="highlight"><pre><span></span>~$ tree
 .
@@ -727,26 +716,14 @@
 </pre></div>
 
 
-<!-- <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/download-kinopoisk.es6"></a> -->
+<!-- <a href="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/download-kinopoisk.es6"></a> -->
 
-<p><a href="http://proiot.ru/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/">Далее</a> автодополнение пользовательского ввода.</p>
-<p><a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/lucene-tutorial.zip">Исходники</a></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/05/20/lucene-avtozapolnenie-vvoda-polzovatelia/">Далее</a> автодополнение пользовательского ввода.</p>
+<p><a href="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/lucene-tutorial.zip">Исходники</a></p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -754,7 +731,7 @@
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2016/05/15/lucene-fasetnyi-poisk/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -776,7 +753,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

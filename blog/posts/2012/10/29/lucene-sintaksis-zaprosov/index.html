@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Lucene - синтаксис запросов</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/" rel="bookmark"
            title="Permalink to Lucene - синтаксис запросов">Lucene - синтаксис запросов</a></h1>
     </header>
 
@@ -51,11 +40,11 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/java/">Java</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/lucene">Lucene</a> </p>
-</footer><!-- /.post-info -->      <p>Как уже упоминалось <a href="http://proiot.ru/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">ранее</a>, между строкой запроса, которую вводит пользователь для осуществления поиска и  методом, реализующим непосредственно сам поиск в <em>Lucene</em>, имеется промежуточный класс - <code>Query</code>. Этот класс можно создавать программно - причём можно создавать даже очень сложный  <code>Query</code>, используя комбинацию из нескольких из них, тем самым достигая наилучших результатов поиска. Однако последнее не всегда целесообразно делать вручную - в <em>Lucene</em> уже имеется определённый синтаксис запросов, который позволяет распарсить вводимую пользователем строку и тем самым автоматически создать сложный <code>Query</code>. До этого момента мы не использовали данный механизм, принудительно экранируя все запросы методом <code>QueryParser.escape</code>:</p>
+<p>In <a href="https://mazko.github.io/blog/category/java/">Java</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/lucene">Lucene</a> </p>
+</footer><!-- /.post-info -->      <p>Как уже упоминалось <a href="https://mazko.github.io/blog/posts/2012/10/21/lucene-postranichnyi-poisk/">ранее</a>, между строкой запроса, которую вводит пользователь для осуществления поиска и  методом, реализующим непосредственно сам поиск в <em>Lucene</em>, имеется промежуточный класс - <code>Query</code>. Этот класс можно создавать программно - причём можно создавать даже очень сложный  <code>Query</code>, используя комбинацию из нескольких из них, тем самым достигая наилучших результатов поиска. Однако последнее не всегда целесообразно делать вручную - в <em>Lucene</em> уже имеется определённый синтаксис запросов, который позволяет распарсить вводимую пользователем строку и тем самым автоматически создать сложный <code>Query</code>. До этого момента мы не использовали данный механизм, принудительно экранируя все запросы методом <code>QueryParser.escape</code>:</p>
 <p><em>server/src/main/java/server/QueryHelper.java</em></p>
 <div class="highlight"><pre><span></span><span class="kn">package</span> <span class="nn">server</span><span class="o">;</span>
 
@@ -211,37 +200,25 @@
 
 <h3>Синтаксис</h3>
 <p>Семейство <em>WildcardQuery</em>: <strong>бо?</strong> - вместо '?' может быть ОДИН любой символ; <strong>бо*</strong> любое количество <strong>0..n</strong> любых символов после 'бо'</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix1.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix2.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix3.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix1.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix2.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/prefix3.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><em>FuzzyQuery</em> - ищутся похожие слова:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/fuzzy.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/fuzzy.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Поиск по конкретным полям в индексе:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/field.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/field.png" style="width:100%; border:1px solid #ddd;"></p>
 <p>Булевые запросы:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/content_boolean.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/field_boolean_not.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/content_boolean.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/field_boolean_not.png" style="width:100%; border:1px solid #ddd;"></p>
 <p><em>PhraseQuery</em> - поиск фразы. С помощью '~' можно задать максимальное расстояние между словами фразы.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/phrase.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/phrase_fuzzy.png" style="width:100%; border:1px solid #ddd;"></p>
-<p><a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">Далее</a> рассмотрим фасетный поиск.</p>
-<p><a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/lucene-tutorial.zip">Исходники</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/phrase.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/phrase_fuzzy.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><a href="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">Далее</a> рассмотрим фасетный поиск.</p>
+<p><a href="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/lucene-tutorial.zip">Исходники</a></p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -249,7 +226,7 @@
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2012/10/29/lucene-sintaksis-zaprosov/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -271,7 +248,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

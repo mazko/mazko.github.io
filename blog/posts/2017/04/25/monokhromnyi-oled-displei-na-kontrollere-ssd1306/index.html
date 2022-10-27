@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Монохромный OLED дисплей на контроллере SSD1306</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/" rel="bookmark"
            title="Permalink to Монохромный OLED дисплей на контроллере SSD1306">Монохромный OLED дисплей на контроллере SSD1306</a></h1>
     </header>
 
@@ -51,13 +40,13 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/ssd1306">SSD1306</a> </p>
-</footer><!-- /.post-info -->      <p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="http://proiot.ru/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один бит для синхронизации этой парочки итого минимум 10 ног микроконтроллера. Последовательные интерфейсы позволяют обойтись меньшим количеством соединений, но теоретически уступают в скорости обмена данными. У микроконтроллера msp430f1611 предостаточно выводов и в данном обучающем материале рассматривается параллельный интерфейс для которого не требуется дополнительно настраивать периферию I2C/SPI, что позволяет сосредоточиться непосредственно на особенностях SSD1306. При переходе на последовательный интерфейс достаточно будет изменить только две функции - <code>ssd1306_write_data</code> и <code>ssd1306_write_instruction</code>.</p>
-<p><a href="http://mazko.github.io/MSP430.js/4a1dee2b02e6d149594b10d03b7925c8">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/img.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/msp430">msp430</a> <a href="https://mazko.github.io/blog/tag/ssd1306">SSD1306</a> </p>
+</footer><!-- /.post-info -->      <p>Данный двухцветный (чёрно-белый) экранчик имеет разрешение 128х64 пиксела и контроллер SSD1306 с управлением либо по параллельному 8-битному интерфейсу 6800/8080 либо по последовательному I2C/SPI. Параллельный интерфейс в целом похож на <a href="https://mazko.github.io/blog/posts/2017/01/27/picsimjs-simvolnyi-displei-na-baze-hd44780/">HD44780</a> - для одностороннего обмена данными (записи) выставляются данные 8 бит, ещё один бит указывает на команду/данные, и один бит для синхронизации этой парочки итого минимум 10 ног микроконтроллера. Последовательные интерфейсы позволяют обойтись меньшим количеством соединений, но теоретически уступают в скорости обмена данными. У микроконтроллера msp430f1611 предостаточно выводов и в данном обучающем материале рассматривается параллельный интерфейс для которого не требуется дополнительно настраивать периферию I2C/SPI, что позволяет сосредоточиться непосредственно на особенностях SSD1306. При переходе на последовательный интерфейс достаточно будет изменить только две функции - <code>ssd1306_write_data</code> и <code>ssd1306_write_instruction</code>.</p>
+<p><a href="http://mazko.github.io/MSP430.js/4a1dee2b02e6d149594b10d03b7925c8">MSP430.js</a> | <a href="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/img.zip">исходники</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
 <p>Управление SSD1306 ограничивается двумя функциями - запись данных и запись команд. Карта памяти GDDRAM организована 8-ю страницами по 128 байт. Система координат имеет начало в левом верхнем углу. Для записи произвольного отображаемого байта страницы по заданному адресу используется функция <code>ssd1306_write_byte</code>. Организация памяти SSD1306 не даёт возможность задавать отдельную точку на дисплее, только байт. Если потребуется прорисовывать отдельные пиксели вместо байт нужно держать все пиксели в памяти микроконтроллера (буфер 128x8) и периодически скидывать их на дисплей побайтово. При записи последовательности байт достаточно задать начальный адрес т.к. каждое обращение к GDDRAM приводит к автоматическому инкременту адреса столбца, по достижении конечного значения (128) счётчик адреса столбца сбрасывается в начальное значение (0), а счётчик адреса страницы увеличивается на единицу. После достижения счётчиком адреса страницы конечного значения (8) оба счётчика сбросятся в начальные значения и процесс пойдёт по второму кругу.</p>
 <p><em>ssd1306.c</em></p>
 <div class="highlight"><pre><span></span><span class="c1">// Address setting commands</span>
@@ -131,8 +120,8 @@
 
 
 <p>Для отображения текста тоже понадобится набор готовых изображений для каждого символа. Наиболее простой случай - моноширинный шрифт все знаки (площадки знаков) которого имеют одинаковую ширину. Например <a href="https://github.com/adafruit/Adafruit-GFX-Library/blob/master/glcdfont.c" rel="nofollow">шрифт</a> для ASCII символов 5x7.</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.png" style="width:55%; margin: 0 auto; display:block;"></p>
-<p><a href="http://mazko.github.io/MSP430.js/56a600e7efa1f648c5305d652d14be6a">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.zip">исходники</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><a href="http://mazko.github.io/MSP430.js/56a600e7efa1f648c5305d652d14be6a">MSP430.js</a> | <a href="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/font.zip">исходники</a></p>
 <div class="highlight"><pre><span></span><span class="cm">/*</span>
 
 <span class="cm">reset &amp;&amp; (export GCC_DIR=~/ti/msp430_gcc ; </span>
@@ -194,24 +183,12 @@
 </pre></div>
 
 
-<p>Здесь <code>STATIC_ASSERT</code> это <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиома</a> Си, проверка на этапе компиляции будет полезна в случае смены шрифта - на ту же кириллицу например. Текущая реализация конечно простейшая, смещение по горизонтали задаётся в пикселях, но накладывается ограничение на смещение по вертикали - максимум 8 строк. В более сложных случаях можно задействовать какую-нибудь готовую графическую библиотеку для графического дисплея наподобие <a href="http://proiot.ru/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/">uGFX</a>.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Далее</a> операционная система реального времени FreeRTOS.</p>
+<p>Здесь <code>STATIC_ASSERT</code> это <a href="https://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/">идиома</a> Си, проверка на этапе компиляции будет полезна в случае смены шрифта - на ту же кириллицу например. Текущая реализация конечно простейшая, смещение по горизонтали задаётся в пикселях, но накладывается ограничение на смещение по вертикали - максимум 8 строк. В более сложных случаях можно задействовать какую-нибудь готовую графическую библиотеку для графического дисплея наподобие <a href="https://mazko.github.io/blog/posts/2017/05/20/ugfx-biblioteka-gui-dlia-mikrokontrollerov/">uGFX</a>.</p>
+<p><a href="https://mazko.github.io/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">Далее</a> операционная система реального времени FreeRTOS.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -219,7 +196,7 @@
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -241,7 +218,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

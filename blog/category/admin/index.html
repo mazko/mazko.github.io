@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>🏠 Интернет Всего 🚗 - Admin</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,34 +16,32 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li class="active"><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
-
-
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">Язык обработки структурированных текстов AWK</a></h1>
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/">Язык обработки структурированных текстов AWK</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2017-11-17T00:00:00+02:00">
                 Пт 17 ноября 2017
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/regex">regex</a> </p>
 </footer><!-- /.post-info --><p>«AWK» — интерпретируемый Тьюринг-полный язык программирования, предназначенный для обработки текста и создания отчетов. Необычное название языка происходит от первых букв фамилий авторов — <em>Alfred V. <strong>A</strong>ho</em>, <em>Peter J. <strong>W</strong>einberger</em> и <em>Brian W. <strong>K</strong>ernighan</em>. </p>
-<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида «шаблон — действие», где шаблон является <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярным выражением</a>, а действие — последовательностью команд или функций. Если шаблон не указан, то действие выполняется для любой записи. Если не указано действие, то запись выводится в выходной поток. Каждая запись поочерёдно сравнивается со всеми шаблонами, и каждый раз когда она соответствует шаблону, выполняется указанное действие. Каждая запись в свою очередь делится на поля. Упрощенно, если говорить об обычном тексте и не учитывать возможности настройки «AWK», то запись — это <strong>строка</strong>, а поле — это <strong>слово</strong> в строке.</p>
-<p>Если сравнивать редактор <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">SED</a> и язык «AWK», то в первую очередь стоит вспомнить, что оба они являются Тьюринг-полными. Это даёт основание утверждать, что в теории любая задача может быть успешно решена как на «SED» так и на «AWK», вопрос только в том, сколько времени и нервов это займёт. «AWK» выводит обработку текстовых данных на более высокий уровень. Благодаря «AWK» в нашем распоряжении оказывается полноценный язык программирования, а не ограниченный набор команд, отдаваемых редактору. Математические операции, поддержка переменных и ассоциативных массивов, управляющие конструкции <code>if-then</code>, циклы и т.д. всё это поддерживается в «AWK» из коробки.</p>
+<p>«AWK» рассматривает входной поток как список записей. Программа на «AWK» представляет из себя набор правил вида «шаблон — действие», где шаблон является <a href="https://mazko.github.io/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярным выражением</a>, а действие — последовательностью команд или функций. Если шаблон не указан, то действие выполняется для любой записи. Если не указано действие, то запись выводится в выходной поток. Каждая запись поочерёдно сравнивается со всеми шаблонами, и каждый раз когда она соответствует шаблону, выполняется указанное действие. Каждая запись в свою очередь делится на поля. Упрощенно, если говорить об обычном тексте и не учитывать возможности настройки «AWK», то запись — это <strong>строка</strong>, а поле — это <strong>слово</strong> в строке.</p>
+<p>Если сравнивать редактор <a href="https://mazko.github.io/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">SED</a> и язык «AWK», то в первую очередь стоит вспомнить, что оба они являются Тьюринг-полными. Это даёт основание утверждать, что в теории любая задача может быть успешно решена как на «SED» так и на «AWK», вопрос только в том, сколько времени и нервов это займёт. «AWK» выводит обработку текстовых данных на более высокий уровень. Благодаря «AWK» в нашем распоряжении оказывается полноценный язык программирования, а не ограниченный набор команд, отдаваемых редактору. Математические операции, поддержка переменных и ассоциативных массивов, управляющие конструкции <code>if-then</code>, циклы и т.д. всё это поддерживается в «AWK» из коробки.</p>
 <h2>ОБРАЗЕЦ</h2>
 <p><a href="http://awk.js.org/index.html?gist=e625cdb4661bf560d0c94010c795d7d8">GIST</a> | Простой пример «AWK» — обычная читалка текстовых файлов с выводом на экран. При оформлении этого и последующих примеров будем придерживаться следующего порядка: сверху параметры командной строки, внизу стандартные потоки слева ввода <code>stdin</code> и справа вывода <code>stdout</code>:</p>
 <pre style="border:1px solid #ddd;">
@@ -102,7 +91,7 @@ Thomas
 
 </div>
 
-<p><a href="http://awk.js.org/index.html?gist=764f8f9cd2ec6b7f8e76bb57816f4349">GIST</a> | Иногда в качестве разделителей полей удобно использовать не пробелы или символы табуляции, а какой-то особый шаблон. Выше мы упоминали ключ <code>-F</code>, теперь пример, где разделитель полей задаётся с помощью <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярного выражения</a>:</p>
+<p><a href="http://awk.js.org/index.html?gist=764f8f9cd2ec6b7f8e76bb57816f4349">GIST</a> | Иногда в качестве разделителей полей удобно использовать не пробелы или символы табуляции, а какой-то особый шаблон. Выше мы упоминали ключ <code>-F</code>, теперь пример, где разделитель полей задаётся с помощью <a href="https://mazko.github.io/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярного выражения</a>:</p>
 <pre style="border:1px solid #ddd;">
 -F '[-,]+' '{print $1 " ("$3-$2")"}'
 </pre>
@@ -127,7 +116,7 @@ Thomas Jefferson (8)
 
 <p>Для более тонкой настройки в «AWK» предусмотрен свой собственный комплект встроенных переменных. Одна из таких переменных с именем <code>RS</code> позволяет задать особый разделитель записей. Подробнее о встроенных переменных чуть позже. </p>
 <h2>РЕГУЛЯРНЫЕ ВЫРАЖЕНИЯ И БЛОКИ</h2>
-<p><a href="http://awk.js.org/index.html?gist=bcc5225c73d3c49634c367217ab07eaa">GIST</a> | «AWK» позволяет использовать <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярные выражения</a> для избирательного выполнения отдельных блоков программы в зависимости от того, совпадает или нет регулярное выражение с текущей записью:</p>
+<p><a href="http://awk.js.org/index.html?gist=bcc5225c73d3c49634c367217ab07eaa">GIST</a> | «AWK» позволяет использовать <a href="https://mazko.github.io/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">регулярные выражения</a> для избирательного выполнения отдельных блоков программы в зависимости от того, совпадает или нет регулярное выражение с текущей записью:</p>
 <pre style="border:1px solid #ddd;">
 '/on/ { print }'
 </pre>
@@ -460,21 +449,9 @@ Maximum = 20
 
 </div>
 
-<p>«AWK» читает всю программу перед началом ее выполнения, так что необязательно помещать определения функций перед вызовом, они могут располагаться где угодно между правилами программы в любой последовательности. Правильное имя функции подобно правильному имени переменной: последовательность букв, цифр и подчеркиваний, начинающаяся не с цифры. </p><p>There are <a href="http://proiot.ru/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </article>
+<p>«AWK» читает всю программу перед началом ее выполнения, так что необязательно помещать определения функций перед вызовом, они могут располагаться где угодно между правилами программы в любой последовательности. Правильное имя функции подобно правильному имени переменной: последовательность букв, цифр и подчеркиваний, начинающаяся не с цифры. </p><p>There are <a href="https://mazko.github.io/blog/posts/2017/11/17/iazyk-obrabotki-strukturirovannykh-tekstov-awk/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
                 <section id="content" class="body">
                     <h1>Other articles</h1>
@@ -483,7 +460,7 @@ Maximum = 20
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="bookmark"
+                    <h1><a href="https://mazko.github.io/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/" rel="bookmark"
                            title="Permalink to Неинтерактивный текстовый редактор SED">Неинтерактивный текстовый редактор SED</a></h1>
                 </header>
 
@@ -494,18 +471,18 @@ Maximum = 20
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/regex">regex</a> </p>
 </footer><!-- /.post-info -->                <p>Все мы привыкли работать в интерактивных текстовых редакторах, при этом обычно используя клавиатуру, мышку или другое устройство ввода. Интерактивные редакторы вначале загружают весь текст документа, а затем применяют к нему команды от пользователя по одной, в то время как «sed» (stream editor) вначале загружает в себя набор команд, а затем …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="https://mazko.github.io/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/">read more</a>
+<p>There are <a href="https://mazko.github.io/blog/posts/2017/11/11/neinteraktivnyi-tekstovyi-redaktor-sed/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="bookmark"
+                    <h1><a href="https://mazko.github.io/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/" rel="bookmark"
                            title="Permalink to Ликбез по GREP и регулярным выражениям">Ликбез по GREP и регулярным выражениям</a></h1>
                 </header>
 
@@ -516,18 +493,18 @@ Maximum = 20
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/regex">regex</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/regex">regex</a> </p>
 </footer><!-- /.post-info -->                <p>Одна из наиболее полезных и многофункциональных команд в терминале Linux – команда «grep». Название представляет собой акроним английской фразы «search Globally for lines matching the Regular Expression, and Print them» (искать везде соответствующие регулярному выражению строки и выводить их). Команда «grep» просматривает входной поток последовательно, строка за строкой, в поисках совпадений …</p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="https://mazko.github.io/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/">read more</a>
+<p>There are <a href="https://mazko.github.io/blog/posts/2017/11/03/likbez-po-grep-i-reguliarnym-vyrazheniiam/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
+                    <h1><a href="https://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
                            title="Permalink to ElasticSearch - практическое введение">ElasticSearch - практическое введение</a></h1>
                 </header>
 
@@ -538,19 +515,19 @@ Maximum = 20
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/elastic">Elastic</a> <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/docker">Docker</a> </p>
-</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="http://proiot.ru/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="http://proiot.ru/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="http://proiot.ru/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="http://proiot.ru/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
-<a href="http://proiot.ru/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку …</a></p>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/elastic">Elastic</a> <a href="https://mazko.github.io/blog/tag/rest">REST</a> <a href="https://mazko.github.io/blog/tag/docker">Docker</a> </p>
+</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
+<a href="https://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку …</a></p>
+                <a class="readmore" href="https://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
+<p>There are <a href="https://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
 
             <li><article class="hentry">
                 <header>
-                    <h1><a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/" rel="bookmark"
+                    <h1><a href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/" rel="bookmark"
                            title="Permalink to Как соорудить удобный перевод текста всего за пару минут">Как соорудить удобный перевод текста всего за пару минут</a></h1>
                 </header>
 
@@ -561,10 +538,10 @@ Maximum = 20
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/rest">REST</a> <a href="http://proiot.ru/blog/tag/nlp">NLP</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/rest">REST</a> <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> </p>
 </footer><!-- /.post-info -->                <p>Стандартная ситуация: читаем какую-нибудь <em>e-book</em> на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:</p>
 <ul>
 <li>
@@ -575,13 +552,13 @@ Maximum = 20
 </li>
 <li>
 <p>Параллельно скармливает текст веб-сервису переводчику, целевой язык …</p></li></ul>
-                <a class="readmore" href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
-<p>There are <a href="http://proiot.ru/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
+                <a class="readmore" href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
+<p>There are <a href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
             </article></li>
                 </ol><!-- /#posts-list -->
 <p class="paginator">
     Page 1 / 2
-        <a href="http://proiot.ru/blog/category/admin/index2.html">&raquo;</a>
+        <a href="https://mazko.github.io/blog/category/admin/index2.html">&raquo;</a>
 </p>
                 </section><!-- /#content -->
         <section id="extras" class="body">
@@ -596,7 +573,7 @@ Maximum = 20
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

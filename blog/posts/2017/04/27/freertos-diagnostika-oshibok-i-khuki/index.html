@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>FreeRTOS - диагностика ошибок и хуки</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/" rel="bookmark"
            title="Permalink to FreeRTOS - диагностика ошибок и хуки">FreeRTOS - диагностика ошибок и хуки</a></h1>
     </header>
 
@@ -51,14 +40,14 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/msp430">msp430</a> <a href="http://proiot.ru/blog/tag/rtos">RTOS</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/msp430">msp430</a> <a href="https://mazko.github.io/blog/tag/rtos">RTOS</a> </p>
 </footer><!-- /.post-info -->      <blockquote>
 <p>Programming is like sex. One mistake and you have to support it for the rest of your life. — Michael Sinz</p>
 </blockquote>
-<p>Продолжаем осваивать <a href="http://proiot.ru/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
+<p>Продолжаем осваивать <a href="https://mazko.github.io/blog/posts/2017/04/26/freertos-operatsionnaia-sistema-dlia-mikrokontrollerov/">FreeRTOS</a>.</p>
 <p>Рассмотренный ранее пример отлично работает, но присутствуют элементы магии — например какой размер стека нужно выделять под задачу да и вообще как правильно ловить ошибки ядра RTOS, которые нельзя проверить на этапе компиляции приложения ? Во FreeRTOS для этих целей предусмотрены следующие механизмы:</p>
 <ul>
 <li>
@@ -68,10 +57,10 @@
 <p>во FreeRTOS реализован собственный механизм динамического выделения памяти, а для диагностики подобного рода ошибок предусмотрены специальные перехватчики (хуки) <code>configUSE_MALLOC_FAILED_HOOK</code> и <code>configCHECK_FOR_STACK_OVERFLOW</code> и возможно что-то еще — доки в руки</p>
 </li>
 </ul>
-<p>В нашем устройстве присутствует монохромный <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">дисплей</a> и туда же будем кидать все диагностированные ошибки. Будет две задачи — анимация на левых светодиодах и вывод различной системной информации на экран. При обнаружении ошибки ядра или выделения памяти будет «BSoD» — не баг, это фича. Будем надеяться заказчик нашего устройства его не увидит — для этого в релизе, уже после того как всё заработает как надо, диагностику ошибок FreeRTOS можно (даже нужно) просто закомментировать.</p>
-<p><a href="http://mazko.github.io/MSP430.js/24a92b4d7a9052f4214b73dac3355e24">MSP430.js</a> | <a href="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/hooks.zip">исходники</a></p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
-<p>Вывод текста на экран осуществляется функциями с префиксом <code>draw</code>, как это работает было <a href="http://proiot.ru/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">рассмотрено</a> в одном из предыдущих материалов. После внимательного изучения официальной документации добавим в где-то в конец файла конфигурации <em>FreeRTOSConfig.h</em> следующее:</p>
+<p>В нашем устройстве присутствует монохромный <a href="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">дисплей</a> и туда же будем кидать все диагностированные ошибки. Будет две задачи — анимация на левых светодиодах и вывод различной системной информации на экран. При обнаружении ошибки ядра или выделения памяти будет «BSoD» — не баг, это фича. Будем надеяться заказчик нашего устройства его не увидит — для этого в релизе, уже после того как всё заработает как надо, диагностику ошибок FreeRTOS можно (даже нужно) просто закомментировать.</p>
+<p><a href="http://mazko.github.io/MSP430.js/24a92b4d7a9052f4214b73dac3355e24">MSP430.js</a> | <a href="https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/hooks.zip">исходники</a></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/ui.gif" style="width:55%; margin: 0 auto; display:block;"></p>
+<p>Вывод текста на экран осуществляется функциями с префиксом <code>draw</code>, как это работает было <a href="https://mazko.github.io/blog/posts/2017/04/25/monokhromnyi-oled-displei-na-kontrollere-ssd1306/">рассмотрено</a> в одном из предыдущих материалов. После внимательного изучения официальной документации добавим в где-то в конец файла конфигурации <em>FreeRTOSConfig.h</em> следующее:</p>
 <p><em>FreeRTOSConfig.h</em></p>
 <div class="highlight"><pre><span></span><span class="c1">// tutorial: 2</span>
 <span class="k">extern</span> <span class="kt">void</span> <span class="nf">vAssertCalled</span><span class="p">(</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="k">const</span> <span class="p">);</span>
@@ -188,30 +177,18 @@
 
 
 <p>И как вы думаете что произойдёт при запуске ? А получим мы вот такую красоту !</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/stackoverflow.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/stackoverflow.png" style="width:55%; margin: 0 auto; display:block;"></p>
 <p>Как несложно догадаться сработал перехватчик <code>vApplicationStackOverflowHook</code>. Чтобы починить это достаточно увеличить <code>configMINIMAL_STACK_SIZE</code> с 50 до 100. Точно так же в качестве эксперимента можно теперь уменьшить <code>configTOTAL_HEAP_SIZE</code> скажем до 42 для проверки хука <code>vApplicationMallocFailedHook</code>:</p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/maloocfailed.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/maloocfailed.png" style="width:55%; margin: 0 auto; display:block;"></p>
 <p>Ну и напоследок достаточно при вызове <code>vTaskDelayUntil</code> передать в качестве любого аргумента 0 и сработает <code>configASSERT</code>, который знает имя файла и номер строки где случилась ошибка диагностики ядра: </p>
-<p><img alt="screenshot" src="http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/assert.png" style="width:55%; margin: 0 auto; display:block;"></p>
+<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/assert.png" style="width:55%; margin: 0 auto; display:block;"></p>
 <p>Ещё у FreeRTOS есть один интересный перехватчик для задачи Бездействия (Idle task) — <code>configUSE_IDLE_HOOK</code>. Задача idle автоматически создаётся при запуске планировщика и она постоянно находится в состоянии готовности к выполнению. Ее приоритет задается макроопределением <code>tskIDLE_PRIORITY</code> как самый низкий в программе (обычно 0). Это гарантирует, что задача Бездействие не будет выполняться, пока в программе есть хотя бы одна задача в состоянии готовности к выполнению и как только появится любая готовая к выполнению задача, задача Бездействие будет ею вытеснена. Ещё эта задача занимается освобождением памяти, выделенной задачам, которые были удалены и поэтому в приложениях, использующих <code>vTaskDelete()</code>, важно обеспечить время для задачи idle. Также часто задачу Бездействие используют для того, чтобы вызывать режим энергосбережения процессора.</p>
-<p><a href="http://proiot.ru/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">Далее</a> о проблемах организации
+<p><a href="https://mazko.github.io/blog/posts/2017/04/28/freertos-sovmestnyi-dostup-k-obshchim-resursam/">Далее</a> о проблемах организации
 совместного доступа нескольких задач/прерываний к одному ресурсу.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -219,7 +196,7 @@
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2017/04/27/freertos-diagnostika-oshibok-i-khuki/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -241,7 +218,7 @@
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>

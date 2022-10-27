@@ -3,17 +3,8 @@
 <head>
         <meta charset="utf-8" />
         <title>Автомат с конечным числом состояний</title>
-        <link rel="stylesheet" href="http://proiot.ru/blog/theme/css/main.css" />
-        <link href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
-
-        <script>
-            (function(){
-                var loc = window.location.href+'';
-                if (loc.indexOf('https://')==0){
-                    window.location.href = loc.replace('https://','http://');
-                }
-            })();
-        </script>
+        <link rel="stylesheet" href="https://mazko.github.io/blog/theme/css/main.css" />
+        <link href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="🏠 Интернет Всего 🚗 Atom Feed" />
 
         <!--[if IE]>
             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -25,22 +16,20 @@
 <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
 </a>
         <header id="banner" class="body">
-                <h1><a href="http://proiot.ru/">🏠 Интернет Всего 🚗 </a></h1>
+                <h1><a href="https://mazko.github.io/">🏠 Интернет Всего 🚗 </a></h1>
                 <nav><ul>
-                    <li><a href="http://proiot.ru/blog/category/admin/">Admin</a></li>
-                    <li><a href="http://proiot.ru/blog/category/electronics/">Electronics</a></li>
-                    <li class="active"><a href="http://proiot.ru/blog/category/embedded/">Embedded</a></li>
-                    <li><a href="http://proiot.ru/blog/category/iot/">IoT</a></li>
-                    <li><a href="http://proiot.ru/blog/category/java/">Java</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/admin/">Admin</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
+                    <li class="active"><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
+                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
-
-
 <section id="content" class="body">
   <article>
     <header>
       <h1 class="entry-title">
-        <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/" rel="bookmark"
+        <a href="https://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/" rel="bookmark"
            title="Permalink to Автомат с конечным числом состояний">Автомат с конечным числом состояний</a></h1>
     </header>
 
@@ -51,19 +40,19 @@
         </abbr>
 
         <address class="vcard author">
-                By                         <a class="url fn" href="http://proiot.ru/blog/author/oleg-mazko/">Oleg Mazko</a>
+                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
         </address>
-<p>In <a href="http://proiot.ru/blog/category/embedded/">Embedded</a>.</p>
-<p>tags: <a href="http://proiot.ru/blog/tag/fsm">FSM</a> </p>
+<p>In <a href="https://mazko.github.io/blog/category/embedded/">Embedded</a>.</p>
+<p>tags: <a href="https://mazko.github.io/blog/tag/fsm">FSM</a> </p>
 </footer><!-- /.post-info -->      <p>Простым примером машины с конечным числом состояний (<strong>FSM</strong> - <em>Finite State Machine</em>) может быть Китайская гирлянда. Конструктивно она представляет из себя черную коробочку с кнопочкой, два провода для питания (220 В), остальные провода для разноцветных лампочек, которыми управляет готовая программа. Внутри коробочки находится <em>микроконтроллер</em> и сопутствующая обвязка. Мы не будем углубляться в детали схемотехники а сконцентрируемся на различных методиках решения подобных задач и их анализе т.е. на программировании с использованием чистого <em>ANSI C</em>.</p>
 <p>Для экспериментов нам понадобиться какой-то тестовый макет, который можно запустить / эмулировать в виртуальной среде (выбор пал на <em>Proteus VSM</em>). Есть простенький микроконтроллер (PIC16F1823), который управляет лампочками (гирляндой) и может менять их яркость с помощью встроенного цифро-аналогового преобразователя ЦАП (в реальном устройстве для этого лучше использовать ШИМ, ЦАП лучше подходит для эмуляции в <em>Proteus VSM</em>). Быстро вникнуть в суть дела можно посмотрев следующее видео:</p>
 <video width="100%" controls>
-  <source src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/video.mp4" type="video/mp4">
+  <source src="https://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/video.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
 
 <p>Начнём с простого - напишем программу для гирлянды с <em>двумя</em> состояниями - в первом светодиоды поочерёдно вспыхивают слева направо, во втором справа налево. В системе два события - нажали кнопочку (NEXT) и внутреннее (недоступно пользователю гирлянды) событие от таймера (TICK). Событие NEXT изменяет состояние:</p>
-<p><img alt="Диаграмма состояний Скриншот" src="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;"></p>
+<p><img alt="Диаграмма состояний Скриншот" src="https://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/State_Diagram.png" style="width:100%; border:1px solid #ddd;"></p>
 <h3>Операторы switch/case</h3>
 <p>Прибегнув к помощи условных операторов <code>if</code> / <code>else</code> или <code>switch</code> / <code>case</code> по-старинке задачу решили так:</p>
 <p><em>FSM/Child/src/main.c</em></p>
@@ -256,7 +245,7 @@ Your browser does not support the video tag.
 <p>Давайте сравним данное решение с предыдущим:</p>
 <ul>
 <li>
-<p>Табличная реализация несколько медленнее - как минимум добавился цикл <code>while</code>. Для обхода элементов таблицы задействована идиома КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ, которая уже подробно описывалась <a href="http://proiot.ru/blog/posts/2012/10/08/idiomy-v-ansi-c/">ранее</a>.</p>
+<p>Табличная реализация несколько медленнее - как минимум добавился цикл <code>while</code>. Для обхода элементов таблицы задействована идиома КОЛИЧЕСТВО ЭЛЕМЕНТОВ МАССИВА КАК РЕЗУЛЬТАТ ДЕЛЕНИЯ, которая уже подробно описывалась <a href="https://mazko.github.io/blog/posts/2012/10/08/idiomy-v-ansi-c/">ранее</a>.</p>
 </li>
 <li>
 <p>Bся логика переходов сконцентрирована в одной таблице. Всё видно, как на ладони. Теперь можно быстрее разобраться / вспомнить, как всё это работает.</p>
@@ -374,24 +363,12 @@ Your browser does not support the video tag.
 
 
 <p>Несложно заметить, что код в суперцикле <code>for(;;)</code> остался без изменений, т.е. решение с использованием таблиц характеризуется лучшей <em>расширяемостью</em> кода.</p>
-<p>Далее или <a href="http://proiot.ru/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">сопрограммы</a> или <a href="http://proiot.ru/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">Quantum Leaps QP и UML statecharts</a>.</p>
-<p>Исходники <a href="http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p>
+<p>Далее или <a href="https://mazko.github.io/blog/posts/2017/02/05/picsimjs-soprogrammy-i-prosteishaia-mnogozadachnost/">сопрограммы</a> или <a href="https://mazko.github.io/blog/posts/2017/05/25/zhizn-posle-rtos-model-aktorov-qpc-uml/">Quantum Leaps QP и UML statecharts</a>.</p>
+<p>Исходники <a href="https://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/FSM.zip">тут</a>.</p>
     </div><!-- /.entry-content -->
   </article>
 </section>
 
-<div class="body" style="margin-bottom: 2em">
-<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- proiot-index -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6247427373315098"
-     data-ad-slot="2711782349"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-</div>
 
 <div class="body" id="proiot-comments">
   <div class="comments">
@@ -399,7 +376,7 @@ Your browser does not support the video tag.
     <script type="text/javascript">
       var disqus_shortname = 'mazko';
       var disqus_identifier = 'blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/';
-      var disqus_url = 'http://proiot.ru/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/';
+      var disqus_url = 'https://mazko.github.io/blog/posts/2012/10/09/avtomat-s-konechnym-chislom-sostoianii/';
       (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = '//mazko.disqus.com/embed.js';
@@ -421,7 +398,7 @@ Your browser does not support the video tag.
                 <div class="social">
                         <h2>social</h2>
                         <ul>
-                            <li><a href="http://proiot.ru/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+                            <li><a href="https://mazko.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
 
                             <li><a rel="nofollow" href="http://github.com/mazko">github</a></li>
                             <li><a rel="nofollow" href="http://linkedin.com/in/mazko">linkedin</a></li>
