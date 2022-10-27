@@ -1,5 +1,5 @@
 diff --git a/static/css/main.css b/static/css/main.css
-index 03a77e6..ee24538 100644
+index 03a77e6..b798b65 100644
 --- a/static/css/main.css
 +++ b/static/css/main.css
 @@ -164,7 +164,7 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
@@ -11,86 +11,39 @@ index 03a77e6..ee24538 100644
  		margin: 0 0 .6em .2em;
  		text-decoration: none;
  	}
-@@ -450,3 +450,19 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
+@@ -450,3 +450,16 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
  	
  	#add-comment input[type='submit'] {float: right; margin: 0 .5em;}
  	#add-comment * {margin-bottom: .5em;}
 +
 +
-+/*
-+	proiot
-+*****************/
++/* proiot */
 +#proiot-comments {
 +	background: #fff;
 +	margin-bottom: 2em;
 +	overflow: hidden;
 +	padding: 20px;
 +	width: 760px;
-+	
 +	border-radius: 10px;
 +	-moz-border-radius: 10px;
 +	-webkit-border-radius: 10px;
 +}
 diff --git a/templates/ads-comments.html b/templates/ads-comments.html
 new file mode 100644
-index 0000000..c09c864
---- /dev/null
-+++ b/templates/ads-comments.html
-@@ -0,0 +1,13 @@
-+<div class="body" style="margin-bottom: 2em">
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-+<!-- proiot-index -->
-+<ins class="adsbygoogle"
-+     style="display:block"
-+     data-ad-client="ca-pub-6247427373315098"
-+     data-ad-slot="2711782349"
-+     data-ad-format="auto"></ins>
-+<script>
-+(adsbygoogle = window.adsbygoogle || []).push({});
-+</script>
-+</div>
-+
+index 0000000..e69de29
 diff --git a/templates/ads-index.html b/templates/ads-index.html
-new file mode 100644
-index 0000000..c09c864
+new file mode 120000
+index 0000000..5a4e210
 --- /dev/null
 +++ b/templates/ads-index.html
-@@ -0,0 +1,13 @@
-+<div class="body" style="margin-bottom: 2em">
-+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-+<!-- proiot-index -->
-+<ins class="adsbygoogle"
-+     style="display:block"
-+     data-ad-client="ca-pub-6247427373315098"
-+     data-ad-slot="2711782349"
-+     data-ad-format="auto"></ins>
-+<script>
-+(adsbygoogle = window.adsbygoogle || []).push({});
-+</script>
-+</div>
-+
-diff --git a/templates/ads-top.html b/templates/ads-top.html
-new file mode 100644
-index 0000000..8b13789
---- /dev/null
-+++ b/templates/ads-top.html
 @@ -0,0 +1 @@
-+
++ads-comments.html
+\ No newline at end of file
 diff --git a/templates/article.html b/templates/article.html
-index 06110b4..07f3387 100644
+index 06110b4..8459aab 100644
 --- a/templates/article.html
 +++ b/templates/article.html
-@@ -1,6 +1,9 @@
- {% extends "base.html" %}
- {% block title %}{{ article.title|striptags }}{% endblock %}
- {% block content %}
-+
-+{% include 'ads-top.html' %}
-+
- <section id="content" class="body">
-   <article>
-     <header>
-@@ -14,24 +17,27 @@
+@@ -14,24 +14,27 @@
        {% include 'article_infos.html' %}
        {{ article.content }}
      </div><!-- /.entry-content -->
@@ -149,26 +102,10 @@ index 172ad85..da7a31c 100644
          {% if article.modified %}
  		<br />
 diff --git a/templates/base.html b/templates/base.html
-index 7818c23..757e219 100644
+index 7818c23..eb21052 100644
 --- a/templates/base.html
 +++ b/templates/base.html
-@@ -11,6 +11,15 @@
-         <link href="{{ FEED_DOMAIN }}/{{ FEED_ALL_RSS }}" type="application/rss+xml" rel="alternate" title="{{ SITENAME }} RSS Feed" />
-         {% endif %}
- 
-+        <script>
-+            (function(){
-+                var loc = window.location.href+'';
-+                if (loc.indexOf('https://')==0){
-+                    window.location.href = loc.replace('https://','http://');
-+                }
-+            })();
-+        </script>
-+
-         <!--[if IE]>
-             <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-         <![endif]-->
-@@ -44,7 +53,7 @@
+@@ -44,7 +44,7 @@
                          <h2>{{ LINKS_WIDGET_NAME | default('links') }}</h2>
                          <ul>
                          {% for name, link in LINKS %}
@@ -177,7 +114,7 @@ index 7818c23..757e219 100644
                          {% endfor %}
                          </ul>
                  </div><!-- /.blogroll -->
-@@ -61,7 +70,7 @@
+@@ -61,7 +61,7 @@
                              {% endif %}
  
                          {% for name, link in SOCIAL %}
@@ -186,7 +123,7 @@ index 7818c23..757e219 100644
                          {% endfor %}
                          </ul>
                  </div><!-- /.social -->
-@@ -70,10 +79,10 @@
+@@ -70,10 +70,10 @@
  
          <footer id="contentinfo" class="body">
                  <address id="about" class="vcard body">
@@ -211,20 +148,10 @@ index ccc401f..cae5e64 100644
  <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" />
  {% else %}
 diff --git a/templates/index.html b/templates/index.html
-index 6019987..6cadb29 100644
+index 6019987..11b3c53 100644
 --- a/templates/index.html
 +++ b/templates/index.html
-@@ -6,6 +6,9 @@
- 
-         {# First item #}
-         {% if loop.first and not articles_page.has_previous() %}
-+
-+            {% include 'ads-top.html' %}
-+
-             <aside id="featured" class="body">
-                 <article>
-                     <h1 class="entry-title"><a href="{{ SITEURL }}/{{ article.url }}">{{ article.title }}</a></h1>
-@@ -13,6 +16,9 @@
+@@ -13,6 +13,9 @@
                  </article>
              </aside><!-- /#featured -->
              {% if loop.length > 1 %}
