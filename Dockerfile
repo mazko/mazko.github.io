@@ -30,8 +30,9 @@ RUN echo '#!/bin/bash' > deploy.sh && chmod +x deploy.sh && \
           ssh-add ~/github_deploy_key > /dev/null 2>&1 && \
           git checkout master && git status --porcelain | wc -l | grep -q '"'"'^0$'"'"' && \
           pelican content --fatal warnings -o ~/pelican-content -s publishconf.py && \
+          cp best-resume-ever-cool.pdf ~/pelican-content/cv.pdf && \
           git checkout gh-pages && rm -rf * && mv ~/pelican-content/* . && \
-          [[ "`ls -A -1 -I '"'"'index?*.html'"'"' -I '"'"'.git'"'"' | cksum`" == "2623787564 34" ]] && \
+          [[ "`ls -A -1 -I '"'"'index?*.html'"'"' -I '"'"'.git'"'"' | cksum`" == "193309321 41" ]] && \
           git add -A && git -c user.name='"'"'Docker CI'"'"' -c user.email='"'"'<>'"'"' commit -m '"'"'up'"'"' && \
           git status --porcelain | wc -l | grep -q '"'"'^0$'"'"' && \
           git push "git@github.com:mazko/mazko.github.io.git" gh-pages && \
