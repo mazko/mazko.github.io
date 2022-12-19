@@ -46,7 +46,7 @@ tags: msp430, ai
 
 Тут мы обучим многослойный перцептрон выполнять функцию XOR. Обучать будем в Tensorflow (не принципиально, можно использовать любую другую библиотеку машинного обучения). Обученную модель развернем на микроконтроллере с [C++]({filename}../../mcucpp/2017-03-20-mcucpp-introduction/2017-03-20-mcucpp-introduction.md) компилятором.
 
-[MSP430.js](http://mazko.github.io/MSP430.js/2ccb68b454f4da854ee5ed23df03dee6) | [ноутбук]({attach}xor.html) | [исходники]({attach}uxor.zip)
+[MSP430.js](http://mazko.github.io/MSP430.js/4f2e6920a7b5c509b539485319ae0fdb) | [ноутбук]({attach}xor.html) | [исходники]({attach}uxor.zip)
 
 [comment]: <> (byzanz-record --x=337 --y=140 -w 792 --delay 3 -d 15 ui.flv)
 [comment]: <> (rm -rf frames/* && ffmpeg -i ui.flv -pix_fmt rgb24 -r 10 "frames/frame-%05d.png")
