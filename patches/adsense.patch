@@ -1,16 +1,18 @@
 diff --git a/static/css/main.css b/static/css/main.css
-index 03a77e6..b798b65 100644
+index 03a77e6..58b2b4f 100644
 --- a/static/css/main.css
 +++ b/static/css/main.css
-@@ -164,7 +164,7 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
+@@ -164,8 +164,8 @@ img.left, figure.left {float: left; margin: 0 2em 2em 0;}
  	#banner h1 a:link, #banner h1 a:visited {
  		color: #000305;
  		display: block;
 -		font-weight: bold;
+-		margin: 0 0 .6em .2em;
 +		/*font-weight: bold;*/
- 		margin: 0 0 .6em .2em;
++		margin: 0.35em 0 .95em .2em;
  		text-decoration: none;
  	}
+ 	#banner h1 a:hover, #banner h1 a:active {
 @@ -450,3 +450,16 @@ li:last-child .hentry, #content > .hentry {border: 0; margin: 0;}
  	
  	#add-comment input[type='submit'] {float: right; margin: 0 .5em;}
