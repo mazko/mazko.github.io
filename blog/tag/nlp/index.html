@@ -19,154 +19,12 @@
                     <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
                     <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
                     <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
-                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">Как соорудить удобный перевод текста всего за пару минут</a></h1>
-<footer class="post-info">
-        <abbr class="published" title="2016-03-03T00:00:00+02:00">
-                Чт 03 марта 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="https://mazko.github.io/blog/tag/rest">REST</a> <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> </p>
-</footer><!-- /.post-info --><p>Стандартная ситуация: читаем какую-нибудь <em>e-book</em> на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:</p>
-<ul>
-<li>
-<p>Считывает текущий выделенный в операционной системе фрагмент текста</p>
-</li>
-<li>
-<p>Скармливает этот текст веб-сервису синтезатору речи, в ответ получает аудио файл и проигрывает. На слух как-то оно лучше запоминается :)</p>
-</li>
-<li>
-<p>Параллельно скармливает текст веб-сервису переводчику, целевой язык как в системе, парсит ответ и вытаскивает оттуда собственно сам перевод</p>
-</li>
-<li>
-<p>Выводит приятное всплывающее окошко с переведённым содержимым, даже картинка присутствует под катом</p>
-</li>
-</ul>
-<p>Привожу две версии скрипта <em>xsel-tr-notify.sh</em>, первая для перевода текста использует из командной строки готовое приложение <em>translate-shell</em>, тогда как вторая работает напрямую c REST API.</p>
-<p><img alt="screenshot" src="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/translate-ubuntu.gif" style="width:100%; border:1px solid #ddd;"></p>
-<p><em>xsel-tr-notify.sh</em></p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
-
-<span class="c1"># chmod +x xsel-tr-notify.sh &amp;&amp; sudo ln -s `pwd`/$_ /usr/local/bin/xsel-translate-notify</span>
-<span class="c1"># apt-get install libnotify-bin xsel</span>
-<span class="c1"># git clone https://github.com/soimort/translate-shell &amp;&amp; cd translate-shell/ &amp;&amp; make</span>
-
-<span class="c1"># Exit immediately if a command exits with a non-zero status.</span>
-<span class="nb">set</span> -e
-
-<span class="c1"># capture current OS selection into variable</span>
-<span class="nv">text</span><span class="o">=</span><span class="sb">`</span>xsel -o<span class="sb">`</span>
-
-<span class="k">if</span> <span class="o">[[</span> ! -z <span class="nv">$text</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
-  <span class="c1"># Absolute path to this script, e.g. /home/user/bin/foo.sh</span>
-  <span class="nv">SCRIPT</span><span class="o">=</span><span class="sb">`</span>readlink -f <span class="s2">&quot;</span><span class="nv">$0</span><span class="s2">&quot;</span><span class="sb">`</span>
-
-  <span class="c1"># Absolute path this script is in, thus /home/user/bin</span>
-  <span class="nv">SCRIPTPATH</span><span class="o">=</span><span class="sb">`</span>dirname <span class="s2">&quot;</span><span class="nv">$SCRIPT</span><span class="s2">&quot;</span><span class="sb">`</span>
-
-  <span class="nv">translate</span><span class="o">=</span><span class="sb">`</span><span class="nv">$SCRIPTPATH</span>/translate-shell/build/trans -sp -brief :<span class="si">${</span><span class="nv">LANGUAGE</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">2</span><span class="si">}</span> <span class="s2">&quot;</span><span class="nv">$text</span><span class="s2">&quot;</span><span class="sb">`</span>
-
-  <span class="c1"># UI notify</span>
-  notify-send -u critical <span class="s2">&quot;</span><span class="nv">$text</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$translate</span><span class="s2">&quot;</span>
-<span class="k">fi</span>
-</pre></div>
-
-
-<p>Как это работает ? В качестве примера нижне показан скрипт, который используют REST API Яндекса. Аналогичное API есть и у других поисковиков — Google, Bing и т.д и приложение <em>translate-shell</em> тоже его использует для перевода текста.</p>
-<p><em>xsel-tr-notify.sh</em></p>
-<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
-
-<span class="c1"># chmod +x xsel-tr-notify.sh &amp;&amp; sudo ln -s `pwd`/$_ /usr/local/bin/xsel-translate-notify</span>
-<span class="c1"># apt-get install mpg123 libnotify-bin xsel curl</span>
-
-<span class="c1"># Exit immediately if a command exits with a non-zero status.</span>
-<span class="nb">set</span> -e
-
-<span class="nb">echo</span> <span class="s2">&quot;Powered by Yandex api&quot;</span>
-
-<span class="c1"># https://tech.yandex.ru/translate/</span>
-<span class="nv">YA_TRNSL_KEY</span><span class="o">=</span>your_trnsl_key_here
-<span class="c1"># https://tech.yandex.ru/speechkit/cloud/doc/dg/concepts/speechkit-dg-tts-docpage/</span>
-<span class="nv">YA_TTS_KEY</span><span class="o">=</span>your_tts_key_here
-
-<span class="c1"># capture current OS selection into variable</span>
-<span class="nv">text</span><span class="o">=</span><span class="sb">`</span>xsel -o<span class="sb">`</span>
-
-<span class="c1"># text to speech in background, non-blocking</span>
-curl -sf <span class="s1">&#39;https://tts.voicetech.yandex.net/generate&#39;</span> <span class="se">\</span>
-  -d <span class="s2">&quot;text=</span><span class="nv">$text</span><span class="s2">&quot;</span>       <span class="se">\</span>
-  -d <span class="s1">&#39;format=mp3&#39;</span>       <span class="se">\</span>
-  -d <span class="s1">&#39;lang=en-EN&#39;</span>       <span class="se">\</span>
-  -d <span class="s1">&#39;speaker=zahar&#39;</span>    <span class="se">\</span>
-  -d <span class="s1">&#39;emotion=good&#39;</span>     <span class="se">\</span>
-  -d <span class="s2">&quot;key=</span><span class="nv">$YA_TTS_KEY</span><span class="s2">&quot;</span>  <span class="se">\</span>
-  <span class="p">|</span> mpg123 --stereo - <span class="p">&amp;</span>
-
-<span class="c1"># translate text &amp; parse json response</span>
-<span class="nv">translate</span><span class="o">=</span><span class="sb">`</span>curl -sf <span class="s1">&#39;https://translate.yandex.net/api/v1.5/tr.json/translate&#39;</span> <span class="se">\</span>
-  -d <span class="s2">&quot;key=</span><span class="nv">$YA_TRNSL_KEY</span><span class="s2">&quot;</span>    <span class="se">\</span>
-  -d <span class="s2">&quot;text=</span><span class="nv">$text</span><span class="s2">&quot;</span>           <span class="se">\</span>
-  -d <span class="s2">&quot;lang=</span><span class="si">${</span><span class="nv">LANGUAGE</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span> <span class="se">\</span>
-  <span class="p">|</span> sed <span class="s1">&#39;s/.*\[\&quot;\(.*\)\&quot;\].*/\1/&#39;</span><span class="sb">`</span>
-
-<span class="c1"># UI notify</span>
-notify-send -u critical <span class="s2">&quot;</span><span class="nv">$text</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$translate</span><span class="s2">&quot;</span>
-</pre></div>
-
-
-<p>Ключи <strong>Яндекс</strong> даёт бесплатно для некоммерческих целей. В простейшем случае для проверки скрипта стоит просто выделить текст и выполнить <code>xsel-translate-notify</code>, но куда удобней выполнять это действие комбинацией клавиш.</p><p>There are <a href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </article>
-            </aside><!-- /#featured -->
-
-
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/" rel="bookmark"
-                           title="Permalink to Как перестать беспокоиться и начать портировать">Как перестать беспокоиться и начать портировать</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2015-10-21T00:00:00+03:00">
-                Ср 21 октября 2015
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> <a href="https://mazko.github.io/blog/tag/lucene">Lucene</a> <a href="https://mazko.github.io/blog/tag/es6">ES6</a> </p>
-</footer><!-- /.post-info -->                <p>Пример портирования <strong>Java</strong> =&gt; <strong>JavaScript</strong> на примере токенизаторов из <a href="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. </p>
-<p><a href="https://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.es6">lucene-tokenizers.es6</a> | <a href="https://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/lucene-tokenizers.babel.js">lucene-tokenizers.babel.js</a> | <a href="https://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/src/out/tests/Coverage.html">Тесты</a> | <a href="https://github.com/mazko/mazko.github.io/tree/src/content/posts/admin/2015-10-21-lucene-tokenizers-es6/src">Исходники</a></p>
-<h2>TL;DR</h2>
-<p>Процесс можно условно разделить на несколько этапов:</p>
-<ul>
-<li>
-<p>Зависимости от внешних библиотек дожны быть представленны в виде исходников, а незадействованный код по возможности удалён т.к. размер таки имеет значение и чем меньше …</p></li></ul>
-                <a class="readmore" href="https://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/">read more</a>
-<p>There are <a href="https://mazko.github.io/blog/posts/2015/10/21/kak-perestat-bespokoitsia-i-nachat-portirovat/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/" rel="bookmark"
-                           title="Permalink to Автоматический определь языка в Apache Tika">Автоматический определь языка в Apache Tika</a></h1>
-                </header>
-
-                <div class="entry-content">
+                    <h1 class="entry-title"><a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/">Автоматический определь языка в Apache Tika</a></h1>
 <footer class="post-info">
         <abbr class="published" title="2013-01-21T00:00:00+02:00">
                 Пн 21 января 2013
@@ -177,12 +35,110 @@ notify-send -u critical <span class="s2">&quot;</span><span class="nv">$text</sp
         </address>
 <p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
 <p>tags: <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> <a href="https://mazko.github.io/blog/tag/tika">Tika</a> </p>
-</footer><!-- /.post-info -->                <p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не …</p>
-                <a class="readmore" href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/">read more</a>
-<p>There are <a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
+</footer><!-- /.post-info --><p><a href="http://tika.apache.org/" rel="nofollow">Apache Tika</a> - это кроссплатформенный набор инструментов, написанный на <code>Java</code> для предварительной обработки и анализа текстовой информации - выделения мета-данных, извлечения текста из разнообразных форматов файлов, автоматического определения языка текста и т.д. Умеет эта штука делать много всего интересного, но мы сконцентрируемся на процессе генерации <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>-файлов для интересующих языков, не поддерживаемых Tika из коробки, чтобы с их помощью можно было автоматически определять языки для текстов.
+Для начала было бы неплохо скачать и попробовать запустить само приложение <a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow">tika-app-1.2.jar</a> ~ 27 МБ. Как и любое другое <code>Java</code> приложение <a href="http://tika.apache.org/" rel="nofollow">Tika</a> можно запустить универсальным способом <code>java -jar tika-app-1.2.jar --help</code>, хотя в <em>Linux</em> можно ещё проще:</p>
+<div class="highlight"><pre><span></span>~$ java -version
+~$ chmod +x tika-app-1.2.jar
+~$ ./tika-app-1.2.jar --help
+</pre></div>
+
+
+<p>Если на машине стоит <code>Java</code>, после выполнения следует ожидать перечисление списка поддерживаемых команд. Предположим мы хотим посмотреть список поддерживаемых форматов входных файлов:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar --list-supported-types
+</pre></div>
+
+
+<p>В результате будет выведен форматированный список, в котором выводится приблизительно такое содержимое, только намного больше:</p>
+<div class="highlight"><pre><span></span>application/pdf
+  alias:     application/x-pdf
+  supertype: application/octet-stream
+  parser:    org.apache.tika.parser.DefaultParser
+application/msword
+  alias:     application/vnd.ms-word
+  supertype: application/x-tika-msoffice
+  parser:    org.apache.tika.parser.DefaultParser
+</pre></div>
+
+
+<p>Давайте уберём все строчки, которые начинаются с пробела, а затем посчитаем сколько их осталось:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar --list-supported-types <span class="p">|</span> sed <span class="s1">&#39;/^ /d&#39;</span>
+~$ ./tika-app-1.2.jar --list-supported-types <span class="p">|</span> sed <span class="s1">&#39;/^ /d&#39;</span> <span class="p">|</span> wc -l
+</pre></div>
+
+
+<p>Таким образом <a href="http://tika.apache.org/" rel="nofollow">Tika</a> версия 1.2 из коробки поддерживает 1372 различных формата. </p>
+<p>В текущей версии <a href="http://tika.apache.org/" rel="nofollow">Tika</a> поддерживается ~27 языков среди которых например точно нет турецкого - поставим себе задачу это поправить. Для выделения <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a> нам понадобится связный текст - чем больше тем лучше, и уверенность в том что мы заранее знаем язык этого текста. Для экспериментов вот нашелся в Гугле довольно большой <a href="http://www.ittihad.com.tr/ipa.pdf" rel="nofollow">ipa.pdf</a> файл на турецком языке. Предлагаю проверить с помощью <a href="http://tika.apache.org/" rel="nofollow">Tika</a> действительно ли формат соответствует указанному расширению:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -d ipa.pdf
+</pre></div>
+
+
+<p>Вывод: <code>application/pdf</code>. Ради интереса попросим вывести более подробно метаинформацию из файла:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -m ipa.pdf 
+ERROR - Error: Could not parse predefined CMAP file <span class="k">for</span> <span class="s1">&#39;Adobe-Ide-UCS2&#39;</span>
+Content-Length: <span class="m">9055059</span>
+Content-Type: application/pdf
+Creation-Date: <span class="m">2008</span>-01-26T23:40:04Z
+created: Sun Jan <span class="m">27</span> <span class="m">01</span>:40:04 EET <span class="m">2008</span>
+date: <span class="m">2008</span>-01-26T23:40:04Z
+dcterms:created: <span class="m">2008</span>-01-26T23:40:04Z
+meta:creation-date: <span class="m">2008</span>-01-26T23:40:04Z
+producer: PDF Creator Plus <span class="m">4</span>.0 - http://www.peernet.com
+resourceName: ipa.pdf
+xmp:CreatorTool: PDF Creator Plus <span class="m">4</span>.0 - http://www.peernet.com
+xmpTPg:NPages: <span class="m">2351</span>
+</pre></div>
+
+
+<p>Ошибка <code>Adobe-Ide-UCS2</code> связана скорее всего не с <a href="http://tika.apache.org/" rel="nofollow">Tika</a>, а с <a href="http://pdfbox.apache.org/" rel="nofollow">pdfbox</a> - но в любом случае мы увидели что хотели, поэтому далее предлагаю эту ошибку просто игнорировать. Теперь извлечем из нашего <em>pdf</em> полезный текст:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -t ipa.pdf &gt; trout
+~$ ./tika-app-1.2.jar -T ipa.pdf &gt; trout
+~$ file -bi trout
+</pre></div>
+
+
+<p>Вывод последней команды: <code>text/plain; charset=utf-8</code>. В случае <code>-T</code> текст будет немного <em>плотнее</em> за счёт удаления лишних пробелов, отступов и т.д. В результате размер файла с полезным текстом ~5,6 МБ в сравнении с 9 МБ оригинального <em>pdf</em>. Ну и наконец попробуем автоматически определить язык документа:</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar -l ipa.pdf
+</pre></div>
+
+
+<p>Вывод: <code>et</code>. Тут удивляться нечему - для корректного определения турецкого языка в <a href="http://tika.apache.org/" rel="nofollow">Tika</a> должен быть список <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a>, характерный для этого языка. Сгенерировать небходимый файл можно на основе имеющегося текста, где в следующей команде <em>tr</em> - это идентификатор турецкого языка в формате <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" rel="nofollow">ISO 639-2</a>.</p>
+<div class="highlight"><pre><span></span>~$ ./tika-app-1.2.jar --create-profile<span class="o">=</span>tr -eUTF-8 trout
+</pre></div>
+
+
+<p>В результате появится файл <em>tr.ngp</em>. <a href="http://tika.apache.org/" rel="nofollow">Tika</a> считывает список <em>.ngp</em> профайлов из специального файла <code>tika.language.properties</code>. Этот файл скрывается в недрах <a href="http://www.apache.org/dyn/closer.cgi/tika/tika-app-1.2.jar" rel="nofollow">tika-app-1.2.jar</a>, но его можно подменить - создать копию <code>tika.language.override.properties</code> и сообщить об этом через <code>java classpath</code>. После чего в <code>tika.language.override.properties</code> необходимо расширить ключ <code>languages</code> турецким языком (через запятую) и добавить новый ключ <code>name.tr</code> со значением <em>Turkish</em>. Пробуем:</p>
+<div class="highlight"><pre><span></span>~$ mkdir -p org/apache/tika/language
+~$ cp tr.ngp org/apache/tika/language
+<span class="c1">#cp tika.language.override.properties org/apache/tika/language</span>
+<span class="c1">#tika.language.override.properties languages &lt;&lt; tr</span>
+<span class="c1">#tika.language.override.properties name.tr=Turkish</span>
+~$ java -cp .:tika-app-1.2.jar org.apache.tika.cli.TikaCLI -l <span class="se">\</span>
+http://tr.wikipedia.org/wiki/Linus_Benedict_Torvalds
+</pre></div>
+
+
+<p>Вывод: <code>tr</code>. Ура ! Мы с Вами только что обучили <a href="http://tika.apache.org/" rel="nofollow">Tika</a> новому языку ! Теперь ещё одна дача - преобразовать <em>tr.ngp</em> в <a href="http://mazko.github.io/jsli/" rel="nofollow">javascript</a>:</p>
+<div class="highlight"><pre><span></span><span class="nv">LNG</span><span class="o">=</span><span class="sb">`</span>basename <span class="nv">$1</span> .ngp<span class="sb">`</span>
+<span class="nv">SUM</span><span class="o">=</span><span class="m">0</span>
+<span class="k">for</span> COUNT in <span class="k">$(</span>sed <span class="s1">&#39;/^#/d;s/^\S\+\s\+\([0-9]\+\)$/\1/&#39;</span> <span class="nv">$LNG</span>.ngp<span class="k">)</span>
+<span class="k">do</span>
+<span class="nv">SUM</span><span class="o">=</span><span class="sb">`</span>expr <span class="nv">$SUM</span> + <span class="nv">$COUNT</span><span class="sb">`</span><span class="p">;</span>
+<span class="k">done</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;(function() {&quot;</span> &gt; <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;var ngrams = {&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+perl -CSD -p -e <span class="s1">&#39;s{([^\t\n\x20-\x7E])}{sprintf &quot;\\u%04x&quot;, ord $1}eg&#39;</span> <span class="se">\</span>
+-f <span class="nv">$LNG</span>.ngp <span class="p">|</span> sed <span class="s1">&#39;/^#/d;s/^\(\S\+\)\s\+\([0-9]\+\)$/&quot;\1&quot;:\2,/&#39;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+sed -i <span class="s1">&#39;$s/,$//&#39;</span> <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;};&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;LanguageIdentifier.addProfile(&#39;</span><span class="nv">$LNG</span><span class="s2">&#39;, ngrams, </span><span class="nv">$SUM</span><span class="s2">);&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+<span class="nb">echo</span> <span class="s2">&quot;}());&quot;</span> &gt;&gt; <span class="nv">$LNG</span>.js
+</pre></div>
+
+
+<p>Сохраним как <code>ngp2js</code>, затем <code>chmod +x ngp2js</code> и запускаем: <code>./ngp2js tr.ngp</code>. В результате будет сгенерирован <code>tr.js</code> размером ~13 КБ.
+Если очень коротко резюмировать - для генерации качественных <a href="http://en.wikipedia.org/wiki/N-gram" rel="nofollow">N-gram</a> файлов нужно много хорошего связного текста заранее известного языка. Сам процесс создания <em>.ngp</em> профайлов очень прост и требует минимум усилий.</p><p>There are <a href="https://mazko.github.io/blog/posts/2013/01/21/avtomaticheskii-opredel-iazyka-v-apache-tika/#disqus_thread">comments</a>.</p>                </article>
+            </aside><!-- /#featured -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>

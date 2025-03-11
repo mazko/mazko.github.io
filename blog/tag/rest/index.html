@@ -19,7 +19,6 @@
                     <li><a href="https://mazko.github.io/blog/category/electronics/">Electronics</a></li>
                     <li><a href="https://mazko.github.io/blog/category/embedded/">Embedded</a></li>
                     <li><a href="https://mazko.github.io/blog/category/iot/">IoT</a></li>
-                    <li><a href="https://mazko.github.io/blog/category/java/">Java</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
@@ -57,68 +56,6 @@
 <p>Тема безопасности для «Интернета вещей» является особенно актуальной. В CoAP поддерживается шифрование, но без TCP стандартный TLS (Transport Layer Security) не может быть использован для обеспечения безопасности связи. Поэтому в CoAP используется DTLS (Datagram Transport Layer Security), который позволяет приложениям, основанным на коммуникациях посредством датаграмм, сообщаться безопасным способом, предотвращающим перехват, прослушивание, вмешательство, не нарушая защиты целостности данных или подделку содержимого сообщения.</p>
 <p><a href="https://mazko.github.io/blog/posts/2017/10/20/protokoly-interneta-veshchei-mqtt/">Далее</a> MQTT.</p><p>There are <a href="https://mazko.github.io/blog/posts/2017/10/17/protokoly-interneta-veshchei-coap/#disqus_thread">comments</a>.</p>                </article>
             </aside><!-- /#featured -->
-
-
-                <section id="content" class="body">
-                    <h1>Other articles</h1>
-                    <hr />
-                    <ol id="posts-list" class="hfeed">
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/" rel="bookmark"
-                           title="Permalink to ElasticSearch - практическое введение">ElasticSearch - практическое введение</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-06-25T00:00:00+03:00">
-                Сб 25 июня 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="https://mazko.github.io/blog/tag/elastic">Elastic</a> <a href="https://mazko.github.io/blog/tag/rest">REST</a> <a href="https://mazko.github.io/blog/tag/docker">Docker</a> </p>
-</footer><!-- /.post-info -->                <p><a href="https://www.elastic.co/products/elasticsearch" rel="nofollow">ElasticSearch</a> - поисковый движок с JSON REST API, использующий под капотом <a href="https://mazko.github.io/blog/posts/2012/10/15/lucene-kurs-molodogo-boitsa/">Lucene</a>. Предлагаю смастерить с помощью Elastic поиск для парочки <a href="https://mazko.github.io/blog/posts/2016/05/15/lucene-fasetnyi-poisk/">фильмов</a>. На первом этапе рассмотрим установку и настройка Elastic в Docker контейнере, впрочем это опционально - вы можете установить Elastic любым другим <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html" rel="nofollow">способом</a>. Затем копнём поглубже в <a href="https://mazko.github.io/blog/posts/2012/10/17/lucene-protsess-indeksatsii/">процесс индексации</a>, <a href="https://mazko.github.io/blog/posts/2012/10/29/lucene-sintaksis-zaprosov/">поисковые запросы</a>,
-<a href="https://mazko.github.io/blog/posts/2012/10/28/lucene-podsvetka-vkhozhdenii-v-rezultatakh-vydachi/">подсветку …</a></p>
-                <a class="readmore" href="https://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/">read more</a>
-<p>There are <a href="https://mazko.github.io/blog/posts/2016/06/25/elasticsearch-prakticheskoe-vvedenie/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-
-            <li><article class="hentry">
-                <header>
-                    <h1><a href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/" rel="bookmark"
-                           title="Permalink to Как соорудить удобный перевод текста всего за пару минут">Как соорудить удобный перевод текста всего за пару минут</a></h1>
-                </header>
-
-                <div class="entry-content">
-<footer class="post-info">
-        <abbr class="published" title="2016-03-03T00:00:00+02:00">
-                Чт 03 марта 2016
-        </abbr>
-
-        <address class="vcard author">
-                By                         <a class="url fn" href="https://mazko.github.io/blog/author/oleg-mazko/">Oleg Mazko</a>
-        </address>
-<p>In <a href="https://mazko.github.io/blog/category/admin/">Admin</a>.</p>
-<p>tags: <a href="https://mazko.github.io/blog/tag/rest">REST</a> <a href="https://mazko.github.io/blog/tag/nlp">NLP</a> </p>
-</footer><!-- /.post-info -->                <p>Стандартная ситуация: читаем какую-нибудь <em>e-book</em> на ненашем языке и видим незнакомое слово. Волшебный скрипт в помощь:</p>
-<ul>
-<li>
-<p>Считывает текущий выделенный в операционной системе фрагмент текста</p>
-</li>
-<li>
-<p>Скармливает этот текст веб-сервису синтезатору речи, в ответ получает аудио файл и проигрывает. На слух как-то оно лучше запоминается :)</p>
-</li>
-<li>
-<p>Параллельно скармливает текст веб-сервису переводчику, целевой язык …</p></li></ul>
-                <a class="readmore" href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/">read more</a>
-<p>There are <a href="https://mazko.github.io/blog/posts/2016/03/03/kak-soorudit-udobnyi-perevod-teksta-vsego-za-paru-minut/#disqus_thread">comments</a>.</p>                </div><!-- /.entry-content -->
-            </article></li>
-                </ol><!-- /#posts-list -->
-                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
